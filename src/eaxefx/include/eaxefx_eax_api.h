@@ -32,12 +32,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 //
 // EAX API.
 //
-// Based on headers eax4.h and eax5.h included into Doom 3 source:
+// Based on headers eax3.h, eax4.h and eax5.h included into Doom 3 source:
 // http://github.com/id-Software/DOOM-3/tree/master/neo/openal/include
 //
 
 
 #include <cfloat>
+
+#include <array>
 
 #include <guiddef.h>
 
@@ -93,6 +95,28 @@ bool operator!=(
 //
 // Common.
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+//
+// EAX 3.0 listener property set {A8FA6880-B476-11d3-BDB9-00C0F02DDF87}
+//
+DEFINE_GUID(
+	DSPROPSETID_EAX30_ListenerProperties,
+	0xA8FA6882,
+	0xB476,
+	0x11D3,
+	0xBD, 0xB9, 0x00, 0xC0, 0xF0, 0x2D, 0xDF, 0x87);
+
+//
+// EAX 3.0 buffer property set {A8FA6881-B476-11d3-BDB9-00C0F02DDF87}
+//
+DEFINE_GUID(
+	DSPROPSETID_EAX30_BufferProperties,
+	0xA8FA6881,
+	0xB476,
+	0x11D3,
+	0xBD, 0xB9, 0x0, 0xC0, 0xF0, 0x2D, 0xDF, 0x87);
+
 
 
 constexpr auto EAX40_MAX_ACTIVE_FXSLOTS = 2;
@@ -398,6 +422,8 @@ enum EAXSOURCE_PROPERTY
 	EAXSOURCE_ROOMROLLOFFFACTOR,
 	EAXSOURCE_AIRABSORPTIONFACTOR,
 	EAXSOURCE_FLAGS,
+
+	// EAX40
 	EAXSOURCE_SENDPARAMETERS,
 	EAXSOURCE_ALLSENDPARAMETERS,
 	EAXSOURCE_OCCLUSIONSENDPARAMETERS,
@@ -908,6 +934,38 @@ constexpr auto EAXREVERB_DEFAULTFLAGS =
 ;
 
 
+extern const EAXREVERBPROPERTIES REVERB_PRESET_GENERIC;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_PADDEDCELL;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_ROOM;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_BATHROOM;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_LIVINGROOM;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_STONEROOM;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_AUDITORIUM;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_CONCERTHALL;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_CAVE;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_ARENA;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_HANGAR;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_CARPETTEDHALLWAY;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_HALLWAY;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_STONECORRIDOR;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_ALLEY;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_FOREST;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_CITY;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_MOUNTAINS;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_QUARRY;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_PLAIN;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_PARKINGLOT;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_SEWERPIPE;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_UNDERWATER;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_DRUGGED;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_DIZZY;
+extern const EAXREVERBPROPERTIES REVERB_PRESET_PSYCHOTIC;
+
+
+using ReverbPresets = std::array<EAXREVERBPROPERTIES, EAX_ENVIRONMENT_UNDEFINED>;
+extern const ReverbPresets EAX_REVERB_PRESETS;
+
+
 } // eaxefx
 
 
@@ -919,15 +977,15 @@ AL_API ALenum AL_APIENTRY EAXSet(
 	const GUID* property_set_id,
 	ALuint property_id,
 	ALuint al_name,
-	ALvoid* property_value,
-	ALuint property_value_size);
+	ALvoid* property_buffer,
+	ALuint property_size);
 
 AL_API ALenum AL_APIENTRY EAXGet(
 	const GUID* property_set_id,
 	ALuint property_id,
 	ALuint al_name,
-	ALvoid* property_value,
-	ALuint property_value_size);
+	ALvoid* property_buffer,
+	ALuint property_size);
 
 
 } // extern "C"

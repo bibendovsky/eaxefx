@@ -55,8 +55,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_al_symbols.h"
 #include "eaxefx_al_uresources.h"
 #include "eaxefx_eax_api.h"
-#include "eaxefx_eax_converters.h"
-#include "eaxefx_eax_validators.h"
+#include "eaxefx_eaxx_eax_call.h"
 #include "eaxefx_eaxx_fx_slot_index.h"
 #include "eaxefx_eaxx_fx_slot.h"
 #include "eaxefx_eaxx_fx_slots.h"
@@ -138,406 +137,6 @@ public:
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class EaxxImplSetEaxFxSlotEffectException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxFxSlotEffectException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_FX_SLOT_EFFECT", message}
-	{
-	}
-}; // EaxxImplSetEaxFxSlotEffectException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxFxSlotVolumeException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxFxSlotVolumeException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_FX_SLOT_VOLUME", message}
-	{
-	}
-}; // EaxxImplSetEaxFxSlotVolumeException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxFxSlotLockException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxFxSlotLockException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_FX_SLOT_LOCK", message}
-	{
-	}
-}; // EaxxImplSetEaxFxSlotLockException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxFxSlotFlagsException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxFxSlotFlagsException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_FX_SLOT_FLAGS", message}
-	{
-	}
-}; // EaxxImplSetEaxFxSlotFlagsException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxFxSlotOcclusionException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxFxSlotOcclusionException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_FX_SLOT_OCCLUSION", message}
-	{
-	}
-}; // EaxxImplSetEaxFxSlotOcclusionException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxFxSlotOcclusionLfRatioException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxFxSlotOcclusionLfRatioException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_FX_SLOT_OCCLUSION_LF_RATIO", message}
-	{
-	}
-}; // EaxxImplSetEaxFxSlotOcclusionLfRatioException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxFxSlotEaxReverbEnvironmentException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxFxSlotEaxReverbEnvironmentException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_FX_SLOT_EAX_REVERB_ENVIRONMENT", message}
-	{
-	}
-}; // EaxxImplSetEaxFxSlotEaxReverbEnvironmentException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxFxSlotEaxReverbException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxFxSlotEaxReverbException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_FX_SLOT_EAX_REVERB", message}
-	{
-	}
-}; // EaxxImplSetEaxFxSlotEaxReverbException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxFxSlotException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxFxSlotException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_FX_SLOT", message}
-	{
-	}
-}; // EaxxImplSetEaxFxSlotException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxSourceObstructionPropertiesException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxSourceObstructionPropertiesException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_SOURCE_OBSTRUCTION_PROPERTIES", message}
-	{
-	}
-}; // EaxxImplSetEaxSourceObstructionPropertiesException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxSourceOcclusionPropertiesException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxSourceOcclusionPropertiesException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_SOURCE_OCCLUSION_PROPERTIES", message}
-	{
-	}
-}; // EaxxImplSetEaxSourceOcclusionPropertiesException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxSourceRoomException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxSourceRoomException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_SOURCE_ROOM", message}
-	{
-	}
-}; // EaxxImplSetEaxSourceRoomException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxSourceOcclusionException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxSourceOcclusionException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_SOURCE_OCCLUSION", message}
-	{
-	}
-}; // EaxxImplSetEaxSourceOcclusionException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxSourceActiveFxSlotIdException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxSourceActiveFxSlotIdException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_SOURCE_ACTIVE_FX_SLOT_ID", message}
-	{
-	}
-}; // EaxxImplSetEaxSourceActiveFxSlotIdException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplSetEaxSourceException :
-	public Exception
-{
-public:
-	explicit EaxxImplSetEaxSourceException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_SET_SOURCE", message}
-	{
-	}
-}; // EaxxImplSetEaxSourceException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplGetEaxFxSlotEffectException :
-	public Exception
-{
-public:
-	explicit EaxxImplGetEaxFxSlotEffectException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_GET_FX_SLOT_EFFECT", message}
-	{
-	}
-}; // EaxxImplGetEaxFxSlotEffectException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplGetEaxFxSlotVolumeException :
-	public Exception
-{
-public:
-	explicit EaxxImplGetEaxFxSlotVolumeException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_GET_FX_SLOT_VOLUME", message}
-	{
-	}
-}; // EaxxImplGetEaxFxSlotVolumeException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplGetEaxFxSlotLockException :
-	public Exception
-{
-public:
-	explicit EaxxImplGetEaxFxSlotLockException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_GET_FX_SLOT_LOCK", message}
-	{
-	}
-}; // EaxxImplGetEaxFxSlotLockException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplGetEaxFxSlotFlagsException :
-	public Exception
-{
-public:
-	explicit EaxxImplGetEaxFxSlotFlagsException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_GET_FX_SLOT_FLAGS", message}
-	{
-	}
-}; // EaxxImplGetEaxFxSlotFlagsException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplGetEaxFxSlotOcclusionException :
-	public Exception
-{
-public:
-	explicit EaxxImplGetEaxFxSlotOcclusionException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_GET_FX_SLOT_OCCLUSION", message}
-	{
-	}
-}; // EaxxImplGetEaxFxSlotOcclusionException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplGetEaxFxSlotOcclusionLfRatioException :
-	public Exception
-{
-public:
-	explicit EaxxImplGetEaxFxSlotOcclusionLfRatioException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_GET_FX_SLOT_OCCLUSION_LF_RATIO", message}
-	{
-	}
-}; // EaxxImplGetEaxFxSlotOcclusionLfRatioException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-class EaxxImplGetEaxFxSlotException :
-	public Exception
-{
-public:
-	explicit EaxxImplGetEaxFxSlotException(
-		std::string_view message)
-		:
-		Exception{"EAXX_EAX_GET_FX_SLOT", message}
-	{
-	}
-}; // EaxxImplGetEaxFxSlotException
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-template<
-	typename T>
-float mb_to_gain(
-	T value)
-{
-	return std::pow(10.0F, static_cast<float>(value) / 2'000.0F);
-}
-
-template
-<
-	typename TValue,
-	typename TRange
->
-bool is_in_range(
-	const TValue& value,
-	const TRange& min_value,
-	const TRange& max_value)
-{
-	return value >= static_cast<TValue>(min_value) && value <= static_cast<TValue>(max_value);
-}
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
 class EaxxImpl :
 	public Eaxx
 {
@@ -588,19 +187,19 @@ public:
 		const GUID* property_set_id,
 		ALuint property_id,
 		ALuint al_name,
-		ALvoid* property_value,
-		ALuint property_value_size) noexcept override;
+		ALvoid* property_buffer,
+		ALuint property_size) noexcept override;
 
 	ALenum EAXGet(
 		const GUID* property_set_id,
 		ALuint property_id,
 		ALuint al_name,
-		ALvoid* property_value,
-		ALuint property_value_size) noexcept override;
+		ALvoid* property_buffer,
+		ALuint property_size) noexcept override;
 
 
 private:
-	static constexpr auto al_extension_reserve = 2048;
+	static constexpr auto al_exts_buffer_reserve = 2048;
 	static constexpr auto al_context_attrs_reserve = 32;
 	static constexpr auto al_devices_reserve = 4;
 	static constexpr auto al_contexts_reserve = al_devices_reserve;
@@ -608,7 +207,7 @@ private:
 
 	using Mutex = std::mutex;
 	using AlcAttrCache = std::vector<ALCint>;
-	using AlExtensionCache = std::string;
+	using AlExtsBuffer = std::string;
 
 
 	struct Device
@@ -624,19 +223,6 @@ private:
 		}
 	}; // Device
 
-	struct EaxCall
-	{
-		bool is_get{};
-		int version{};
-		int fx_slot_index{};
-
-		const GUID* property_set_id{};
-		ALuint property_id{};
-		ALuint property_al_name{};
-		ALvoid* property_value{};
-		ALuint property_value_size{};
-	}; // EaxCall
-
 	using DeviceMap = std::unordered_map<ALCdevice*, Device>;
 	using ContextMap = std::unordered_map<ALCcontext*, EaxxContext>;
 
@@ -644,13 +230,15 @@ private:
 	Logger* logger_{};
 	AlLoader* al_loader_{};
 	Mutex mutex_{};
-	AlExtensionCache al_exts_cache_{};
-	AlcAttrCache al_context_attr_cache_{};
+	const ALchar* al_exts_ref_{};
+	AlExtsBuffer al_exts_buffer_{};
+	AlcAttrCache al_context_attr_buffer_{};
 	DeviceMap device_map_{};
 	ContextMap context_map_{};
 	EaxxContext* current_context_{};
 
 
+	static constexpr auto eax_3_0_ext_name = std::string_view{"EAX3.0"};
 	static constexpr auto eax_4_0_ext_name = std::string_view{"EAX4.0"};
 	static constexpr auto eax_5_0_ext_name = std::string_view{"EAX5.0"};
 
@@ -664,6 +252,10 @@ private:
 	Device* find_device(
 		ALCdevice* al_device) noexcept;
 
+	void append_eax_extension_if_not_exist(
+		std::string_view al_exts,
+		std::string_view eax_ext);
+
 	const ALchar* make_al_exts(
 		const ALchar* al_exts);
 
@@ -673,86 +265,18 @@ private:
 	void initialize_context() noexcept;
 
 
-	void eax_set_context_eaxsession(
-		const EaxCall& eax_call);
-
-	void eax_set_context_primaryfxslotid(
-		const EaxCall& eax_call);
-
 	void eax_set_context(
-		const EaxCall& eax_call);
-
-
-	void eax_set_fxslot_loadeffect(
-		const EaxCall& eax_call);
-
-	void eax_set_fxslot_volume(
-		const EaxCall& eax_call);
-
-	void eax_set_fxslot_lock(
-		const EaxCall& eax_call);
-
-	void eax_set_fxslot_flags(
-		const EaxCall& eax_call);
-
-	void eax_set_fxslot_occlusion(
-		const EaxCall& eax_call);
-
-	void eax_set_fxslot_occlusionlfratio(
-		const EaxCall& eax_call);
-
-	void eax_set_fxslot_eaxreverb_environment(
-		const EaxCall& eax_call);
-
-	void eax_set_fxslot_eaxreverb_allparameters(
-		const EaxCall& eax_call);
+		const EaxxEaxCall& eax_call);
 
 	void eax_set_fxslot(
-		const EaxCall& eax_call);
-
-
-	void eax_set_source_obstructionparameters(
-		const EaxCall& eax_call);
-
-	void eax_set_source_occlusionparameters(
-		const EaxCall& eax_call);
-
-	void eax_set_source_room(
-		const EaxCall& eax_call) noexcept;
-
-	void eax_set_source_occlusion(
-		const EaxCall& eax_call) noexcept;
-
-	void eax_set_source_activefxslotid(
-		const EaxCall& eax_call);
+		const EaxxEaxCall& eax_call);
 
 	void eax_set_source(
-		const EaxCall& eax_call);
+		const EaxxEaxCall& eax_call);
 
-
-	void eax_get_fxslot_allparameters(
-		const EaxCall& eax_call);
-
-	void eax_get_fxslot_loadeffect(
-		const EaxCall& eax_call);
-
-	void eax_get_fxslot_volume(
-		const EaxCall& eax_call);
-
-	void eax_get_fxslot_lock(
-		const EaxCall& eax_call);
-
-	void eax_get_fxslot_flags(
-		const EaxCall& eax_call);
-
-	void eax_get_fxslot_occlusion(
-		const EaxCall& eax_call);
-
-	void eax_get_fxslot_occlusion_lf_ratio(
-		const EaxCall& eax_call);
 
 	void eax_get_fxslot(
-		const EaxCall& eax_call);
+		const EaxxEaxCall& eax_call);
 }; // EaxxImpl
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -777,8 +301,8 @@ EaxxImpl::EaxxImpl(
 		throw EaxxImplException{"Null AL loader."};
 	}
 
-	al_exts_cache_.reserve(al_extension_reserve);
-	al_context_attr_cache_.reserve(al_context_attrs_reserve * 2);
+	al_exts_buffer_.reserve(al_exts_buffer_reserve);
+	al_context_attr_buffer_.reserve(al_context_attrs_reserve * 2);
 	device_map_.reserve(al_devices_reserve);
 	context_map_.reserve(al_contexts_reserve);
 }
@@ -792,7 +316,8 @@ ALboolean EaxxImpl::alIsExtensionPresent(
 	{
 		const auto extname_view = std::string_view{extname};
 
-		if (extname_view == eax_4_0_ext_name ||
+		if (extname_view == eax_3_0_ext_name ||
+			extname_view == eax_4_0_ext_name ||
 			extname_view == eax_5_0_ext_name)
 		{
 			return AL_TRUE;
@@ -949,6 +474,7 @@ ALCboolean EaxxImpl::alcMakeContextCurrent(
 			if (context_key == context)
 			{
 				current_context_ = &context_value;
+				break;
 			}
 		}
 	}
@@ -970,11 +496,12 @@ void EaxxImpl::alcDestroyContext(
 
 	if (context != nullptr)
 	{
-		if (current_context_ == nullptr ||
-			(current_context_ != nullptr && current_context_->get_al_context() != context))
+		if (current_context_->get_al_context() == context)
 		{
-			context_map_.erase(context);
+			current_context_ = nullptr;
 		}
+
+		context_map_.erase(context);
 	}
 
 	alcDestroyContext_(context);
@@ -984,8 +511,8 @@ ALenum EaxxImpl::EAXSet(
 	const GUID* property_set_id,
 	ALuint property_id,
 	ALuint property_al_name,
-	ALvoid* property_value,
-	ALuint property_value_size) noexcept
+	ALvoid* property_buffer,
+	ALuint property_size) noexcept
 try
 {
 	const auto lock = std::scoped_lock{mutex_};
@@ -1000,20 +527,20 @@ try
 		throw EaxxImplException{"Null property GUID."};
 	}
 
-	if (property_value == nullptr)
+	if (property_buffer == nullptr)
 	{
 		throw EaxxImplException{"Null property value."};
 	}
 
-	auto eax_call = EaxCall{};
+	auto eax_call = EaxxEaxCall{};
 	eax_call.is_get = false;
 	eax_call.version = 0;
-	eax_call.fx_slot_index = -1;
+	eax_call.fx_slot_index.reset();
 	eax_call.property_set_id = property_set_id;
 	eax_call.property_id = property_id;
 	eax_call.property_al_name = property_al_name;
-	eax_call.property_value = property_value;
-	eax_call.property_value_size = property_value_size;
+	eax_call.property_buffer = property_buffer;
+	eax_call.property_size = property_size;
 
 	if (false)
 	{
@@ -1028,6 +555,12 @@ try
 		eax_call.version = 5;
 		eax_set_context(eax_call);
 	}
+	else if ((*property_set_id) == DSPROPSETID_EAX30_ListenerProperties)
+	{
+		eax_call.version = 3;
+		eax_call.fx_slot_index = 0;
+		eax_set_fxslot(eax_call);
+	}
 	else if ((*property_set_id) == EAXPROPERTYID_EAX40_FXSlot0)
 	{
 		eax_call.version = 4;
@@ -1076,6 +609,11 @@ try
 		eax_call.fx_slot_index = 3;
 		eax_set_fxslot(eax_call);
 	}
+	else if (*property_set_id == DSPROPSETID_EAX30_BufferProperties)
+	{
+		eax_call.version = 3;
+		eax_set_source(eax_call);
+	}
 	else if (*property_set_id == EAXPROPERTYID_EAX40_Source)
 	{
 		eax_call.version = 4;
@@ -1088,7 +626,7 @@ try
 	}
 	else
 	{
-		return AL_INVALID_OPERATION;
+		throw EaxxImplException{"Unsupported property set id."};
 	}
 
 	return AL_NO_ERROR;
@@ -1103,8 +641,8 @@ ALenum EaxxImpl::EAXGet(
 	const GUID* property_set_id,
 	ALuint property_id,
 	ALuint property_al_name,
-	ALvoid* property_value,
-	ALuint property_value_size) noexcept
+	ALvoid* property_buffer,
+	ALuint property_size) noexcept
 try
 {
 	const auto lock = std::scoped_lock{mutex_};
@@ -1119,20 +657,20 @@ try
 		throw EaxxImplException{"Null property GUID."};
 	}
 
-	if (property_value == nullptr)
+	if (property_buffer == nullptr)
 	{
 		throw EaxxImplException{"Null property value."};
 	}
 
-	auto eax_call = EaxCall{};
+	auto eax_call = EaxxEaxCall{};
 	eax_call.is_get = true;
 	eax_call.version = 0;
 	eax_call.fx_slot_index = -1;
 	eax_call.property_set_id = property_set_id;
 	eax_call.property_id = property_id;
 	eax_call.property_al_name = property_al_name;
-	eax_call.property_value = property_value;
-	eax_call.property_value_size = property_value_size;
+	eax_call.property_buffer = property_buffer;
+	eax_call.property_size = property_size;
 
 	if (false)
 	{
@@ -1187,7 +725,7 @@ try
 	}
 	else
 	{
-		return AL_INVALID_OPERATION;
+		throw EaxxImplException{"Unsupported property set id."};
 	}
 
 	return AL_NO_ERROR;
@@ -1239,52 +777,63 @@ EaxxImpl::Device* EaxxImpl::find_device(
 	return nullptr;
 }
 
+void EaxxImpl::append_eax_extension_if_not_exist(
+	std::string_view al_exts,
+	std::string_view eax_ext)
+{
+	if (al_exts.find(eax_ext) == std::string_view::npos)
+	{
+		if (!al_exts_buffer_.empty())
+		{
+			al_exts_buffer_ += ' ';
+		}
+
+		al_exts_buffer_ += eax_ext;
+	}
+}
+
 const ALchar* EaxxImpl::make_al_exts(
 	const ALchar* al_exts)
 {
-	al_exts_cache_.clear();
+	if (al_exts == nullptr)
+	{
+		return nullptr;
+	}
+
+	if (al_exts == al_exts_ref_)
+	{
+		return al_exts_buffer_.data();
+	}
+
+	al_exts_buffer_.clear();
 
 	const auto al_exts_view = std::string_view{al_exts};
 
-	if (al_exts_view.find(eax_4_0_ext_name) != std::string_view::npos)
-	{
-		if (!al_exts_cache_.empty())
-		{
-			al_exts_cache_ += ' ';
-		}
-
-		al_exts_cache_ += eax_4_0_ext_name;
-	}
-
-	if (al_exts_view.find(eax_5_0_ext_name) != std::string_view::npos)
-	{
-		if (!al_exts_cache_.empty())
-		{
-			al_exts_cache_ += ' ';
-		}
-
-		al_exts_cache_ += eax_5_0_ext_name;
-	}
+	append_eax_extension_if_not_exist(al_exts_view, eax_3_0_ext_name);
+	append_eax_extension_if_not_exist(al_exts_view, eax_4_0_ext_name);
+	append_eax_extension_if_not_exist(al_exts_view, eax_5_0_ext_name);
 
 	if (!al_exts_view.empty())
 	{
-		if (!al_exts_cache_.empty())
+		if (!al_exts_buffer_.empty())
 		{
-			al_exts_cache_ += ' ';
+			al_exts_buffer_ += ' ';
 		}
 
-		al_exts_cache_ += al_exts_view;
+		al_exts_buffer_ += al_exts_view;
 	}
 
-	al_exts_cache_ += '\0';
+	al_exts_buffer_ += '\0';
 
-	return al_exts_cache_.data();
+	al_exts_ref_ = al_exts;
+
+	return al_exts_buffer_.data();
 }
 
 const ALCint* EaxxImpl::make_al_context_attrs(
 	const ALCint* al_context_attrs)
 {
-	al_context_attr_cache_.clear();
+	al_context_attr_buffer_.clear();
 
 	auto max_aux_sends = ALCint{};
 
@@ -1307,20 +856,20 @@ const ALCint* EaxxImpl::make_al_context_attrs(
 			}
 			else
 			{
-				al_context_attr_cache_.emplace_back(attr_name);
-				al_context_attr_cache_.emplace_back(attr_value);
+				al_context_attr_buffer_.emplace_back(attr_name);
+				al_context_attr_buffer_.emplace_back(attr_value);
 			}
 		}
 	}
 
 	max_aux_sends = std::max(max_aux_sends, EAX_MAX_FXSLOTS);
 
-	al_context_attr_cache_.emplace_back(ALC_MAX_AUXILIARY_SENDS);
-	al_context_attr_cache_.emplace_back(max_aux_sends);
-	al_context_attr_cache_.emplace_back(0);
-	al_context_attr_cache_.emplace_back(0);
+	al_context_attr_buffer_.emplace_back(ALC_MAX_AUXILIARY_SENDS);
+	al_context_attr_buffer_.emplace_back(max_aux_sends);
+	al_context_attr_buffer_.emplace_back(0);
+	al_context_attr_buffer_.emplace_back(0);
 
-	return al_context_attr_cache_.data();
+	return al_context_attr_buffer_.data();
 }
 
 void EaxxImpl::initialize_context() noexcept
@@ -1346,513 +895,42 @@ catch (const std::exception& ex)
 	logger_->write(ex, 1);
 }
 
-void EaxxImpl::eax_set_context_eaxsession(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(EAXSESSIONPROPERTIES))
-	{
-		throw EaxxImplSetEaxSessionException{"Value size too small."};
-	}
-
-	current_context_->set_session(*static_cast<const EAXSESSIONPROPERTIES*>(eax_call.property_value));
-}
-
-void EaxxImpl::eax_set_context_primaryfxslotid(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(GUID))
-	{
-		throw EaxxImplSetEaxPrimaryFxSlotIdException{"Value size too small."};
-	}
-
-	current_context_->set_primary_fx_slot_id(*static_cast<const GUID*>(eax_call.property_value));
-}
-
 void EaxxImpl::eax_set_context(
-	const EaxCall& eax_call)
+	const EaxxEaxCall& eax_call)
 {
-	switch (eax_call.property_id)
-	{
-		case EAXCONTEXT_EAXSESSION:
-			eax_set_context_eaxsession(eax_call);
-			break;
-
-		case EAXCONTEXT_PRIMARYFXSLOTID:
-			eax_set_context_primaryfxslotid(eax_call);
-			break;
-
-		default:
-			throw EaxxImplSetEaxContextException{"Unsupported property id."};
-	}
-}
-
-void EaxxImpl::eax_set_fxslot_loadeffect(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(GUID))
-	{
-		throw EaxxImplSetEaxFxSlotEffectException{"Value size too small."};
-	}
-
-	auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-	fx_slot.set_effect(*static_cast<const GUID*>(eax_call.property_value));
-}
-
-void EaxxImpl::eax_set_fxslot_volume(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(long))
-	{
-		throw EaxxImplSetEaxFxSlotVolumeException{"Value size too small."};
-	}
-
-	auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-	fx_slot.set_volume(*static_cast<const long*>(eax_call.property_value));
-}
-
-void EaxxImpl::eax_set_fxslot_lock(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(long))
-	{
-		throw EaxxImplSetEaxFxSlotLockException{"Value size too small."};
-	}
-
-	auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-	fx_slot.set_lock(*static_cast<const long*>(eax_call.property_value));
-}
-
-void EaxxImpl::eax_set_fxslot_flags(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(unsigned long))
-	{
-		throw EaxxImplSetEaxFxSlotFlagsException{"Value size too small."};
-	}
-
-	auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-
-	fx_slot.set_flags(
-		eax_call.version,
-		*static_cast<const unsigned long*>(eax_call.property_value));
-}
-
-void EaxxImpl::eax_set_fxslot_occlusion(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(unsigned long))
-	{
-		throw EaxxImplSetEaxFxSlotOcclusionException{"Value size too small."};
-	}
-
-	auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-
-	const auto is_modified = fx_slot.set_occlusion(
-		eax_call.version,
-		*static_cast<const long*>(eax_call.property_value));
-
-	if (is_modified)
-	{
-		current_context_->update_filters();
-	}
-}
-
-void EaxxImpl::eax_set_fxslot_occlusionlfratio(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(float))
-	{
-		throw EaxxImplSetEaxFxSlotOcclusionLfRatioException{"Value size too small."};
-	}
-
-	auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-
-	const auto is_modified = fx_slot.set_occlusion_lf_ratio(
-		eax_call.version,
-		*static_cast<const float*>(eax_call.property_value));
-
-	if (is_modified)
-	{
-		current_context_->update_filters();
-	}
-}
-
-void EaxxImpl::eax_set_fxslot_eaxreverb_environment(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(unsigned long))
-	{
-		throw EaxxImplSetEaxFxSlotEaxReverbEnvironmentException{"Value size too small."};
-	}
-
-	const auto eax_reverb_environment = *static_cast<const unsigned long*>(eax_call.property_value);
-	auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-	fx_slot.set_reverb_environment(eax_call.version, eax_reverb_environment);
-}
-
-void EaxxImpl::eax_set_fxslot_eaxreverb_allparameters(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(EAXREVERBPROPERTIES))
-	{
-		throw EaxxImplSetEaxFxSlotEaxReverbException{"Value size too small."};
-	}
-
-	const auto& eax_reverb = *static_cast<const EAXREVERBPROPERTIES*>(eax_call.property_value);
-	auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-	fx_slot.set_reverb(eax_call.version, eax_reverb);
+	current_context_->set(eax_call);
 }
 
 void EaxxImpl::eax_set_fxslot(
-	const EaxCall& eax_call)
+	const EaxxEaxCall& eax_call)
 {
-	switch (eax_call.property_id)
+	auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
+
+	if (fx_slot.set(eax_call))
 	{
-		case EAXFXSLOT_LOADEFFECT:
-			eax_set_fxslot_loadeffect(eax_call);
-			break;
-
-		case EAXFXSLOT_VOLUME:
-			eax_set_fxslot_volume(eax_call);
-			break;
-
-		case EAXFXSLOT_LOCK:
-			eax_set_fxslot_lock(eax_call);
-			break;
-
-		case EAXFXSLOT_FLAGS:
-			eax_set_fxslot_flags(eax_call);
-			break;
-
-		case EAXFXSLOT_OCCLUSION:
-			eax_set_fxslot_occlusion(eax_call);
-			break;
-
-		case EAXFXSLOT_OCCLUSIONLFRATIO:
-			eax_set_fxslot_occlusionlfratio(eax_call);
-			break;
-
-		case EAXREVERB_ENVIRONMENT:
-			eax_set_fxslot_eaxreverb_environment(eax_call);
-			break;
-
-		case EAXREVERB_ALLPARAMETERS:
-			eax_set_fxslot_eaxreverb_allparameters(eax_call);
-			break;
-
-		default:
-			throw EaxxImplSetEaxFxSlotException{"Unsupported property id."};
+		current_context_->update_filters();
 	}
-}
-
-void EaxxImpl::eax_set_source_obstructionparameters(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(EAXOBSTRUCTIONPROPERTIES))
-	{
-		throw EaxxImplSetEaxSourceObstructionPropertiesException{"Value size too small."};
-	}
-
-	auto source = current_context_->find_source(eax_call.property_al_name);
-
-	if (source == nullptr)
-	{
-		throw EaxxImplSetEaxSourceObstructionPropertiesException{"Null source."};
-	}
-
-	const auto& eax_obstruction_parameters =
-		*static_cast<const EAXOBSTRUCTIONPROPERTIES*>(eax_call.property_value);
-
-	source->set_obstruction_properties(eax_obstruction_parameters);
-}
-
-void EaxxImpl::eax_set_source_occlusionparameters(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(EAXOCCLUSIONPROPERTIES))
-	{
-		throw EaxxImplSetEaxSourceOcclusionPropertiesException{"Value size too small."};
-	}
-
-	auto source = current_context_->find_source(eax_call.property_al_name);
-
-	if (source == nullptr)
-	{
-		throw EaxxImplSetEaxSourceOcclusionPropertiesException{"Null source."};
-	}
-
-	const auto& eax_occlusion_parameters =
-		*static_cast<const EAXOCCLUSIONPROPERTIES*>(eax_call.property_value);
-
-	source->set_occlusion_properties(eax_occlusion_parameters);
-}
-
-void EaxxImpl::eax_set_source_room(
-	const EaxCall& eax_call) noexcept
-try
-{
-	if (eax_call.property_value_size < sizeof(long))
-	{
-		throw EaxxImplSetEaxSourceRoomException{"Value size too small."};
-	}
-
-	auto source = current_context_->find_source(eax_call.property_al_name);
-
-	if (source == nullptr)
-	{
-		throw EaxxImplSetEaxSourceRoomException{"Null source."};
-	}
-
-	const auto eax_room = *static_cast<const long*>(eax_call.property_value);
-
-	source->set_room(eax_room);
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxImplSetEaxSourceRoomException{"Failed."});
-}
-
-void EaxxImpl::eax_set_source_occlusion(
-	const EaxCall& eax_call) noexcept
-try
-{
-	if (eax_call.property_value_size < sizeof(long))
-	{
-		throw EaxxImplSetEaxSourceOcclusionException{"Value size too small."};
-	}
-
-	auto source = current_context_->find_source(eax_call.property_al_name);
-
-	if (source == nullptr)
-	{
-		throw EaxxImplSetEaxSourceOcclusionException{"Null source."};
-	}
-
-	const auto eax_occlusion = *static_cast<const long*>(eax_call.property_value);
-
-	source->set_occlusion(eax_occlusion);
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxImplSetEaxSourceOcclusionException{"Failed."});
-}
-
-void EaxxImpl::eax_set_source_activefxslotid(
-	const EaxCall& eax_call)
-{
-	if (eax_call.version < 4)
-	{
-		throw EaxxImplSetEaxSourceActiveFxSlotIdException{"Unsupported EAX version."};
-	}
-
-	auto source = current_context_->find_source(eax_call.property_al_name);
-
-	if (source == nullptr)
-	{
-		throw EaxxImplSetEaxSourceActiveFxSlotIdException{"Null source."};
-	}
-
-	const auto max_count = std::min(
-		static_cast<int>(eax_call.property_value_size / sizeof(GUID)),
-		EAX50_MAX_ACTIVE_FXSLOTS);
-
-	if (max_count <= 0)
-	{
-		throw EaxxImplSetEaxSourceActiveFxSlotIdException{"Value size to small."};
-	}
-
-	source->set_active_fx_slots(
-		max_count,
-		static_cast<const GUID*>(eax_call.property_value)
-	);
 }
 
 void EaxxImpl::eax_set_source(
-	const EaxCall& eax_call)
+	const EaxxEaxCall& eax_call)
 {
-	switch (eax_call.property_id)
+	auto source = current_context_->find_source(eax_call.property_al_name);
+
+	if (source == nullptr)
 	{
-		case EAXSOURCE_OBSTRUCTIONPARAMETERS:
-			eax_set_source_obstructionparameters(eax_call);
-			break;
-
-		case EAXSOURCE_OCCLUSIONPARAMETERS:
-			eax_set_source_occlusionparameters(eax_call);
-			break;
-
-		case EAXSOURCE_ROOM:
-			eax_set_source_room(eax_call);
-			break;
-
-		case EAXSOURCE_OCCLUSION:
-			eax_set_source_occlusion(eax_call);
-			break;
-
-		case EAXSOURCE_ACTIVEFXSLOTID:
-			eax_set_source_activefxslotid(eax_call);
-			break;
-
-		default:
-			throw EaxxImplSetEaxSourceException{"Unsupported property id."};
-	}
-}
-
-void EaxxImpl::eax_get_fxslot_allparameters(
-	const EaxCall& eax_call)
-{
-	if (eax_call.version < 4)
-	{
-		throw EaxxImplGetEaxFxSlotException{"Unsupported EAX version."};
+		throw EaxxImplException{"Source not found."};
 	}
 
-	if (eax_call.version == 5 && eax_call.property_value_size >= sizeof(EAX50FXSLOTPROPERTIES))
-	{
-		const auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-
-		*static_cast<EAX50FXSLOTPROPERTIES*>(eax_call.property_value) = fx_slot.get_eax_fx_slot();
-	}
-	else if (eax_call.version == 4 && eax_call.property_value_size >= sizeof(EAX40FXSLOTPROPERTIES))
-	{
-		const auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-
-		*static_cast<EAX40FXSLOTPROPERTIES*>(eax_call.property_value) = fx_slot.get_eax_fx_slot();
-	}
-	else
-	{
-		throw EaxxImplGetEaxFxSlotException{"Value size too small."};
-	}
-}
-
-void EaxxImpl::eax_get_fxslot_loadeffect(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(GUID))
-	{
-		throw EaxxImplGetEaxFxSlotEffectException{"Value size too small."};
-	}
-
-	const auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-	const auto eax_fx_slot = fx_slot.get_eax_fx_slot();
-
-	*static_cast<GUID*>(eax_call.property_value) = eax_fx_slot.guidLoadEffect;
-}
-
-void EaxxImpl::eax_get_fxslot_volume(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(long))
-	{
-		throw EaxxImplGetEaxFxSlotVolumeException{"Value size too small."};
-	}
-
-	const auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-	const auto eax_fx_slot = fx_slot.get_eax_fx_slot();
-
-	*static_cast<long*>(eax_call.property_value) = eax_fx_slot.lVolume;
-}
-
-void EaxxImpl::eax_get_fxslot_lock(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(long))
-	{
-		throw EaxxImplGetEaxFxSlotLockException{"Value size too small."};
-	}
-
-	const auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-	const auto eax_fx_slot = fx_slot.get_eax_fx_slot();
-
-	*static_cast<long*>(eax_call.property_value) = eax_fx_slot.lLock;
-}
-
-void EaxxImpl::eax_get_fxslot_flags(
-	const EaxCall& eax_call)
-{
-	if (eax_call.property_value_size < sizeof(unsigned long))
-	{
-		throw EaxxImplGetEaxFxSlotFlagsException{"Value size too small."};
-	}
-
-	const auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-	const auto eax_fx_slot = fx_slot.get_eax_fx_slot();
-
-	*static_cast<unsigned long*>(eax_call.property_value) = eax_fx_slot.ulFlags;
-}
-
-void EaxxImpl::eax_get_fxslot_occlusion(
-	const EaxCall& eax_call)
-{
-	if (eax_call.version != 5)
-	{
-		throw EaxxImplGetEaxFxSlotOcclusionException{"Unsupported EAX version."};
-	}
-
-	if (eax_call.property_value_size < sizeof(long))
-	{
-		throw EaxxImplGetEaxFxSlotOcclusionException{"Value size too small."};
-	}
-
-	const auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-	const auto eax_fx_slot = fx_slot.get_eax_fx_slot();
-
-	*static_cast<long*>(eax_call.property_value) = eax_fx_slot.lOcclusion;
-}
-
-void EaxxImpl::eax_get_fxslot_occlusion_lf_ratio(
-	const EaxCall& eax_call)
-{
-	if (eax_call.version != 5)
-	{
-		throw EaxxImplGetEaxFxSlotOcclusionLfRatioException{"Unsupported EAX version."};
-	}
-
-	if (eax_call.property_value_size < sizeof(float))
-	{
-		throw EaxxImplGetEaxFxSlotOcclusionLfRatioException{"Value size too small."};
-	}
-
-	const auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-	const auto eax_fx_slot = fx_slot.get_eax_fx_slot();
-
-	*static_cast<float*>(eax_call.property_value) = eax_fx_slot.flOcclusionLFRatio;
+	source->set(eax_call);
 }
 
 void EaxxImpl::eax_get_fxslot(
-	const EaxCall& eax_call)
+	const EaxxEaxCall& eax_call)
 {
-	switch (eax_call.property_id)
-	{
-		case EAXFXSLOT_ALLPARAMETERS:
-			eax_get_fxslot_allparameters(eax_call);
-			break;
+	const auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
 
-		case EAXFXSLOT_LOADEFFECT:
-			eax_get_fxslot_loadeffect(eax_call);
-			break;
-
-		case EAXFXSLOT_VOLUME:
-			eax_get_fxslot_volume(eax_call);
-			break;
-
-		case EAXFXSLOT_LOCK:
-			eax_get_fxslot_lock(eax_call);
-			break;
-
-		case EAXFXSLOT_FLAGS:
-			eax_get_fxslot_flags(eax_call);
-			break;
-
-		case EAXFXSLOT_OCCLUSION:
-			eax_get_fxslot_occlusion(eax_call);
-			break;
-
-		case EAXFXSLOT_OCCLUSIONLFRATIO:
-			eax_get_fxslot_occlusion_lf_ratio(eax_call);
-			break;
-
-		default:
-			throw EaxxImplGetEaxFxSlotException{"Unsupported property id."};
-	}
+	fx_slot.get(eax_call);
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

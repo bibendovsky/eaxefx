@@ -27,6 +27,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_eaxx_fx_slot.h"
 
+#include <cassert>
+
+#include <algorithm>
 #include <exception>
 #include <string_view>
 
@@ -35,8 +38,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_al_object.h"
 #include "eaxefx_al_symbols.h"
-#include "eaxefx_eax_converters.h"
-#include "eaxefx_eax_validators.h"
 
 
 namespace eaxefx
@@ -100,33 +101,35 @@ const EAX50FXSLOTPROPERTIES& EaxxFxSlot::get_eax_fx_slot() const noexcept
 	return eax_.fx_slot;
 }
 
-void EaxxFxSlot::set_effect(
-	const GUID& eax_id)
-try
+void EaxxFxSlot::validate_fx_slot_effect(
+	const GUID& eax_effect_id)
 {
-	EaxFxSlotValidator::effect(eax_id);
+	if (eax_effect_id != EAX_REVERB_EFFECT &&
+		eax_effect_id != EAX_NULL_GUID)
+	{
+		throw EaxxFxSlotException{"Unsupported EAX effect id."};
+	}
+}
 
-	if (eax_.fx_slot.guidLoadEffect == eax_id)
+void EaxxFxSlot::set_fx_slot_effect(
+	const GUID& eax_effect_id)
+{
+	validate_fx_slot_effect(eax_effect_id);
+
+	if (eax_.fx_slot.guidLoadEffect == eax_effect_id)
 	{
 		return;
 	}
 
-	is_reverb_ = eax_id == EAX_REVERB_EFFECT;
-	eax_.fx_slot.guidLoadEffect = eax_id;
+	is_reverb_ = eax_effect_id == EAX_REVERB_EFFECT;
+	eax_.fx_slot.guidLoadEffect = eax_effect_id;
 
-	set_effect();
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxFxSlotException{"Failed to set effect."});
+	set_fx_slot_effect();
 }
 
-void EaxxFxSlot::set_volume(
+void EaxxFxSlot::set_fx_slot_volume(
 	long eax_volume)
-try
 {
-	EaxFxSlotValidator::volume(eax_volume);
-
 	if (eax_.fx_slot.lVolume == eax_volume)
 	{
 		return;
@@ -134,19 +137,12 @@ try
 
 	eax_.fx_slot.lVolume = eax_volume;
 
-	set_volume();
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxFxSlotException{"Failed to set volume."});
+	set_fx_slot_volume();
 }
 
-void EaxxFxSlot::set_lock(
+void EaxxFxSlot::set_fx_slot_lock(
 	long eax_lock)
-try
 {
-	EaxFxSlotValidator::lock(eax_lock);
-
 	if (eax_.fx_slot.lLock == eax_lock)
 	{
 		return;
@@ -157,18 +153,10 @@ try
 
 	eax_.fx_slot.lLock = eax_lock;
 }
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxFxSlotException{"Failed to set lock."});
-}
 
-void EaxxFxSlot::set_flags(
-	int eax_version,
+void EaxxFxSlot::set_fx_slot_flags(
 	unsigned long eax_flags)
-try
 {
-	EaxFxSlotValidator::flags(eax_version, eax_flags);
-
 	if (eax_.fx_slot.ulFlags == eax_flags)
 	{
 		return;
@@ -176,122 +164,145 @@ try
 
 	eax_.fx_slot.ulFlags = eax_flags;
 
-	set_flags();
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxFxSlotException{"Failed to set flags."});
+	set_fx_slot_flags();
 }
 
-[[nodiscard]] bool EaxxFxSlot::set_occlusion(
-	int eax_version,
+[[nodiscard]] bool EaxxFxSlot::set_fx_slot_occlusion(
 	long eax_occlusion)
-try
 {
-	if (set_eax_occlusion(eax_version, eax_occlusion))
+	if (eax_.fx_slot.lOcclusion == eax_occlusion)
 	{
-		return true;
+		return false;
 	}
 
-	return false;
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxFxSlotException{"Failed to set occlusion."});
+	eax_.fx_slot.lOcclusion = eax_occlusion;
+
+	return true;
 }
 
-[[nodiscard]] bool EaxxFxSlot::set_occlusion_lf_ratio(
-	int eax_version,
+[[nodiscard]] bool EaxxFxSlot::set_fx_slot_occlusion_lf_ratio(
 	float eax_occlusion_lf_ratio)
-try
 {
-	if (set_eax_occlusion_lf_ratio(eax_version, eax_occlusion_lf_ratio))
+	if (eax_.fx_slot.flOcclusionLFRatio == eax_occlusion_lf_ratio)
 	{
-		return true;
+		return false;
 	}
 
-	return false;
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxFxSlotException{"Failed to set occlusion LF ratio."});
+	eax_.fx_slot.flOcclusionLFRatio = eax_occlusion_lf_ratio;
+
+	return true;
 }
 
-[[nodiscard]] bool EaxxFxSlot::set(
-	const EAX50FXSLOTPROPERTIES& eax_fx_slot)
-try
+void EaxxFxSlot::set_fx_slot_all(
+	const EAX40FXSLOTPROPERTIES& eax_fx_slot)
 {
 	// TODO
 	// Should we set lock first?
 
-	set_effect(eax_fx_slot.guidLoadEffect);
-	set_volume(eax_fx_slot.lVolume);
-	set_lock(eax_fx_slot.lLock);
-	set_flags(5, eax_fx_slot.ulFlags);
-
-	const auto is_occlusion_modified = set_eax_occlusion(5, eax_fx_slot.lOcclusion);
-	const auto is_occlusion_lf_ratio_modified = set_eax_occlusion_lf_ratio(5, eax_fx_slot.flOcclusionLFRatio);
-
-	if (is_occlusion_modified || is_occlusion_lf_ratio_modified)
-	{
-		return true;
-	}
-
-	return false;
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxFxSlotException{"Failed to all FX slot properties."});
+	set_fx_slot_effect(eax_fx_slot.guidLoadEffect);
+	set_fx_slot_volume(eax_fx_slot.lVolume);
+	set_fx_slot_lock(eax_fx_slot.lLock);
+	set_fx_slot_flags(eax_fx_slot.ulFlags);
 }
 
-void EaxxFxSlot::set_reverb_environment(
-	int eax_version,
-	unsigned long eax_reverb_environment)
-try
+[[nodiscard]] bool EaxxFxSlot::set_fx_slot_all(
+	const EAX50FXSLOTPROPERTIES& eax_fx_slot)
 {
-	if (!is_reverb_)
-	{
-		throw EaxxFxSlotReverbException{"Effect not attached."};
-	}
+	set_fx_slot_all(static_cast<const EAX40FXSLOTPROPERTIES&>(eax_fx_slot));
 
-	EaxReverbValidator::environment(eax_version, eax_reverb_environment);
+	const auto is_occlusion_modified = set_fx_slot_occlusion(eax_fx_slot.lOcclusion);
+	const auto is_occlusion_lf_ratio_modified = set_fx_slot_occlusion_lf_ratio(eax_fx_slot.flOcclusionLFRatio);
 
-	if (eax_reverb_environment != EAX_ENVIRONMENT_GENERIC)
-	{
-		throw EaxxFxSlotReverbException{"Expected generic environment."};
-	}
-
-	set_reverb_environment();
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxFxSlotException{"Failed to set reverb environment."});
+	return is_occlusion_modified || is_occlusion_lf_ratio_modified;
 }
 
-void EaxxFxSlot::set_reverb(
-	int eax_version,
-	const EAXREVERBPROPERTIES& eax_reverb)
-try
+void EaxxFxSlot::set_fx_slot_default_effect()
 {
-	if (!is_reverb_)
-	{
-		throw EaxxFxSlotReverbException{"Effect not attached."};
-	}
-
-	EaxReverbValidator::all(eax_version, eax_reverb);
-
-	if (eax_.reverb == eax_reverb)
-	{
-		return;
-	}
-
-	eax_.reverb = eax_reverb;
-
-	set_reverb();
+	set_fx_slot_effect(EAX_REVERB_EFFECT);
 }
-catch (const std::exception&)
+
+void EaxxFxSlot::get(
+	const EaxxEaxCall& eax_call) const
 {
-	std::throw_with_nested(EaxxFxSlotException{"Failed to set all reverb properties."});
+	switch (eax_call.property_id)
+	{
+		case EAXFXSLOT_ALLPARAMETERS:
+			get_fx_slot_all(eax_call);
+			break;
+
+		case EAXFXSLOT_LOADEFFECT:
+			get_fx_slot_ffect(eax_call);
+			break;
+
+		case EAXFXSLOT_VOLUME:
+			get_fx_slot_volume(eax_call);
+			break;
+
+		case EAXFXSLOT_LOCK:
+			get_fx_slot_lock(eax_call);
+			break;
+
+		case EAXFXSLOT_FLAGS:
+			get_fx_slot_flags(eax_call);
+			break;
+
+		case EAXFXSLOT_OCCLUSION:
+			get_fx_slot_occlusion(eax_call);
+			break;
+
+		case EAXFXSLOT_OCCLUSIONLFRATIO:
+			get_fx_slot_occlusion_lf_ratio(eax_call);
+			break;
+
+		default:
+			throw EaxxFxSlotException{"Unsupported property id."};
+	}
+}
+
+[[nodiscard]] bool EaxxFxSlot::set(
+	const EaxxEaxCall& eax_call)
+{
+	switch (eax_call.property_id)
+	{
+		case EAXFXSLOT_ALLPARAMETERS:
+			return set_fx_slot_all(eax_call);
+
+		case EAXFXSLOT_LOADEFFECT:
+			return set_fx_slot_effect(eax_call);
+
+		case EAXFXSLOT_VOLUME:
+			return set_fx_slot_volume(eax_call);
+
+		case EAXFXSLOT_LOCK:
+			return set_fx_slot_lock(eax_call);
+
+		case EAXFXSLOT_FLAGS:
+			return set_fx_slot_flags(eax_call);
+
+		case EAXFXSLOT_OCCLUSION:
+			return set_fx_slot_occlusion(eax_call);
+
+		case EAXFXSLOT_OCCLUSIONLFRATIO:
+			return set_fx_slot_occlusion_lf_ratio(eax_call);
+
+		case EAXREVERB_ALLPARAMETERS:
+			return set_reverb_all(eax_call);
+
+		case EAXREVERB_ENVIRONMENT:
+			return set_reverb_environment(eax_call);
+
+		case EAXREVERB_ROOM:
+			return set_reverb_room(eax_call);
+
+		case EAXREVERB_REFLECTIONSPAN:
+			return set_reverb_reflections_pan(eax_call);
+
+		case EAXREVERB_REVERBPAN:
+			return set_reverb_reverb_pan(eax_call);
+
+		default:
+			throw EaxxFxSlotException{"Unsupported property id."};
+	}
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -309,30 +320,8 @@ void EaxxFxSlot::set_eax_fx_slot_defaults()
 
 void EaxxFxSlot::set_eax_reverb_defaults()
 {
-	eax_.reverb.ulEnvironment = EAXREVERB_DEFAULTENVIRONMENT;
-	eax_.reverb.flEnvironmentSize = EAXREVERB_DEFAULTENVIRONMENTSIZE;
-	eax_.reverb.flEnvironmentDiffusion = EAXREVERB_DEFAULTENVIRONMENTDIFFUSION;
+	eax_.reverb = EAX_REVERB_PRESETS[EAX_ENVIRONMENT_GENERIC];
 	eax_.reverb.lRoom = EAXREVERB_MINROOM;
-	eax_.reverb.lRoomHF = EAXREVERB_DEFAULTROOMHF;
-	eax_.reverb.lRoomLF = EAXREVERB_DEFAULTROOMLF;
-	eax_.reverb.flDecayTime = EAXREVERB_DEFAULTDECAYTIME;
-	eax_.reverb.flDecayHFRatio = EAXREVERB_DEFAULTDECAYHFRATIO;
-	eax_.reverb.flDecayLFRatio = EAXREVERB_DEFAULTDECAYLFRATIO;
-	eax_.reverb.lReflections = EAXREVERB_DEFAULTREFLECTIONS;
-	eax_.reverb.flReflectionsDelay = EAXREVERB_DEFAULTREFLECTIONSDELAY;
-	eax_.reverb.vReflectionsPan = EAXREVERB_DEFAULTREFLECTIONSPAN;
-	eax_.reverb.lReverb = EAXREVERB_DEFAULTREVERB;
-	eax_.reverb.flReverbDelay = EAXREVERB_DEFAULTREVERBDELAY;
-	eax_.reverb.vReverbPan = EAXREVERB_DEFAULTREVERBPAN;
-	eax_.reverb.flEchoTime = EAXREVERB_DEFAULTECHOTIME;
-	eax_.reverb.flEchoDepth = EAXREVERB_DEFAULTECHODEPTH;
-	eax_.reverb.flModulationTime = EAXREVERB_DEFAULTMODULATIONTIME;
-	eax_.reverb.flModulationDepth = EAXREVERB_DEFAULTMODULATIONDEPTH;
-	eax_.reverb.flAirAbsorptionHF = EAXREVERB_DEFAULTAIRABSORPTIONHF;
-	eax_.reverb.flHFReference = EAXREVERB_DEFAULTHFREFERENCE;
-	eax_.reverb.flLFReference = EAXREVERB_DEFAULTLFREFERENCE;
-	eax_.reverb.flRoomRolloffFactor = EAXREVERB_DEFAULTROOMROLLOFFFACTOR;
-	eax_.reverb.ulFlags = EAXREVERB_DEFAULTFLAGS;
 }
 
 void EaxxFxSlot::initialize_eax()
@@ -372,9 +361,11 @@ void EaxxFxSlot::set_efx_effect()
 
 	const auto al_effect = efx_.effect;
 
+	alGetError_();
 	alEffecti_(al_effect, AL_EFFECT_TYPE, al_effect_type);
 	auto new_al_effect_type = ALint{-1};
 	alGetEffecti_(al_effect, AL_EFFECT_TYPE, &new_al_effect_type);
+	assert(alGetError_() == AL_NO_ERROR);
 
 	if (new_al_effect_type != al_effect_type)
 	{
@@ -382,140 +373,353 @@ void EaxxFxSlot::set_efx_effect()
 	}
 }
 
-void EaxxFxSlot::set_efx_eax_reverb_properties()
+void EaxxFxSlot::set_efx_eax_reverb_environment_diffusion()
 {
-	const auto al_effect = efx_.effect;
-
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_DIFFUSION,
-		EaxReverbToEfx::environment_diffusion(eax_.reverb.flEnvironmentDiffusion)
+	const auto efx_eax_reverb_environment_diffusion = std::clamp(
+		std::clamp(
+			eax_.reverb.flEnvironmentDiffusion,
+			EAXREVERB_MINENVIRONMENTDIFFUSION,
+			EAXREVERB_MAXENVIRONMENTDIFFUSION
+		),
+		AL_EAXREVERB_MIN_DIFFUSION,
+		AL_EAXREVERB_MAX_DIFFUSION
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_GAIN,
-		EaxReverbToEfx::room(eax_.reverb.lRoom)
+	alEffectf_(efx_.effect, AL_EAXREVERB_DIFFUSION, efx_eax_reverb_environment_diffusion);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_room()
+{
+	const auto efx_eax_reverb_room = std::clamp(
+		mb_to_gain(
+			std::clamp(
+				eax_.reverb.lRoom,
+				EAXREVERB_MINROOM,
+				EAXREVERB_MAXROOM
+			)
+		),
+		AL_EAXREVERB_MIN_GAIN,
+		AL_EAXREVERB_MAX_GAIN
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_GAINHF,
-		EaxReverbToEfx::room_hf(eax_.reverb.lRoomHF)
+	alEffectf_(efx_.effect, AL_EAXREVERB_GAIN, efx_eax_reverb_room);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_room_hf()
+{
+	const auto efx_eax_reverb_room_hf = std::clamp(
+		mb_to_gain(
+			std::clamp(
+				eax_.reverb.lRoomHF,
+				EAXREVERB_MINROOMHF,
+				EAXREVERB_MAXROOMHF
+			)
+		),
+		AL_EAXREVERB_MIN_GAINHF,
+		AL_EAXREVERB_MAX_GAINHF
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_GAINLF,
-		EaxReverbToEfx::room_lf(eax_.reverb.lRoomLF)
+	alEffectf_(efx_.effect, AL_EAXREVERB_GAINHF, efx_eax_reverb_room_hf);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_room_lf()
+{
+	const auto efx_eax_reverb_room_lf = std::clamp(
+		mb_to_gain(
+			std::clamp(
+				eax_.reverb.lRoomLF,
+				EAXREVERB_MINROOMLF,
+				EAXREVERB_MAXROOMLF
+			)
+		),
+		AL_EAXREVERB_MIN_GAINLF,
+		AL_EAXREVERB_MAX_GAINLF
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_DECAY_TIME,
-		EaxReverbToEfx::decay_time(eax_.reverb.flDecayTime)
+	alEffectf_(efx_.effect, AL_EAXREVERB_GAINLF, efx_eax_reverb_room_lf);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_decay_time()
+{
+	const auto efx_eax_reverb_decay_time = std::clamp(
+		std::clamp(
+			eax_.reverb.flDecayTime,
+			EAXREVERB_MINDECAYTIME,
+			EAXREVERB_MAXDECAYTIME
+		),
+		AL_EAXREVERB_MIN_DECAY_TIME,
+		AL_EAXREVERB_MAX_DECAY_TIME
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_DECAY_HFRATIO,
-		EaxReverbToEfx::decay_hf_ratio(eax_.reverb.flDecayHFRatio)
+	alEffectf_(efx_.effect, AL_EAXREVERB_DECAY_TIME, efx_eax_reverb_decay_time);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_decay_hf_ratio()
+{
+	const auto efx_eax_reverb_decay_hf_ratio = std::clamp(
+		std::clamp(
+			eax_.reverb.flDecayHFRatio,
+			EAXREVERB_MINDECAYHFRATIO,
+			EAXREVERB_MAXDECAYHFRATIO
+		),
+		AL_EAXREVERB_MIN_DECAY_HFRATIO,
+		AL_EAXREVERB_MAX_DECAY_HFRATIO
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_DECAY_LFRATIO,
-		EaxReverbToEfx::decay_lf_ratio(eax_.reverb.flDecayLFRatio)
+	alEffectf_(efx_.effect, AL_EAXREVERB_DECAY_HFRATIO, efx_eax_reverb_decay_hf_ratio);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_decay_lf_ratio()
+{
+	const auto efx_eax_reverb_decay_lf_ratio = std::clamp(
+		std::clamp(
+			eax_.reverb.flDecayLFRatio,
+			EAXREVERB_MINDECAYLFRATIO,
+			EAXREVERB_MAXDECAYLFRATIO
+		),
+		AL_EAXREVERB_MIN_DECAY_LFRATIO,
+		AL_EAXREVERB_MAX_DECAY_LFRATIO
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_REFLECTIONS_GAIN,
-		EaxReverbToEfx::reflections(eax_.reverb.lReflections)
+	alEffectf_(efx_.effect, AL_EAXREVERB_DECAY_LFRATIO, efx_eax_reverb_decay_lf_ratio);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_reflections()
+{
+	const auto efx_eax_reverb_reflections = std::clamp(
+		mb_to_gain(
+			std::clamp(
+				eax_.reverb.lReflections,
+				EAXREVERB_MINREFLECTIONS,
+				EAXREVERB_MAXREFLECTIONS
+			)
+		),
+		AL_EAXREVERB_MIN_REFLECTIONS_GAIN,
+		AL_EAXREVERB_MAX_REFLECTIONS_GAIN
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_REFLECTIONS_DELAY,
-		EaxReverbToEfx::reflections_delay(eax_.reverb.flReflectionsDelay)
+	alEffectf_(efx_.effect, AL_EAXREVERB_REFLECTIONS_GAIN, efx_eax_reverb_reflections);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_reflections_delay()
+{
+	const auto efx_eax_reverb_reflections_delay = std::clamp(
+		std::clamp(
+			eax_.reverb.flReflectionsDelay,
+			EAXREVERB_MINREFLECTIONSDELAY,
+			EAXREVERB_MAXREFLECTIONSDELAY
+		),
+		AL_EAXREVERB_MIN_REFLECTIONS_DELAY,
+		AL_EAXREVERB_MAX_REFLECTIONS_DELAY
 	);
 
+	alEffectf_(efx_.effect, AL_EAXREVERB_REFLECTIONS_DELAY, efx_eax_reverb_reflections_delay);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_reflections_pan()
+{
 	alEffectfv_(
-		al_effect,
+		efx_.effect,
 		AL_EAXREVERB_REFLECTIONS_PAN,
-		&eax_.reverb.vReflectionsPan.x);
+		&eax_.reverb.vReflectionsPan.x
+	);
+}
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_LATE_REVERB_GAIN,
-		EaxReverbToEfx::reverb(eax_.reverb.lReverb)
+void EaxxFxSlot::set_efx_eax_reverb_reverb()
+{
+	const auto efx_eax_reverb_reverb = std::clamp(
+		mb_to_gain(
+			std::clamp(
+				eax_.reverb.lReverb,
+				EAXREVERB_MINREVERB,
+				EAXREVERB_MAXREVERB
+			)
+		),
+		AL_EAXREVERB_MIN_LATE_REVERB_GAIN,
+		AL_EAXREVERB_MAX_LATE_REVERB_GAIN
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_LATE_REVERB_DELAY,
-		EaxReverbToEfx::reverb_delay(eax_.reverb.flReverbDelay)
-	);
+	alEffectf_(efx_.effect, AL_EAXREVERB_LATE_REVERB_GAIN, efx_eax_reverb_reverb);
+}
 
+void EaxxFxSlot::set_efx_eax_reverb_reverb_delay()
+{
+	const auto efx_eax_reverb_reverb_delay = std::clamp(
+		std::clamp(
+			eax_.reverb.flReverbDelay,
+			EAXREVERB_MINREVERBDELAY,
+			EAXREVERB_MAXREVERBDELAY
+		),
+		AL_EAXREVERB_MIN_LATE_REVERB_DELAY,
+		AL_EAXREVERB_MAX_LATE_REVERB_DELAY);
+
+	alEffectf_(efx_.effect, AL_EAXREVERB_LATE_REVERB_DELAY, efx_eax_reverb_reverb_delay);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_reverb_pan()
+{
 	alEffectfv_(
-		al_effect,
+		efx_.effect,
 		AL_EAXREVERB_LATE_REVERB_PAN,
 		&eax_.reverb.vReverbPan.x
 	);
+}
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_ECHO_TIME,
-		EaxReverbToEfx::echo_time(eax_.reverb.flEchoTime)
+void EaxxFxSlot::set_efx_eax_reverb_echo_time()
+{
+	const auto efx_eax_reverb_echo_time = std::clamp(
+		std::clamp(
+			eax_.reverb.flEchoTime,
+			EAXREVERB_MINECHOTIME,
+			EAXREVERB_MAXECHOTIME
+		),
+		AL_EAXREVERB_MIN_ECHO_TIME,
+		AL_EAXREVERB_MAX_ECHO_TIME
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_ECHO_DEPTH,
-		EaxReverbToEfx::echo_depth(eax_.reverb.flEchoDepth)
+	alEffectf_(efx_.effect, AL_EAXREVERB_ECHO_TIME, efx_eax_reverb_echo_time);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_echo_depth()
+{
+	const auto efx_eax_reverb_echo_depth = std::clamp(
+		std::clamp(
+			eax_.reverb.flEchoDepth,
+			EAXREVERB_MINECHODEPTH,
+			EAXREVERB_MAXECHODEPTH
+		),
+		AL_EAXREVERB_MIN_ECHO_DEPTH,
+		AL_EAXREVERB_MAX_ECHO_DEPTH
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_MODULATION_TIME,
-		EaxReverbToEfx::modulation_time(eax_.reverb.flModulationTime)
+	alEffectf_(efx_.effect, AL_EAXREVERB_ECHO_DEPTH, efx_eax_reverb_echo_depth);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_modulation_time()
+{
+	const auto efx_eax_reverb_modulation_time = std::clamp(
+		std::clamp(
+			eax_.reverb.flModulationTime,
+			EAXREVERB_MINMODULATIONTIME,
+			EAXREVERB_MAXMODULATIONTIME
+		),
+		AL_EAXREVERB_MIN_MODULATION_TIME,
+		AL_EAXREVERB_MAX_MODULATION_TIME
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_MODULATION_DEPTH,
-		EaxReverbToEfx::modulation_depth(eax_.reverb.flModulationDepth)
+	alEffectf_(efx_.effect, AL_EAXREVERB_MODULATION_TIME, efx_eax_reverb_modulation_time);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_modulation_depth()
+{
+	const auto efx_eax_reverb_modulation_depth = std::clamp(
+		std::clamp(
+			eax_.reverb.flModulationDepth,
+			EAXREVERB_MINMODULATIONDEPTH,
+			EAXREVERB_MAXMODULATIONDEPTH
+		),
+		AL_EAXREVERB_MIN_MODULATION_DEPTH,
+		AL_EAXREVERB_MAX_MODULATION_DEPTH
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_AIR_ABSORPTION_GAINHF,
-		EaxReverbToEfx::air_absorption_hf(eax_.reverb.flAirAbsorptionHF)
+	alEffectf_(efx_.effect, AL_EAXREVERB_MODULATION_DEPTH, efx_eax_reverb_modulation_depth);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_air_absorption_hf()
+{
+	const auto efx_eax_reverb_air_absorption_hf = std::clamp(
+		mb_to_gain(
+			std::clamp(
+				eax_.reverb.flAirAbsorptionHF,
+				EAXREVERB_MINAIRABSORPTIONHF,
+				EAXREVERB_MAXAIRABSORPTIONHF
+			)
+		),
+		AL_EAXREVERB_MIN_AIR_ABSORPTION_GAINHF,
+		AL_EAXREVERB_MAX_AIR_ABSORPTION_GAINHF
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_HFREFERENCE,
-		EaxReverbToEfx::hf_reference(eax_.reverb.flHFReference)
+	alEffectf_(efx_.effect, AL_EAXREVERB_AIR_ABSORPTION_GAINHF, efx_eax_reverb_air_absorption_hf);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_hf_reference()
+{
+	const auto efx_eax_reverb_hf_reference = std::clamp(
+		std::clamp(
+			eax_.reverb.flHFReference,
+			EAXREVERB_MINHFREFERENCE,
+			EAXREVERB_MAXHFREFERENCE
+		),
+		AL_EAXREVERB_MIN_HFREFERENCE,
+		AL_EAXREVERB_MAX_HFREFERENCE
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_LFREFERENCE,
-		EaxReverbToEfx::lf_reference(eax_.reverb.flLFReference)
+	alEffectf_(efx_.effect, AL_EAXREVERB_HFREFERENCE, efx_eax_reverb_hf_reference);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_lf_reference()
+{
+	const auto efx_eax_reverb_lf_reference = std::clamp(
+		std::clamp(
+			eax_.reverb.flLFReference,
+			EAXREVERB_MINLFREFERENCE,
+			EAXREVERB_MAXLFREFERENCE
+		),
+		AL_EAXREVERB_MIN_LFREFERENCE,
+		AL_EAXREVERB_MAX_LFREFERENCE
 	);
 
-	alEffectf_(
-		al_effect,
-		AL_EAXREVERB_ROOM_ROLLOFF_FACTOR,
-		EaxReverbToEfx::room_rolloff_factor(eax_.reverb.flRoomRolloffFactor)
+	alEffectf_(efx_.effect, AL_EAXREVERB_LFREFERENCE, efx_eax_reverb_lf_reference);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_room_rolloff_factor()
+{
+	const auto efx_eax_reverb_room_rolloff_factor = std::clamp(
+		std::clamp(
+			eax_.reverb.flRoomRolloffFactor,
+			EAXREVERB_MINROOMROLLOFFFACTOR,
+			EAXREVERB_MAXROOMROLLOFFFACTOR
+		),
+		AL_EAXREVERB_MIN_ROOM_ROLLOFF_FACTOR,
+		AL_EAXREVERB_MAX_ROOM_ROLLOFF_FACTOR
 	);
 
+	alEffectf_(efx_.effect, AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, efx_eax_reverb_room_rolloff_factor);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_flags()
+{
 	alEffecti_(
-		al_effect,
+		efx_.effect,
 		AL_EAXREVERB_DECAY_HFLIMIT,
 		(eax_.reverb.ulFlags & EAXREVERBFLAGS_DECAYHFLIMIT) != 0
 	);
+}
+
+void EaxxFxSlot::set_efx_eax_reverb_properties()
+{
+	set_efx_eax_reverb_environment_diffusion();
+	set_efx_eax_reverb_room();
+	set_efx_eax_reverb_room_hf();
+	set_efx_eax_reverb_room_lf();
+	set_efx_eax_reverb_decay_time();
+	set_efx_eax_reverb_decay_hf_ratio();
+	set_efx_eax_reverb_decay_lf_ratio();
+	set_efx_eax_reverb_reflections();
+	set_efx_eax_reverb_reflections_delay();
+	set_efx_eax_reverb_reflections_pan();
+	set_efx_eax_reverb_reverb();
+	set_efx_eax_reverb_reverb_delay();
+	set_efx_eax_reverb_reverb_pan();
+	set_efx_eax_reverb_echo_time();
+	set_efx_eax_reverb_echo_depth();
+	set_efx_eax_reverb_modulation_time();
+	set_efx_eax_reverb_modulation_depth();
+	set_efx_eax_reverb_air_absorption_hf();
+	set_efx_eax_reverb_hf_reference();
+	set_efx_eax_reverb_lf_reference();
+	set_efx_eax_reverb_room_rolloff_factor();
+	set_efx_eax_reverb_flags();
 }
 
 void EaxxFxSlot::attach_efx_effect()
@@ -538,6 +742,60 @@ void EaxxFxSlot::initialize_efx()
 	initialize_efx_slot();
 }
 
+void EaxxFxSlot::get_fx_slot_all(
+	const EaxxEaxCall& eax_call) const
+{
+	switch (eax_call.version)
+	{
+		case 4:
+			eax_call.set_value<EaxxFxSlotException, EAX40FXSLOTPROPERTIES>(eax_.fx_slot);
+			break;
+
+		case 5:
+			eax_call.set_value<EaxxFxSlotException, EAX50FXSLOTPROPERTIES>(eax_.fx_slot);
+			break;
+
+		default:
+			throw EaxxFxSlotException{"Unsupported EAX version."};
+	}
+}
+
+void EaxxFxSlot::get_fx_slot_ffect(
+	const EaxxEaxCall& eax_call) const
+{
+	eax_call.set_value<EaxxFxSlotException>(eax_.fx_slot.guidLoadEffect);
+}
+
+void EaxxFxSlot::get_fx_slot_volume(
+	const EaxxEaxCall& eax_call) const
+{
+	eax_call.set_value<EaxxFxSlotException>(eax_.fx_slot.lVolume);
+}
+
+void EaxxFxSlot::get_fx_slot_lock(
+	const EaxxEaxCall& eax_call) const
+{
+	eax_call.set_value<EaxxFxSlotException>(eax_.fx_slot.lLock);
+}
+
+void EaxxFxSlot::get_fx_slot_flags(
+	const EaxxEaxCall& eax_call) const
+{
+	eax_call.set_value<EaxxFxSlotException>(eax_.fx_slot.ulFlags);
+}
+
+void EaxxFxSlot::get_fx_slot_occlusion(
+	const EaxxEaxCall& eax_call) const
+{
+	eax_call.set_value<EaxxFxSlotException>(eax_.fx_slot.lOcclusion);
+}
+
+void EaxxFxSlot::get_fx_slot_occlusion_lf_ratio(
+	const EaxxEaxCall& eax_call) const
+{
+	eax_call.set_value<EaxxFxSlotException>(eax_.fx_slot.flOcclusionLFRatio);
+}
+
 void EaxxFxSlot::set_efx_effect_properties()
 {
 	if (is_reverb_)
@@ -546,7 +804,7 @@ void EaxxFxSlot::set_efx_effect_properties()
 	}
 }
 
-void EaxxFxSlot::set_effect()
+void EaxxFxSlot::set_fx_slot_effect()
 {
 	set_efx_effect();
 	set_efx_effect_properties();
@@ -555,11 +813,18 @@ void EaxxFxSlot::set_effect()
 
 void EaxxFxSlot::set_efx_effect_slot_gain()
 {
-	const auto gain = mb_to_gain(eax_.fx_slot.lVolume);
+	const auto gain = mb_to_gain(
+		std::clamp(
+			eax_.fx_slot.lVolume,
+			EAXFXSLOT_MINVOLUME,
+			EAXFXSLOT_MAXVOLUME
+		)
+	);
+
 	alAuxiliaryEffectSlotf_(efx_.effect_slot, AL_EFFECTSLOT_GAIN, gain);
 }
 
-void EaxxFxSlot::set_volume()
+void EaxxFxSlot::set_fx_slot_volume()
 {
 	set_efx_effect_slot_gain();
 }
@@ -573,54 +838,273 @@ void EaxxFxSlot::set_effect_slot_send_auto()
 	);
 }
 
-void EaxxFxSlot::set_flags()
+void EaxxFxSlot::set_fx_slot_flags()
 {
 	set_effect_slot_send_auto();
 }
 
-[[nodiscard]] bool EaxxFxSlot::set_eax_occlusion(
-	int eax_version,
-	long eax_occlusion)
+[[nodiscard]] bool EaxxFxSlot::set_fx_slot_effect(
+	const EaxxEaxCall& eax_call)
 {
-	EaxFxSlotValidator::occlusion(eax_version, eax_occlusion);
+	const auto& eax_effect_id =
+		eax_call.get_value<EaxxFxSlotException, const decltype(EAX40FXSLOTPROPERTIES::guidLoadEffect)>();
 
-	if (eax_.fx_slot.lOcclusion == eax_occlusion)
-	{
-		return false;
-	}
+	set_fx_slot_effect(eax_effect_id);
 
-	eax_.fx_slot.lOcclusion = eax_occlusion;
-
-	return true;
+	return false;
 }
 
-[[nodiscard]] bool EaxxFxSlot::set_eax_occlusion_lf_ratio(
-	int eax_version,
-	float eax_occlusion_lf_ratio)
+[[nodiscard]] bool EaxxFxSlot::set_fx_slot_volume(
+	const EaxxEaxCall& eax_call)
 {
-	EaxFxSlotValidator::occlusion_lf_ratio(eax_version, eax_occlusion_lf_ratio);
+	const auto& eax_volume =
+		eax_call.get_value<EaxxFxSlotException, const decltype(EAX40FXSLOTPROPERTIES::lVolume)>();
 
-	if (eax_.fx_slot.flOcclusionLFRatio == eax_occlusion_lf_ratio)
+	set_fx_slot_volume(eax_volume);
+
+	return false;
+}
+
+[[nodiscard]] bool EaxxFxSlot::set_fx_slot_lock(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_lock =
+		eax_call.get_value<EaxxFxSlotException, const decltype(EAX40FXSLOTPROPERTIES::lLock)>();
+
+	set_fx_slot_lock(eax_lock);
+
+	return false;
+}
+
+[[nodiscard]] bool EaxxFxSlot::set_fx_slot_flags(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_flags =
+		eax_call.get_value<EaxxFxSlotException, const decltype(EAX40FXSLOTPROPERTIES::ulFlags)>();
+
+	set_fx_slot_flags(eax_flags);
+
+	return false;
+}
+
+[[nodiscard]] bool EaxxFxSlot::set_fx_slot_occlusion(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_occlusion =
+		eax_call.get_value<EaxxFxSlotException, const decltype(EAX50FXSLOTPROPERTIES::lOcclusion)>();
+
+	return set_fx_slot_occlusion(eax_occlusion);
+}
+
+[[nodiscard]] bool EaxxFxSlot::set_fx_slot_occlusion_lf_ratio(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_occlusion_lf_ratio =
+		eax_call.get_value<EaxxFxSlotException, const decltype(EAX50FXSLOTPROPERTIES::flOcclusionLFRatio)>();
+
+	return set_fx_slot_occlusion_lf_ratio(eax_occlusion_lf_ratio);
+}
+
+[[nodiscard]] bool EaxxFxSlot::set_fx_slot_all(
+	const EaxxEaxCall& eax_call)
+{
+	switch (eax_call.version)
 	{
-		return false;
+		case 4:
+			{
+				const auto& eax_all =
+					eax_call.get_value<EaxxFxSlotException, const EAX40FXSLOTPROPERTIES>();
+
+				set_fx_slot_all(eax_all);
+
+				return false;
+			}
+
+		case 5:
+			{
+				const auto& eax_all =
+					eax_call.get_value<EaxxFxSlotException, const EAX50FXSLOTPROPERTIES>();
+
+				return set_fx_slot_all(eax_all);
+			}
+
+		default:
+			throw EaxxFxSlotException{"Unsupported EAX version."};
 	}
-
-	eax_.fx_slot.flOcclusionLFRatio = eax_occlusion_lf_ratio;
-
-	return true;
 }
 
 void EaxxFxSlot::set_reverb_environment()
 {
-	set_eax_reverb_defaults();
 	set_efx_eax_reverb_properties();
 	attach_efx_effect();
 }
 
-void EaxxFxSlot::set_reverb()
+void EaxxFxSlot::set_reverb_room()
+{
+	set_efx_eax_reverb_room();
+	attach_efx_effect();
+}
+
+void EaxxFxSlot::set_reverb_reflections_pan()
+{
+	set_efx_eax_reverb_reflections_pan();
+	attach_efx_effect();
+}
+
+void EaxxFxSlot::set_reverb_reverb_pan()
+{
+	set_efx_eax_reverb_reverb_pan();
+	attach_efx_effect();
+}
+
+void EaxxFxSlot::set_reverb_all()
 {
 	set_efx_eax_reverb_properties();
 	attach_efx_effect();
+}
+
+void EaxxFxSlot::ensure_reverb_effect()
+{
+	if (!is_reverb_)
+	{
+		throw EaxxFxSlotReverbException{"Effect not attached."};
+	}
+}
+
+void EaxxFxSlot::set_reverb_all(
+	const EAXREVERBPROPERTIES& eax_reverb)
+{
+	ensure_reverb_effect();
+
+
+	if (eax_reverb.ulEnvironment > EAX_ENVIRONMENT_UNDEFINED)
+	{
+		throw EaxxFxSlotReverbException{"Environment index out of range."};
+	}
+
+	if (eax_.reverb == eax_reverb)
+	{
+		return;
+	}
+
+	eax_.reverb = eax_reverb;
+
+	set_reverb_all();
+}
+
+void EaxxFxSlot::set_reverb_environment(
+	unsigned long eax_reverb_environment)
+{
+	ensure_reverb_effect();
+
+	if (eax_reverb_environment >= EAX_ENVIRONMENT_UNDEFINED)
+	{
+		throw EaxxFxSlotReverbException{"Environment index out of range."};
+	}
+
+	eax_.reverb = EAX_REVERB_PRESETS[eax_reverb_environment];
+
+	set_reverb_environment();
+}
+
+void EaxxFxSlot::set_reverb_room(
+	long eax_reverb_room)
+{
+	ensure_reverb_effect();
+
+	if (eax_.reverb.lRoom == eax_reverb_room)
+	{
+		return;
+	}
+
+	eax_.reverb.lRoom = eax_reverb_room;
+
+	set_reverb_room();
+}
+
+void EaxxFxSlot::set_reverb_reflections_pan(
+	const EAXVECTOR& eax_reverb_reflections_pan)
+{
+	ensure_reverb_effect();
+
+	if (eax_.reverb.vReflectionsPan == eax_reverb_reflections_pan)
+	{
+		return;
+	}
+
+	eax_.reverb.vReflectionsPan = eax_reverb_reflections_pan;
+
+	set_reverb_reflections_pan();
+}
+
+void EaxxFxSlot::set_reverb_reverb_pan(
+	const EAXVECTOR& eax_reverb_pan)
+{
+	ensure_reverb_effect();
+
+	if (eax_.reverb.vReverbPan == eax_reverb_pan)
+	{
+		return;
+	}
+
+	eax_.reverb.vReverbPan = eax_reverb_pan;
+
+	set_reverb_reverb_pan();
+}
+
+[[nodiscard]] bool EaxxFxSlot::set_reverb_all(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_reverb_all =
+		eax_call.get_value<EaxxFxSlotException, const EAXREVERBPROPERTIES>();
+
+	set_reverb_all(eax_reverb_all);
+
+	return false;
+}
+
+[[nodiscard]] bool EaxxFxSlot::set_reverb_environment(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_reverb_environment =
+		eax_call.get_value<EaxxFxSlotReverbException, const decltype(EAXREVERBPROPERTIES::ulEnvironment)>();
+
+	set_reverb_environment(eax_reverb_environment);
+
+	return false;
+}
+
+[[nodiscard]] bool EaxxFxSlot::set_reverb_room(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_reverb_room =
+		eax_call.get_value<EaxxFxSlotReverbException, const decltype(EAXREVERBPROPERTIES::lRoom)>();
+
+	set_reverb_room(eax_reverb_room);
+
+	return false;
+}
+
+[[nodiscard]] bool EaxxFxSlot::set_reverb_reflections_pan(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_reverb_reflections_pan =
+		eax_call.get_value<EaxxFxSlotReverbException, const decltype(EAXREVERBPROPERTIES::vReflectionsPan)>();
+
+	set_reverb_reflections_pan(eax_reverb_reflections_pan);
+
+	return false;
+}
+
+[[nodiscard]] bool EaxxFxSlot::set_reverb_reverb_pan(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_reverb_reverb_pan =
+		eax_call.get_value<EaxxFxSlotReverbException, const decltype(EAXREVERBPROPERTIES::vReverbPan)>();
+
+	set_reverb_reverb_pan(eax_reverb_reverb_pan);
+
+	return false;
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

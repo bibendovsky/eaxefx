@@ -49,7 +49,7 @@ public:
 
 
 	EaxxFxSlot& get(
-		int index);
+		EaxxFxSlotIndex index);
 
 	int get_max_active_count() const noexcept;
 

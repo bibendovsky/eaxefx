@@ -29,9 +29,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <string_view>
 
-#if _WIN32
 #include <windows.h>
-#endif // _WIN32
 
 #include "eaxefx_exception.h"
 
@@ -62,7 +60,6 @@ public:
 std::u16string to_utf16(
 	const std::string& utf8_string)
 {
-#if _WIN32
 	if (utf8_string.empty())
 	{
 		return std::u16string{};
@@ -79,7 +76,7 @@ std::u16string to_utf16(
 
 	if (u16_size <= 0)
 	{
-		return std::u16string{};
+		throw EncodingToUtf16Exception{"Failed to get max length."};
 	}
 
 	auto u16_string = std::u16string{};
@@ -96,13 +93,10 @@ std::u16string to_utf16(
 
 	if (u16_result != u16_size)
 	{
-		return std::u16string{};
+		throw EncodingToUtf16Exception{"Failed to convert."};
 	}
 
 	return u16_string;
-#else
-	throw EncodingToUtf16Exception{"Not implemented."};
-#endif // _WIN32
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

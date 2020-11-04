@@ -27,14 +27,13 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_eaxx_source.h"
 
+#include <algorithm>
 #include <memory>
 #include <exception>
 #include <string_view>
 
 #include "eaxefx_al_symbols.h"
 #include "eaxefx_eax_api.h"
-#include "eaxefx_eax_converters.h"
-#include "eaxefx_eax_validators.h"
 #include "eaxefx_exception.h"
 #include "eaxefx_unit_converters.h"
 
@@ -73,32 +72,9 @@ catch (const std::exception&)
 	std::throw_with_nested(EaxxSourceException{"Failed to initialize."});
 }
 
-void EaxxSource::set_room(
-	long eax_room)
-try
-{
-	EaxSourceValidator::room(eax_room);
-
-	if (eax_.source.lRoom == eax_room)
-	{
-		return;
-	}
-
-	eax_.source.lRoom = eax_room;
-
-	update_filters_internal();
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxSourceException{"Failed to set room."});
-}
-
-void EaxxSource::set_obstruction_properties(
+void EaxxSource::set_obstruction_all(
 	const EAXOBSTRUCTIONPROPERTIES& eax_obstruction_properties)
-try
 {
-	EaxSourceValidator::obstruction_all(eax_obstruction_properties);
-
 	if (eax_.source.lObstruction == eax_obstruction_properties.lObstruction &&
 		eax_.source.flObstructionLFRatio == eax_obstruction_properties.flObstructionLFRatio)
 	{
@@ -108,39 +84,12 @@ try
 	eax_.source.lObstruction = eax_obstruction_properties.lObstruction;
 	eax_.source.flObstructionLFRatio = eax_obstruction_properties.flObstructionLFRatio;
 
-	update_filters_internal();
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxSourceException{"Failed to set obstruction properties."});
+	update_direct_filter_internal();
 }
 
-void EaxxSource::set_occlusion(
-	long eax_occlusion)
-try
-{
-	EaxSourceValidator::occlusion(eax_occlusion);
-
-	if (eax_.source.lOcclusion == eax_occlusion)
-	{
-		return;
-	}
-
-	eax_.source.lOcclusion = eax_occlusion;
-
-	update_filters_internal();
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxSourceException{"Failed to set occlusion."});
-}
-
-void EaxxSource::set_occlusion_properties(
+void EaxxSource::set_occlusion_all(
 	const EAXOCCLUSIONPROPERTIES& eax_occlusion_properties)
-try
 {
-	EaxSourceValidator::occlusion_all(eax_occlusion_properties);
-
 	if (eax_.source.lOcclusion == eax_occlusion_properties.lOcclusion &&
 		eax_.source.flOcclusionLFRatio == eax_occlusion_properties.flOcclusionLFRatio &&
 		eax_.source.flOcclusionRoomRatio == eax_occlusion_properties.flOcclusionRoomRatio &&
@@ -156,9 +105,57 @@ try
 
 	update_filters_internal();
 }
-catch (const std::exception&)
+
+void EaxxSource::set_room(
+	long eax_room)
 {
-	std::throw_with_nested(EaxxSourceException{"Failed to set occlusion properties."});
+	if (eax_.source.lRoom == eax_room)
+	{
+		return;
+	}
+
+	eax_.source.lRoom = eax_room;
+
+	update_filters_internal();
+}
+
+void EaxxSource::set_occlusion(
+	long eax_occlusion)
+{
+	if (eax_.source.lOcclusion == eax_occlusion)
+	{
+		return;
+	}
+
+	eax_.source.lOcclusion = eax_occlusion;
+
+	update_filters_internal();
+}
+
+void EaxxSource::set_exclusion(
+	long eax_exclusion)
+{
+	if (eax_.source.lExclusion == eax_exclusion)
+	{
+		return;
+	}
+
+	eax_.source.lExclusion = eax_exclusion;
+
+	update_room_filters_internal();
+}
+
+void EaxxSource::set_flags(
+	unsigned long eax_flags)
+{
+	if (eax_.source.ulFlags == eax_flags)
+	{
+		return;
+	}
+
+	eax_.source.ulFlags = eax_flags;
+
+	set_flags();
 }
 
 void EaxxSource::set_active_fx_slots(
@@ -168,12 +165,12 @@ try
 {
 	if (count <= 0 || count > EAX_MAX_FXSLOTS)
 	{
-		throw EaxxSourceException{"Count out of range."};
+		throw EaxxSourceException{"FX slot count out of range."};
 	}
 
 	if (eax_ids == nullptr)
 	{
-		throw EaxxSourceException{"Null ID list."};
+		throw EaxxSourceException{"Null FX slot id list."};
 	}
 
 
@@ -229,43 +226,63 @@ try
 		throw EaxxSourceException{"Too many active FX slots."};
 	}
 
-	const auto& direct_param = make_direct_filter();
-	const auto& room_param = make_room_filter();
-
 	for (auto i = 0; i < EAX_MAX_FXSLOTS; ++i)
 	{
-		if (active_fx_slots_[i] != new_active_fx_slots[i])
+		if (active_fx_slots_[i] != new_active_fx_slots[i] &&
+			!new_active_fx_slots[i])
 		{
-			if (new_active_fx_slots[i])
-			{
-				const auto efx_effect_slot = fx_slots_->get(i).get_efx_effect_slot();
-
-				{
-					set_al_filter_parameters(direct_param);
-					alSourcei_(al_.source, AL_DIRECT_FILTER, al_.filter);
-				}
-
-				{
-					set_al_filter_parameters(room_param);
-					alSource3i_(al_.source, AL_AUXILIARY_SEND_FILTER, efx_effect_slot, i, al_.filter);
-				}
-			}
-			else
-			{
-				alSourcei_(al_.source, AL_DIRECT_FILTER, AL_FILTER_NULL);
-				alSource3i_(al_.source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, i, AL_FILTER_NULL);
-			}
+			alSource3i_(al_.source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, i, AL_FILTER_NULL);
 		}
 	}
 
-	uses_primary_id_ = new_has_primary_id;
 	has_active_fx_slots_ = new_count > 0;
+	uses_primary_id_ = new_has_primary_id;
 	eax_.active_fx_slots = new_eax_active_fx_slots;
 	active_fx_slots_ = new_active_fx_slots;
+
+	update_filters_internal();
 }
 catch (const std::exception&)
 {
 	std::throw_with_nested(EaxxSourceException{"Failed to set active FX slots."});
+}
+
+void EaxxSource::set(
+	const EaxxEaxCall& eax_call)
+{
+	switch (eax_call.property_id)
+	{
+		case EAXSOURCE_OBSTRUCTIONPARAMETERS:
+			set_obstruction_all(eax_call);
+			break;
+
+		case EAXSOURCE_OCCLUSIONPARAMETERS:
+			set_occlusion_all(eax_call);
+			break;
+
+		case EAXSOURCE_ROOM:
+			set_room(eax_call);
+			break;
+
+		case EAXSOURCE_OCCLUSION:
+			set_occlusion(eax_call);
+			break;
+
+		case EAXSOURCE_EXCLUSION:
+			set_exclusion(eax_call);
+			break;
+
+		case EAXSOURCE_FLAGS:
+			set_flags(eax_call);
+			break;
+
+		case EAXSOURCE_ACTIVEFXSLOTID:
+			set_active_fx_slots(eax_call);
+			break;
+
+		default:
+			throw EaxxSourceException{"Unsupported property id."};
+	}
 }
 
 void EaxxSource::update_filters()
@@ -346,38 +363,88 @@ void EaxxSource::set_eax_defaults()
 	set_eax_active_fx_slots_defaults();
 }
 
+float EaxxSource::calculate_dst_occlusion_mb(
+	long src_occlusion_mb,
+	float path_ratio,
+	float lf_ratio) noexcept
+{
+	const auto ratio_1 = path_ratio * lf_ratio;
+	const auto ratio_2 = path_ratio + lf_ratio - 1.0F;
+	const auto ratio = ratio_1 <= ratio_2 ? ratio_2 : ratio_1;
+	const auto dst_occlustion_mb = src_occlusion_mb * ratio;
+
+	return dst_occlustion_mb;
+}
+
 AlLowPassParam EaxxSource::make_direct_filter() const noexcept
 {
+	const auto occlusion_mb = calculate_dst_occlusion_mb(
+		eax_.source.lOcclusion,
+		eax_.source.flOcclusionDirectRatio,
+		eax_.source.flOcclusionLFRatio
+	);
+
 	auto al_low_pass_param = AlLowPassParam{};
 
-	al_low_pass_param.gain = mb_to_gain(
-		eax_.source.lDirect +
-		(eax_.source.lObstruction * eax_.source.flObstructionLFRatio) +
-		(eax_.source.lOcclusion * eax_.source.flOcclusionDirectRatio * eax_.source.flOcclusionLFRatio)
-	);
+	al_low_pass_param.gain =
+		std::clamp(
+			mb_to_gain(
+				eax_.source.lDirect +
+				(eax_.source.lObstruction * eax_.source.flObstructionLFRatio) +
+				occlusion_mb
+			),
+			0.0F,
+			1.0F
+		);
 
-	al_low_pass_param.gain_hf = mb_to_gain(
-		eax_.source.lDirectHF +
-		eax_.source.lObstruction +
-		(eax_.source.lOcclusion * eax_.source.flOcclusionDirectRatio)
-	);
+	al_low_pass_param.gain_hf =
+		std::clamp(
+			mb_to_gain(
+				eax_.source.lDirectHF +
+				eax_.source.lObstruction +
+				(eax_.source.lOcclusion * eax_.source.flOcclusionDirectRatio)
+			),
+			0.0F,
+			1.0F
+		);
 
 	return al_low_pass_param;
 }
 
-AlLowPassParam EaxxSource::make_room_filter() const noexcept
+AlLowPassParam EaxxSource::make_room_filter(
+	const EaxxFxSlot& fx_slot) const noexcept
 {
+	const auto& fx_slot_eax = fx_slot.get_eax_fx_slot();
+
+	const auto occlusion_mb = calculate_dst_occlusion_mb(
+		eax_.source.lOcclusion,
+		eax_.source.flOcclusionRoomRatio,
+		eax_.source.flOcclusionLFRatio
+	);
+
 	auto al_low_pass_param = AlLowPassParam{};
 
-	al_low_pass_param.gain = mb_to_gain(
-		eax_.source.lRoom +
-		(eax_.source.lOcclusion * eax_.source.flOcclusionRoomRatio * eax_.source.flOcclusionLFRatio)
-	);
+	al_low_pass_param.gain =
+		std::clamp(
+			mb_to_gain(
+				eax_.source.lRoom +
+				(eax_.source.lExclusion * eax_.source.flExclusionLFRatio) +
+				occlusion_mb
+			),
+			0.0F,
+			1.0F
+		);
 
-	al_low_pass_param.gain_hf = mb_to_gain(
-		eax_.source.lRoomHF +
-		(eax_.source.lOcclusion * eax_.source.flOcclusionRoomRatio)
-	);
+	al_low_pass_param.gain_hf =
+		std::clamp(
+			mb_to_gain(
+				eax_.source.lRoomHF +
+				eax_.source.lExclusion +
+				((fx_slot_eax.lOcclusion + eax_.source.lOcclusion) * eax_.source.flOcclusionRoomRatio)
+			),
+			0.0F,
+			1.0F
+		);
 
 	return al_low_pass_param;
 }
@@ -412,34 +479,7 @@ void EaxxSource::initialize_fx_slots()
 		}
 	}
 
-	if (has_active_fx_slots_)
-	{
-		const auto& direct_param = make_direct_filter();
-		const auto& room_param = make_room_filter();
-
-		for (auto i = 0; i < EAX_MAX_FXSLOTS; ++i)
-		{
-			if (active_fx_slots_[i])
-			{
-				const auto efx_effect_slot = fx_slots_->get(i).get_efx_effect_slot();
-
-				{
-					set_al_filter_parameters(direct_param);
-					alSourcei_(al_.source, AL_DIRECT_FILTER, al_.filter);
-				}
-
-				{
-					set_al_filter_parameters(room_param);
-					alSource3i_(al_.source, AL_AUXILIARY_SEND_FILTER, efx_effect_slot, i, al_.filter);
-				}
-			}
-			else
-			{
-				alSourcei_(al_.source, AL_DIRECT_FILTER, AL_FILTER_NULL);
-				alSource3i_(al_.source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, i, AL_FILTER_NULL);
-			}
-		}
-	}
+	update_filters_internal();
 }
 
 void EaxxSource::initialize(
@@ -455,33 +495,124 @@ void EaxxSource::initialize(
 	is_initialized_ = true;
 }
 
-void EaxxSource::update_filters_internal()
+void EaxxSource::update_direct_filter_internal()
+{
+	const auto& direct_param = make_direct_filter();
+	set_al_filter_parameters(direct_param);
+	alSourcei_(al_.source, AL_DIRECT_FILTER, al_.filter);
+}
+
+void EaxxSource::update_room_filters_internal()
 {
 	if (!has_active_fx_slots_)
 	{
 		return;
 	}
 
-	const auto& direct_param = make_direct_filter();
-	const auto& room_param = make_room_filter();
-
 	for (auto i = 0; i < EAX_MAX_FXSLOTS; ++i)
 	{
 		if (active_fx_slots_[i])
 		{
-			const auto efx_effect_slot = fx_slots_->get(i).get_efx_effect_slot();
-
-			{
-				set_al_filter_parameters(direct_param);
-				alSourcei_(al_.source, AL_DIRECT_FILTER, al_.filter);
-			}
-
-			{
-				set_al_filter_parameters(room_param);
-				alSource3i_(al_.source, AL_AUXILIARY_SEND_FILTER, efx_effect_slot, i, al_.filter);
-			}
+			const auto& fx_slot = fx_slots_->get(i);
+			const auto& room_param = make_room_filter(fx_slot);
+			const auto efx_effect_slot = fx_slot.get_efx_effect_slot();
+			set_al_filter_parameters(room_param);
+			alSource3i_(al_.source, AL_AUXILIARY_SEND_FILTER, efx_effect_slot, i, al_.filter);
 		}
 	}
+}
+
+void EaxxSource::update_filters_internal()
+{
+	update_direct_filter_internal();
+	update_room_filters_internal();
+}
+
+void EaxxSource::set_direct_hf_auto_flag()
+{
+	const auto is_enable = (eax_.source.ulFlags & EAXSOURCEFLAGS_DIRECTHFAUTO) != 0;
+	alSourcei(al_.source, AL_DIRECT_FILTER_GAINHF_AUTO, is_enable);
+}
+
+void EaxxSource::set_room_auto_flag()
+{
+	const auto is_enable = (eax_.source.ulFlags & EAXSOURCEFLAGS_ROOMAUTO) != 0;
+	alSourcei(al_.source, AL_AUXILIARY_SEND_FILTER_GAIN_AUTO, is_enable);
+}
+
+void EaxxSource::set_room_hf_auto_flag()
+{
+	const auto is_enable = (eax_.source.ulFlags & EAXSOURCEFLAGS_ROOMHFAUTO) != 0;
+	alSourcei(al_.source, AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO, is_enable);
+}
+
+void EaxxSource::set_flags()
+{
+	set_direct_hf_auto_flag();
+	set_room_auto_flag();
+	set_room_hf_auto_flag();
+}
+
+void EaxxSource::set_obstruction_all(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_obstruction_all =
+		eax_call.get_value<EaxxSourceException, const EAXOBSTRUCTIONPROPERTIES>();
+
+	set_obstruction_all(eax_obstruction_all);
+}
+
+void EaxxSource::set_occlusion_all(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_occlusion_all =
+		eax_call.get_value<EaxxSourceException, const EAXOCCLUSIONPROPERTIES>();
+
+	set_occlusion_all(eax_occlusion_all);
+}
+
+void EaxxSource::set_room(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_room =
+		eax_call.get_value<EaxxSourceException, const decltype(EAX40SOURCEPROPERTIES::lRoom)>();
+
+	set_room(eax_room);
+}
+
+void EaxxSource::set_occlusion(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_occlusion =
+		eax_call.get_value<EaxxSourceException, const decltype(EAX40SOURCEPROPERTIES::lOcclusion)>();
+
+	set_occlusion(eax_occlusion);
+}
+
+void EaxxSource::set_exclusion(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_exclusion =
+		eax_call.get_value<EaxxSourceException, const decltype(EAX40SOURCEPROPERTIES::lExclusion)>();
+
+	set_exclusion(eax_exclusion);
+}
+
+void EaxxSource::set_flags(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_flags =
+		eax_call.get_value<EaxxSourceException, const decltype(EAX40SOURCEPROPERTIES::ulFlags)>();
+
+	set_flags(eax_flags);
+}
+
+void EaxxSource::set_active_fx_slots(
+	const EaxxEaxCall& eax_call)
+{
+	const auto eax_active_fx_slots = eax_call.get_values<EaxxSourceException, const GUID>();
+
+	set_active_fx_slots(eax_active_fx_slots.size, eax_active_fx_slots.values);
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

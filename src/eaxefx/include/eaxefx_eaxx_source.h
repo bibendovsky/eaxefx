@@ -34,6 +34,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "AL/al.h"
 
 #include "eaxefx_al_low_pass_param.h"
+#include "eaxefx_eaxx_eax_call.h"
 #include "eaxefx_eaxx_fx_slots.h"
 
 
@@ -62,21 +63,8 @@ public:
 		const EaxxSourceInitParam& param);
 
 
-	void set_room(
-		long eax_room);
-
-	void set_obstruction_properties(
-		const EAXOBSTRUCTIONPROPERTIES& eax_obstruction_properties);
-
-	void set_occlusion(
-		long eax_occlusion);
-
-	void set_occlusion_properties(
-		const EAXOCCLUSIONPROPERTIES& eax_occlusion_properties);
-
-	void set_active_fx_slots(
-		int count,
-		const GUID* eax_ids);
+	void set(
+		const EaxxEaxCall& eax_call);
 
 
 	void update_filters();
@@ -124,9 +112,15 @@ private:
 	void set_eax_defaults();
 
 
+	static float calculate_dst_occlusion_mb(
+		long src_occlusion_mb,
+		float path_ratio,
+		float lf_ratio) noexcept;
+
 	AlLowPassParam make_direct_filter() const noexcept;
 
-	AlLowPassParam make_room_filter() const noexcept;
+	AlLowPassParam make_room_filter(
+		const EaxxFxSlot& fx_slot) const noexcept;
 
 	void set_al_filter_parameters(
 		const AlLowPassParam& al_low_pass_param) const noexcept;
@@ -137,7 +131,65 @@ private:
 		const EaxxSourceInitParam& param);
 
 
+	void update_direct_filter_internal();
+
+	void update_room_filters_internal();
+
 	void update_filters_internal();
+
+
+	void set_direct_hf_auto_flag();
+
+	void set_room_auto_flag();
+
+	void set_room_hf_auto_flag();
+
+	void set_flags();
+
+
+	void set_obstruction_all(
+		const EAXOBSTRUCTIONPROPERTIES& eax_obstruction_properties);
+
+	void set_occlusion_all(
+		const EAXOCCLUSIONPROPERTIES& eax_occlusion_properties);
+
+	void set_room(
+		long eax_room);
+
+	void set_occlusion(
+		long eax_occlusion);
+
+	void set_exclusion(
+		long eax_exclusion);
+
+	void set_flags(
+		unsigned long eax_flags);
+
+	void set_active_fx_slots(
+		int count,
+		const GUID* eax_ids);
+
+
+	void set_obstruction_all(
+		const EaxxEaxCall& eax_call);
+
+	void set_occlusion_all(
+		const EaxxEaxCall& eax_call);
+
+	void set_room(
+		const EaxxEaxCall& eax_call);
+
+	void set_occlusion(
+		const EaxxEaxCall& eax_call);
+
+	void set_exclusion(
+		const EaxxEaxCall& eax_call);
+
+	void set_flags(
+		const EaxxEaxCall& eax_call);
+
+	void set_active_fx_slots(
+		const EaxxEaxCall& eax_call);
 }; // EaxxSource
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

@@ -26,7 +26,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 cmake_minimum_required (VERSION 3.8.2 FATAL_ERROR)
-project (eaxefx VERSION 1.0.0 LANGUAGES CXX)
+project (eaxefx VERSION 1.0.1 LANGUAGES CXX)
 
 
 if (NOT WIN32)
@@ -123,7 +123,6 @@ target_compile_definitions (
 	PRIVATE
 		"EAXEFX_VERSION=\"${EAXEFX_VERSION}\""
 		WIN32_LEAN_AND_MEAN
-		AL_ALEXT_PROTOTYPES
 		"AL_API=__declspec(dllexport)"
 		"ALC_API=__declspec(dllexport)"
 		$<$<CXX_COMPILER_ID:MSVC>:_CRT_SECURE_NO_WARNINGS>
@@ -214,10 +213,9 @@ target_sources (
 		include/eaxefx_al_symbols.h
 		include/eaxefx_al_uresources.h
 		include/eaxefx_eax_api.h
-		include/eaxefx_eax_converters.h
-		include/eaxefx_eax_validators.h
 		include/eaxefx_eaxx.h
 		include/eaxefx_eaxx_context.h
+		include/eaxefx_eaxx_eax_call.h
 		include/eaxefx_eaxx_fx_slot.h
 		include/eaxefx_eaxx_fx_slot_index.h
 		include/eaxefx_eaxx_fx_slots.h
@@ -238,8 +236,6 @@ target_sources (
 		src/eaxefx_al_symbols.cpp
 		src/eaxefx_al_uresources.cpp
 		src/eaxefx_eax_api.cpp
-		src/eaxefx_eax_converters.cpp
-		src/eaxefx_eax_validators.cpp
 		src/eaxefx_eaxx.cpp
 		src/eaxefx_eaxx_context.cpp
 		src/eaxefx_eaxx_fx_slot.cpp

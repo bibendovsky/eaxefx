@@ -71,14 +71,19 @@ catch (const std::exception&)
 }
 
 EaxxFxSlot& EaxxFxSlots::get(
-	int index)
+	EaxxFxSlotIndex index)
 {
+	if (!index.has_value())
+	{
+		throw EaxxFxSlotsException{"Empty index."};
+	}
+
 	if (index < 0 || index >= EAX_MAX_FXSLOTS)
 	{
 		throw EaxxFxSlotsException{"Index out of range."};
 	}
 
-	return items_[index];
+	return items_[index.value()];
 }
 
 int EaxxFxSlots::get_max_active_count() const noexcept
@@ -142,7 +147,7 @@ void EaxxFxSlots::initialize_fx_slots()
 
 void EaxxFxSlots::initialize_default_slot()
 {
-	items_.front().set_effect(EAX_REVERB_EFFECT);
+	items_.front().set_fx_slot_default_effect();
 }
 
 EaxxFxSlotIndex EaxxFxSlots::eax_id_to_index(

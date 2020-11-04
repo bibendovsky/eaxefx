@@ -35,6 +35,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "AL/alc.h"
 
 #include "eaxefx_eax_api.h"
+#include "eaxefx_eaxx_eax_call.h"
 #include "eaxefx_eaxx_fx_slots.h"
 #include "eaxefx_eaxx_source.h"
 
@@ -63,7 +64,7 @@ public:
 	ALCcontext* get_al_context() const noexcept;
 
 	EaxxFxSlot& get_slot(
-		int fx_slot_index);
+		EaxxFxSlotIndex fx_slot_index);
 
 
 	void initialize_sources(
@@ -75,14 +76,9 @@ public:
 		const ALuint* al_names);
 
 
-	void set_primary_fx_slot_id(
-		const GUID& eax_fx_slot_id);
+	void set(
+		const EaxxEaxCall& eax_call);
 
-	void set_context(
-		const EAX50CONTEXTPROPERTIES& eax_context);
-
-	void set_session(
-		const EAXSESSIONPROPERTIES& eax_session);
 
 	EaxxSource* find_source(
 		ALuint al_source);
@@ -138,6 +134,20 @@ private:
 	void set_context();
 
 	void initialize_fx_slots();
+
+
+	void set_session(
+		const EAXSESSIONPROPERTIES& eax_session);
+
+	void set_primary_fx_slot_id(
+		const GUID& eax_fx_slot_id);
+
+
+	void set_session_all(
+		const EaxxEaxCall& eax_call);
+
+	void set_primary_fx_slot_id(
+		const EaxxEaxCall& eax_call);
 }; // EaxxContext
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

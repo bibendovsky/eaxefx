@@ -32,6 +32,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "AL/al.h"
 
 #include "eaxefx_eax_api.h"
+#include "eaxefx_eaxx_eax_call.h"
 
 
 namespace eaxefx
@@ -51,38 +52,14 @@ public:
 	const EAX50FXSLOTPROPERTIES& get_eax_fx_slot() const noexcept;
 
 
-	void set_effect(
-		const GUID& eax_id);
+	void set_fx_slot_default_effect();
 
-	void set_volume(
-		long eax_volume);
 
-	void set_lock(
-		long eax_lock);
-
-	void set_flags(
-		int eax_version,
-		unsigned long eax_flags);
-
-	[[nodiscard]] bool set_occlusion(
-		int eax_version,
-		long eax_occlusion);
-
-	[[nodiscard]] bool set_occlusion_lf_ratio(
-		int eax_version,
-		float eax_occlusion_lf_ratio);
+	void get(
+		const EaxxEaxCall& eax_call) const;
 
 	[[nodiscard]] bool set(
-		const EAX50FXSLOTPROPERTIES& eax_fx_slot);
-
-
-	void set_reverb_environment(
-		int eax_version,
-		unsigned long eax_reverb_environment);
-
-	void set_reverb(
-		int eax_version,
-		const EAXREVERBPROPERTIES& eax_reverb);
+		const EaxxEaxCall& eax_call);
 
 
 private:
@@ -120,6 +97,50 @@ private:
 
 	void set_efx_effect();
 
+	void set_efx_eax_reverb_environment_diffusion();
+
+	void set_efx_eax_reverb_room();
+
+	void set_efx_eax_reverb_room_hf();
+
+	void set_efx_eax_reverb_room_lf();
+
+	void set_efx_eax_reverb_decay_time();
+
+	void set_efx_eax_reverb_decay_hf_ratio();
+
+	void set_efx_eax_reverb_decay_lf_ratio();
+
+	void set_efx_eax_reverb_reflections();
+
+	void set_efx_eax_reverb_reflections_delay();
+
+	void set_efx_eax_reverb_reflections_pan();
+
+	void set_efx_eax_reverb_reverb();
+
+	void set_efx_eax_reverb_reverb_delay();
+
+	void set_efx_eax_reverb_reverb_pan();
+
+	void set_efx_eax_reverb_echo_time();
+
+	void set_efx_eax_reverb_echo_depth();
+
+	void set_efx_eax_reverb_modulation_time();
+
+	void set_efx_eax_reverb_modulation_depth();
+
+	void set_efx_eax_reverb_air_absorption_hf();
+
+	void set_efx_eax_reverb_hf_reference();
+
+	void set_efx_eax_reverb_lf_reference();
+
+	void set_efx_eax_reverb_room_rolloff_factor();
+
+	void set_efx_eax_reverb_flags();
+
 	void set_efx_eax_reverb_properties();
 
 	void attach_efx_effect();
@@ -130,33 +151,138 @@ private:
 	void initialize_efx();
 
 
+	void get_fx_slot_all(
+		const EaxxEaxCall& eax_call) const;
+
+	void get_fx_slot_ffect(
+		const EaxxEaxCall& eax_call) const;
+
+	void get_fx_slot_volume(
+		const EaxxEaxCall& eax_call) const;
+
+	void get_fx_slot_lock(
+		const EaxxEaxCall& eax_call) const;
+
+	void get_fx_slot_flags(
+		const EaxxEaxCall& eax_call) const;
+
+	void get_fx_slot_occlusion(
+		const EaxxEaxCall& eax_call) const;
+
+	void get_fx_slot_occlusion_lf_ratio(
+		const EaxxEaxCall& eax_call) const;
+
+
 	void set_efx_effect_properties();
 
-	void set_effect();
+	void set_fx_slot_effect();
 
 
 	void set_efx_effect_slot_gain();
 
-	void set_volume();
+	void set_fx_slot_volume();
 
 
 	void set_effect_slot_send_auto();
 
-	void set_flags();
+	void set_fx_slot_flags();
 
 
-	[[nodiscard]] bool set_eax_occlusion(
-		int eax_version,
+	static void validate_fx_slot_effect(
+		const GUID& eax_effect_id);
+
+
+	void set_fx_slot_effect(
+		const GUID& eax_effect_id);
+
+	void set_fx_slot_volume(
+		long eax_volume);
+
+	void set_fx_slot_lock(
+		long eax_lock);
+
+	void set_fx_slot_flags(
+		unsigned long eax_flags);
+
+	[[nodiscard]] bool set_fx_slot_occlusion(
 		long eax_occlusion);
 
-	[[nodiscard]] bool set_eax_occlusion_lf_ratio(
-		int eax_version,
+	[[nodiscard]] bool set_fx_slot_occlusion_lf_ratio(
 		float eax_occlusion_lf_ratio);
+
+	void set_fx_slot_all(
+		const EAX40FXSLOTPROPERTIES& eax_fx_slot);
+
+	[[nodiscard]] bool set_fx_slot_all(
+		const EAX50FXSLOTPROPERTIES& eax_fx_slot);
+
+
+	[[nodiscard]] bool set_fx_slot_effect(
+		const EaxxEaxCall& eax_call);
+
+	[[nodiscard]] bool set_fx_slot_volume(
+		const EaxxEaxCall& eax_call);
+
+	[[nodiscard]] bool set_fx_slot_lock(
+		const EaxxEaxCall& eax_call);
+
+	[[nodiscard]] bool set_fx_slot_flags(
+		const EaxxEaxCall& eax_call);
+
+	[[nodiscard]] bool set_fx_slot_occlusion(
+		const EaxxEaxCall& eax_call);
+
+	[[nodiscard]] bool set_fx_slot_occlusion_lf_ratio(
+		const EaxxEaxCall& eax_call);
+
+	[[nodiscard]] bool set_fx_slot_all(
+		const EaxxEaxCall& eax_call);
 
 
 	void set_reverb_environment();
 
-	void set_reverb();
+	void set_reverb_room();
+
+	void set_reverb_reflections_pan();
+
+	void set_reverb_reverb_pan();
+
+	void set_reverb_all();
+
+
+	void ensure_reverb_effect();
+
+
+	void set_reverb_all(
+		const EAXREVERBPROPERTIES& eax_reverb);
+
+	void set_reverb_environment(
+		unsigned long eax_reverb_environment);
+
+	void set_reverb_room(
+		long eax_reverb_room);
+
+	void set_reverb_reflections_pan(
+		const EAXVECTOR& eax_reverb_reflections_pan);
+
+	void set_reverb_reverb_pan(
+		const EAXVECTOR& eax_reverb_pan);
+
+
+	[[nodiscard]] bool set_reverb_all(
+		const EaxxEaxCall& eax_call);
+
+	[[nodiscard]] bool set_reverb_environment(
+		const EaxxEaxCall& eax_call);
+
+	[[nodiscard]] bool set_reverb_room(
+		const EaxxEaxCall& eax_call);
+
+	[[nodiscard]] bool set_reverb_reflections_pan(
+		const EaxxEaxCall& eax_call);
+
+	[[nodiscard]] bool set_reverb_reverb_pan(
+		const EaxxEaxCall& eax_call);
 }; // EaxxFxSlot
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

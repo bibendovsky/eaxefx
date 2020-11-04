@@ -25,9 +25,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#if _WIN32
-
-
 #include <windows.h>
 
 
@@ -36,6 +33,8 @@ namespace eaxefx
 
 
 void on_thread_detach() noexcept;
+
+void on_process_attach() noexcept;
 
 void on_process_detach() noexcept;
 
@@ -53,6 +52,10 @@ BOOL WINAPI DllMain(
 
 	switch (fdwReason)
 	{
+		case DLL_PROCESS_ATTACH:
+			eaxefx::on_process_attach();
+			break;
+
 		case DLL_PROCESS_DETACH:
 			eaxefx::on_process_detach();
 			break;
@@ -67,6 +70,3 @@ BOOL WINAPI DllMain(
 
 	return TRUE;
 }
-
-
-#endif // _WIN32

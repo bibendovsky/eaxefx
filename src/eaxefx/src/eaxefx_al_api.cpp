@@ -272,40 +272,6 @@ AlApi::FunctionMap AlApi::make_function_map()
 		{"alcCaptureStop", reinterpret_cast<void*>(alcCaptureStop)},
 		{"alcCaptureSamples", reinterpret_cast<void*>(alcCaptureSamples)},
 
-		{"alGenEffects", reinterpret_cast<void*>(alGenEffects)},
-		{"alDeleteEffects", reinterpret_cast<void*>(alDeleteEffects)},
-		{"alIsEffect", reinterpret_cast<void*>(alIsEffect)},
-		{"alEffecti", reinterpret_cast<void*>(alEffecti)},
-		{"alEffectiv", reinterpret_cast<void*>(alEffectiv)},
-		{"alEffectf", reinterpret_cast<void*>(alEffectf)},
-		{"alEffectfv", reinterpret_cast<void*>(alEffectfv)},
-		{"alGetEffecti", reinterpret_cast<void*>(alGetEffecti)},
-		{"alGetEffectiv", reinterpret_cast<void*>(alGetEffectiv)},
-		{"alGetEffectf", reinterpret_cast<void*>(alGetEffectf)},
-		{"alGetEffectfv", reinterpret_cast<void*>(alGetEffectfv)},
-		{"alGenFilters", reinterpret_cast<void*>(alGenFilters)},
-		{"alDeleteFilters", reinterpret_cast<void*>(alDeleteFilters)},
-		{"alIsFilter", reinterpret_cast<void*>(alIsFilter)},
-		{"alFilteri", reinterpret_cast<void*>(alFilteri)},
-		{"alFilteriv", reinterpret_cast<void*>(alFilteriv)},
-		{"alFilterf", reinterpret_cast<void*>(alFilterf)},
-		{"alFilterfv", reinterpret_cast<void*>(alFilterfv)},
-		{"alGetFilteri", reinterpret_cast<void*>(alGetFilteri)},
-		{"alGetFilteriv", reinterpret_cast<void*>(alGetFilteriv)},
-		{"alGetFilterf", reinterpret_cast<void*>(alGetFilterf)},
-		{"alGetFilterfv", reinterpret_cast<void*>(alGetFilterfv)},
-		{"alGenAuxiliaryEffectSlots", reinterpret_cast<void*>(alGenAuxiliaryEffectSlots)},
-		{"alDeleteAuxiliaryEffectSlots", reinterpret_cast<void*>(alDeleteAuxiliaryEffectSlots)},
-		{"alIsAuxiliaryEffectSlot", reinterpret_cast<void*>(alIsAuxiliaryEffectSlot)},
-		{"alAuxiliaryEffectSloti", reinterpret_cast<void*>(alAuxiliaryEffectSloti)},
-		{"alAuxiliaryEffectSlotiv", reinterpret_cast<void*>(alAuxiliaryEffectSlotiv)},
-		{"alAuxiliaryEffectSlotf", reinterpret_cast<void*>(alAuxiliaryEffectSlotf)},
-		{"alAuxiliaryEffectSlotfv", reinterpret_cast<void*>(alAuxiliaryEffectSlotfv)},
-		{"alGetAuxiliaryEffectSloti", reinterpret_cast<void*>(alGetAuxiliaryEffectSloti)},
-		{"alGetAuxiliaryEffectSlotiv", reinterpret_cast<void*>(alGetAuxiliaryEffectSlotiv)},
-		{"alGetAuxiliaryEffectSlotf", reinterpret_cast<void*>(alGetAuxiliaryEffectSlotf)},
-		{"alGetAuxiliaryEffectSlotfv", reinterpret_cast<void*>(alGetAuxiliaryEffectSlotfv)},
-
 		{"EAXGet", reinterpret_cast<void*>(EAXGet)},
 		{"EAXSet", reinterpret_cast<void*>(EAXSet)},
 	};
@@ -343,9 +309,9 @@ void AlApi::initialize_al_shared_library()
 
 	const auto known_names = KnownNames
 	{
-		"soft_oal.dll",
 		"eaxefx_driver.dll",
 		"dsoal-aldrv.dll",
+		"soft_oal.dll",
 	};
 
 	auto is_found = false;
@@ -420,22 +386,40 @@ catch (const std::exception& ex)
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+bool& get_is_process_initialized() noexcept
+{
+	static auto is_process_initialized = false;
+	return is_process_initialized;
+}
+
 AlApi& get_al_api()
 {
 	static auto al_api = AlApi{};
+	get_is_process_initialized() = true;
 	return al_api;
 }
 
 void on_thread_detach() noexcept
 {
-	auto& al_api = get_al_api();
-	al_api.on_thread_detach();
+	if (get_is_process_initialized())
+	{
+		auto& al_api = get_al_api();
+		al_api.on_thread_detach();
+	}
+}
+
+void on_process_attach() noexcept
+{
+	get_is_process_initialized() = false;
 }
 
 void on_process_detach() noexcept
 {
-	auto& al_api = get_al_api();
-	al_api.on_process_detach();
+	if (get_is_process_initialized())
+	{
+		auto& al_api = get_al_api();
+		al_api.on_process_detach();
+	}
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -1256,263 +1240,6 @@ ALC_API void ALC_APIENTRY alcCaptureSamples(
 
 
 //
-// EFX 1.0
-//
-
-AL_API ALvoid AL_APIENTRY alGenEffects(
-	ALsizei n,
-	ALuint* effects)
-{
-	eaxefx::alGenEffects_(n, effects);
-}
-
-AL_API ALvoid AL_APIENTRY alDeleteEffects(
-	ALsizei n,
-	const ALuint* effects)
-{
-	eaxefx::alDeleteEffects_(n, effects);
-}
-
-AL_API ALboolean AL_APIENTRY alIsEffect(
-	ALuint effect)
-{
-	return eaxefx::alIsEffect_(effect);
-}
-
-AL_API ALvoid AL_APIENTRY alEffecti(
-	ALuint effect,
-	ALenum param,
-	ALint iValue)
-{
-	eaxefx::alEffecti_(effect, param, iValue);
-}
-
-AL_API ALvoid AL_APIENTRY alEffectiv(
-	ALuint effect,
-	ALenum param,
-	const ALint* piValues)
-{
-	eaxefx::alEffectiv_(effect, param, piValues);
-}
-
-AL_API ALvoid AL_APIENTRY alEffectf(
-	ALuint effect,
-	ALenum param,
-	ALfloat flValue)
-{
-	eaxefx::alEffectf_(effect, param, flValue);
-}
-
-AL_API ALvoid AL_APIENTRY alEffectfv(
-	ALuint effect,
-	ALenum param,
-	const ALfloat* pflValues)
-{
-	eaxefx::alEffectfv_(effect, param, pflValues);
-}
-
-AL_API ALvoid AL_APIENTRY alGetEffecti(
-	ALuint effect,
-	ALenum param,
-	ALint* piValue)
-{
-	eaxefx::alGetEffecti_(effect, param, piValue);
-}
-
-AL_API ALvoid AL_APIENTRY alGetEffectiv(
-	ALuint effect,
-	ALenum param,
-	ALint* piValue)
-{
-	eaxefx::alGetEffectiv_(effect, param, piValue);
-}
-
-AL_API ALvoid AL_APIENTRY alGetEffectf(
-	ALuint effect,
-	ALenum param,
-	ALfloat* pflValue)
-{
-	eaxefx::alGetEffectf_(effect, param, pflValue);
-}
-
-AL_API ALvoid AL_APIENTRY alGetEffectfv(
-	ALuint effect,
-	ALenum param,
-	ALfloat* pflValues)
-{
-	eaxefx::alGetEffectfv_(effect, param, pflValues);
-}
-
-AL_API ALvoid AL_APIENTRY alGenFilters(
-	ALsizei n,
-	ALuint* filters)
-{
-	eaxefx::alGenFilters_(n, filters);
-}
-
-AL_API ALvoid AL_APIENTRY alDeleteFilters(
-	ALsizei n,
-	const ALuint* filters)
-{
-	eaxefx::alDeleteFilters_(n, filters);
-}
-
-AL_API ALboolean AL_APIENTRY alIsFilter(
-	ALuint filter)
-{
-	return eaxefx::alIsFilter_(filter);
-}
-
-AL_API ALvoid AL_APIENTRY alFilteri(
-	ALuint filter,
-	ALenum param,
-	ALint iValue)
-{
-	eaxefx::alFilteri_(filter, param, iValue);
-}
-
-AL_API ALvoid AL_APIENTRY alFilteriv(
-	ALuint filter,
-	ALenum param,
-	const ALint* piValues)
-{
-	eaxefx::alFilteriv_(filter, param, piValues);
-}
-
-AL_API ALvoid AL_APIENTRY alFilterf(
-	ALuint filter,
-	ALenum param,
-	ALfloat flValue)
-{
-	eaxefx::alFilterf_(filter, param, flValue);
-}
-
-AL_API ALvoid AL_APIENTRY alFilterfv(
-	ALuint filter,
-	ALenum param,
-	const ALfloat* pflValues)
-{
-	eaxefx::alFilterfv_(filter, param, pflValues);
-}
-
-AL_API ALvoid AL_APIENTRY alGetFilteri(
-	ALuint filter,
-	ALenum param,
-	ALint* piValue)
-{
-	eaxefx::alGetFilteri_(filter, param, piValue);
-}
-
-AL_API ALvoid AL_APIENTRY alGetFilteriv(
-	ALuint filter,
-	ALenum param,
-	ALint* piValues)
-{
-	eaxefx::alGetFilteriv_(filter, param, piValues);
-}
-
-AL_API ALvoid AL_APIENTRY alGetFilterf(
-	ALuint filter,
-	ALenum param,
-	ALfloat* pflValue)
-{
-	eaxefx::alGetFilterf_(filter, param, pflValue);
-}
-
-AL_API ALvoid AL_APIENTRY alGetFilterfv(
-	ALuint filter,
-	ALenum param,
-	ALfloat* pflValues)
-{
-	eaxefx::alGetFilterfv_(filter, param, pflValues);
-}
-
-AL_API ALvoid AL_APIENTRY alGenAuxiliaryEffectSlots(
-	ALsizei n,
-	ALuint* effectslots)
-{
-	eaxefx::alGenAuxiliaryEffectSlots_(n, effectslots);
-}
-
-AL_API ALvoid AL_APIENTRY alDeleteAuxiliaryEffectSlots(
-	ALsizei n,
-	const ALuint* effectslots)
-{
-	eaxefx::alDeleteAuxiliaryEffectSlots_(n, effectslots);
-}
-
-AL_API ALboolean AL_APIENTRY alIsAuxiliaryEffectSlot(
-	ALuint effectslot)
-{
-	return eaxefx::alIsAuxiliaryEffectSlot_(effectslot);
-}
-
-AL_API ALvoid AL_APIENTRY alAuxiliaryEffectSloti(
-	ALuint effectslot,
-	ALenum param,
-	ALint iValue)
-{
-	eaxefx::alAuxiliaryEffectSloti_(effectslot, param, iValue);
-}
-
-AL_API ALvoid AL_APIENTRY alAuxiliaryEffectSlotiv(
-	ALuint effectslot,
-	ALenum param,
-	const ALint* piValues)
-{
-	eaxefx::alAuxiliaryEffectSlotiv_(effectslot, param, piValues);
-}
-
-AL_API ALvoid AL_APIENTRY alAuxiliaryEffectSlotf(
-	ALuint effectslot,
-	ALenum param,
-	ALfloat flValue)
-{
-	eaxefx::alAuxiliaryEffectSlotf_(effectslot, param, flValue);
-}
-
-AL_API ALvoid AL_APIENTRY alAuxiliaryEffectSlotfv(
-	ALuint effectslot,
-	ALenum param,
-	const ALfloat* pflValues)
-{
-	eaxefx::alAuxiliaryEffectSlotfv_(effectslot, param, pflValues);
-}
-
-AL_API ALvoid AL_APIENTRY alGetAuxiliaryEffectSloti(
-	ALuint effectslot,
-	ALenum param,
-	ALint* piValue)
-{
-	eaxefx::alGetAuxiliaryEffectSloti_(effectslot, param, piValue);
-}
-
-AL_API ALvoid AL_APIENTRY alGetAuxiliaryEffectSlotiv(
-	ALuint effectslot,
-	ALenum param,
-	ALint* piValues)
-{
-	eaxefx::alGetAuxiliaryEffectSlotiv_(effectslot, param, piValues);
-}
-
-AL_API ALvoid AL_APIENTRY alGetAuxiliaryEffectSlotf(
-	ALuint effectslot,
-	ALenum param,
-	ALfloat* pflValue)
-{
-	eaxefx::alGetAuxiliaryEffectSlotf_(effectslot, param, pflValue);
-}
-
-AL_API ALvoid AL_APIENTRY alGetAuxiliaryEffectSlotfv(
-	ALuint effectslot,
-	ALenum param,
-	ALfloat* pflValues)
-{
-	eaxefx::alGetAuxiliaryEffectSlotfv_(effectslot, param, pflValues);
-}
-
-
-//
 // EAX
 //
 
@@ -1520,14 +1247,14 @@ AL_API ALenum AL_APIENTRY EAXSet(
 	const GUID* property_set_id,
 	ALuint property_id,
 	ALuint al_name,
-	ALvoid* property_value,
-	ALuint property_value_size)
+	ALvoid* property_buffer,
+	ALuint property_size)
 {
 	const auto& al_api = eaxefx::get_al_api();
 
 	if (al_api.is_initialized())
 	{
-		return al_api.get_eaxx()->EAXSet(property_set_id, property_id, al_name, property_value, property_value_size);
+		return al_api.get_eaxx()->EAXSet(property_set_id, property_id, al_name, property_buffer, property_size);
 	}
 	else
 	{
@@ -1539,14 +1266,14 @@ AL_API ALenum AL_APIENTRY EAXGet(
 	const GUID* property_set_id,
 	ALuint property_id,
 	ALuint al_name,
-	ALvoid* property_value,
-	ALuint property_value_size)
+	ALvoid* property_buffer,
+	ALuint property_size)
 {
 	const auto& al_api = eaxefx::get_al_api();
 
 	if (al_api.is_initialized())
 	{
-		return al_api.get_eaxx()->EAXGet(property_set_id, property_id, al_name, property_value, property_value_size);
+		return al_api.get_eaxx()->EAXGet(property_set_id, property_id, al_name, property_buffer, property_size);
 	}
 	else
 	{

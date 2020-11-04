@@ -25,18 +25,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef EAXEFX_EAXX_INCLUDED
-#define EAXEFX_EAXX_INCLUDED
+#ifndef EAXEFX_EAXX_EAX_CALL_INCLUDED
+#define EAXEFX_EAXX_EAX_CALL_INCLUDED
 
-
-#include <memory>
 
 #include "AL/al.h"
-#include "AL/alc.h"
 
-#include "eaxefx_al_loader.h"
 #include "eaxefx_eax_api.h"
-#include "eaxefx_logger.h"
+#include "eaxefx_eaxx_fx_slot_index.h"
 
 
 namespace eaxefx
@@ -45,74 +41,82 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class Eaxx
+template<
+	typename T
+>
+struct EaxxEaxCallSpan
 {
-public:
-	Eaxx() = default;
-
-	virtual ~Eaxx() = default;
-
-
-	virtual ALboolean alIsExtensionPresent(
-		const ALchar* extname) = 0;
-
-
-	virtual const ALchar* alGetString(
-		ALenum param) = 0;
-
-
-	virtual ALCdevice* alcOpenDevice(
-		const ALCchar* devicename) = 0;
-
-	virtual ALCboolean alcCloseDevice(
-		ALCdevice* device) = 0;
-
-
-	virtual void alGenSources(
-		ALsizei n,
-		ALuint* sources) = 0;
-
-	virtual void alDeleteSources(
-		ALsizei n,
-		const ALuint* sources) = 0;
-
-
-	virtual ALCcontext* alcCreateContext(
-		ALCdevice* device,
-		const ALCint* attrlist) = 0;
-
-	virtual ALCboolean alcMakeContextCurrent(
-		ALCcontext* context) = 0;
-
-	virtual void alcDestroyContext(
-		ALCcontext* context) = 0;
-
-
-	virtual ALenum EAXSet(
-		const GUID* property_set_id,
-		ALuint property_id,
-		ALuint al_name,
-		ALvoid* property_buffer,
-		ALuint property_size) noexcept = 0;
-
-	virtual ALenum EAXGet(
-		const GUID* property_set_id,
-		ALuint property_id,
-		ALuint al_name,
-		ALvoid* property_buffer,
-		ALuint property_size) noexcept = 0;
-}; // Eaxx
-
-using EaxxUPtr = std::unique_ptr<Eaxx>;
+	int size{};
+	T* values{};
+}; // EaxxEaxCallSpan
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-EaxxUPtr make_eaxx(
-	Logger* logger,
-	AlLoader* al_loader);
+struct EaxxEaxCall
+{
+	bool is_get{};
+	int version{};
+	EaxxFxSlotIndex fx_slot_index{};
+
+	const GUID* property_set_id{};
+	ALuint property_id{};
+	ALuint property_al_name{};
+	ALvoid* property_buffer{};
+	ALuint property_size{};
+
+
+	template<
+		typename TException,
+		typename TValue
+	>
+	TValue& get_value() const
+	{
+		if (property_buffer == nullptr)
+		{
+			throw TException{"Null property buffer."};
+		}
+
+		if (property_size < static_cast<ALuint>(sizeof(TValue)))
+		{
+			throw TException{"Property buffer too small."};
+		}
+
+		return *static_cast<TValue*>(property_buffer);
+	}
+
+	template<
+		typename TException,
+		typename TValue
+	>
+	EaxxEaxCallSpan<TValue> get_values() const
+	{
+		if (property_buffer == nullptr)
+		{
+			throw TException{"Null property buffer."};
+		}
+
+		if (property_size < static_cast<ALuint>(sizeof(TValue)))
+		{
+			throw TException{"Property buffer too small."};
+		}
+
+		const auto count = static_cast<int>(property_size / sizeof(TValue));
+
+		return EaxxEaxCallSpan<TValue>{count, static_cast<TValue*>(property_buffer)};
+	}
+
+	template<
+		typename TException,
+		typename TValue>
+	void set_value(
+		const TValue& value) const
+	{
+		get_value<TException, TValue>() = value;
+	}
+}; // EaxxEaxCall
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -120,4 +124,4 @@ EaxxUPtr make_eaxx(
 } // eaxefx
 
 
-#endif // !EAXEFX_EAXX_INCLUDED
+#endif // !EAXEFX_EAXX_EAX_CALL_INCLUDED

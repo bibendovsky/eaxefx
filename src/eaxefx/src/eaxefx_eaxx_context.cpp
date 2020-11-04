@@ -35,7 +35,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_al_object.h"
 #include "eaxefx_al_symbols.h"
-#include "eaxefx_eax_validators.h"
 
 
 namespace eaxefx
@@ -139,7 +138,7 @@ ALCcontext* EaxxContext::get_al_context() const noexcept
 }
 
 EaxxFxSlot& EaxxContext::get_slot(
-	int fx_slot_index)
+	EaxxFxSlotIndex fx_slot_index)
 {
 	return fx_slots_.get(fx_slot_index);
 }
@@ -198,8 +197,6 @@ catch (const std::exception&)
 void EaxxContext::set_primary_fx_slot_id(
 	const GUID& eax_fx_slot_id)
 {
-	EaxContextValidator::primary_fx_slot_id(eax_fx_slot_id);
-
 	if (fx_slots_.get_primary_id() == eax_fx_slot_id)
 	{
 		return;
@@ -210,30 +207,31 @@ void EaxxContext::set_primary_fx_slot_id(
 	set_primary_fx_slot_id();
 }
 
-void EaxxContext::set_context(
-	const EAX50CONTEXTPROPERTIES& eax_context)
+void EaxxContext::set(
+	const EaxxEaxCall& eax_call)
 {
-	EaxContextValidator::all(eax_context);
-
-	if (eax_.context == eax_context)
+	switch (eax_call.property_id)
 	{
-		return;
+		case EAXCONTEXT_EAXSESSION:
+			set_session_all(eax_call);
+			break;
+
+		case EAXCONTEXT_PRIMARYFXSLOTID:
+			set_primary_fx_slot_id(eax_call);
+			break;
+
+		default:
+			throw EaxxContextException{"Unsupported property id."};
 	}
-
-	eax_.context = eax_context;
-
-	set_context();
 }
 
 void EaxxContext::set_session(
 	const EAXSESSIONPROPERTIES& eax_session)
 {
-	EaxSessionValidator::all(eax_session);
+	fx_slots_.set_max_active_count(eax_.session.ulMaxActiveSends);
 
 	eax_.session.ulEAXVersion = eax_session.ulEAXVersion;
 	eax_.session.ulMaxActiveSends = eax_session.ulMaxActiveSends;
-
-	fx_slots_.set_max_active_count(eax_.session.ulMaxActiveSends);
 }
 
 EaxxSource* EaxxContext::find_source(
@@ -337,7 +335,7 @@ void EaxxContext::initialize_filter()
 
 	alFilteri_(al_filter, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
 	auto al_filter_type = ALint{};
-	alGetFilteri(al_filter, AL_FILTER_TYPE, &al_filter_type);
+	alGetFilteri_(al_filter, AL_FILTER_TYPE, &al_filter_type);
 
 	if (al_filter_type != AL_FILTER_LOWPASS)
 	{
@@ -381,6 +379,24 @@ void EaxxContext::initialize_fx_slots()
 	fx_slots_.initialize();
 	fx_slots_.set_primary(eax_.context.guidPrimaryFXSlotID);
 	fx_slots_.set_max_active_count(eax_.session.ulMaxActiveSends);
+}
+
+void EaxxContext::set_session_all(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_session_all =
+		eax_call.get_value<EaxxContextException, const EAXSESSIONPROPERTIES>();
+
+	set_session(eax_session_all);
+}
+
+void EaxxContext::set_primary_fx_slot_id(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_primary_fx_slot_id =
+		eax_call.get_value<EaxxContextException, const GUID>();
+
+	set_primary_fx_slot_id(eax_primary_fx_slot_id);
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
