@@ -1,4 +1,5 @@
 EAX OpenAL Extension
+====================
 
 
 Contents
@@ -6,9 +7,11 @@ Contents
 
 1. Overview  
    1.1 Doom 3 visual twitch fix
-2. Supported games
-3. Supported drivers
-4. Expected driver file names
+2. Supported drivers
+3. Expected driver file names
+4. Missing features  
+   4.1 Bypassed  
+   4.2 Not supported
 5. Known issues
 6. Usage
 7. Compiling requirements
@@ -19,9 +22,9 @@ Contents
 1 - Overview
 ============
 
-The project enables EAX OpenAL extension for systems without appropriate hardware.
+The project enables EAX OpenAL Extension for systems without appropriate hardware.
 
-OpenAL wrapper implements EAX calls with EFX by using underlying OpenAL driver.
+OpenAL wrapper implements EAX calls with Effects Extension by using underlying OpenAL driver.
 
 
 1.1 - Doom 3 visual twitch fix
@@ -34,18 +37,7 @@ Included console application `eaxefx_doom3_fix.exe` has the same purpose but off
 Tested on `Doom 3 v1.3.1`.
 
 
-2 - Supported games
-===================
-
-- Doom 3 (2004)
-- Prey (2006)
-- Quake 4 (2005)
-- Soldier of Fortune II: Double Helix (2002)
-- Star Wars Jedi Knight II: Jedi Outcast (2002)
-- Star Wars Jedi Knight: Jedi Academy (2003)
-
-
-3 - Supported drivers
+2 - Supported drivers
 =====================
 
 - `OpenAL Soft`
@@ -53,7 +45,7 @@ Tested on `Doom 3 v1.3.1`.
 The release package bundled with `OpenAL Soft` driver.
 
 
-4 - Expected driver file names
+3 - Expected driver file names
 ==============================
 
 - `eaxefx_driver.dll`
@@ -63,23 +55,40 @@ The release package bundled with `OpenAL Soft` driver.
 The wrapper tries to load one of this driver in the order specified above.
 
 
+4.1 - Bypassed features
+=======================
+
+Context:
+- HF Reference (EAX 4.0/5.0)
+- Macro FX Factor (EAX 5.0)
+- Speaker configuration (EAX 5.0)
+
+
+4.2 - Not supported
+===================
+
+Source:
+- Speaker levels (EAX 5.0)
+
+
 5 - Known issues
 ================
 
-- `OpenAL Soft` official binaries `v1.20.x` may cause a crash upon exiting the game.
+- `OpenAL Soft` official binaries `v1.20.x` may cause a crash upon exiting the application.
 
 
 6 - Usage
 =========
 
 Terminology:
-- `DIR` - the directory with game's main executable.
+- `DIR` - the directory with applications's main executable.
 
+Steps:
 - Backup (if necessary) `OpenAL32.dll` and `soft_oal.dll` in the `DIR`.
 - Extract the release package into some directory.
 - Copy extracted `OpenAL32.dll` into the `DIR`.
 - If the `DIR` does not contain any driver mentioned in the item 4, copy there extracted `soft_oal.dll`.
-- Enable appropriate EAX options in the game and restart it if necessary.
+- Enable appropriate EAX options in the application and restart it if necessary.
 
 
 7 - Compiling requirements

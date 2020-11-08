@@ -33,6 +33,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_eax_api.h"
 #include "eaxefx_eaxx_eax_call.h"
+#include "eaxefx_eaxx_effect.h"
 
 
 namespace eaxefx
@@ -52,13 +53,11 @@ public:
 	const EAX50FXSLOTPROPERTIES& get_eax_fx_slot() const noexcept;
 
 
-	void set_fx_slot_default_effect();
+	void set_fx_slot_default_effect(
+		int fxslotinde);
 
 
-	void get(
-		const EaxxEaxCall& eax_call) const;
-
-	[[nodiscard]] bool set(
+	[[nodiscard]] bool dispatch(
 		const EaxxEaxCall& eax_call);
 
 
@@ -66,114 +65,71 @@ private:
 	struct Eax
 	{
 		EAX50FXSLOTPROPERTIES fx_slot{};
-		EAXREVERBPROPERTIES reverb{};
 	}; // Eax
 
 	struct Efx
 	{
-		ALuint effect{};
 		ALuint effect_slot{};
 	}; // Efx
 
 
-	bool is_reverb_{};
 	Eax eax_{};
 	Efx efx_{};
+
+	EaxxEffect* effect_{};
+
+	EaxxEffectUPtr null_effect_;
+	EaxxEffectUPtr auto_wah_effect_;
+	EaxxEffectUPtr chorus_effect_;
+	EaxxEffectUPtr compressor_effect_;
+	EaxxEffectUPtr distortion_effect_;
+	EaxxEffectUPtr eax_reverb_effect_;
+	EaxxEffectUPtr echo_effect_;
+	EaxxEffectUPtr equalizer_effect_;
+	EaxxEffectUPtr flanger_effect_;
+	EaxxEffectUPtr frequency_shifter_effect_;
+	EaxxEffectUPtr pitch_shifter_effect_;
+	EaxxEffectUPtr ring_modulator_effect_;
+	EaxxEffectUPtr vocal_morpher_effect_;
 
 
 	void set_eax_fx_slot_defaults();
 
-	void set_eax_reverb_defaults();
-
 	void initialize_eax();
 
-
-	void create_efx_effect();
 
 	void create_efx_effect_slot();
 
 	void create_efx_objects();
 
-
-	void set_efx_effect();
-
-	void set_efx_eax_reverb_environment_diffusion();
-
-	void set_efx_eax_reverb_room();
-
-	void set_efx_eax_reverb_room_hf();
-
-	void set_efx_eax_reverb_room_lf();
-
-	void set_efx_eax_reverb_decay_time();
-
-	void set_efx_eax_reverb_decay_hf_ratio();
-
-	void set_efx_eax_reverb_decay_lf_ratio();
-
-	void set_efx_eax_reverb_reflections();
-
-	void set_efx_eax_reverb_reflections_delay();
-
-	void set_efx_eax_reverb_reflections_pan();
-
-	void set_efx_eax_reverb_reverb();
-
-	void set_efx_eax_reverb_reverb_delay();
-
-	void set_efx_eax_reverb_reverb_pan();
-
-	void set_efx_eax_reverb_echo_time();
-
-	void set_efx_eax_reverb_echo_depth();
-
-	void set_efx_eax_reverb_modulation_time();
-
-	void set_efx_eax_reverb_modulation_depth();
-
-	void set_efx_eax_reverb_air_absorption_hf();
-
-	void set_efx_eax_reverb_hf_reference();
-
-	void set_efx_eax_reverb_lf_reference();
-
-	void set_efx_eax_reverb_room_rolloff_factor();
-
-	void set_efx_eax_reverb_flags();
-
-	void set_efx_eax_reverb_properties();
-
-	void attach_efx_effect();
-
-
-	void initialize_efx_slot();
-
 	void initialize_efx();
+
+
+	EaxxEffectUPtr create_effect(
+		EaxxEffectType effect_type);
+
+	void initialize_effects();
+
+
+	void set_reverb_effect_default_room();
 
 
 	void get_fx_slot_all(
 		const EaxxEaxCall& eax_call) const;
 
-	void get_fx_slot_ffect(
+	void get_fx_slot(
 		const EaxxEaxCall& eax_call) const;
 
-	void get_fx_slot_volume(
-		const EaxxEaxCall& eax_call) const;
-
-	void get_fx_slot_lock(
-		const EaxxEaxCall& eax_call) const;
-
-	void get_fx_slot_flags(
-		const EaxxEaxCall& eax_call) const;
-
-	void get_fx_slot_occlusion(
-		const EaxxEaxCall& eax_call) const;
-
-	void get_fx_slot_occlusion_lf_ratio(
-		const EaxxEaxCall& eax_call) const;
+	void get(
+		const EaxxEaxCall& eax_call);
 
 
-	void set_efx_effect_properties();
+	void set_fx_slot_effect(
+		EaxxEffectUPtr& effect);
+
+	void set_fx_slot_effect_lazy(
+		EaxxEffectType effect_type,
+		EaxxEffectUPtr& effect);
 
 	void set_fx_slot_effect();
 
@@ -188,24 +144,52 @@ private:
 	void set_fx_slot_flags();
 
 
-	static void validate_fx_slot_effect(
+	void validate_fx_slot_effect(
 		const GUID& eax_effect_id);
+
+	void validate_fx_slot_volume(
+		std::int32_t eax_volume);
+
+	void validate_fx_slot_lock(
+		std::int32_t eax_lock);
+
+	void validate_fx_slot_lock_state(
+		std::int32_t eax_lock,
+		const GUID& eax_effect_id);
+
+	void validate_fx_slot_flags(
+		std::uint32_t eax_flags,
+		int eax_version);
+
+	void validate_fx_slot_occlusion(
+		std::int32_t eax_occlusion);
+
+	void validate_fx_slot_occlusion_lf_ratio(
+		float eax_occlusion_lf_ratio);
+
+	void validate_fx_slot_all(
+		const EAX40FXSLOTPROPERTIES& fx_slot,
+		int eax_version);
+
+	void validate_fx_slot_all(
+		const EAX50FXSLOTPROPERTIES& fx_slot,
+		int eax_version);
 
 
 	void set_fx_slot_effect(
 		const GUID& eax_effect_id);
 
 	void set_fx_slot_volume(
-		long eax_volume);
+		std::int32_t eax_volume);
 
 	void set_fx_slot_lock(
-		long eax_lock);
+		std::int32_t eax_lock);
 
 	void set_fx_slot_flags(
-		unsigned long eax_flags);
+		std::uint32_t eax_flags);
 
 	[[nodiscard]] bool set_fx_slot_occlusion(
-		long eax_occlusion);
+		std::int32_t eax_occlusion);
 
 	[[nodiscard]] bool set_fx_slot_occlusion_lf_ratio(
 		float eax_occlusion_lf_ratio);
@@ -217,16 +201,16 @@ private:
 		const EAX50FXSLOTPROPERTIES& eax_fx_slot);
 
 
-	[[nodiscard]] bool set_fx_slot_effect(
+	void set_fx_slot_effect(
 		const EaxxEaxCall& eax_call);
 
-	[[nodiscard]] bool set_fx_slot_volume(
+	void set_fx_slot_volume(
 		const EaxxEaxCall& eax_call);
 
-	[[nodiscard]] bool set_fx_slot_lock(
+	void set_fx_slot_lock(
 		const EaxxEaxCall& eax_call);
 
-	[[nodiscard]] bool set_fx_slot_flags(
+	void set_fx_slot_flags(
 		const EaxxEaxCall& eax_call);
 
 	[[nodiscard]] bool set_fx_slot_occlusion(
@@ -238,50 +222,14 @@ private:
 	[[nodiscard]] bool set_fx_slot_all(
 		const EaxxEaxCall& eax_call);
 
-
-	void set_reverb_environment();
-
-	void set_reverb_room();
-
-	void set_reverb_reflections_pan();
-
-	void set_reverb_reverb_pan();
-
-	void set_reverb_all();
-
-
-	void ensure_reverb_effect();
-
-
-	void set_reverb_all(
-		const EAXREVERBPROPERTIES& eax_reverb);
-
-	void set_reverb_environment(
-		unsigned long eax_reverb_environment);
-
-	void set_reverb_room(
-		long eax_reverb_room);
-
-	void set_reverb_reflections_pan(
-		const EAXVECTOR& eax_reverb_reflections_pan);
-
-	void set_reverb_reverb_pan(
-		const EAXVECTOR& eax_reverb_pan);
-
-
-	[[nodiscard]] bool set_reverb_all(
+	bool set_fx_slot(
 		const EaxxEaxCall& eax_call);
 
-	[[nodiscard]] bool set_reverb_environment(
+	[[nodiscard]] bool set(
 		const EaxxEaxCall& eax_call);
 
-	[[nodiscard]] bool set_reverb_room(
-		const EaxxEaxCall& eax_call);
 
-	[[nodiscard]] bool set_reverb_reflections_pan(
-		const EaxxEaxCall& eax_call);
-
-	[[nodiscard]] bool set_reverb_reverb_pan(
+	void dispatch_effect(
 		const EaxxEaxCall& eax_call);
 }; // EaxxFxSlot
 

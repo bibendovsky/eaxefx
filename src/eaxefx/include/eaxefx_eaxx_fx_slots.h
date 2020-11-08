@@ -51,39 +51,17 @@ public:
 	EaxxFxSlot& get(
 		EaxxFxSlotIndex index);
 
-	int get_max_active_count() const noexcept;
-
-	void set_max_active_count(
-		int max_active_count);
-
-	const GUID& get_primary_id() const noexcept;
-
-	EaxxFxSlotIndex get_primary_index() const noexcept;
-
-	EaxxFxSlotIndex resolve_fx_slot_index(
-		const GUID& eax_id) const;
-
-	void set_primary(
-		const GUID& primary_id);
-
 
 private:
 	using Items = std::array<EaxxFxSlot, EAX_MAX_FXSLOTS>;
 
 
-	Items items_{};
-	int max_active_count_{};
-	EaxxFxSlotIndex primary_index_{};
-	GUID primary_id_{};
+	Items fx_slots_{};
 
 
 	void initialize_fx_slots();
 
 	void initialize_default_slot();
-
-
-	static EaxxFxSlotIndex eax_id_to_index(
-		const GUID& eax_id);
 }; // EaxxFxSlots
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

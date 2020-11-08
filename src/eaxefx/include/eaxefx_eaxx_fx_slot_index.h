@@ -29,7 +29,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #define EAXEFX_EAXX_FX_SLOT_INDEX_INCLUDED
 
 
-#include <optional>
+#include "eaxefx_eax_api.h"
 
 
 namespace eaxefx
@@ -38,7 +38,62 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-using EaxxFxSlotIndex = std::optional<int>;
+using EaxxFxSlotIndexValue = int;
+
+
+class EaxxFxSlotIndex
+{
+public:
+	EaxxFxSlotIndex() noexcept;
+
+	EaxxFxSlotIndex(
+		EaxxFxSlotIndexValue index);
+
+	EaxxFxSlotIndex(
+		const EaxxFxSlotIndex& rhs) noexcept;
+
+	void operator=(
+		EaxxFxSlotIndexValue index);
+
+	void operator=(
+		const GUID& guid);
+
+	void operator=(
+		const EaxxFxSlotIndex& rhs) noexcept;
+
+
+	bool has_value() const noexcept;
+
+	EaxxFxSlotIndexValue get() const;
+
+	void reset() noexcept;
+
+	void set(
+		EaxxFxSlotIndexValue index);
+
+	void set(
+		const GUID& guid);
+
+	operator EaxxFxSlotIndexValue() const;
+
+
+private:
+	bool has_value_;
+	EaxxFxSlotIndexValue value_;
+}; // EaxxFxSlotIndex
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+bool operator==(
+	const EaxxFxSlotIndex& lhs,
+	const EaxxFxSlotIndex& rhs) noexcept;
+
+bool operator!=(
+	const EaxxFxSlotIndex& lhs,
+	const EaxxFxSlotIndex& rhs) noexcept;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

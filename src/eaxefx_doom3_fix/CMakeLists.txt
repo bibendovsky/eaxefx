@@ -26,7 +26,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 cmake_minimum_required (VERSION 3.8.2 FATAL_ERROR)
-project (eaxefx_doom3_fix VERSION 1.0.0 LANGUAGES CXX)
+project (eaxefx_doom3_fix VERSION 1.0.1 LANGUAGES CXX)
 
 
 if (NOT WIN32)
@@ -107,6 +107,10 @@ target_compile_definitions (
 	${PROJECT_NAME}
 	PRIVATE
 		"EAXEFX_DOOM3_FIX_VERSION=\"${EAXEFX_DOOM3_FIX_VERSION}\""
+		_UNICODE
+		UNICODE
+		NOMINMAX
+		WIN32_LEAN_AND_MEAN
 		$<$<CXX_COMPILER_ID:MSVC>:_CRT_SECURE_NO_WARNINGS>
 		$<$<CXX_COMPILER_ID:MSVC>:_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS>
 )
@@ -118,7 +122,8 @@ target_compile_definitions (
 target_compile_options (
 	${PROJECT_NAME}
 	PRIVATE
-		$<$<CXX_COMPILER_ID:MSVC>:/W4>
+		$<$<CXX_COMPILER_ID:MSVC>:-W4 -MP -arch:IA32 -GR->
+		$<$<CXX_COMPILER_ID:MSVC>:$<$<NOT:$<CONFIG:DEBUG>>:-Oy -GS->>
 		$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
 )
 

@@ -35,6 +35,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_encoding.h"
 #include "eaxefx_exception.h"
 #include "eaxefx_shared_library.h"
+#include "eaxefx_string.h"
 
 
 namespace eaxefx::thread
@@ -42,7 +43,7 @@ namespace eaxefx::thread
 
 
 void set_name(
-	const std::string& utf8_name)
+	const String& utf8_name)
 {
 	auto shared_library = make_shared_library("kernel32.dll");
 

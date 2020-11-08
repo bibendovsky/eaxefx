@@ -30,17 +30,16 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 #include <atomic>
 #include <chrono>
-#include <condition_variable>
 #include <deque>
-#include <fstream>
-#include <iostream>
 #include <iterator>
 #include <memory>
 #include <mutex>
 #include <string_view>
-#include <string>
-#include <thread>
 
+#include "eaxefx_condition_variable.h"
+#include "eaxefx_console.h"
+#include "eaxefx_file.h"
+#include "eaxefx_mutex.h"
 #include "eaxefx_process.h"
 #include "eaxefx_system_time.h"
 #include "eaxefx_thread.h"
@@ -53,19 +52,19 @@ namespace eaxefx
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void Logger::info(
-	const std::string& message) noexcept
+	const String& message) noexcept
 {
 	write(LoggerMessageType::info, message);
 }
 
 void Logger::warning(
-	const std::string& message) noexcept
+	const String& message) noexcept
 {
 	write(LoggerMessageType::warning, message);
 }
 
 void Logger::error(
-	const std::string& message) noexcept
+	const String& message) noexcept
 {
 	write(LoggerMessageType::error, message);
 }
@@ -73,15 +72,15 @@ void Logger::error(
 void Logger::error(
 	const std::exception& exception) noexcept
 {
-	write(exception, 0);
+	write(exception);
 }
 
 void Logger::error(
 	const std::exception& exception,
-	const std::string& message) noexcept
+	const String& message) noexcept
 {
 	error(message);
-	write(exception, 1);
+	write(exception);
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -92,12 +91,12 @@ void Logger::error(
 struct LoggerMessage
 {
 	LoggerMessageType type{};
-	std::string message{};
+	String message{};
 
 
 	LoggerMessage(
 		LoggerMessageType type,
-		const std::string& message)
+		const String& message)
 		:
 		type{type},
 		message{message}
@@ -127,28 +126,25 @@ public:
 
 	void write(
 		LoggerMessageType message_type,
-		const std::string& message) noexcept override;
+		const String& message) noexcept override;
 
 	void write(
-		const std::exception& ex,
-		int level) noexcept override;
+		const std::exception& ex) noexcept override;
 
 
 private:
 	static constexpr auto min_level = 0;
 	static constexpr auto max_level = 32;
 
-	using Mutex = std::mutex;
-	using CondVar = std::condition_variable;
 	using Messages = std::deque<LoggerMessage>;
 
 
 	bool skip_message_prefix_{};
-	bool has_console_sink_{};
 	bool is_shared_library_{};
-	std::filesystem::path path_{};
-	std::string timestamp_buffer_{};
-	std::string message_buffer_{};
+	Console* console_{};
+	String path_{};
+	String timestamp_buffer_{};
+	String message_buffer_{};
 	bool has_messages_{};
 	bool is_flushing_{};
 	bool is_flushing_ack_{};
@@ -157,16 +153,16 @@ private:
 	Messages messages_{};
 	Messages mt_messages_{};
 	Mutex mutex_{};
-	CondVar cv_{};
-	CondVar cv_ack_{};
+	ConditionVariable cv_{};
+	ConditionVariable cv_ack_{};
 	ThreadUPtr thread_{};
 
 
 	void clear_log_file();
 
-	static std::string make_timestamp_buffer();
+	static String make_timestamp_buffer();
 
-	static std::string make_message_buffer();
+	static String make_message_buffer();
 
 	void write_messages(
 		Messages& messages) noexcept;
@@ -179,8 +175,7 @@ private:
 	void thread_func();
 
 	void write_internal(
-		const std::exception& ex,
-		int level);
+		const std::exception& ex);
 
 	void set_immediate_mode_internal() noexcept;
 }; // LoggerImpl
@@ -194,11 +189,14 @@ LoggerImpl::LoggerImpl(
 	const LoggerParam& param)
 	:
 	skip_message_prefix_{param.skip_message_prefix},
-	has_console_sink_{param.has_console_sink},
 	is_shared_library_{process::is_shared_library()},
+	console_{param.console},
 	path_{param.path},
 	timestamp_buffer_{make_timestamp_buffer()},
-	message_buffer_{make_message_buffer()}
+	message_buffer_{make_message_buffer()},
+	mutex_{},
+	cv_{},
+	cv_ack_{}
 {
 	clear_log_file();
 
@@ -235,13 +233,10 @@ void LoggerImpl::flush() noexcept
 
 		auto lock = std::unique_lock{mutex_};
 
-		cv_ack_.wait(
-			lock,
-			[this]()
-			{
-				return is_flushing_ack_;
-			}
-		);
+		while (!is_flushing_ack_)
+		{
+			cv_ack_.wait(lock);
+		}
 	}
 }
 
@@ -252,7 +247,7 @@ void LoggerImpl::set_immediate_mode() noexcept
 
 void LoggerImpl::write(
 	LoggerMessageType message_type,
-	const std::string& message) noexcept
+	const String& message) noexcept
 try
 {
 	{
@@ -275,32 +270,34 @@ catch (...)
 }
 
 void LoggerImpl::write(
-	const std::exception& ex,
-	int level) noexcept
+	const std::exception& ex) noexcept
 try
 {
-	write_internal(ex, std::clamp(level, min_level, max_level));
+	write_internal(ex);
 }
 catch (...)
 {
 }
 
 void LoggerImpl::clear_log_file()
+try
 {
-	auto filebuf = std::filebuf{};
-	filebuf.open(path_, std::ios_base::binary | std::ios_base::out | std::ios_base::trunc);
+	make_file(path_, FileOpenMode{file_open_mode_write | file_open_mode_truncate});
+}
+catch (const std::exception&)
+{
 }
 
-std::string LoggerImpl::make_timestamp_buffer()
+String LoggerImpl::make_timestamp_buffer()
 {
-	auto message_buffer = std::string{};
+	auto message_buffer = String{};
 	message_buffer.resize(23);
 	return message_buffer;
 }
 
-std::string LoggerImpl::make_message_buffer()
+String LoggerImpl::make_message_buffer()
 {
-	auto message_buffer = std::string{};
+	auto message_buffer = String{};
 	message_buffer.reserve(2048);
 	return message_buffer;
 }
@@ -314,8 +311,8 @@ try
 		return;
 	}
 
-	auto filebuf = std::filebuf{};
-	filebuf.open(path_, std::ios_base::binary | std::ios_base::app);
+	auto file = make_file(path_, FileOpenMode{file_open_mode_write});
+	file->move_to_the_end();
 
 	for (const auto& message : messages)
 	{
@@ -371,19 +368,24 @@ try
 
 		message_buffer_ += '\n';
 
-		filebuf.sputn(message_buffer_.c_str(), message_buffer_.size());
+		file->write(message_buffer_.c_str(), static_cast<int>(message_buffer_.size()));
 
-		if (has_console_sink_)
+		if (console_ != nullptr)
 		{
-			auto& stream = is_error_for_console ? std::cerr : std::cout;
-			stream << message_buffer_;
+			if (is_error_for_console)
+			{
+				console_->write_error(message_buffer_);
+			}
+			else
+			{
+				console_->write(message_buffer_);
+			}
 		}
 	}
 
-	if (has_console_sink_ && !messages.empty())
+	if (console_ != nullptr && !messages.empty())
 	{
-		std::cout.flush();
-		std::cerr.flush();
+		console_->flush();
 	}
 
 	messages.clear();
@@ -416,13 +418,10 @@ try
 		{
 			auto lock = std::unique_lock{mutex_};
 
-			cv_.wait(
-				lock,
-				[this]()
-				{
-					return is_quit_thread_ || is_flushing_ || has_messages_;
-				}
-			);
+			while (!is_quit_thread_ && !is_flushing_ && !has_messages_)
+			{
+				cv_.wait(lock);
+			}
 
 			has_messages_ = false;
 
@@ -464,31 +463,9 @@ catch (const std::exception&)
 }
 
 void LoggerImpl::write_internal(
-	const std::exception& ex,
-	int level)
+	const std::exception& ex)
 {
-	const auto what = ex.what();
-
-	auto message = std::string{};
-	message.reserve(level + std::string::traits_type::length(what));
-
-	for (auto i = 0; i < level; ++i)
-	{
-		message += ' ';
-	}
-
-	message += what;
-
-	error(message);
-
-	try
-	{
-		std::rethrow_if_nested(ex);
-	}
-	catch (const std::exception& ex)
-	{
-		write_internal(ex, level + 1);
-	}
+	error(ex.what());
 }
 
 void LoggerImpl::set_immediate_mode_internal() noexcept
@@ -511,23 +488,21 @@ try
 	{
 		auto lock = std::unique_lock{mutex_};
 
-		const auto predicate = [this]()
-		{
-			return is_quit_thread_ack_;
-		};
-
 		if (is_shared_library_)
 		{
-			// If logger instance was created inside DLL we can't wait infinitely.
+			// If logger instance was created inside DLL we can't wait indefinitely.
 			// Threads could be already terminated.
 
 			constexpr auto wait_duration_ms = std::chrono::milliseconds{10};
 
-			cv_ack_.wait_for(lock, wait_duration_ms, predicate );
+			cv_ack_.wait_for(lock, wait_duration_ms);
 		}
 		else
 		{
-			cv_ack_.wait(lock, predicate);
+			while (!is_quit_thread_ack_)
+			{
+				cv_ack_.wait(lock);
+			}
 		}
 	}
 

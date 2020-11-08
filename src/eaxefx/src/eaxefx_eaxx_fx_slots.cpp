@@ -60,14 +60,9 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void EaxxFxSlots::initialize()
-try
 {
 	initialize_fx_slots();
 	initialize_default_slot();
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxFxSlotsException{"Failed to initialize."});
 }
 
 EaxxFxSlot& EaxxFxSlots::get(
@@ -78,58 +73,7 @@ EaxxFxSlot& EaxxFxSlots::get(
 		throw EaxxFxSlotsException{"Empty index."};
 	}
 
-	if (index < 0 || index >= EAX_MAX_FXSLOTS)
-	{
-		throw EaxxFxSlotsException{"Index out of range."};
-	}
-
-	return items_[index.value()];
-}
-
-int EaxxFxSlots::get_max_active_count() const noexcept
-{
-	return max_active_count_;
-}
-
-void EaxxFxSlots::set_max_active_count(
-	int max_active_count)
-{
-	if (max_active_count <= 0 || max_active_count > EAX_MAX_FXSLOTS)
-	{
-		throw EaxxFxSlotsException{"Active index out of range."};
-	}
-
-	max_active_count_ = max_active_count;
-}
-
-const GUID& EaxxFxSlots::get_primary_id() const noexcept
-{
-	return primary_id_;
-}
-
-EaxxFxSlotIndex EaxxFxSlots::get_primary_index() const noexcept
-{
-	return primary_index_;
-}
-
-EaxxFxSlotIndex EaxxFxSlots::resolve_fx_slot_index(
-	const GUID& eax_id) const
-{
-	if (eax_id == EAX_PrimaryFXSlotID)
-	{
-		return primary_index_;
-	}
-	else
-	{
-		return eax_id_to_index(eax_id);
-	}
-}
-
-void EaxxFxSlots::set_primary(
-	const GUID& primary_id)
-{
-	primary_index_ = eax_id_to_index(primary_id);
-	primary_id_ = primary_id;
+	return fx_slots_[index.get()];
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -139,7 +83,7 @@ void EaxxFxSlots::set_primary(
 
 void EaxxFxSlots::initialize_fx_slots()
 {
-	for (auto& fx_slot : items_)
+	for (auto& fx_slot : fx_slots_)
 	{
 		fx_slot.initialize();
 	}
@@ -147,39 +91,11 @@ void EaxxFxSlots::initialize_fx_slots()
 
 void EaxxFxSlots::initialize_default_slot()
 {
-	items_.front().set_fx_slot_default_effect();
-}
+	auto fx_slot_index = 0;
 
-EaxxFxSlotIndex EaxxFxSlots::eax_id_to_index(
-	const GUID& eax_id)
-{
-	if (eax_id == EAX_NULL_GUID)
+	for (auto& fx_slot : fx_slots_)
 	{
-		return EaxxFxSlotIndex{};
-	}
-	else if (eax_id == EAXPROPERTYID_EAX40_FXSlot0 ||
-		eax_id == EAXPROPERTYID_EAX50_FXSlot0)
-	{
-		return EaxxFxSlotIndex{0};
-	}
-	else if (eax_id == EAXPROPERTYID_EAX40_FXSlot1 ||
-		eax_id == EAXPROPERTYID_EAX50_FXSlot1)
-	{
-		return EaxxFxSlotIndex{1};
-	}
-	else if (eax_id == EAXPROPERTYID_EAX40_FXSlot2 ||
-		eax_id == EAXPROPERTYID_EAX50_FXSlot2)
-	{
-		return EaxxFxSlotIndex{2};
-	}
-	else if (eax_id == EAXPROPERTYID_EAX40_FXSlot3 ||
-		eax_id == EAXPROPERTYID_EAX50_FXSlot3)
-	{
-		return EaxxFxSlotIndex{3};
-	}
-	else
-	{
-		throw EaxxFxSlotsException{"Unsupported id."};
+		fx_slot.set_fx_slot_default_effect(fx_slot_index++);
 	}
 }
 

@@ -56,15 +56,12 @@ SystemTime make_system_time() noexcept
 
 void make_system_time_string(
 	const SystemTime& system_time,
-	std::string& system_time_string)
+	String& system_time_string)
 {
 	// YYYY-MM-DD HH:mm:ss.sss
 	constexpr auto max_string_length = 23;
 
-	if (system_time_string.size() < max_string_length)
-	{
-		system_time_string.resize(max_string_length);
-	}
+	system_time_string.resize(max_string_length);
 
 	const auto number_to_string = [](
 		int number,

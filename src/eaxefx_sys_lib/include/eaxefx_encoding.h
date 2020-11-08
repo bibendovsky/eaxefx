@@ -29,7 +29,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #define EAXEFX_ENCODING_INCLUDED
 
 
-#include <string>
+#include "eaxefx_string.h"
 
 
 namespace eaxefx::encoding
@@ -38,8 +38,19 @@ namespace eaxefx::encoding
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-std::u16string to_utf16(
-	const std::string& utf8_string);
+U16String to_utf16(
+	const char* utf8_string);
+
+U16String to_utf16(
+	const String& utf8_string);
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+String to_utf8(
+	const char16_t* utf16_string);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

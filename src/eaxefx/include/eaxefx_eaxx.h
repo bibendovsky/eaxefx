@@ -89,16 +89,16 @@ public:
 
 
 	virtual ALenum EAXSet(
-		const GUID* property_set_id,
+		const GUID* property_set_guid,
 		ALuint property_id,
-		ALuint al_name,
+		ALuint property_al_name,
 		ALvoid* property_buffer,
 		ALuint property_size) noexcept = 0;
 
 	virtual ALenum EAXGet(
-		const GUID* property_set_id,
+		const GUID* property_set_guid,
 		ALuint property_id,
-		ALuint al_name,
+		ALuint property_al_name,
 		ALvoid* property_buffer,
 		ALuint property_size) noexcept = 0;
 }; // Eaxx

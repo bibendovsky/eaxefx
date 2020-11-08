@@ -26,7 +26,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 cmake_minimum_required (VERSION 3.8.2 FATAL_ERROR)
-project (eaxefx VERSION 1.0.1 LANGUAGES CXX)
+project (eaxefx VERSION 1.0.2 LANGUAGES CXX)
 
 
 if (NOT WIN32)
@@ -122,6 +122,9 @@ target_compile_definitions (
 	${PROJECT_NAME}
 	PRIVATE
 		"EAXEFX_VERSION=\"${EAXEFX_VERSION}\""
+		_UNICODE
+		UNICODE
+		NOMINMAX
 		WIN32_LEAN_AND_MEAN
 		"AL_API=__declspec(dllexport)"
 		"ALC_API=__declspec(dllexport)"
@@ -136,7 +139,8 @@ target_compile_definitions (
 target_compile_options (
 	${PROJECT_NAME}
 	PRIVATE
-		$<$<CXX_COMPILER_ID:MSVC>:/W4>
+		$<$<CXX_COMPILER_ID:MSVC>:-W4 -MP -arch:IA32 -GR->
+		$<$<CXX_COMPILER_ID:MSVC>:$<$<NOT:$<CONFIG:DEBUG>>:-Oy -GS->>
 		$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
 )
 
@@ -215,11 +219,28 @@ target_sources (
 		include/eaxefx_eax_api.h
 		include/eaxefx_eaxx.h
 		include/eaxefx_eaxx_context.h
+		include/eaxefx_eaxx_context_shared.h
 		include/eaxefx_eaxx_eax_call.h
 		include/eaxefx_eaxx_fx_slot.h
 		include/eaxefx_eaxx_fx_slot_index.h
 		include/eaxefx_eaxx_fx_slots.h
 		include/eaxefx_eaxx_source.h
+		include/eaxefx_eaxx_validators.h
+
+		include/eaxefx_eaxx_effect.h
+		include/eaxefx_eaxx_null_effect.h
+		include/eaxefx_eaxx_auto_wah_effect.h
+		include/eaxefx_eaxx_chorus_effect.h
+		include/eaxefx_eaxx_compressor_effect.h
+		include/eaxefx_eaxx_distortion_effect.h
+		include/eaxefx_eaxx_eax_reverb_effect.h
+		include/eaxefx_eaxx_echo_effect.h
+		include/eaxefx_eaxx_equalizer_effect.h
+		include/eaxefx_eaxx_flanger_effect.h
+		include/eaxefx_eaxx_frequency_shifter_effect.h
+		include/eaxefx_eaxx_pitch_shifter_effect.h
+		include/eaxefx_eaxx_ring_modulator_effect.h
+		include/eaxefx_eaxx_vocal_morpher_effect.h
 )
 
 
@@ -237,11 +258,30 @@ target_sources (
 		src/eaxefx_al_uresources.cpp
 		src/eaxefx_eax_api.cpp
 		src/eaxefx_eaxx.cpp
+		src/eaxefx_eaxx_eax_call.cpp
 		src/eaxefx_eaxx_context.cpp
+		src/eaxefx_eaxx_context_shared.cpp
 		src/eaxefx_eaxx_fx_slot.cpp
+		src/eaxefx_eaxx_fx_slot_index.cpp
 		src/eaxefx_eaxx_fx_slots.cpp
 		src/eaxefx_eaxx_source.cpp
 		src/eaxefx_main.cpp
+
+		src/eaxefx_eaxx_effect.cpp
+		src/eaxefx_eaxx_null_effect.cpp
+		src/eaxefx_eaxx_auto_wah_effect.cpp
+		src/eaxefx_eaxx_chorus_effect.cpp
+		src/eaxefx_eaxx_compressor_effect.cpp
+		src/eaxefx_eaxx_distortion_effect.cpp
+		src/eaxefx_eaxx_eax_reverb_effect.cpp
+		src/eaxefx_eaxx_echo_effect.cpp
+		src/eaxefx_eaxx_equalizer_effect.cpp
+		src/eaxefx_eaxx_flanger_effect.cpp
+		src/eaxefx_eaxx_frequency_shifter_effect.cpp
+		src/eaxefx_eaxx_pitch_shifter_effect.cpp
+		src/eaxefx_eaxx_ring_modulator_effect.cpp
+		src/eaxefx_eaxx_vocal_morpher_effect.cpp
+
 		"${PROJECT_BINARY_DIR}/src/eaxefx.rc"
 )
 

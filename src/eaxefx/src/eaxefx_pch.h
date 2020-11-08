@@ -32,19 +32,20 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <chrono>
 #include <deque>
 #include <exception>
-#include <filesystem>
-#include <fstream>
 #include <functional>
 #include <iterator>
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <string>
 #include <string_view>
-#include <thread>
 #include <unordered_map>
 #include <vector>
 
 #include "AL/al.h"
 #include "AL/alc.h"
 #include "AL/efx.h"
+
+#include "eaxefx_exception.h"
+#include "eaxefx_platform.h"
+#include "eaxefx_not_null.h"
+#include "eaxefx_string.h"

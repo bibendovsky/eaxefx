@@ -25,7 +25,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include <filesystem>
 #include <functional>
 #include <memory>
 #include <string_view>
@@ -41,6 +40,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_eax_api.h"
 #include "eaxefx_eaxx.h"
 #include "eaxefx_exception.h"
+#include "eaxefx_file_system.h"
 #include "eaxefx_logger.h"
 #include "eaxefx_shared_library.h"
 
@@ -298,7 +298,7 @@ try
 }
 catch (const std::exception& ex)
 {
-	logger_->write(ex, 0);
+	logger_->write(ex);
 }
 
 void AlApi::initialize_al_shared_library()
@@ -318,13 +318,11 @@ void AlApi::initialize_al_shared_library()
 
 	for (const auto& known_name : known_names)
 	{
-		const auto path = std::filesystem::path{known_name};
+		const auto path = String{known_name};
 
-		std::error_code error_code;
-
-		if (std::filesystem::exists(path, error_code))
+		if (file_system::is_exists(path))
 		{
-			const auto name = std::string{known_name};
+			const auto name = String{known_name};
 
 			try
 			{
@@ -335,7 +333,7 @@ void AlApi::initialize_al_shared_library()
 			}
 			catch (const std::exception& ex)
 			{
-				logger_->error(ex, "Failed to load a driver.");
+				logger_->error(ex);
 			}
 		}
 	}
@@ -351,7 +349,7 @@ try
 {
 	auto logger_param = LoggerParam{};
 	logger_param.skip_message_prefix = false;
-	logger_param.has_console_sink = false;
+	logger_param.console = nullptr;
 	logger_param.path = "eaxefx_log.txt";
 
 	logger_ = make_logger(logger_param);
@@ -377,7 +375,7 @@ catch (const std::exception& ex)
 {
 	if (logger_ != nullptr)
 	{
-		logger_->write(ex, 0);
+		logger_->write(ex);
 	}
 }
 
@@ -1244,9 +1242,9 @@ ALC_API void ALC_APIENTRY alcCaptureSamples(
 //
 
 AL_API ALenum AL_APIENTRY EAXSet(
-	const GUID* property_set_id,
+	const GUID* property_set_guid,
 	ALuint property_id,
-	ALuint al_name,
+	ALuint property_al_name,
 	ALvoid* property_buffer,
 	ALuint property_size)
 {
@@ -1254,7 +1252,13 @@ AL_API ALenum AL_APIENTRY EAXSet(
 
 	if (al_api.is_initialized())
 	{
-		return al_api.get_eaxx()->EAXSet(property_set_id, property_id, al_name, property_buffer, property_size);
+		return al_api.get_eaxx()->EAXSet(
+			property_set_guid,
+			property_id,
+			property_al_name,
+			property_buffer,
+			property_size
+		);
 	}
 	else
 	{
@@ -1263,9 +1267,9 @@ AL_API ALenum AL_APIENTRY EAXSet(
 }
 
 AL_API ALenum AL_APIENTRY EAXGet(
-	const GUID* property_set_id,
+	const GUID* property_set_guid,
 	ALuint property_id,
-	ALuint al_name,
+	ALuint property_al_name,
 	ALvoid* property_buffer,
 	ALuint property_size)
 {
@@ -1273,7 +1277,13 @@ AL_API ALenum AL_APIENTRY EAXGet(
 
 	if (al_api.is_initialized())
 	{
-		return al_api.get_eaxx()->EAXGet(property_set_id, property_id, al_name, property_buffer, property_size);
+		return al_api.get_eaxx()->EAXGet(
+			property_set_guid,
+			property_id,
+			property_al_name,
+			property_buffer,
+			property_size
+		);
 	}
 	else
 	{

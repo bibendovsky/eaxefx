@@ -88,17 +88,51 @@ void EfxEffectObjectDeleter::operator()(
 	alDeleteEffects_(1, &al_name);
 }
 
-EfxEffectObject make_efx_effect_object()
+EfxEffectObject make_efx_effect_object(
+	ALint al_effect_type)
 {
-	auto al_effect_name = ALuint{};
-	alGenEffects_(1, &al_effect_name);
-
-	if (al_effect_name == 0)
+	switch (al_effect_type)
 	{
-		throw AlObjectException{"Failed to create EFX effect."};
+		case AL_EFFECT_NULL:
+		case AL_EFFECT_CHORUS:
+		case AL_EFFECT_DISTORTION:
+		case AL_EFFECT_ECHO:
+		case AL_EFFECT_FLANGER:
+		case AL_EFFECT_FREQUENCY_SHIFTER:
+		case AL_EFFECT_VOCAL_MORPHER:
+		case AL_EFFECT_PITCH_SHIFTER:
+		case AL_EFFECT_RING_MODULATOR:
+		case AL_EFFECT_AUTOWAH:
+		case AL_EFFECT_COMPRESSOR:
+		case AL_EFFECT_EQUALIZER:
+		case AL_EFFECT_EAXREVERB:
+			break;
+
+		default:
+			throw AlObjectException{"Unsupported AL effect type."};
 	}
 
-	return EfxEffectObject{al_effect_name};
+	auto al_effect = ALuint{};
+	alGenEffects_(1, &al_effect);
+
+	if (al_effect == 0)
+	{
+		throw AlObjectException{"Failed to create AL effect object."};
+	}
+
+	auto efx_effect_object = EfxEffectObject{al_effect};
+
+	auto new_al_effect_type = ALint{-1};
+
+	alEffecti_(al_effect, AL_EFFECT_TYPE, al_effect_type);
+	alGetEffecti_(al_effect, AL_EFFECT_TYPE, &new_al_effect_type);
+
+	if (new_al_effect_type != al_effect_type)
+	{
+		throw AlObjectException{"Failed to set AL effect type."};
+	}
+
+	return efx_effect_object;
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

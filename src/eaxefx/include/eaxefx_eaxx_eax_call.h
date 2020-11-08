@@ -41,6 +41,20 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+enum class EaxxEaxCallPropertySetId
+{
+	none,
+	context,
+	fx_slot,
+	source,
+	fx_slot_effect,
+}; // EaxxEaxCallPropertySetId
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 template<
 	typename T
 >
@@ -55,17 +69,30 @@ struct EaxxEaxCallSpan
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-struct EaxxEaxCall
+class EaxxEaxCall
 {
-	bool is_get{};
-	int version{};
-	EaxxFxSlotIndex fx_slot_index{};
+public:
+	EaxxEaxCall(
+		bool is_get,
+		const GUID* property_set_guid,
+		ALuint property_id,
+		ALuint property_al_name,
+		ALvoid* property_buffer,
+		ALuint property_size);
 
-	const GUID* property_set_id{};
-	ALuint property_id{};
-	ALuint property_al_name{};
-	ALvoid* property_buffer{};
-	ALuint property_size{};
+	bool is_get() const noexcept;
+
+	bool is_deferred() const noexcept;
+
+	int get_version() const noexcept;
+
+	EaxxEaxCallPropertySetId get_property_set_id() const noexcept;
+
+	ALuint get_property_id() const noexcept;
+
+	ALuint get_property_al_name() const noexcept;
+
+	EaxxFxSlotIndex get_fx_slot_index() const noexcept;
 
 
 	template<
@@ -74,17 +101,12 @@ struct EaxxEaxCall
 	>
 	TValue& get_value() const
 	{
-		if (property_buffer == nullptr)
-		{
-			throw TException{"Null property buffer."};
-		}
-
-		if (property_size < static_cast<ALuint>(sizeof(TValue)))
+		if (property_size_ < static_cast<ALuint>(sizeof(TValue)))
 		{
 			throw TException{"Property buffer too small."};
 		}
 
-		return *static_cast<TValue*>(property_buffer);
+		return *static_cast<TValue*>(property_buffer_);
 	}
 
 	template<
@@ -93,19 +115,14 @@ struct EaxxEaxCall
 	>
 	EaxxEaxCallSpan<TValue> get_values() const
 	{
-		if (property_buffer == nullptr)
-		{
-			throw TException{"Null property buffer."};
-		}
-
-		if (property_size < static_cast<ALuint>(sizeof(TValue)))
+		if (property_size_ < static_cast<ALuint>(sizeof(TValue)))
 		{
 			throw TException{"Property buffer too small."};
 		}
 
-		const auto count = static_cast<int>(property_size / sizeof(TValue));
+		const auto count = static_cast<int>(property_size_ / sizeof(TValue));
 
-		return EaxxEaxCallSpan<TValue>{count, static_cast<TValue*>(property_buffer)};
+		return EaxxEaxCallSpan<TValue>{count, static_cast<TValue*>(property_buffer_)};
 	}
 
 	template<
@@ -116,7 +133,41 @@ struct EaxxEaxCall
 	{
 		get_value<TException, TValue>() = value;
 	}
+
+
+private:
+	bool is_get_;
+	bool is_deferred_;
+	int version_;
+	EaxxFxSlotIndex fx_slot_index_;
+	EaxxEaxCallPropertySetId property_set_id_;
+
+	GUID property_set_guid_;
+	ALuint property_id_;
+	ALuint property_al_name_;
+	ALvoid* property_buffer_;
+	ALuint property_size_;
+
+
+	static ALuint convert_eax_2_listener_property_id(
+		ALuint property_id);
+
+	static ALuint convert_eax_2_buffer_property_id(
+		ALuint property_id);
 }; // EaxxEaxCall
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+EaxxEaxCall make_eax_call(
+	bool is_get,
+	const GUID* property_set_id,
+	ALuint property_id,
+	ALuint property_al_name,
+	ALvoid* property_buffer,
+	ALuint property_size);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

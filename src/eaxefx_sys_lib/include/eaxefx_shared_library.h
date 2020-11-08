@@ -29,9 +29,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #define EAXEFX_SHARED_LIBRARY_INCLUDED
 
 
-#include <filesystem>
 #include <memory>
-#include <string_view>
+
+#include "eaxefx_string.h"
 
 
 namespace eaxefx
@@ -60,7 +60,7 @@ public:
 using SharedLibraryUPtr = std::unique_ptr<SharedLibrary>;
 
 SharedLibraryUPtr make_shared_library(
-	const std::filesystem::path& path);
+	const String& path);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

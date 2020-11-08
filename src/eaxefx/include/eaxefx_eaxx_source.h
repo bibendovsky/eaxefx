@@ -34,6 +34,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "AL/al.h"
 
 #include "eaxefx_al_low_pass_param.h"
+#include "eaxefx_eaxx_context_shared.h"
 #include "eaxefx_eaxx_eax_call.h"
 #include "eaxefx_eaxx_fx_slots.h"
 
@@ -48,8 +49,108 @@ struct EaxxSourceInitParam
 {
 	ALuint al_source{};
 	ALuint al_filter{};
-	EaxxFxSlots* fx_slots{};
+	EaxxContextShared* context_shared{};
 }; // EaxxSourceInitParam
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+using EaxxSourceSourceDirtyFilterFlagsValue = unsigned int;
+
+struct EaxxSourceSourceDirtyFilterFlags
+{
+	EaxxSourceSourceDirtyFilterFlagsValue lDirect : 1;
+	EaxxSourceSourceDirtyFilterFlagsValue lDirectHF : 1;
+	EaxxSourceSourceDirtyFilterFlagsValue lRoom : 1;
+	EaxxSourceSourceDirtyFilterFlagsValue lRoomHF : 1;
+	EaxxSourceSourceDirtyFilterFlagsValue lObstruction : 1;
+	EaxxSourceSourceDirtyFilterFlagsValue flObstructionLFRatio : 1;
+	EaxxSourceSourceDirtyFilterFlagsValue lOcclusion : 1;
+	EaxxSourceSourceDirtyFilterFlagsValue flOcclusionLFRatio : 1;
+	EaxxSourceSourceDirtyFilterFlagsValue flOcclusionRoomRatio : 1;
+	EaxxSourceSourceDirtyFilterFlagsValue flOcclusionDirectRatio : 1;
+	EaxxSourceSourceDirtyFilterFlagsValue lExclusion : 1;
+	EaxxSourceSourceDirtyFilterFlagsValue flExclusionLFRatio : 1;
+}; // EaxxSourceSourceDirtyFlags
+
+static_assert(sizeof(EaxxSourceSourceDirtyFilterFlags) == sizeof(EaxxSourceSourceDirtyFilterFlagsValue));
+
+bool operator==(
+	const EaxxSourceSourceDirtyFilterFlags& lhs,
+	const EaxxSourceSourceDirtyFilterFlags& rhs) noexcept;
+
+bool operator!=(
+	const EaxxSourceSourceDirtyFilterFlags& lhs,
+	const EaxxSourceSourceDirtyFilterFlags& rhs) noexcept;
+
+
+using EaxxSourceSourceDirtyMiscFlagsValue = unsigned int;
+
+struct EaxxSourceSourceDirtyMiscFlags
+{
+	EaxxSourceSourceDirtyMiscFlagsValue lOutsideVolumeHF : 1;
+	EaxxSourceSourceDirtyMiscFlagsValue flDopplerFactor : 1;
+	EaxxSourceSourceDirtyMiscFlagsValue flRolloffFactor : 1;
+	EaxxSourceSourceDirtyMiscFlagsValue flRoomRolloffFactor : 1;
+	EaxxSourceSourceDirtyMiscFlagsValue flAirAbsorptionFactor : 1;
+	EaxxSourceSourceDirtyMiscFlagsValue ulFlags : 1;
+	EaxxSourceSourceDirtyMiscFlagsValue flMacroFXFactor : 1;
+}; // EaxxSourceSourceMiscDirtyFlags
+
+static_assert(sizeof(EaxxSourceSourceDirtyMiscFlags) == sizeof(EaxxSourceSourceDirtyMiscFlagsValue));
+
+bool operator==(
+	const EaxxSourceSourceDirtyMiscFlags& lhs,
+	const EaxxSourceSourceDirtyMiscFlags& rhs) noexcept;
+
+bool operator!=(
+	const EaxxSourceSourceDirtyMiscFlags& lhs,
+	const EaxxSourceSourceDirtyMiscFlags& rhs) noexcept;
+
+
+using EaxxSourceSendDirtyFlagsValue = unsigned char;
+
+struct EaxxSourceSendDirtyFlags
+{
+	EaxxSourceSendDirtyFlagsValue lSend : 1;
+	EaxxSourceSendDirtyFlagsValue lSendHF : 1;
+	EaxxSourceSendDirtyFlagsValue lOcclusion : 1;
+	EaxxSourceSendDirtyFlagsValue flOcclusionLFRatio : 1;
+	EaxxSourceSendDirtyFlagsValue flOcclusionRoomRatio : 1;
+	EaxxSourceSendDirtyFlagsValue flOcclusionDirectRatio : 1;
+	EaxxSourceSendDirtyFlagsValue lExclusion : 1;
+	EaxxSourceSendDirtyFlagsValue flExclusionLFRatio : 1;
+}; // EaxxSourceSendDirtyFlags
+
+static_assert(sizeof(EaxxSourceSendDirtyFlags) == sizeof(EaxxSourceSendDirtyFlagsValue));
+
+bool operator==(
+	const EaxxSourceSendDirtyFlags& lhs,
+	const EaxxSourceSendDirtyFlags& rhs) noexcept;
+
+bool operator!=(
+	const EaxxSourceSendDirtyFlags& lhs,
+	const EaxxSourceSendDirtyFlags& rhs) noexcept;
+
+
+using EaxxSourceSendsDirtyFlagsValue = unsigned int;
+
+struct EaxxSourceSendsDirtyFlags
+{
+	EaxxSourceSendDirtyFlags sends[EAX_MAX_FXSLOTS];
+}; // EaxxSourceSendsDirtyFlags
+
+static_assert(sizeof(EaxxSourceSendsDirtyFlags) == sizeof(EaxxSourceSendsDirtyFlagsValue));
+
+bool operator==(
+	const EaxxSourceSendsDirtyFlags& lhs,
+	const EaxxSourceSendsDirtyFlags& rhs) noexcept;
+
+bool operator!=(
+	const EaxxSourceSendsDirtyFlags& lhs,
+	const EaxxSourceSendsDirtyFlags& rhs) noexcept;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -63,17 +164,23 @@ public:
 		const EaxxSourceInitParam& param);
 
 
-	void set(
+	void on_initialize_context(
+		ALuint al_filter);
+
+
+	void dispatch(
 		const EaxxEaxCall& eax_call);
 
 
 	void update_filters();
 
-	void on_set_primary_fx_slot_id();
+	void update(
+		EaxxContextSharedDirtyFlags dirty_flags);
 
 
 private:
 	using ActiveFxSlots = std::array<bool, EAX_MAX_FXSLOTS>;
+	using ActiveFxSlotsDirtyFlags = std::array<bool, EAX_MAX_FXSLOTS>;
 
 
 	struct Al
@@ -84,18 +191,27 @@ private:
 
 	struct Eax
 	{
-		EAX50SOURCEPROPERTIES source{};
+		using Sends = std::array<EAXSOURCEALLSENDPROPERTIES, EAX_MAX_FXSLOTS>;
+
 		EAX50ACTIVEFXSLOTS active_fx_slots{};
+		EAX50SOURCEPROPERTIES source{};
+		Sends sends{};
 	}; // Eax
 
 
-	bool is_initialized_{};
 	bool uses_primary_id_{};
 	bool has_active_fx_slots_{};
+	bool are_active_fx_slots_dirty_{};
+
 	Al al_{};
 	Eax eax_{};
-	EaxxFxSlots* fx_slots_{};
+	Eax eax_d_{};
+	EaxxContextShared* context_shared_{};
 	ActiveFxSlots active_fx_slots_{};
+
+	EaxxSourceSendsDirtyFlags sends_dirty_flags_{};
+	EaxxSourceSourceDirtyFilterFlags source_dirty_filter_flags_{};
+	EaxxSourceSourceDirtyMiscFlags source_dirty_misc_flags_{};
 
 
 	static void validate_init_param(
@@ -109,6 +225,11 @@ private:
 
 	void set_eax_active_fx_slots_defaults();
 
+	void set_eax_send_defaults(
+		EAXSOURCEALLSENDPROPERTIES& eax_send);
+
+	void set_eax_sends_defaults();
+
 	void set_eax_defaults();
 
 
@@ -120,10 +241,13 @@ private:
 	AlLowPassParam make_direct_filter() const noexcept;
 
 	AlLowPassParam make_room_filter(
-		const EaxxFxSlot& fx_slot) const noexcept;
+		const EaxxFxSlot& fx_slot,
+		const EAXSOURCEALLSENDPROPERTIES& send) const noexcept;
 
 	void set_al_filter_parameters(
 		const AlLowPassParam& al_low_pass_param) const noexcept;
+
+	void set_fx_slots();
 
 	void initialize_fx_slots();
 
@@ -137,6 +261,397 @@ private:
 
 	void update_filters_internal();
 
+	void update_primary_fx_slot_id();
+
+
+	void defer_active_fx_slots(
+		const EaxxEaxCall& eax_call);
+
+
+	// ----------------------------------------------------------------------
+	// Common
+
+	static const char* get_exclusion_name() noexcept;
+
+	static const char* get_exclusion_lf_ratio_name() noexcept;
+
+
+	static const char* get_occlusion_name() noexcept;
+
+	static const char* get_occlusion_lf_ratio_name() noexcept;
+
+	static const char* get_occlusion_direct_ratio_name() noexcept;
+
+	static const char* get_occlusion_room_ratio_name() noexcept;
+
+	// Common
+	// ----------------------------------------------------------------------
+
+
+	// ----------------------------------------------------------------------
+	// Send
+
+	static void validate_send_receiving_fx_slot_guid(
+		const GUID& guidReceivingFXSlotID);
+
+	static void validate_send_send(
+		std::int32_t lSend);
+
+	static void validate_send_send_hf(
+		std::int32_t lSendHF);
+
+	static void validate_send_occlusion(
+		std::int32_t lOcclusion);
+
+	static void validate_send_occlusion_lf_ratio(
+		float flOcclusionLFRatio);
+
+	static void validate_send_occlusion_room_ratio(
+		float flOcclusionRoomRatio);
+
+	static void validate_send_occlusion_direct_ratio(
+		float flOcclusionDirectRatio);
+
+	static void validate_send_exclusion(
+		std::int32_t lExclusion);
+
+	static void validate_send_exclusion_lf_ratio(
+		float flExclusionLFRatio);
+
+	static void validate_send(
+		const EAXSOURCESENDPROPERTIES& all);
+
+	static void validate_send_exclusion_all(
+		const EAXSOURCEEXCLUSIONSENDPROPERTIES& all);
+
+	static void validate_send_occlusion_all(
+		const EAXSOURCEOCCLUSIONSENDPROPERTIES& all);
+
+	static void validate_send_all(
+		const EAXSOURCEALLSENDPROPERTIES& all);
+
+
+	static int get_send_index(
+		const GUID& send_guid);
+
+
+	void defer_send_send(
+		std::int32_t lSend,
+		int index);
+
+	void defer_send_send_hf(
+		std::int32_t lSendHF,
+		int index);
+
+	void defer_send_occlusion(
+		std::int32_t lOcclusion,
+		int index);
+
+	void defer_send_occlusion_lf_ratio(
+		float flOcclusionLFRatio,
+		int index);
+
+	void defer_send_occlusion_room_ratio(
+		float flOcclusionRoomRatio,
+		int index);
+
+	void defer_send_occlusion_direct_ratio(
+		float flOcclusionDirectRatio,
+		int index);
+
+	void defer_send_exclusion(
+		std::int32_t lExclusion,
+		int index);
+
+	void defer_send_exclusion_lf_ratio(
+		float flExclusionLFRatio,
+		int index);
+
+	void defer_send(
+		const EAXSOURCESENDPROPERTIES& all,
+		int index);
+
+	void defer_send_exclusion_all(
+		const EAXSOURCEEXCLUSIONSENDPROPERTIES& all,
+		int index);
+
+	void defer_send_occlusion_all(
+		const EAXSOURCEOCCLUSIONSENDPROPERTIES& all,
+		int index);
+
+	void defer_send_all(
+		const EAXSOURCEALLSENDPROPERTIES& all,
+		int index);
+
+
+	void defer_send(
+		const EaxxEaxCall& eax_call);
+
+	void defer_send_exclusion_all(
+		const EaxxEaxCall& eax_call);
+
+	void defer_send_occlusion_all(
+		const EaxxEaxCall& eax_call);
+
+	void defer_send_all(
+		const EaxxEaxCall& eax_call);
+
+	// Send
+	// ----------------------------------------------------------------------
+
+
+	// ----------------------------------------------------------------------
+	// Source
+
+	static void validate_source_direct(
+		std::int32_t direct);
+
+	static void validate_source_direct_hf(
+		std::int32_t direct_hf);
+
+	static void validate_source_room(
+		std::int32_t room);
+
+	static void validate_source_room_hf(
+		std::int32_t room_hf);
+
+	static void validate_source_obstruction(
+		std::int32_t obstruction);
+
+	static void validate_source_obstruction_lf_ratio(
+		float obstruction_lf_ratio);
+
+	static void validate_source_occlusion(
+		std::int32_t occlusion);
+
+	static void validate_source_occlusion_lf_ratio(
+		float occlusion_lf_ratio);
+
+	static void validate_source_occlusion_room_ratio(
+		float occlusion_room_ratio);
+
+	static void validate_source_occlusion_direct_ratio(
+		float occlusion_direct_ratio);
+
+	static void validate_source_exclusion(
+		std::int32_t exclusion);
+
+	static void validate_source_exclusion_lf_ratio(
+		float exclusion_lf_ratio);
+
+	static void validate_source_outside_volume_hf(
+		std::int32_t outside_volume_hf);
+
+	static void validate_source_doppler_factor(
+		float doppler_factor);
+
+	static void validate_source_rolloff_factor(
+		float rolloff_factor);
+
+	static void validate_source_room_rolloff_factor(
+		float room_rolloff_factor);
+
+	static void validate_source_air_absorption_factor(
+		float air_absorption_factor);
+
+	static void validate_source_flags(
+		std::uint32_t flags,
+		int eax_version);
+
+	static void validate_source_macro_fx_factor(
+		float macro_fx_factor);
+
+	static void validate_source_2d_all(
+		const EAXSOURCE2DPROPERTIES& all,
+		int eax_version);
+
+	static void validate_source_obstruction_all(
+		const EAXOBSTRUCTIONPROPERTIES& all);
+
+	static void validate_source_exclusion_all(
+		const EAXEXCLUSIONPROPERTIES& all);
+
+	static void validate_source_occlusion_all(
+		const EAXOCCLUSIONPROPERTIES& all);
+
+	static void validate_source_all(
+		const EAX20BUFFERPROPERTIES& all,
+		int eax_version);
+
+	static void validate_source_all(
+		const EAX30SOURCEPROPERTIES& all,
+		int eax_version);
+
+	static void validate_source_all(
+		const EAX50SOURCEPROPERTIES& all,
+		int eax_version);
+
+
+	void defer_source_direct(
+		std::int32_t lDirect);
+
+	void defer_source_direct_hf(
+		std::int32_t lDirectHF);
+
+	void defer_source_room(
+		std::int32_t lRoom);
+
+	void defer_source_room_hf(
+		std::int32_t lRoomHF);
+
+	void defer_source_obstruction(
+		std::int32_t lObstruction);
+
+	void defer_source_obstruction_lf_ratio(
+		float flObstructionLFRatio);
+
+	void defer_source_occlusion(
+		std::int32_t lOcclusion);
+
+	void defer_source_occlusion_lf_ratio(
+		float flOcclusionLFRatio);
+
+	void defer_source_occlusion_room_ratio(
+		float flOcclusionRoomRatio);
+
+	void defer_source_occlusion_direct_ratio(
+		float flOcclusionDirectRatio);
+
+	void defer_source_exclusion(
+		std::int32_t lExclusion);
+
+	void defer_source_exclusion_lf_ratio(
+		float flExclusionLFRatio);
+
+	void defer_source_outside_volume_hf(
+		std::int32_t lOutsideVolumeHF);
+
+	void defer_source_doppler_factor(
+		float flDopplerFactor);
+
+	void defer_source_rolloff_factor(
+		float flRolloffFactor);
+
+	void defer_source_room_rolloff_factor(
+		float flRoomRolloffFactor);
+
+	void defer_source_air_absorption_factor(
+		float flAirAbsorptionFactor);
+
+	void defer_source_flags(
+		std::uint32_t ulFlags);
+
+	void defer_source_macro_fx_factor(
+		float flMacroFXFactor);
+
+	void defer_source_2d_all(
+		const EAXSOURCE2DPROPERTIES& all);
+
+	void defer_source_obstruction_all(
+		const EAXOBSTRUCTIONPROPERTIES& all);
+
+	void defer_source_exclusion_all(
+		const EAXEXCLUSIONPROPERTIES& all);
+
+	void defer_source_occlusion_all(
+		const EAXOCCLUSIONPROPERTIES& all);
+
+	void defer_source_all(
+		const EAX20BUFFERPROPERTIES& all);
+
+	void defer_source_all(
+		const EAX30SOURCEPROPERTIES& all);
+
+	void defer_source_all(
+		const EAX50SOURCEPROPERTIES& all);
+
+
+	void defer_source_direct(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_direct_hf(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_room(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_room_hf(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_obstruction(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_obstruction_lf_ratio(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_occlusion(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_occlusion_lf_ratio(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_occlusion_room_ratio(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_occlusion_direct_ratio(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_exclusion(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_exclusion_lf_ratio(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_outside_volume_hf(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_doppler_factor(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_rolloff_factor(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_room_rolloff_factor(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_air_absorption_factor(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_flags(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_macro_fx_factor(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_2d_all(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_obstruction_all(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_exclusion_all(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_occlusion_all(
+		const EaxxEaxCall& eax_call);
+
+	void defer_source_all(
+		const EaxxEaxCall& eax_call);
+
+	// Source
+	// ----------------------------------------------------------------------
+
+
+	void set_outside_volume_hf();
+
+	void set_doppler_factor();
+
+	void set_rolloff_factor();
+
+	void set_room_rolloff_factor();
+
+	void set_air_absorption_factor();
+
 
 	void set_direct_hf_auto_flag();
 
@@ -147,48 +662,82 @@ private:
 	void set_flags();
 
 
-	void set_obstruction_all(
-		const EAXOBSTRUCTIONPROPERTIES& eax_obstruction_properties);
-
-	void set_occlusion_all(
-		const EAXOCCLUSIONPROPERTIES& eax_occlusion_properties);
-
-	void set_room(
-		long eax_room);
-
-	void set_occlusion(
-		long eax_occlusion);
-
-	void set_exclusion(
-		long eax_exclusion);
-
-	void set_flags(
-		unsigned long eax_flags);
-
-	void set_active_fx_slots(
-		int count,
-		const GUID* eax_ids);
+	void set_macro_fx_factor();
 
 
-	void set_obstruction_all(
+	void apply_deferred();
+
+	void set(
 		const EaxxEaxCall& eax_call);
 
-	void set_occlusion_all(
+
+	static const GUID& get_send_fx_slot_guid(
+		int eax_version,
+		int fx_slot_index);
+
+	static void copy_send(
+		const EAXSOURCEALLSENDPROPERTIES& src_send,
+		EAXSOURCESENDPROPERTIES& dst_send);
+
+	static void copy_send(
+		const EAXSOURCEALLSENDPROPERTIES& src_send,
+		EAXSOURCEALLSENDPROPERTIES& dst_send);
+
+	static void copy_send(
+		const EAXSOURCEALLSENDPROPERTIES& src_send,
+		EAXSOURCEOCCLUSIONSENDPROPERTIES& dst_send);
+
+	static void copy_send(
+		const EAXSOURCEALLSENDPROPERTIES& src_send,
+		EAXSOURCEEXCLUSIONSENDPROPERTIES& dst_send);
+
+	template<
+		typename TException,
+		typename TSrcSend
+	>
+	void api_get_send_properties(
+		const EaxxEaxCall& eax_call) const
+	{
+		const auto eax_version = eax_call.get_version();
+		const auto dst_sends = eax_call.get_values<TException, TSrcSend>();
+
+		for (auto fx_slot_index = 0; fx_slot_index < dst_sends.size; ++fx_slot_index)
+		{
+			auto& dst_send = dst_sends.values[fx_slot_index];
+			const auto& src_send = eax_.sends[fx_slot_index];
+
+			copy_send(src_send, dst_send);
+
+			dst_send.guidReceivingFXSlotID = get_send_fx_slot_guid(eax_version, fx_slot_index);
+		}
+	}
+
+
+	void api_get_source_all_2(
 		const EaxxEaxCall& eax_call);
 
-	void set_room(
+	void api_get_source_all_3(
 		const EaxxEaxCall& eax_call);
 
-	void set_occlusion(
+	void api_get_source_all_5(
 		const EaxxEaxCall& eax_call);
 
-	void set_exclusion(
+	void api_get_source_all(
 		const EaxxEaxCall& eax_call);
 
-	void set_flags(
+	void api_get_source_all_obstruction(
 		const EaxxEaxCall& eax_call);
 
-	void set_active_fx_slots(
+	void api_get_source_all_occlusion(
+		const EaxxEaxCall& eax_call);
+
+	void api_get_source_all_exclusion(
+		const EaxxEaxCall& eax_call);
+
+	void api_get_source_all_2d(
+		const EaxxEaxCall& eax_call);
+
+	void get(
 		const EaxxEaxCall& eax_call);
 }; // EaxxSource
 

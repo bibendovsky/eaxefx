@@ -35,10 +35,32 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_al_object.h"
 #include "eaxefx_al_symbols.h"
+#include "eaxefx_eaxx_validators.h"
 
 
 namespace eaxefx
 {
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+bool operator==(
+	const EaxxContextContextDirtyFlags& lhs,
+	const EaxxContextContextDirtyFlags& rhs) noexcept
+{
+	return
+		reinterpret_cast<const EaxxContextContextDirtyFlagsValue&>(lhs) ==
+			reinterpret_cast<const EaxxContextContextDirtyFlagsValue&>(rhs);
+}
+
+bool operator!=(
+	const EaxxContextContextDirtyFlags& lhs,
+	const EaxxContextContextDirtyFlags& rhs) noexcept
+{
+	return !(lhs == rhs);
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -106,25 +128,27 @@ bool EaxxContext::is_tried_to_initialize() const noexcept
 }
 
 void EaxxContext::initialize()
-try
 {
 	if (is_tried_to_initialize_)
 	{
-		throw EaxxContextException{"Already tried to initialize."};
+		return;
 	}
 
 	is_tried_to_initialize_ = true;
 
 	ensure_compatibility();
+	initialize_extended_filter_gain();
 	initialize_filter();
 	set_eax_defaults();
+	set_air_absorbtion_hf();
 	initialize_fx_slots();
 
 	is_initialized_ = true;
-}
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxContextException{"Failed to initialize."});
+
+	for (auto& [source_key, source_value] : source_map_)
+	{
+		source_value.on_initialize_context(al_.filter);
+	}
 }
 
 bool EaxxContext::is_initialized() const noexcept
@@ -140,17 +164,16 @@ ALCcontext* EaxxContext::get_al_context() const noexcept
 EaxxFxSlot& EaxxContext::get_slot(
 	EaxxFxSlotIndex fx_slot_index)
 {
-	return fx_slots_.get(fx_slot_index);
+	return shared_.fx_slots.get(fx_slot_index);
 }
 
 void EaxxContext::initialize_sources(
 	ALsizei count,
 	ALuint* al_names)
-try
 {
 	auto param = EaxxSourceInitParam{};
 	param.al_filter = al_.filter;
-	param.fx_slots = &fx_slots_;
+	param.context_shared = &shared_;
 
 	for (auto i = ALsizei{}; i < count; ++i)
 	{
@@ -162,26 +185,11 @@ try
 		);
 	}
 }
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxContextException{"Failed to initialize sources."});
-}
 
 void EaxxContext::uninitialize_sources(
 	ALsizei count,
 	const ALuint* al_names)
-try
 {
-	for (auto i = ALsizei{}; i < count; ++i)
-	{
-		const auto al_name = al_names[i];
-
-		if (alIsSource_(al_name) == AL_FALSE)
-		{
-			return;
-		}
-	}
-
 	for (auto i = ALsizei{}; i < count; ++i)
 	{
 		const auto al_name = al_names[i];
@@ -189,49 +197,18 @@ try
 		source_map_.erase(al_name);
 	}
 }
-catch (const std::exception&)
-{
-	std::throw_with_nested(EaxxContextException{"Failed to uninitialize sources."});
-}
 
-void EaxxContext::set_primary_fx_slot_id(
-	const GUID& eax_fx_slot_id)
-{
-	if (fx_slots_.get_primary_id() == eax_fx_slot_id)
-	{
-		return;
-	}
-
-	fx_slots_.set_primary(eax_fx_slot_id);
-
-	set_primary_fx_slot_id();
-}
-
-void EaxxContext::set(
+void EaxxContext::dispatch(
 	const EaxxEaxCall& eax_call)
 {
-	switch (eax_call.property_id)
+	if (eax_call.is_get())
 	{
-		case EAXCONTEXT_EAXSESSION:
-			set_session_all(eax_call);
-			break;
-
-		case EAXCONTEXT_PRIMARYFXSLOTID:
-			set_primary_fx_slot_id(eax_call);
-			break;
-
-		default:
-			throw EaxxContextException{"Unsupported property id."};
+		get(eax_call);
 	}
-}
-
-void EaxxContext::set_session(
-	const EAXSESSIONPROPERTIES& eax_session)
-{
-	fx_slots_.set_max_active_count(eax_.session.ulMaxActiveSends);
-
-	eax_.session.ulEAXVersion = eax_session.ulEAXVersion;
-	eax_.session.ulMaxActiveSends = eax_session.ulMaxActiveSends;
+	else
+	{
+		set(eax_call);
+	}
 }
 
 EaxxSource* EaxxContext::find_source(
@@ -272,7 +249,7 @@ void EaxxContext::ensure_compatibility()
 	{
 		const auto& message =
 			"Expected at least " +
-			std::to_string(EAX_MAX_FXSLOTS) +
+			to_string(EAX_MAX_FXSLOTS) +
 			" EFX auxiliary effect slots.";
 
 		throw EaxxContextException{message};
@@ -289,32 +266,54 @@ void EaxxContext::ensure_compatibility()
 		throw EaxxContextException{"EFX low-pass filter not supported."};
 	}
 
-	auto eaxreverb_efx_object = make_efx_effect_object();
-	const auto eaxreverb_al_name = eaxreverb_efx_object.get();
-	auto efx_effect_type = ALint{};
-	alGetEffecti_(eaxreverb_al_name, AL_EFFECT_TYPE, &efx_effect_type);
-
-	if (efx_effect_type != AL_EFFECT_NULL)
+	try
 	{
-		throw EaxxContextException{"EFX null effect not supported."};
+		make_efx_effect_object(AL_EFFECT_EAXREVERB);
 	}
-
-	alEffecti_(eaxreverb_al_name, AL_EFFECT_TYPE, AL_EFFECT_EAXREVERB);
-	alGetEffecti_(eaxreverb_al_name, AL_EFFECT_TYPE, &efx_effect_type);
-
-	if (efx_effect_type != AL_EFFECT_EAXREVERB)
+	catch (...)
 	{
 		throw EaxxContextException{"EFX EAX-reverb not supported."};
 	}
 }
 
-void EaxxContext::set_eax_session_defaults()
+bool EaxxContext::has_softx_filter_gain_ex_extension()
 {
-	eax_.session.ulEAXVersion = EAXCONTEXT_MINEAXSESSION;
-	eax_.session.ulMaxActiveSends = EAXCONTEXT_DEFAULTMAXACTIVESENDS;
+	const auto extension_name = "AL_SOFTX_filter_gain_ex";
+
+	const auto has_al_softx_filter_gain_ex = (alIsExtensionPresent_(extension_name) != AL_FALSE);
+
+	return has_al_softx_filter_gain_ex;
 }
 
-void EaxxContext::set_eax_context_defaults()
+void EaxxContext::initialize_extended_filter_gain()
+{
+	if (has_softx_filter_gain_ex_extension())
+	{
+		shared_.max_filter_gain = 4.0F;
+	}
+	else
+	{
+		shared_.max_filter_gain = 1.0F;
+	}
+}
+
+void EaxxContext::set_eax_last_error_defaults() noexcept
+{
+	eax_last_error_ = EAX_OK;
+}
+
+void EaxxContext::set_eax_speaker_config_defaults() noexcept
+{
+	eax_speaker_config_ = HEADPHONES;
+}
+
+void EaxxContext::set_eax_session_defaults() noexcept
+{
+	eax_session_.ulEAXVersion = EAXCONTEXT_MINEAXSESSION;
+	eax_session_.ulMaxActiveSends = EAXCONTEXT_DEFAULTMAXACTIVESENDS;
+}
+
+void EaxxContext::set_eax_context_defaults() noexcept
 {
 	eax_.context.guidPrimaryFXSlotID = EAXCONTEXT_DEFAULTPRIMARYFXSLOTID;
 	eax_.context.flDistanceFactor = EAXCONTEXT_DEFAULTDISTANCEFACTOR;
@@ -322,10 +321,14 @@ void EaxxContext::set_eax_context_defaults()
 	eax_.context.flHFReference = EAXCONTEXT_DEFAULTHFREFERENCE;
 }
 
-void EaxxContext::set_eax_defaults()
+void EaxxContext::set_eax_defaults() noexcept
 {
+	set_eax_last_error_defaults();
+	set_eax_speaker_config_defaults();
 	set_eax_session_defaults();
 	set_eax_context_defaults();
+
+	eax_d_ = eax_;
 }
 
 void EaxxContext::initialize_filter()
@@ -343,25 +346,137 @@ void EaxxContext::initialize_filter()
 	}
 }
 
+void EaxxContext::get_primary_fx_slot_id(
+	const EaxxEaxCall& eax_call)
+{
+	eax_call.set_value<EaxxContextException>(eax_.context.guidPrimaryFXSlotID);
+}
+
+void EaxxContext::get_distance_factor(
+	const EaxxEaxCall& eax_call)
+{
+	eax_call.set_value<EaxxContextException>(eax_.context.flDistanceFactor);
+}
+
+void EaxxContext::get_air_absorption_hf(
+	const EaxxEaxCall& eax_call)
+{
+	eax_call.set_value<EaxxContextException>(eax_.context.flAirAbsorptionHF);
+}
+
+void EaxxContext::get_hf_reference(
+	const EaxxEaxCall& eax_call)
+{
+	eax_call.set_value<EaxxContextException>(eax_.context.flHFReference);
+}
+
+void EaxxContext::get_speaker_config(
+	const EaxxEaxCall& eax_call)
+{
+	eax_call.set_value<EaxxContextException>(eax_speaker_config_);
+}
+
+void EaxxContext::get_eax_session(
+	const EaxxEaxCall& eax_call)
+{
+	eax_call.set_value<EaxxContextException>(eax_session_);
+}
+
+void EaxxContext::get_macro_fx_factor(
+	const EaxxEaxCall& eax_call)
+{
+	eax_call.set_value<EaxxContextException>(eax_.context.flMacroFXFactor);
+}
+
+void EaxxContext::get_context_all(
+	const EaxxEaxCall& eax_call)
+{
+	switch (eax_call.get_version())
+	{
+		case 4:
+			eax_call.set_value<EaxxContextException>(static_cast<const EAX40CONTEXTPROPERTIES&>(eax_.context));
+			break;
+
+		case 5:
+			eax_call.set_value<EaxxContextException>(static_cast<const EAX50CONTEXTPROPERTIES&>(eax_.context));
+			break;
+
+		default:
+			throw EaxxContextException{"Unsupported EAX version."};
+	}
+}
+
+void EaxxContext::get(
+	const EaxxEaxCall& eax_call)
+{
+	switch (eax_call.get_property_id())
+	{
+		case EAXCONTEXT_NONE:
+			break;
+
+		case EAXCONTEXT_ALLPARAMETERS:
+			get_context_all(eax_call);
+			break;
+
+		case EAXCONTEXT_PRIMARYFXSLOTID:
+			get_primary_fx_slot_id(eax_call);
+			break;
+
+		case EAXCONTEXT_DISTANCEFACTOR:
+			get_distance_factor(eax_call);
+			break;
+
+		case EAXCONTEXT_AIRABSORPTIONHF:
+			get_air_absorption_hf(eax_call);
+			break;
+
+		case EAXCONTEXT_HFREFERENCE:
+			get_hf_reference(eax_call);
+			break;
+
+		case EAXCONTEXT_LASTERROR:
+			set_last_error(eax_call);
+			break;
+
+		case EAXCONTEXT_SPEAKERCONFIG:
+			get_speaker_config(eax_call);
+			break;
+
+		case EAXCONTEXT_EAXSESSION:
+			get_eax_session(eax_call);
+			break;
+
+		case EAXCONTEXT_MACROFXFACTOR:
+			get_macro_fx_factor(eax_call);
+			break;
+
+		default:
+			throw EaxxContextException{"Unsupported property id."};
+	}
+}
+
 void EaxxContext::set_primary_fx_slot_id()
 {
-	for (auto& [source_key, source_value] : source_map_)
-	{
-		source_value.on_set_primary_fx_slot_id();
-	}
+	shared_.previous_primary_fx_slot_index = shared_.primary_fx_slot_index;
+	shared_.primary_fx_slot_index = eax_.context.guidPrimaryFXSlotID;
 }
 
 void EaxxContext::set_distance_factor()
 {
-	// TODO
+	alListenerf_(AL_METERS_PER_UNIT, eax_.context.flDistanceFactor);
 }
 
 void EaxxContext::set_air_absorbtion_hf()
 {
-	// TODO
+	shared_.air_absorption_factor = eax_.context.flAirAbsorptionHF / EAXCONTEXT_DEFAULTAIRABSORPTIONHF;
 }
 
 void EaxxContext::set_hf_reference()
+{
+	// TODO
+}
+
+void EaxxContext::set_macro_fx_factor()
 {
 	// TODO
 }
@@ -376,27 +491,412 @@ void EaxxContext::set_context()
 
 void EaxxContext::initialize_fx_slots()
 {
-	fx_slots_.initialize();
-	fx_slots_.set_primary(eax_.context.guidPrimaryFXSlotID);
-	fx_slots_.set_max_active_count(eax_.session.ulMaxActiveSends);
+	shared_.fx_slots.initialize();
+	shared_.previous_primary_fx_slot_index = eax_.context.guidPrimaryFXSlotID;
+	shared_.primary_fx_slot_index = eax_.context.guidPrimaryFXSlotID;
 }
 
-void EaxxContext::set_session_all(
+void EaxxContext::update_sources()
+{
+	for (auto& [source_key, source_value] : source_map_)
+	{
+		source_value.update(context_shared_dirty_flags_);
+	}
+}
+
+void EaxxContext::validate_primary_fx_slot_id(
+	const GUID& primary_fx_slot_id)
+{
+	if (primary_fx_slot_id != EAX_NULL_GUID &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX40_FXSlot0 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX50_FXSlot0 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX40_FXSlot1 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX50_FXSlot1 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX40_FXSlot2 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX50_FXSlot2 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX40_FXSlot3 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX50_FXSlot3)
+	{
+		throw EaxxContextException{"Unsupported primary FX slot id."};
+	}
+}
+
+void EaxxContext::validate_distance_factor(
+	float distance_factor)
+{
+	eaxx_validate_range<EaxxContextException>(
+		"Distance Factor",
+		distance_factor,
+		EAXCONTEXT_MINDISTANCEFACTOR,
+		EAXCONTEXT_MAXDISTANCEFACTOR
+	);
+}
+
+void EaxxContext::validate_air_absorption_hf(
+	float air_absorption_hf)
+{
+	eaxx_validate_range<EaxxContextException>(
+		"Air Absorption HF",
+		air_absorption_hf,
+		EAXCONTEXT_MINAIRABSORPTIONHF,
+		EAXCONTEXT_MAXAIRABSORPTIONHF
+	);
+}
+
+void EaxxContext::validate_hf_reference(
+	float hf_reference)
+{
+	eaxx_validate_range<EaxxContextException>(
+		"HF Reference",
+		hf_reference,
+		EAXCONTEXT_MINHFREFERENCE,
+		EAXCONTEXT_MAXHFREFERENCE
+	);
+}
+
+void EaxxContext::validate_speaker_config(
+	std::uint32_t speaker_config)
+{
+	switch (speaker_config)
+	{
+		case HEADPHONES:
+		case SPEAKERS_2:
+		case SPEAKERS_4:
+		case SPEAKERS_5:
+		case SPEAKERS_6:
+		case SPEAKERS_7:
+			break;
+
+		default:
+			throw EaxxContextException{"Unsupported speaker configuration."};
+	}
+}
+
+void EaxxContext::validate_eax_session_eax_version(
+	std::uint32_t eax_version)
+{
+	switch (eax_version)
+	{
+		case EAX_40:
+		case EAX_50:
+			break;
+
+		default:
+			throw EaxxContextException{"Unsupported session EAX version."};
+	}
+}
+
+void EaxxContext::validate_eax_session_max_active_sends(
+	std::uint32_t max_active_sends)
+{
+	eaxx_validate_range<EaxxContextException>(
+		"Max Active Sends",
+		max_active_sends,
+		EAXCONTEXT_MINMAXACTIVESENDS,
+		EAXCONTEXT_MAXMAXACTIVESENDS
+	);
+}
+
+void EaxxContext::validate_eax_session(
+	const EAXSESSIONPROPERTIES& eax_session)
+{
+	validate_eax_session_eax_version(eax_session.ulEAXVersion);
+	validate_eax_session_max_active_sends(eax_session.ulMaxActiveSends);
+}
+
+void EaxxContext::validate_macro_fx_factor(
+	float macro_fx_factor)
+{
+	eaxx_validate_range<EaxxContextException>(
+		"Macro FX Factor",
+		macro_fx_factor,
+		EAXCONTEXT_MINMACROFXFACTOR,
+		EAXCONTEXT_MAXMACROFXFACTOR
+	);
+}
+
+void EaxxContext::validate_context_all(
+	const EAX40CONTEXTPROPERTIES& context_all)
+{
+	validate_primary_fx_slot_id(context_all.guidPrimaryFXSlotID);
+	validate_distance_factor(context_all.flDistanceFactor);
+	validate_air_absorption_hf(context_all.flAirAbsorptionHF);
+	validate_hf_reference(context_all.flHFReference);
+}
+
+void EaxxContext::validate_context_all(
+	const EAX50CONTEXTPROPERTIES& context_all)
+{
+	validate_context_all(static_cast<const EAX40CONTEXTPROPERTIES>(context_all));
+	validate_macro_fx_factor(context_all.flMacroFXFactor);
+}
+
+void EaxxContext::defer_primary_fx_slot_id(
+	const GUID& primary_fx_slot_id)
+{
+	eax_d_.context.guidPrimaryFXSlotID = primary_fx_slot_id;
+
+	context_dirty_flags_.guidPrimaryFXSlotID =
+		(eax_.context.guidPrimaryFXSlotID != eax_d_.context.guidPrimaryFXSlotID);
+}
+
+void EaxxContext::defer_distance_factor(
+	float distance_factor)
+{
+	eax_d_.context.flDistanceFactor = distance_factor;
+
+	context_dirty_flags_.flDistanceFactor =
+		(eax_.context.flDistanceFactor != eax_d_.context.flDistanceFactor);
+}
+
+void EaxxContext::defer_air_absorption_hf(
+	float air_absorption_hf)
+{
+	eax_d_.context.flAirAbsorptionHF = air_absorption_hf;
+
+	context_dirty_flags_.flAirAbsorptionHF =
+		(eax_.context.flAirAbsorptionHF != eax_d_.context.flAirAbsorptionHF);
+}
+
+void EaxxContext::defer_hf_reference(
+	float hf_reference)
+{
+	eax_d_.context.flHFReference = hf_reference;
+
+	context_dirty_flags_.flHFReference =
+		(eax_.context.flHFReference != eax_d_.context.flHFReference);
+}
+
+void EaxxContext::defer_macro_fx_factor(
+	float macro_fx_factor)
+{
+	eax_d_.context.flMacroFXFactor = macro_fx_factor;
+
+	context_dirty_flags_.flMacroFXFactor =
+		(eax_.context.flMacroFXFactor != eax_d_.context.flMacroFXFactor);
+}
+
+void EaxxContext::defer_context_all(
+	const EAX40CONTEXTPROPERTIES& context_all)
+{
+	defer_primary_fx_slot_id(context_all.guidPrimaryFXSlotID);
+	defer_distance_factor(context_all.flDistanceFactor);
+	defer_air_absorption_hf(context_all.flAirAbsorptionHF);
+	defer_hf_reference(context_all.flHFReference);
+}
+
+void EaxxContext::defer_context_all(
+	const EAX50CONTEXTPROPERTIES& context_all)
+{
+	defer_context_all(static_cast<const EAX40CONTEXTPROPERTIES&>(context_all));
+	defer_macro_fx_factor(context_all.flMacroFXFactor);
+}
+
+void EaxxContext::defer_context_all(
 	const EaxxEaxCall& eax_call)
 {
-	const auto& eax_session_all =
+	switch (eax_call.get_version())
+	{
+		case 4:
+			{
+				const auto& context_all =
+					eax_call.get_value<EaxxContextException, EAX40CONTEXTPROPERTIES>();
+
+				validate_context_all(context_all);
+			}
+
+			break;
+
+		case 5:
+			{
+				const auto& context_all =
+					eax_call.get_value<EaxxContextException, EAX50CONTEXTPROPERTIES>();
+
+				validate_context_all(context_all);
+			}
+
+			break;
+
+		default:
+			throw EaxxContextException{"Unsupported EAX version."};
+	}
+}
+
+void EaxxContext::defer_primary_fx_slot_id(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& primary_fx_slot_id =
+		eax_call.get_value<EaxxContextException, const decltype(EAX50CONTEXTPROPERTIES::guidPrimaryFXSlotID)>();
+
+	validate_primary_fx_slot_id(primary_fx_slot_id);
+	defer_primary_fx_slot_id(primary_fx_slot_id);
+}
+
+void EaxxContext::defer_distance_factor(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& distance_factor =
+		eax_call.get_value<EaxxContextException, const decltype(EAX50CONTEXTPROPERTIES::flDistanceFactor)>();
+
+	validate_distance_factor(distance_factor);
+	defer_distance_factor(distance_factor);
+}
+
+void EaxxContext::defer_air_absorption_hf(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& air_absorption_hf =
+		eax_call.get_value<EaxxContextException, const decltype(EAX50CONTEXTPROPERTIES::flAirAbsorptionHF)>();
+
+	validate_air_absorption_hf(air_absorption_hf);
+	defer_air_absorption_hf(air_absorption_hf);
+}
+
+void EaxxContext::defer_hf_reference(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& hf_reference =
+		eax_call.get_value<EaxxContextException, const decltype(EAX50CONTEXTPROPERTIES::flHFReference)>();
+
+	validate_hf_reference(hf_reference);
+	defer_hf_reference(hf_reference);
+}
+
+void EaxxContext::set_last_error(
+	const EaxxEaxCall& eax_call)
+{
+	eax_last_error_ = eax_call.get_value<EaxxContextException, const long>();
+}
+
+void EaxxContext::set_speaker_config(
+	const EaxxEaxCall& eax_call)
+{
+	const auto speaker_config =
+		eax_call.get_value<EaxxContextException, const unsigned long>();
+
+	validate_speaker_config(speaker_config);
+
+	eax_speaker_config_ = speaker_config;
+}
+
+void EaxxContext::set_eax_session(
+	const EaxxEaxCall& eax_call)
+{
+	const auto& eax_session =
 		eax_call.get_value<EaxxContextException, const EAXSESSIONPROPERTIES>();
 
-	set_session(eax_session_all);
+	validate_eax_session(eax_session);
+
+	eax_session_ = eax_session;
 }
 
-void EaxxContext::set_primary_fx_slot_id(
+void EaxxContext::defer_macro_fx_factor(
 	const EaxxEaxCall& eax_call)
 {
-	const auto& eax_primary_fx_slot_id =
-		eax_call.get_value<EaxxContextException, const GUID>();
+	const auto& macro_fx_factor =
+		eax_call.get_value<EaxxContextException, const decltype(EAX50CONTEXTPROPERTIES::flMacroFXFactor)>();
 
-	set_primary_fx_slot_id(eax_primary_fx_slot_id);
+	validate_macro_fx_factor(macro_fx_factor);
+	defer_macro_fx_factor(macro_fx_factor);
+}
+
+void EaxxContext::set(
+	const EaxxEaxCall& eax_call)
+{
+	switch (eax_call.get_property_id())
+	{
+		case EAXCONTEXT_NONE:
+			break;
+
+		case EAXCONTEXT_ALLPARAMETERS:
+			defer_context_all(eax_call);
+			break;
+
+		case EAXCONTEXT_PRIMARYFXSLOTID:
+			defer_primary_fx_slot_id(eax_call);
+			break;
+
+		case EAXCONTEXT_DISTANCEFACTOR:
+			defer_distance_factor(eax_call);
+			break;
+
+		case EAXCONTEXT_AIRABSORPTIONHF:
+			defer_air_absorption_hf(eax_call);
+			break;
+
+		case EAXCONTEXT_HFREFERENCE:
+			defer_hf_reference(eax_call);
+			break;
+
+		case EAXCONTEXT_LASTERROR:
+			set_last_error(eax_call);
+			break;
+
+		case EAXCONTEXT_SPEAKERCONFIG:
+			set_speaker_config(eax_call);
+			break;
+
+		case EAXCONTEXT_EAXSESSION:
+			set_eax_session(eax_call);
+			break;
+
+		case EAXCONTEXT_MACROFXFACTOR:
+			defer_macro_fx_factor(eax_call);
+			break;
+
+		default:
+			throw EaxxContextException{"Unsupported property id."};
+	}
+
+	if (!eax_call.is_deferred())
+	{
+		apply_deferred();
+	}
+}
+
+void EaxxContext::apply_deferred()
+{
+	if (context_dirty_flags_ == EaxxContextContextDirtyFlags{})
+	{
+		return;
+	}
+
+	eax_ = eax_d_;
+
+	if (context_dirty_flags_.guidPrimaryFXSlotID)
+	{
+		context_shared_dirty_flags_.primary_fx_slot_id = true;
+		set_primary_fx_slot_id();
+	}
+
+	if (context_dirty_flags_.flDistanceFactor)
+	{
+		set_distance_factor();
+	}
+
+	if (context_dirty_flags_.flAirAbsorptionHF)
+	{
+		context_shared_dirty_flags_.air_absorption_hf = true;
+		set_air_absorbtion_hf();
+	}
+
+	if (context_dirty_flags_.flHFReference)
+	{
+		set_hf_reference();
+	}
+
+	if (context_dirty_flags_.flMacroFXFactor)
+	{
+		set_macro_fx_factor();
+	}
+
+	if (context_shared_dirty_flags_ != EaxxContextSharedDirtyFlags{})
+	{
+		update_sources();
+	}
+
+	context_shared_dirty_flags_ = EaxxContextSharedDirtyFlags{};
+	context_dirty_flags_ = EaxxContextContextDirtyFlags{};
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

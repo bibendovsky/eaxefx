@@ -38,10 +38,32 @@ namespace eaxefx
 
 template<
 	typename T>
-float mb_to_gain(
-	T value) noexcept
+float level_mb_to_gain(
+	T x) noexcept
 {
-	return std::pow(10.0F, static_cast<float>(value) / 2'000.0F);
+	if (x <= static_cast<T>(-10'000))
+	{
+		return 0.0F;
+	}
+	else
+	{
+		return std::pow(10.0F, static_cast<float>(x) / 2'000.0F);
+	}
+}
+
+template<
+	typename T>
+float gain_to_mb(
+	T x) noexcept
+{
+	if (static_cast<float>(x) <= 0.0F)
+	{
+		return -10'000.0F;
+	}
+	else
+	{
+		return std::log10(static_cast<float>(x) * 2'000.0F);
+	}
 }
 
 

@@ -57,19 +57,47 @@ public:
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-std::u16string to_utf16(
-	const std::string& utf8_string)
+class EncodingToUtf8Exception :
+	public Exception
 {
-	if (utf8_string.empty())
+public:
+	explicit EncodingToUtf8Exception(
+		std::string_view message)
+		:
+		Exception{"ENCODING_TO_UTF8", message}
 	{
-		return std::u16string{};
+	}
+}; // EncodingToUtf8Exception
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+U16String to_utf16_internal(
+	const char* utf8_string,
+	int utf8_length)
+{
+	if (utf8_string == nullptr)
+	{
+		throw EncodingToUtf16Exception{"Null string."};
+	}
+
+	if (utf8_length < 0)
+	{
+		utf8_length = static_cast<int>(String::traits_type::length(utf8_string));
+	}
+
+	if (utf8_length == 0)
+	{
+		return U16String{};
 	}
 
 	const auto u16_size = MultiByteToWideChar(
 		CP_UTF8,
-		MB_PRECOMPOSED,
-		utf8_string.c_str(),
-		utf8_string.size(),
+		0,
+		utf8_string,
+		utf8_length,
 		nullptr,
 		0
 	);
@@ -79,14 +107,14 @@ std::u16string to_utf16(
 		throw EncodingToUtf16Exception{"Failed to get max length."};
 	}
 
-	auto u16_string = std::u16string{};
+	auto u16_string = U16String{};
 	u16_string.resize(u16_size);
 
 	const auto u16_result = MultiByteToWideChar(
 		CP_UTF8,
-		MB_PRECOMPOSED,
-		utf8_string.c_str(),
-		utf8_string.size(),
+		0,
+		utf8_string,
+		utf8_length,
 		reinterpret_cast<LPWSTR>(u16_string.data()),
 		u16_size
 	);
@@ -97,6 +125,86 @@ std::u16string to_utf16(
 	}
 
 	return u16_string;
+}
+
+U16String to_utf16(
+	const String& utf8_string)
+{
+	return to_utf16_internal(utf8_string.c_str(), static_cast<int>(utf8_string.size()));
+}
+
+U16String to_utf16(
+	const char* utf8_string)
+{
+	return to_utf16_internal(utf8_string, -1);
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+String to_utf8_internal(
+	const char16_t* utf16_string,
+	int utf16_length)
+{
+	if (utf16_string == nullptr)
+	{
+		throw EncodingToUtf8Exception{"Null string."};
+	}
+
+	if (utf16_length < 0)
+	{
+		utf16_length = static_cast<int>(U16String::traits_type::length(utf16_string));
+	}
+
+	if (utf16_string == 0)
+	{
+		return String{};
+	}
+
+	const auto u8_size = WideCharToMultiByte(
+		CP_UTF8,
+		0,
+		reinterpret_cast<LPCWSTR>(utf16_string),
+		utf16_length,
+		nullptr,
+		0,
+		nullptr,
+		nullptr
+	);
+
+	if (u8_size <= 0)
+	{
+		throw EncodingToUtf8Exception{"Failed to get max length."};
+	}
+
+	auto u8_string = String{};
+	u8_string.resize(u8_size);
+
+	const auto u8_result = WideCharToMultiByte(
+		CP_UTF8,
+		0,
+		reinterpret_cast<LPCWSTR>(utf16_string),
+		utf16_length,
+		u8_string.data(),
+		u8_size,
+		nullptr,
+		nullptr
+	);
+
+	if (u8_result != u8_size)
+	{
+		throw EncodingToUtf8Exception{"Failed to convert."};
+	}
+
+	return u8_string;
+}
+
+String to_utf8(
+	const char16_t* utf16_string)
+{
+	return to_utf8_internal(utf16_string, -1);
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

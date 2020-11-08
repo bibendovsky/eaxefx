@@ -30,14 +30,15 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <algorithm>
 #include <array>
 #include <exception>
-#include <fstream>
 #include <memory>
 #include <string_view>
 #include <vector>
 
 #include <windows.h>
 
+#include "eaxefx_encoding.h"
 #include "eaxefx_exception.h"
+#include "eaxefx_file.h"
 #include "eaxefx_shared_library.h"
 
 
@@ -47,28 +48,28 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class Win32Doom3FixException :
+class Doom3FixLibException :
 	public Exception
 {
 public:
-	explicit Win32Doom3FixException(
+	explicit Doom3FixLibException(
 		std::string_view message)
 		:
 		Exception{"DOOM3_FIX_LIB", message}
 	{
 	}
-}; // Win32Doom3FixException
+}; // Doom3FixLibException
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class Win32Doom3Fix :
+class Doom3FixImpl :
 	public Doom3Fix
 {
 public:
-	Win32Doom3Fix(
+	Doom3FixImpl(
 		Doom3FixTarget fix_target);
 
 
@@ -108,7 +109,7 @@ private:
 
 	bool is_process_{};
 	Doom3FixStatus status_{};
-	std::filesystem::path path_{};
+	String path_{};
 	RefDatas ref_datas_{};
 	PatchDatas patch_datas_{};
 	RefDatas patched_ref_datas_{};
@@ -131,18 +132,18 @@ private:
 
 	void get_process_path();
 
-	std::filebuf open_file(
+	FileUPtr open_file(
 		bool is_writable);
 
 	static bool contains_ref_data(
-		std::filebuf& filebuf,
+		File* file,
 		const RefData& ref_data);
 
 	bool is_unpatched(
-		std::filebuf& filebuf);
+		File* file);
 
 	bool is_patched(
-		std::filebuf& filebuf);
+		File* file);
 
 	void get_file_status();
 
@@ -152,14 +153,14 @@ private:
 		const RefDatas& ref_datas);
 
 	void patch_process();
-}; // Win32Doom3Fix
+}; // Doom3FixImpl
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-Win32Doom3Fix::Win32Doom3Fix(
+Doom3FixImpl::Doom3FixImpl(
 	Doom3FixTarget fix_target)
 {
 	switch (fix_target)
@@ -173,23 +174,23 @@ Win32Doom3Fix::Win32Doom3Fix(
 			break;
 
 		default:
-			throw Win32Doom3FixException{"Unsupported target."};
+			throw Doom3FixLibException{"Unsupported target."};
 	}
 
 	initialize();
 }
 
-Doom3FixStatus Win32Doom3Fix::get_status() const noexcept
+Doom3FixStatus Doom3FixImpl::get_status() const noexcept
 {
 	return status_;
 }
 
-void Win32Doom3Fix::patch()
+void Doom3FixImpl::patch()
 {
 	switch (status_)
 	{
 		case Doom3FixStatus::patched:
-			throw Win32Doom3FixException{"Already patched."};
+			throw Doom3FixLibException{"Already patched."};
 
 		case Doom3FixStatus::unpatched:
 			if (is_process_)
@@ -204,15 +205,15 @@ void Win32Doom3Fix::patch()
 
 		case Doom3FixStatus::unsupported:
 		default:
-			throw Win32Doom3FixException{"Unsupported file."};
+			throw Doom3FixLibException{"Unsupported file."};
 	}
 }
 
-void Win32Doom3Fix::unpatch()
+void Doom3FixImpl::unpatch()
 {
 	if (is_process_)
 	{
-		throw Win32Doom3FixException{"Unpatching the process not supported."};
+		throw Doom3FixLibException{"Unpatching the process not supported."};
 	}
 
 	switch (status_)
@@ -222,20 +223,20 @@ void Win32Doom3Fix::unpatch()
 			break;
 
 		case Doom3FixStatus::unpatched:
-			throw Win32Doom3FixException{"Already unpatched."};
+			throw Doom3FixLibException{"Already unpatched."};
 
 		case Doom3FixStatus::unsupported:
 		default:
-			throw Win32Doom3FixException{"Unsupported file."};
+			throw Doom3FixLibException{"Unsupported file."};
 	}
 }
 
-const char* Win32Doom3Fix::get_default_file_name() noexcept
+const char* Doom3FixImpl::get_default_file_name() noexcept
 {
 	return "DOOM3.exe";
 }
 
-void Win32Doom3Fix::make_ref_datas()
+void Doom3FixImpl::make_ref_datas()
 {
 	ref_datas_ =
 	{
@@ -284,7 +285,7 @@ void Win32Doom3Fix::make_ref_datas()
 	};
 }
 
-void Win32Doom3Fix::make_patch_datas()
+void Doom3FixImpl::make_patch_datas()
 {
 	patch_datas_ =
 	{
@@ -315,7 +316,7 @@ void Win32Doom3Fix::make_patch_datas()
 	};
 }
 
-void Win32Doom3Fix::initialize_datas()
+void Doom3FixImpl::initialize_datas()
 {
 	make_ref_datas();
 	make_patch_datas();
@@ -329,28 +330,29 @@ void Win32Doom3Fix::initialize_datas()
 	}
 }
 
-void Win32Doom3Fix::get_process_path()
+void Doom3FixImpl::get_process_path()
 {
 	constexpr auto max_string_length = 4'095;
 	constexpr auto max_string_size = max_string_length + 1;
-	using Buffer = std::array<WCHAR, max_string_size>;
+	using Buffer = std::array<char16_t, max_string_size>;
 
 	auto buffer = Buffer{};
 
 	static_cast<void>(GetModuleFileNameW(
 		nullptr,
-		buffer.data(),
-		max_string_length));
+		reinterpret_cast<WCHAR*>(buffer.data()),
+		max_string_length)
+	);
 
-	path_ = std::filesystem::path{buffer.data()};
+	path_ = encoding::to_utf8(buffer.data());
 
 	if (path_.empty())
 	{
-		throw Win32Doom3FixException{"Failed to get a path of the current process."};
+		throw Doom3FixLibException{"Failed to get a path of the current process."};
 	}
 }
 
-void Win32Doom3Fix::make_patched_ref_data(
+void Doom3FixImpl::make_patched_ref_data(
 	const RefData& ref_data,
 	const PatchData& patch_data,
 	RefData& patched_ref_data)
@@ -365,46 +367,36 @@ void Win32Doom3Fix::make_patched_ref_data(
 
 }
 
-std::filebuf Win32Doom3Fix::open_file(
+FileUPtr Doom3FixImpl::open_file(
 	bool is_writable)
 {
-	const auto mode = static_cast<std::ios_base::openmode>(
-		std::ios_base::binary |
-		std::ios_base::in |
-		(is_writable ? std::ios_base::out : 0)
+	const auto open_mode = static_cast<FileOpenMode>(
+		file_open_mode_read |
+		(is_writable ? file_open_mode_write : file_open_mode_none)
 	);
 
-	auto filebuf = std::filebuf{};
-	filebuf.open(path_, mode);
-
-	if (!filebuf.is_open())
-	{
-		const auto& utf8_path = path_.u8string();
-		throw Win32Doom3FixException{"Failed to open file \"" + utf8_path + "\"."};
-	}
-
-	return filebuf;
+	return make_file(path_.c_str(), open_mode);
 }
 
-bool Win32Doom3Fix::contains_ref_data(
-	std::filebuf& filebuf,
+bool Doom3FixImpl::contains_ref_data(
+	File* file,
 	const RefData& ref_data)
 {
 	auto file_data = ref_data.data;
 	std::fill(file_data.begin(), file_data.end(), Data::value_type{});
 
-	filebuf.pubseekpos(ref_data.base_offset);
-	filebuf.sgetn(reinterpret_cast<char*>(file_data.data()), file_data.size());
+	file->set_position(ref_data.base_offset);
+	file->read(file_data.data(), file_data.size());
 
 	return file_data == ref_data.data;
 }
 
-bool Win32Doom3Fix::is_unpatched(
-	std::filebuf& filebuf)
+bool Doom3FixImpl::is_unpatched(
+	File* file)
 {
 	for (const auto& ref_data : ref_datas_)
 	{
-		if (!contains_ref_data(filebuf, ref_data))
+		if (!contains_ref_data(file, ref_data))
 		{
 			return false;
 		}
@@ -413,12 +405,12 @@ bool Win32Doom3Fix::is_unpatched(
 	return true;
 }
 
-bool Win32Doom3Fix::is_patched(
-	std::filebuf& filebuf)
+bool Doom3FixImpl::is_patched(
+	File* file)
 {
 	for (const auto& patched_ref_data : patched_ref_datas_)
 	{
-		if (!contains_ref_data(filebuf, patched_ref_data))
+		if (!contains_ref_data(file, patched_ref_data))
 		{
 			return false;
 		}
@@ -427,15 +419,15 @@ bool Win32Doom3Fix::is_patched(
 	return true;
 }
 
-void Win32Doom3Fix::get_file_status()
+void Doom3FixImpl::get_file_status()
 {
-	auto filebuf = open_file(false);
+	auto file = open_file(false);
 
-	if (is_patched(filebuf))
+	if (is_patched(file.get()))
 	{
 		status_ = Doom3FixStatus::patched;
 	}
-	else if (is_unpatched(filebuf))
+	else if (is_unpatched(file.get()))
 	{
 		status_ = Doom3FixStatus::unpatched;
 	}
@@ -445,7 +437,7 @@ void Win32Doom3Fix::get_file_status()
 	}
 }
 
-void Win32Doom3Fix::initialize()
+void Doom3FixImpl::initialize()
 {
 	if (is_process_)
 	{
@@ -460,35 +452,27 @@ void Win32Doom3Fix::initialize()
 	get_file_status();
 }
 
-void Win32Doom3Fix::patch_file(
+void Doom3FixImpl::patch_file(
 	const RefDatas& ref_datas)
 {
-	auto filebuf = open_file(true);
+	auto file = open_file(true);
 
 	for (const auto& ref_data : ref_datas)
 	{
-		const auto new_position = filebuf.pubseekpos(ref_data.base_offset);
+		file->set_position(ref_data.base_offset);
 
-		if (static_cast<std::streamoff>(new_position) < 0)
+		const auto data_size = static_cast<int>(ref_data.data.size());
+
+		const auto written_size = file->write(ref_data.data.data(), data_size);
+
+		if (written_size != data_size)
 		{
-			throw Win32Doom3FixException{"Failed to set new file position."};
-		}
-
-		const auto data_size = ref_data.data.size();
-
-		const auto written_size = filebuf.sputn(
-			reinterpret_cast<const char*>(ref_data.data.data()),
-			data_size
-		);
-
-		if (written_size != static_cast<std::streamoff>(data_size))
-		{
-			throw Win32Doom3FixException{"I/O write error."};
+			throw Doom3FixLibException{"I/O write error."};
 		}
 	}
 }
 
-void Win32Doom3Fix::patch_process()
+void Doom3FixImpl::patch_process()
 {
 	const auto process_handle = GetCurrentProcess();
 	const auto base_address = reinterpret_cast<BYTE*>(GetModuleHandleW(nullptr));
@@ -537,7 +521,7 @@ using Doom3FixUPtr = std::unique_ptr<Doom3Fix>;
 Doom3FixUPtr make_doom_3_fix(
 	Doom3FixTarget fix_target)
 {
-	return std::make_unique<Win32Doom3Fix>(fix_target);
+	return std::make_unique<Doom3FixImpl>(fix_target);
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

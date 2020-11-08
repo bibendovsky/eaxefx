@@ -26,30 +26,32 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include <exception>
-#include <iostream>
-#include <string>
 
-#include "eaxefx_logger.h"
+#include "eaxefx_console.h"
+#include "eaxefx_string.h"
+
 #include "eaxefx_doom3_fix_lib.h"
 
 
-auto logger = eaxefx::LoggerUPtr{};
+auto console = eaxefx::ConsoleUPtr{};
 
-static const auto press_enter_to_exit_message = "Press ENTER to exit.";
+static const auto press_enter_to_exit_message = "Press ENTER to exit.\n";
 
 
-std::string get_input_string(
+eaxefx::String get_input_string(
 	const char* message = nullptr)
 {
-	if (message != nullptr)
+	if (console == nullptr)
 	{
-		logger->info(message);
+		return eaxefx::String{};
 	}
 
-	auto string = std::string{};
-	std::getline(std::cin, string);
+	if (message != nullptr)
+	{
+		console->write(message);
+	}
 
-	return string;
+	return console->read_line();
 }
 
 
@@ -61,19 +63,13 @@ try
 	static_cast<void>(argc);
 	static_cast<void>(argv);
 
-	auto logger_param = eaxefx::LoggerParam{};
-	logger_param.skip_message_prefix = true;
-	logger_param.has_console_sink = true;
-	logger_param.path = "eaxefx_doom3_fix_log.txt";
+	console = eaxefx::make_console();
 
-	logger = eaxefx::make_logger(logger_param);
-	logger->set_immediate_mode();
-
-	logger->info("===========================================================================");
-	logger->info("Doom 3 EAX fix for visual twitch bug v" EAXEFX_DOOM3_FIX_VERSION);
-	logger->info("http://www.pcgamingwiki.com/wiki/Doom_3#Visual_twitch_bug_with_OpenAL.2FEAX");
-	logger->info("===========================================================================");
-	logger->info("");
+	console->write("===========================================================================\n");
+	console->write("Doom 3 EAX fix for visual twitch bug v" EAXEFX_DOOM3_FIX_VERSION "\n");
+	console->write("http://www.pcgamingwiki.com/wiki/Doom_3#Visual_twitch_bug_with_OpenAL.2FEAX\n");
+	console->write("===========================================================================\n");
+	console->write("\n");
 
 	auto doom3_fix = eaxefx::make_doom_3_fix(eaxefx::Doom3FixTarget::file);
 	const auto doom3_fix_status = doom3_fix->get_status();
@@ -82,26 +78,26 @@ try
 	{
 		case eaxefx::Doom3FixStatus::patched:
 			{
-				logger->info("Already patched.");
-				logger->info("");
+				console->write("Already patched.\n");
+				console->write("\n");
 
-				auto answer = std::string{"\xFF"};
+				auto answer = eaxefx::String{"\xFF"};
 
 				while (!answer.empty() && answer != "u")
 				{
-					logger->info("- To unpatch press \"u\" and then \"ENTER\".");
-					logger->info("- To skip just press \"ENTER\".");
+					console->write("- To unpatch press \"u\" and then \"ENTER\".\n");
+					console->write("- To skip just press \"ENTER\".\n");
 					answer = get_input_string();
 				}
 
 				if (!answer.empty())
 				{
 					doom3_fix->unpatch();
-					logger->info("Succeeded.");
+					console->write("Succeeded.\n");
 				}
 				else
 				{
-					logger->info("Skipped.");
+					console->write("Skipped.\n");
 				}
 
 				get_input_string(press_enter_to_exit_message);
@@ -110,26 +106,26 @@ try
 
 		case eaxefx::Doom3FixStatus::unpatched:
 			{
-				auto answer = std::string{"\xFF"};
+				auto answer = eaxefx::String{"\xFF"};
 
-				logger->info("Not patched.");
-				logger->info("");
+				console->write("Not patched.\n");
+				console->write("\n");
 
 				while (!(answer.empty() || answer == "p"))
 				{
-					logger->info("- To patch press \"p\" and then \"ENTER\".");
-					logger->info("- To skip just press \"ENTER\".");
+					console->write("- To patch press \"p\" and then \"ENTER\".\n");
+					console->write("- To skip just press \"ENTER\".\n");
 					answer = get_input_string();
 				}
 
 				if (!answer.empty())
 				{
 					doom3_fix->patch();
-					logger->info("Succeeded.");
+					console->write("Succeeded.\n");
 				}
 				else
 				{
-					logger->info("Skipped.");
+					console->write("Skipped.\n");
 				}
 
 				get_input_string(press_enter_to_exit_message);
@@ -138,7 +134,7 @@ try
 
 		case eaxefx::Doom3FixStatus::unsupported:
 		default:
-			logger->info("Not Doom 3 or already applied a different patch.");
+			console->write("Not Doom 3 or already applied a different patch.\n");
 			get_input_string(press_enter_to_exit_message);
 			break;
 	}
@@ -147,13 +143,10 @@ try
 }
 catch (const std::exception& ex)
 {
-	if (logger != nullptr)
+	if (console != nullptr)
 	{
-		logger->error(ex);
-	}
-	else
-	{
-		std::cerr << "[ERROR] " << ex.what() << std::endl;
+		const auto message = eaxefx::String{"[ERROR] "} + ex.what() + '\n';
+		console->write_error(message);
 	}
 
 	get_input_string(press_enter_to_exit_message);

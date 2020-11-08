@@ -30,10 +30,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include <exception>
-#include <filesystem>
 #include <memory>
-#include <string_view>
-#include <string>
+
+#include "eaxefx_console.h"
+#include "eaxefx_string.h"
 
 
 namespace eaxefx
@@ -69,21 +69,20 @@ public:
 
 	virtual void write(
 		LoggerMessageType message_type,
-		const std::string& message) noexcept = 0;
+		const String& message) noexcept = 0;
 
 	virtual void write(
-		const std::exception& exception,
-		int level) noexcept = 0;
+		const std::exception& exception) noexcept = 0;
 
 
 	void info(
-		const std::string& message) noexcept;
+		const String& message) noexcept;
 
 	void warning(
-		const std::string& message) noexcept;
+		const String& message) noexcept;
 
 	void error(
-		const std::string& message) noexcept;
+		const String& message) noexcept;
 
 
 	void error(
@@ -91,7 +90,7 @@ public:
 
 	void error(
 		const std::exception& exception,
-		const std::string& message) noexcept;
+		const String& message) noexcept;
 }; // Logger
 
 using LoggerUPtr = std::unique_ptr<Logger>;
@@ -104,8 +103,8 @@ using LoggerUPtr = std::unique_ptr<Logger>;
 struct LoggerParam
 {
 	bool skip_message_prefix{};
-	bool has_console_sink{};
-	std::filesystem::path path{};
+	Console* console{};
+	String path{};
 }; // LoggerParam
 
 

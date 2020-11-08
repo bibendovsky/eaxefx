@@ -156,7 +156,8 @@ struct EfxEffectObjectDeleter
 
 using EfxEffectObject = AlObject<EfxEffectObjectDeleter>;
 
-EfxEffectObject make_efx_effect_object();
+EfxEffectObject make_efx_effect_object(
+	ALint al_effect_type);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

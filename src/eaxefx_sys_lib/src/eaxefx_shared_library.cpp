@@ -30,9 +30,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <windows.h>
 
 #include <memory>
-#include <filesystem>
 #include <string_view>
 
+#include "eaxefx_encoding.h"
 #include "eaxefx_exception.h"
 
 
@@ -59,14 +59,14 @@ public:
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class Win32SharedLibrary :
+class SharedLibraryImpl :
 	public SharedLibrary
 {
 public:
-	Win32SharedLibrary(
-		const std::filesystem::path& path);
+	SharedLibraryImpl(
+		const String& path);
 
-	~Win32SharedLibrary() override;
+	~SharedLibraryImpl() override;
 
 
 	void* resolve(
@@ -75,36 +75,28 @@ public:
 
 private:
 	HMODULE win32_module_;
-}; // Win32SharedLibrary
+}; // SharedLibraryImpl
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-void func1()
-{
-}
 
-Win32SharedLibrary::Win32SharedLibrary(
-	const std::filesystem::path& path)
-try
+SharedLibraryImpl::SharedLibraryImpl(
+	const String& path)
 	:
 	win32_module_{}
 {
-	const auto& native_path = path.native();
-	win32_module_ = LoadLibraryW(native_path.c_str());
+	const auto u16_path = encoding::to_utf16(path);
+	win32_module_ = LoadLibraryW(reinterpret_cast<LPCWSTR>(u16_path.c_str()));
 
 	if (win32_module_ == nullptr)
 	{
 		throw Win32SharedLibraryException{"LoadLibraryW failed."};
 	}
 }
-catch (const std::exception&)
-{
-	std::throw_with_nested(Win32SharedLibraryException{"Failed to load library."});
-}
 
-Win32SharedLibrary::~Win32SharedLibrary()
+SharedLibraryImpl::~SharedLibraryImpl()
 {
 	if (win32_module_ != nullptr)
 	{
@@ -112,7 +104,7 @@ Win32SharedLibrary::~Win32SharedLibrary()
 	}
 }
 
-void* Win32SharedLibrary::resolve(
+void* SharedLibraryImpl::resolve(
 	const char* symbol_name) noexcept
 {
 	return reinterpret_cast<void*>(GetProcAddress(win32_module_, symbol_name));
@@ -124,9 +116,9 @@ void* Win32SharedLibrary::resolve(
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 SharedLibraryUPtr make_shared_library(
-	const std::filesystem::path& path)
+	const String& path)
 {
-	return std::make_unique<Win32SharedLibrary>(path);
+	return std::make_unique<SharedLibraryImpl>(path);
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

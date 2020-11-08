@@ -25,8 +25,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include <initguid.h>
-
 #include "eaxefx_eaxx.h"
 
 #include <cmath>
@@ -37,17 +35,17 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <string>
 #include <string_view>
 #include <unordered_map>
 #include <vector>
-#include <thread>
 
 #include "AL/al.h"
 #include "AL/alc.h"
 #include "AL/efx.h"
 
 #include "eaxefx_exception.h"
+#include "eaxefx_mutex.h"
+#include "eaxefx_string.h"
 
 #include "eaxefx_al_low_pass_param.h"
 #include "eaxefx_al_object.h"
@@ -61,6 +59,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_eaxx_fx_slots.h"
 #include "eaxefx_eaxx_context.h"
 #include "eaxefx_eaxx_source.h"
+#include "eaxefx_eaxx_validators.h"
 
 
 namespace eaxefx
@@ -137,6 +136,57 @@ public:
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+class EaxxImplGetFxSlotException :
+	public Exception
+{
+public:
+	explicit EaxxImplGetFxSlotException(
+		std::string_view message)
+		:
+		Exception{"EAXX_EAX_GET_FX_SLOT", message}
+	{
+	}
+}; // EaxxImplGetFxSlotException
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+class EaxxImplSetFxSlotException :
+	public Exception
+{
+public:
+	explicit EaxxImplSetFxSlotException(
+		std::string_view message)
+		:
+		Exception{"EAXX_EAX_SET_FX_SLOT", message}
+	{
+	}
+}; // EaxxImplSetFxSlotException
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+class EaxxImplSetSourceException :
+	public Exception
+{
+public:
+	explicit EaxxImplSetSourceException(
+		std::string_view message)
+		:
+		Exception{"EAXX_EAX_SET_SOURCE", message}
+	{
+	}
+}; // EaxxImplSetSourceException
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 class EaxxImpl :
 	public Eaxx
 {
@@ -184,16 +234,16 @@ public:
 
 
 	ALenum EAXSet(
-		const GUID* property_set_id,
+		const GUID* property_set_guid,
 		ALuint property_id,
-		ALuint al_name,
+		ALuint property_al_name,
 		ALvoid* property_buffer,
 		ALuint property_size) noexcept override;
 
 	ALenum EAXGet(
-		const GUID* property_set_id,
+		const GUID* property_set_guid,
 		ALuint property_id,
-		ALuint al_name,
+		ALuint property_al_name,
 		ALvoid* property_buffer,
 		ALuint property_size) noexcept override;
 
@@ -205,9 +255,8 @@ private:
 	static constexpr auto al_contexts_reserve = al_devices_reserve;
 
 
-	using Mutex = std::mutex;
 	using AlcAttrCache = std::vector<ALCint>;
-	using AlExtsBuffer = std::string;
+	using AlExtsBuffer = String;
 
 
 	struct Device
@@ -238,12 +287,15 @@ private:
 	EaxxContext* current_context_{};
 
 
+	static constexpr auto eax_2_0_ext_name = std::string_view{"EAX2.0"};
 	static constexpr auto eax_3_0_ext_name = std::string_view{"EAX3.0"};
 	static constexpr auto eax_4_0_ext_name = std::string_view{"EAX4.0"};
 	static constexpr auto eax_5_0_ext_name = std::string_view{"EAX5.0"};
 
 
 	bool has_current_context() const noexcept;
+
+	void ensure_context_for_eax_get_set();
 
 	void open_device(
 		const ALCchar* al_device_name,
@@ -262,20 +314,16 @@ private:
 	const ALCint* make_al_context_attrs(
 		const ALCint* al_context_attrs);
 
-	void initialize_context() noexcept;
+	void initialize_current_context() noexcept;
 
 
-	void eax_set_context(
+	void dispatch_context(
 		const EaxxEaxCall& eax_call);
 
-	void eax_set_fxslot(
+	void dispatch_fxslot(
 		const EaxxEaxCall& eax_call);
 
-	void eax_set_source(
-		const EaxxEaxCall& eax_call);
-
-
-	void eax_get_fxslot(
+	void dispatch_source(
 		const EaxxEaxCall& eax_call);
 }; // EaxxImpl
 
@@ -316,7 +364,8 @@ ALboolean EaxxImpl::alIsExtensionPresent(
 	{
 		const auto extname_view = std::string_view{extname};
 
-		if (extname_view == eax_3_0_ext_name ||
+		if (extname_view == eax_2_0_ext_name ||
+			extname_view == eax_3_0_ext_name ||
 			extname_view == eax_4_0_ext_name ||
 			extname_view == eax_5_0_ext_name)
 		{
@@ -349,7 +398,7 @@ ALCdevice* EaxxImpl::alcOpenDevice(
 
 	logger_->info(
 		devicename != nullptr ?
-			"Open device \"" + std::string{devicename} + "\"." :
+			"Open device \"" + String{devicename} + "\"." :
 			"Open default device.");
 
 	const auto al_device = alcOpenDevice_(devicename);
@@ -383,27 +432,25 @@ void EaxxImpl::alGenSources(
 	ALsizei n,
 	ALuint* sources)
 {
-	const auto lock = std::scoped_lock{mutex_};
+	auto has_sources = false;
 
-	const auto has_sources =
-		has_current_context() &&
-		n > 0 &&
-		sources != nullptr;
+	if (n > 0 && sources != nullptr)
+	{
+		has_sources = true;
+
+		for (auto i = ALsizei{}; i < n; ++i)
+		{
+			sources[i] = 0;
+		}
+	}
 
 	alGenSources_(n, sources);
 
-	if (has_sources)
+	if (has_sources && sources[0] != 0)
 	{
-		const auto is_succeed = std::all_of(
-			sources,
-			sources + n,
-			[](const auto al_name)
-			{
-				return al_name != 0;
-			}
-		);
+		const auto lock = std::scoped_lock{mutex_};
 
-		if (is_succeed)
+		if (current_context_ != nullptr)
 		{
 			current_context_->initialize_sources(n, sources);
 		}
@@ -414,16 +461,18 @@ void EaxxImpl::alDeleteSources(
 	ALsizei n,
 	const ALuint* sources)
 {
+	alDeleteSources_(n, sources);
+
+
 	const auto lock = std::scoped_lock{mutex_};
 
-	if (has_current_context() &&
+	if (current_context_ != nullptr &&
 		n > 0 &&
-		sources != nullptr)
+		sources != nullptr &&
+		sources[0] != 0)
 	{
 		current_context_->uninitialize_sources(n, sources);
 	}
-
-	alDeleteSources_(n, sources);
 }
 
 ALCcontext* EaxxImpl::alcCreateContext(
@@ -459,31 +508,25 @@ ALCcontext* EaxxImpl::alcCreateContext(
 ALCboolean EaxxImpl::alcMakeContextCurrent(
 	ALCcontext* context)
 {
-	const auto lock = std::scoped_lock{mutex_};
-
-	const auto has_context =
-		context == nullptr ||
-		context_map_.find(context) != context_map_.cend();
-
-	if (has_context)
-	{
-		current_context_ = nullptr;
-
-		for (auto& [context_key, context_value] : context_map_)
-		{
-			if (context_key == context)
-			{
-				current_context_ = &context_value;
-				break;
-			}
-		}
-	}
-
 	const auto al_result = alcMakeContextCurrent_(context);
 
-	if (has_context && context != nullptr)
+	if (al_result != ALC_FALSE)
 	{
-		initialize_context();
+		const auto lock = std::scoped_lock{mutex_};
+
+		current_context_ = nullptr;
+
+		if (context != nullptr)
+		{
+			for (auto& [context_key, context_value] : context_map_)
+			{
+				if (context_key == context)
+				{
+					current_context_ = &context_value;
+					break;
+				}
+			}
+		}
 	}
 
 	return al_result;
@@ -496,7 +539,7 @@ void EaxxImpl::alcDestroyContext(
 
 	if (context != nullptr)
 	{
-		if (current_context_->get_al_context() == context)
+		if (current_context_ != nullptr && current_context_->get_al_context() == context)
 		{
 			current_context_ = nullptr;
 		}
@@ -508,7 +551,7 @@ void EaxxImpl::alcDestroyContext(
 }
 
 ALenum EaxxImpl::EAXSet(
-	const GUID* property_set_id,
+	const GUID* property_set_guid,
 	ALuint property_id,
 	ALuint property_al_name,
 	ALvoid* property_buffer,
@@ -517,116 +560,34 @@ try
 {
 	const auto lock = std::scoped_lock{mutex_};
 
-	if (!has_current_context())
-	{
-		return AL_INVALID_OPERATION;
-	}
+	ensure_context_for_eax_get_set();
 
-	if (property_set_id == nullptr)
-	{
-		throw EaxxImplException{"Null property GUID."};
-	}
+	const auto eax_call = make_eax_call(
+		false,
+		property_set_guid,
+		property_id,
+		property_al_name,
+		property_buffer,
+		property_size
+	);
 
-	if (property_buffer == nullptr)
+	switch (eax_call.get_property_set_id())
 	{
-		throw EaxxImplException{"Null property value."};
-	}
+		case EaxxEaxCallPropertySetId::context:
+			dispatch_context(eax_call);
+			break;
 
-	auto eax_call = EaxxEaxCall{};
-	eax_call.is_get = false;
-	eax_call.version = 0;
-	eax_call.fx_slot_index.reset();
-	eax_call.property_set_id = property_set_id;
-	eax_call.property_id = property_id;
-	eax_call.property_al_name = property_al_name;
-	eax_call.property_buffer = property_buffer;
-	eax_call.property_size = property_size;
+		case EaxxEaxCallPropertySetId::fx_slot:
+		case EaxxEaxCallPropertySetId::fx_slot_effect:
+			dispatch_fxslot(eax_call);
+			break;
 
-	if (false)
-	{
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX40_Context)
-	{
-		eax_call.version = 4;
-		eax_set_context(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX50_Context)
-	{
-		eax_call.version = 5;
-		eax_set_context(eax_call);
-	}
-	else if ((*property_set_id) == DSPROPSETID_EAX30_ListenerProperties)
-	{
-		eax_call.version = 3;
-		eax_call.fx_slot_index = 0;
-		eax_set_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX40_FXSlot0)
-	{
-		eax_call.version = 4;
-		eax_call.fx_slot_index = 0;
-		eax_set_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX50_FXSlot0)
-	{
-		eax_call.version = 5;
-		eax_call.fx_slot_index = 0;
-		eax_set_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX40_FXSlot1)
-	{
-		eax_call.version = 4;
-		eax_call.fx_slot_index = 1;
-		eax_set_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX50_FXSlot1)
-	{
-		eax_call.version = 5;
-		eax_call.fx_slot_index = 1;
-		eax_set_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX40_FXSlot2)
-	{
-		eax_call.version = 4;
-		eax_call.fx_slot_index = 2;
-		eax_set_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX50_FXSlot2)
-	{
-		eax_call.version = 5;
-		eax_call.fx_slot_index = 2;
-		eax_set_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX40_FXSlot3)
-	{
-		eax_call.version = 4;
-		eax_call.fx_slot_index = 3;
-		eax_set_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX50_FXSlot3)
-	{
-		eax_call.version = 5;
-		eax_call.fx_slot_index = 3;
-		eax_set_fxslot(eax_call);
-	}
-	else if (*property_set_id == DSPROPSETID_EAX30_BufferProperties)
-	{
-		eax_call.version = 3;
-		eax_set_source(eax_call);
-	}
-	else if (*property_set_id == EAXPROPERTYID_EAX40_Source)
-	{
-		eax_call.version = 4;
-		eax_set_source(eax_call);
-	}
-	else if (*property_set_id == EAXPROPERTYID_EAX50_Source)
-	{
-		eax_call.version = 5;
-		eax_set_source(eax_call);
-	}
-	else
-	{
-		throw EaxxImplException{"Unsupported property set id."};
+		case EaxxEaxCallPropertySetId::source:
+			dispatch_source(eax_call);
+			break;
+
+		default:
+			throw EaxxImplException{"Unsupported property set id."};
 	}
 
 	return AL_NO_ERROR;
@@ -638,7 +599,7 @@ catch (const std::exception& ex)
 }
 
 ALenum EaxxImpl::EAXGet(
-	const GUID* property_set_id,
+	const GUID* property_set_guid,
 	ALuint property_id,
 	ALuint property_al_name,
 	ALvoid* property_buffer,
@@ -647,85 +608,34 @@ try
 {
 	const auto lock = std::scoped_lock{mutex_};
 
-	if (!has_current_context())
-	{
-		return AL_INVALID_OPERATION;
-	}
+	ensure_context_for_eax_get_set();
 
-	if (property_set_id == nullptr)
-	{
-		throw EaxxImplException{"Null property GUID."};
-	}
+	const auto eax_call = make_eax_call(
+		true,
+		property_set_guid,
+		property_id,
+		property_al_name,
+		property_buffer,
+		property_size
+	);
 
-	if (property_buffer == nullptr)
+	switch (eax_call.get_property_set_id())
 	{
-		throw EaxxImplException{"Null property value."};
-	}
+		case EaxxEaxCallPropertySetId::context:
+			dispatch_context(eax_call);
+			break;
 
-	auto eax_call = EaxxEaxCall{};
-	eax_call.is_get = true;
-	eax_call.version = 0;
-	eax_call.fx_slot_index = -1;
-	eax_call.property_set_id = property_set_id;
-	eax_call.property_id = property_id;
-	eax_call.property_al_name = property_al_name;
-	eax_call.property_buffer = property_buffer;
-	eax_call.property_size = property_size;
+		case EaxxEaxCallPropertySetId::fx_slot:
+		case EaxxEaxCallPropertySetId::fx_slot_effect:
+			dispatch_fxslot(eax_call);
+			break;
 
-	if (false)
-	{
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX40_FXSlot0)
-	{
-		eax_call.version = 4;
-		eax_call.fx_slot_index = 0;
-		eax_get_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX50_FXSlot0)
-	{
-		eax_call.version = 5;
-		eax_call.fx_slot_index = 0;
-		eax_get_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX40_FXSlot1)
-	{
-		eax_call.version = 4;
-		eax_call.fx_slot_index = 1;
-		eax_get_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX50_FXSlot1)
-	{
-		eax_call.version = 5;
-		eax_call.fx_slot_index = 1;
-		eax_get_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX40_FXSlot2)
-	{
-		eax_call.version = 4;
-		eax_call.fx_slot_index = 2;
-		eax_get_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX50_FXSlot2)
-	{
-		eax_call.version = 5;
-		eax_call.fx_slot_index = 2;
-		eax_get_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX40_FXSlot3)
-	{
-		eax_call.version = 4;
-		eax_call.fx_slot_index = 3;
-		eax_get_fxslot(eax_call);
-	}
-	else if ((*property_set_id) == EAXPROPERTYID_EAX50_FXSlot3)
-	{
-		eax_call.version = 5;
-		eax_call.fx_slot_index = 3;
-		eax_get_fxslot(eax_call);
-	}
-	else
-	{
-		throw EaxxImplException{"Unsupported property set id."};
+		case EaxxEaxCallPropertySetId::source:
+			dispatch_source(eax_call);
+			break;
+
+		default:
+			throw EaxxImplException{"Unsupported property set id."};
 	}
 
 	return AL_NO_ERROR;
@@ -743,6 +653,21 @@ bool EaxxImpl::has_current_context() const noexcept
 		current_context_->is_initialized();
 }
 
+void EaxxImpl::ensure_context_for_eax_get_set()
+{
+	if (current_context_ == nullptr)
+	{
+		throw EaxxImplException{"Null current context."};
+	}
+
+	current_context_->initialize();
+
+	if (!current_context_->is_initialized())
+	{
+		throw EaxxImplException{"Context not initialized."};
+	}
+}
+
 void EaxxImpl::open_device(
 	const ALCchar* al_device_name,
 	ALCdevice* al_device)
@@ -755,7 +680,7 @@ void EaxxImpl::open_device(
 
 		if (real_device_name != nullptr)
 		{
-			logger_->info("Device name: \"" + std::string{real_device_name} + "\".");
+			logger_->info("Device name: \"" + String{real_device_name} + "\".");
 		}
 		else
 		{
@@ -809,6 +734,7 @@ const ALchar* EaxxImpl::make_al_exts(
 
 	const auto al_exts_view = std::string_view{al_exts};
 
+	append_eax_extension_if_not_exist(al_exts_view, eax_2_0_ext_name);
 	append_eax_extension_if_not_exist(al_exts_view, eax_3_0_ext_name);
 	append_eax_extension_if_not_exist(al_exts_view, eax_4_0_ext_name);
 	append_eax_extension_if_not_exist(al_exts_view, eax_5_0_ext_name);
@@ -872,7 +798,7 @@ const ALCint* EaxxImpl::make_al_context_attrs(
 	return al_context_attr_buffer_.data();
 }
 
-void EaxxImpl::initialize_context() noexcept
+void EaxxImpl::initialize_current_context() noexcept
 try
 {
 	if (current_context_ == nullptr)
@@ -891,46 +817,37 @@ try
 }
 catch (const std::exception& ex)
 {
-	logger_->error("Failed to initialize context.");
-	logger_->write(ex, 1);
+	logger_->write(ex);
 }
 
-void EaxxImpl::eax_set_context(
+void EaxxImpl::dispatch_context(
 	const EaxxEaxCall& eax_call)
 {
-	current_context_->set(eax_call);
+	current_context_->dispatch(eax_call);
 }
 
-void EaxxImpl::eax_set_fxslot(
+void EaxxImpl::dispatch_fxslot(
 	const EaxxEaxCall& eax_call)
 {
-	auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
+	auto& fx_slot = current_context_->get_slot(eax_call.get_fx_slot_index());
 
-	if (fx_slot.set(eax_call))
+	if (fx_slot.dispatch(eax_call))
 	{
 		current_context_->update_filters();
 	}
 }
 
-void EaxxImpl::eax_set_source(
+void EaxxImpl::dispatch_source(
 	const EaxxEaxCall& eax_call)
 {
-	auto source = current_context_->find_source(eax_call.property_al_name);
+	auto source = current_context_->find_source(eax_call.get_property_al_name());
 
 	if (source == nullptr)
 	{
 		throw EaxxImplException{"Source not found."};
 	}
 
-	source->set(eax_call);
-}
-
-void EaxxImpl::eax_get_fxslot(
-	const EaxxEaxCall& eax_call)
-{
-	const auto& fx_slot = current_context_->get_slot(eax_call.fx_slot_index);
-
-	fx_slot.get(eax_call);
+	source->dispatch(eax_call);
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

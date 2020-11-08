@@ -1,6 +1,17 @@
 # EAXEFX changelog
 
 
+## [1.0.2] - 2020-12-14
+### Added
+- Support all EAX features (2.0/3.0/4.0/5.0) with few exceptions.
+- Probe for extended filter gain extension (`AL_SOFTX_filter_gain_ex`).
+
+### Changed
+- Initialize EAX context on first call to `EAXGet` or `EAXSet`.
+- Rewrite some standard classes with WinAPI to reduce the size of binaries.
+- [Doom 3 Fix] Use console for messages.
+
+
 ## [1.0.1] - 2020-11-08
 ### Added
 - Support `Soldier of Fortune II: Double Helix (2002)`.

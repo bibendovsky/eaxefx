@@ -31,17 +31,16 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <charconv>
 #include <chrono>
 #include <codecvt>
-#include <condition_variable>
 #include <deque>
 #include <exception>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
 #include <iterator>
 #include <locale>
 #include <memory>
 #include <mutex>
-#include <string>
 #include <string_view>
-#include <thread>
 #include <utility>
+
+#include "eaxefx_exception.h"
+#include "eaxefx_not_null.h"
+#include "eaxefx_platform.h"
+#include "eaxefx_string.h"

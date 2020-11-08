@@ -32,7 +32,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 
 #include <memory>
-#include <string>
+
+#include "eaxefx_string.h"
 
 
 namespace eaxefx::thread
@@ -42,7 +43,7 @@ namespace eaxefx::thread
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void set_name(
-	const std::string& utf8_name);
+	const String& utf8_name);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

@@ -29,7 +29,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #define EAXEFX_SYSTEM_TIME_INCLUDED
 
 
-#include <string>
+#include "eaxefx_string.h"
 
 
 namespace eaxefx
@@ -52,7 +52,7 @@ SystemTime make_system_time() noexcept;
 
 void make_system_time_string(
 	const SystemTime& system_time,
-	std::string& system_time_string);
+	String& system_time_string);
 
 
 } // eaxefx
