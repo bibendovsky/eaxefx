@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,67 +25,81 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "eaxefx_file_system.h"
+#include "eaxefx_mutex.h"
 
-#include <string_view>
-
-#include <windows.h>
-
-#include "eaxefx_encoding.h"
-#include "eaxefx_exception.h"
+#include "eaxefx_platform.h"
+#include "eaxefx_sys_win32_critical_section.h"
 
 
-namespace eaxefx::file_system
+namespace eaxefx
 {
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class FileSystemException :
-	public Exception
+class Mutex::Impl
 {
 public:
-	explicit FileSystemException(
-		std::string_view message)
-		:
-		Exception{"EAXEFX_FILE_SYSTEM", message}
-	{
-	}
-}; // FileSystemException
+	void lock();
+
+	void unlock();
+
+	void* native_handle() noexcept;
+
+
+private:
+	SysWin32CriticalSection win32_critical_section_{};
+}; // Mutex::Impl
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-bool is_exists(
-	const String& path)
+void Mutex::Impl::lock()
 {
-	if (path.empty())
-	{
-		return false;
-	}
+	win32_critical_section_.lock();
+}
 
-	const auto u16_path = encoding::to_utf16(path);
+void Mutex::Impl::unlock()
+{
+	win32_critical_section_.unlock();
+}
 
-	WIN32_FIND_DATAW win32_find_data;
-
-	const auto win32_handle = FindFirstFileW(
-		reinterpret_cast<LPCWSTR>(u16_path.c_str()),
-		&win32_find_data
-	);
-
-	if (win32_handle == INVALID_HANDLE_VALUE)
-	{
-		return false;
-	}
-
-	FindClose(win32_handle);
-
-	return true;
+void* Mutex::Impl::native_handle() noexcept
+{
+	return &win32_critical_section_;
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-} // eaxefx::file_system
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+Mutex::Mutex()
+	:
+	impl_{std::make_unique<Impl>()}
+{
+}
+
+Mutex::~Mutex() = default;
+
+void Mutex::lock()
+{
+	impl_->lock();
+}
+
+void Mutex::unlock()
+{
+	impl_->unlock();
+}
+
+void* Mutex::native_handle() noexcept
+{
+	return impl_->native_handle();
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+} // eaxefx

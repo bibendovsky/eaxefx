@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,10 +25,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "eaxefx_mutex.h"
+#include "eaxefx_shared_library.h"
 
-#include "eaxefx_platform.h"
-#include "eaxefx_win32_critical_section.h"
+#include <windows.h>
+
+#include <memory>
+
+#include "eaxefx_encoding.h"
+#include "eaxefx_exception.h"
 
 
 namespace eaxefx
@@ -37,69 +41,87 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class Mutex::Impl
+class Win32SharedLibraryException :
+	public Exception
 {
 public:
-	void lock();
+	explicit Win32SharedLibraryException(
+		const char* message)
+		:
+		Exception{"WIN32_SHARED_LIBRARY", message}
+	{
+	}
+}; // Win32SharedLibraryException
 
-	void unlock();
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-	void* native_handle() noexcept;
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+class Win32SharedLibrary :
+	public SharedLibrary
+{
+public:
+	Win32SharedLibrary(
+		const String& path);
+
+	~Win32SharedLibrary() override;
+
+
+	void* resolve(
+		const char* symbol_name) noexcept override;
 
 
 private:
-	Win32CriticalSection win32_critical_section_{};
-}; // Mutex::Impl
+	HMODULE win32_module_;
+}; // Win32SharedLibrary
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-void Mutex::Impl::lock()
-{
-	win32_critical_section_.lock();
-}
-
-void Mutex::Impl::unlock()
-{
-	win32_critical_section_.unlock();
-}
-
-void* Mutex::Impl::native_handle() noexcept
-{
-	return &win32_critical_section_;
-}
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-Mutex::Mutex()
+Win32SharedLibrary::Win32SharedLibrary(
+	const String& path)
 	:
-	impl_{std::make_unique<Impl>()}
+	win32_module_{}
 {
+	const auto u16_path = encoding::to_utf16(path);
+	win32_module_ = LoadLibraryW(reinterpret_cast<LPCWSTR>(u16_path.c_str()));
+
+	if (win32_module_ == nullptr)
+	{
+		throw Win32SharedLibraryException{"LoadLibraryW failed."};
+	}
 }
 
-Mutex::~Mutex() = default;
-
-void Mutex::lock()
+Win32SharedLibrary::~Win32SharedLibrary()
 {
-	impl_->lock();
+	if (win32_module_ != nullptr)
+	{
+		static_cast<void>(FreeLibrary(win32_module_));
+	}
 }
 
-void Mutex::unlock()
+void* Win32SharedLibrary::resolve(
+	const char* symbol_name) noexcept
 {
-	impl_->unlock();
-}
-
-void* Mutex::native_handle() noexcept
-{
-	return impl_->native_handle();
+	return reinterpret_cast<void*>(GetProcAddress(win32_module_, symbol_name));
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+SharedLibraryUPtr make_shared_library(
+	const String& path)
+{
+	return std::make_unique<Win32SharedLibrary>(path);
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 
 
 } // eaxefx

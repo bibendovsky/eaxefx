@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,10 +29,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #define EAXEFX_EXCEPTION_INCLUDED
 
 
-#include <exception>
-#include <string_view>
+#include <cstddef>
 
-#include "eaxefx_string.h"
+#include <exception>
+#include <memory>
 
 
 namespace eaxefx
@@ -48,20 +48,21 @@ public:
 	Exception() = delete;
 
 	Exception(
-		std::string_view context,
-		std::string_view message);
+		const char* context,
+		const char* message);
 
 
 	const char* what() const noexcept override;
 
 
 private:
-	String what_;
+	std::unique_ptr<char[]> what_{};
 
 
-	void make_message(
-		std::string_view context_string_view,
-		std::string_view message_string_view);
+	static void copy_string(
+		const char* src,
+		std::size_t src_size,
+		char*& dst);
 }; // Exception
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

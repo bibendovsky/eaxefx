@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,48 +25,34 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "eaxefx_platform.h"
+#include "eaxefx_process.h"
 
 #include <windows.h>
 
 
-namespace eaxefx::platform
+namespace eaxefx::process
 {
 
 
-namespace
+bool is_shared_library() noexcept
 {
+	const auto root_module = GetModuleHandleW(nullptr);
 
+	auto current_module = HMODULE{};
 
-bool is_vista_or_higher_internal() noexcept
-{
-	constexpr auto win32_type_mask = DWORD{VER_MAJORVERSION | VER_MINORVERSION};
-
-	OSVERSIONINFOEXW os_version_info_w;
-	os_version_info_w.dwOSVersionInfoSize = static_cast<DWORD>(sizeof(OSVERSIONINFOEXW));
-	os_version_info_w.dwMajorVersion = 6;
-	os_version_info_w.dwMinorVersion = 0;
-
-	const auto win32_condition_mask = VerSetConditionMask(0, win32_type_mask, VER_GREATER_EQUAL);
-
-	const auto win32_result = VerifyVersionInfoW(
-		&os_version_info_w,
-		win32_type_mask,
-		win32_condition_mask
+	const auto winapi_result = GetModuleHandleExW(
+		GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+		reinterpret_cast<LPCWSTR>(is_shared_library),
+		&current_module
 	);
 
-	return win32_result != FALSE;
+	if (!winapi_result)
+	{
+		return false;
+	}
+
+	return root_module != current_module;
 }
 
 
-}
-
-
-bool is_vista_or_higher() noexcept
-{
-	static auto result = is_vista_or_higher_internal();
-	return result;
-}
-
-
-} // eaxefx::platform
+} // eaxefx::process

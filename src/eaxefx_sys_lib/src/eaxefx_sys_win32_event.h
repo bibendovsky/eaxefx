@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,34 +25,59 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "eaxefx_process.h"
+#ifndef EAXEFX_SYS_WIN32_EVENT_INCLUDED
+#define EAXEFX_SYS_WIN32_EVENT_INCLUDED
+
+
+#include <chrono>
 
 #include <windows.h>
 
 
-namespace eaxefx::process
+namespace eaxefx
 {
 
 
-bool is_shared_library() noexcept
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+class SysWin32Event
 {
-	const auto root_module = GetModuleHandleW(nullptr);
+public:
+	SysWin32Event();
 
-	auto current_module = HMODULE{};
+	SysWin32Event(
+		const SysWin32Event& rhs) = delete;
 
-	const auto winapi_result = GetModuleHandleExW(
-		GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-		reinterpret_cast<LPCWSTR>(is_shared_library),
-		&current_module
-	);
+	SysWin32Event& operator=(
+		const SysWin32Event& rhs) = delete;
 
-	if (!winapi_result)
-	{
-		return false;
-	}
-
-	return root_module != current_module;
-}
+	~SysWin32Event();
 
 
-} // eaxefx::process
+	void set(
+		bool value);
+
+	void wait();
+
+	bool wait_for(
+		std::chrono::milliseconds timeout_ms);
+
+
+private:
+	HANDLE handle_{};
+
+
+	static HANDLE make_win32_event();
+
+
+	bool wait_for_ms_internal(
+		DWORD timeout_ms);
+}; // SysWin32Event
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+} // eaxefx
+
+
+#endif // !EAXEFX_SYS_WIN32_EVENT_INCLUDED

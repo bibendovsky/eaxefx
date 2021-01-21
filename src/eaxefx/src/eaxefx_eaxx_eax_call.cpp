@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_eaxx_eax_call.h"
 
-#include <string_view>
-
 #include "eaxefx_exception.h"
 
 
@@ -43,7 +41,7 @@ class EaxxEaxCallException :
 {
 public:
 	explicit EaxxEaxCallException(
-		std::string_view message)
+		const char* message)
 		:
 		Exception{"EAXX_EAX_CALL", message}
 	{

@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <algorithm>
 #include <memory>
-#include <exception>
-#include <string_view>
 
 #include "eaxefx_exception.h"
 
@@ -123,9 +121,9 @@ class EaxxSourceException :
 {
 public:
 	explicit EaxxSourceException(
-		std::string_view message)
+		const char* message)
 		:
-		Exception{"EAXEFX_EAXX_SOURCE", message}
+		Exception{"EAXX_SOURCE", message}
 	{
 	}
 }; // EaxxSourceException
@@ -140,9 +138,9 @@ class EaxxSourceActiveFxSlotsException :
 {
 public:
 	explicit EaxxSourceActiveFxSlotsException(
-		std::string_view message)
+		const char* message)
 		:
-		Exception{"EAXEFX_EAXX_SOURCE_ACTIVE_FX_SLOTS", message}
+		Exception{"EAXX_SOURCE_ACTIVE_FX_SLOTS", message}
 	{
 	}
 }; // EaxxSourceActiveFxSlotsException
@@ -157,9 +155,9 @@ class EaxxSourceSendException :
 {
 public:
 	explicit EaxxSourceSendException(
-		std::string_view message)
+		const char* message)
 		:
-		Exception{"EAXEFX_EAXX_SOURCE_SEND", message}
+		Exception{"EAXX_SOURCE_SEND", message}
 	{
 	}
 }; // EaxxSourceSendException

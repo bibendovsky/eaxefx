@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,15 +25,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef EAXEFX_WIN32_CONDITION_VARIABLE_INCLUDED
-#define EAXEFX_WIN32_CONDITION_VARIABLE_INCLUDED
-
-
-#include <chrono>
-
-#include <windows.h>
-
-#include "eaxefx_win32_critical_section.h"
+#include "eaxefx_sys_win32_critical_section.h"
 
 
 namespace eaxefx
@@ -42,36 +34,32 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class Win32ConditionVariable
+SysWin32CriticalSection::SysWin32CriticalSection()
 {
-public:
-	Win32ConditionVariable();
+	InitializeCriticalSection(&critical_section_);
+}
 
-	Win32ConditionVariable(
-		const Win32ConditionVariable& rhs) = delete;
+SysWin32CriticalSection::~SysWin32CriticalSection()
+{
+	DeleteCriticalSection(&critical_section_);
+}
 
-	Win32ConditionVariable& operator=(
-		const Win32ConditionVariable& rhs) = delete;
+void SysWin32CriticalSection::lock()
+{
+	EnterCriticalSection(&critical_section_);
+}
 
-	~Win32ConditionVariable();
+void SysWin32CriticalSection::unlock()
+{
+	LeaveCriticalSection(&critical_section_);
+}
 
-
-	bool sleep(
-		Win32CriticalSection& critical_section,
-		std::chrono::milliseconds timeout);
-
-	void wake();
-
-
-private:
-	CONDITION_VARIABLE condition_variable_;
-}; // Win32ConditionVariable
+CRITICAL_SECTION& SysWin32CriticalSection::get() noexcept
+{
+	return critical_section_;
+}
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-
 } // eaxefx
-
-
-#endif // !EAXEFX_WIN32_CONDITION_VARIABLE_INCLUDED

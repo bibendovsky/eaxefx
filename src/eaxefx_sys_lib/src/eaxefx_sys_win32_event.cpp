@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "eaxefx_win32_event.h"
+#include "eaxefx_sys_win32_event.h"
 
 #include "eaxefx_exception.h"
 
@@ -41,9 +41,9 @@ class Win32EventException :
 {
 public:
 	explicit Win32EventException(
-		std::string_view message)
+		const char* message)
 		:
-		Exception{"EAXEFX_WIN32_EVENT", message}
+		Exception{"SYS_WIN32_EVENT", message}
 	{
 	}
 }; // Win32EventException
@@ -53,18 +53,18 @@ public:
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-Win32Event::Win32Event()
+SysWin32Event::SysWin32Event()
 	:
 	handle_{make_win32_event()}
 {
 }
 
-Win32Event::~Win32Event()
+SysWin32Event::~SysWin32Event()
 {
 	CloseHandle(handle_);
 }
 
-void Win32Event::set(
+void SysWin32Event::set(
 	bool value)
 {
 	BOOL win32_result;
@@ -84,12 +84,12 @@ void Win32Event::set(
 	}
 }
 
-void Win32Event::wait()
+void SysWin32Event::wait()
 {
 	wait_for_ms_internal(INFINITE);
 }
 
-bool Win32Event::wait_for(
+bool SysWin32Event::wait_for(
 	std::chrono::milliseconds timeout_ms)
 {
 	DWORD win32_timeout_ms;
@@ -106,7 +106,7 @@ bool Win32Event::wait_for(
 	return wait_for_ms_internal(win32_timeout_ms);
 }
 
-HANDLE Win32Event::make_win32_event()
+HANDLE SysWin32Event::make_win32_event()
 {
 	const auto handle = CreateEventW(nullptr, TRUE, FALSE, nullptr);
 
@@ -118,7 +118,7 @@ HANDLE Win32Event::make_win32_event()
 	return handle;
 }
 
-bool Win32Event::wait_for_ms_internal(
+bool SysWin32Event::wait_for_ms_internal(
 	DWORD timeout_ms)
 {
 	const auto win32_result = WaitForSingleObject(handle_, static_cast<DWORD>(timeout_ms));

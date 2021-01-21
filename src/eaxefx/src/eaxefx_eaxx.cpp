@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,6 +31,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <algorithm>
 #include <array>
+#include <exception>
 #include <iterator>
 #include <memory>
 #include <mutex>
@@ -73,7 +74,7 @@ class EaxxImplException :
 {
 public:
 	explicit EaxxImplException(
-		std::string_view message)
+		const char* message)
 		:
 		Exception{"EAXX", message}
 	{
@@ -90,7 +91,7 @@ class EaxxImplSetEaxSessionException :
 {
 public:
 	explicit EaxxImplSetEaxSessionException(
-		std::string_view message)
+		const char* message)
 		:
 		Exception{"EAXX_EAX_SET_SESSION", message}
 	{
@@ -107,7 +108,7 @@ class EaxxImplSetEaxPrimaryFxSlotIdException :
 {
 public:
 	explicit EaxxImplSetEaxPrimaryFxSlotIdException(
-		std::string_view message)
+		const char* message)
 		:
 		Exception{"EAXX_EAX_SET_PRIMARY_FX_SLOT_ID", message}
 	{
@@ -124,7 +125,7 @@ class EaxxImplSetEaxContextException :
 {
 public:
 	explicit EaxxImplSetEaxContextException(
-		std::string_view message)
+		const char* message)
 		:
 		Exception{"EAXX_EAX_SET_CONTEXT", message}
 	{
@@ -141,7 +142,7 @@ class EaxxImplGetFxSlotException :
 {
 public:
 	explicit EaxxImplGetFxSlotException(
-		std::string_view message)
+		const char* message)
 		:
 		Exception{"EAXX_EAX_GET_FX_SLOT", message}
 	{
@@ -158,7 +159,7 @@ class EaxxImplSetFxSlotException :
 {
 public:
 	explicit EaxxImplSetFxSlotException(
-		std::string_view message)
+		const char* message)
 		:
 		Exception{"EAXX_EAX_SET_FX_SLOT", message}
 	{
@@ -175,7 +176,7 @@ class EaxxImplSetSourceException :
 {
 public:
 	explicit EaxxImplSetSourceException(
-		std::string_view message)
+		const char* message)
 		:
 		Exception{"EAXX_EAX_SET_SOURCE", message}
 	{

@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_string.h"
 
-#include <string_view>
 #include <type_traits>
 
 #include <strsafe.h>
@@ -46,9 +45,9 @@ class ToStringException :
 {
 public:
 	explicit ToStringException(
-		std::string_view message)
+		const char* message)
 		:
-		Exception{"EAXEFX_TO_STRING", message}
+		Exception{"WIN32_TO_STRING", message}
 	{
 	}
 }; // ToStringException

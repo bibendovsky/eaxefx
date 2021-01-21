@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,11 +39,11 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class ConsoleImpl :
+class Win32Console :
 	public Console
 {
 public:
-	ConsoleImpl() noexcept;
+	Win32Console() noexcept;
 
 
 	String read_line() override;
@@ -96,14 +96,14 @@ private:
 	void write_internal(
 		HANDLE handle,
 		std::string_view view);
-}; // ConsoleImpl
+}; // Win32Console
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-ConsoleImpl::ConsoleImpl() noexcept
+Win32Console::Win32Console() noexcept
 {
 	in_code_page_ = GetConsoleCP();
 	out_code_page_ = GetConsoleOutputCP();
@@ -130,7 +130,7 @@ ConsoleImpl::ConsoleImpl() noexcept
 	}
 }
 
-String ConsoleImpl::read_line()
+String Win32Console::read_line()
 {
 	if (!has_in_handle_)
 	{
@@ -140,7 +140,7 @@ String ConsoleImpl::read_line()
 	return read_line_internal();
 }
 
-void ConsoleImpl::write(
+void Win32Console::write(
 	std::string_view view)
 {
 	if (!has_out_handle_)
@@ -156,7 +156,7 @@ void ConsoleImpl::write(
 	write_internal(out_handle_, view);
 }
 
-void ConsoleImpl::write_error(
+void Win32Console::write_error(
 	std::string_view view)
 {
 	if (!has_err_handle_)
@@ -172,7 +172,7 @@ void ConsoleImpl::write_error(
 	write_internal(err_handle_, view);
 }
 
-void ConsoleImpl::flush()
+void Win32Console::flush()
 {
 	if (has_err_handle_)
 	{
@@ -185,19 +185,19 @@ void ConsoleImpl::flush()
 	}
 }
 
-bool ConsoleImpl::is_handle_valid(
+bool Win32Console::is_handle_valid(
 	HANDLE handle) noexcept
 {
 	return handle != nullptr && handle != INVALID_HANDLE_VALUE;
 }
 
-void ConsoleImpl::flush(
+void Win32Console::flush(
 	HANDLE handle) noexcept
 {
 	FlushFileBuffers(handle);
 }
 
-String ConsoleImpl::utf8_to_oem(
+String Win32Console::utf8_to_oem(
 	std::string_view utf8_view,
 	UINT code_page)
 {
@@ -276,7 +276,7 @@ String ConsoleImpl::utf8_to_oem(
 	return oem_string;
 }
 
-String ConsoleImpl::oem_to_utf8(
+String Win32Console::oem_to_utf8(
 	std::string_view oem_view,
 	UINT code_page)
 {
@@ -355,7 +355,7 @@ String ConsoleImpl::oem_to_utf8(
 	return utf8_string;
 }
 
-String ConsoleImpl::read_line_internal()
+String Win32Console::read_line_internal()
 {
 	constexpr auto oem_line_reserve = 1024;
 
@@ -398,7 +398,7 @@ String ConsoleImpl::read_line_internal()
 	}
 }
 
-void ConsoleImpl::write_internal(
+void Win32Console::write_internal(
 	HANDLE handle,
 	std::string_view view)
 {
@@ -424,7 +424,7 @@ void ConsoleImpl::write_internal(
 
 ConsoleUPtr make_console()
 {
-	return std::make_unique<ConsoleImpl>();
+	return std::make_unique<Win32Console>();
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

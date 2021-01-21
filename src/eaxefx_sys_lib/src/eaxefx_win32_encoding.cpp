@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_encoding.h"
 
-#include <string_view>
-
 #include <windows.h>
 
 #include "eaxefx_exception.h"
@@ -40,34 +38,34 @@ namespace eaxefx::encoding
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class EncodingToUtf16Exception :
+class Win32EncodingToUtf16Exception :
 	public Exception
 {
 public:
-	explicit EncodingToUtf16Exception(
-		std::string_view message)
+	explicit Win32EncodingToUtf16Exception(
+		const char* message)
 		:
-		Exception{"ENCODING_TO_UTF16", message}
+		Exception{"WIN32_ENCODING_TO_UTF16", message}
 	{
 	}
-}; // EncodingToUtf16Exception
+}; // Win32EncodingToUtf16Exception
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class EncodingToUtf8Exception :
+class Win32EncodingToUtf8Exception :
 	public Exception
 {
 public:
-	explicit EncodingToUtf8Exception(
-		std::string_view message)
+	explicit Win32EncodingToUtf8Exception(
+		const char* message)
 		:
-		Exception{"ENCODING_TO_UTF8", message}
+		Exception{"WIN32_ENCODING_TO_UTF8", message}
 	{
 	}
-}; // EncodingToUtf8Exception
+}; // Win32EncodingToUtf8Exception
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -80,7 +78,7 @@ U16String to_utf16_internal(
 {
 	if (utf8_string == nullptr)
 	{
-		throw EncodingToUtf16Exception{"Null string."};
+		throw Win32EncodingToUtf16Exception{"Null string."};
 	}
 
 	if (utf8_length < 0)
@@ -104,7 +102,7 @@ U16String to_utf16_internal(
 
 	if (u16_size <= 0)
 	{
-		throw EncodingToUtf16Exception{"Failed to get max length."};
+		throw Win32EncodingToUtf16Exception{"Failed to get max length."};
 	}
 
 	auto u16_string = U16String{};
@@ -121,7 +119,7 @@ U16String to_utf16_internal(
 
 	if (u16_result != u16_size)
 	{
-		throw EncodingToUtf16Exception{"Failed to convert."};
+		throw Win32EncodingToUtf16Exception{"Failed to convert."};
 	}
 
 	return u16_string;
@@ -150,7 +148,7 @@ String to_utf8_internal(
 {
 	if (utf16_string == nullptr)
 	{
-		throw EncodingToUtf8Exception{"Null string."};
+		throw Win32EncodingToUtf8Exception{"Null string."};
 	}
 
 	if (utf16_length < 0)
@@ -176,7 +174,7 @@ String to_utf8_internal(
 
 	if (u8_size <= 0)
 	{
-		throw EncodingToUtf8Exception{"Failed to get max length."};
+		throw Win32EncodingToUtf8Exception{"Failed to get max length."};
 	}
 
 	auto u8_string = String{};
@@ -195,7 +193,7 @@ String to_utf8_internal(
 
 	if (u8_result != u8_size)
 	{
-		throw EncodingToUtf8Exception{"Failed to convert."};
+		throw Win32EncodingToUtf8Exception{"Failed to convert."};
 	}
 
 	return u8_string;

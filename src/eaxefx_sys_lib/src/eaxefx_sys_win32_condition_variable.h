@@ -25,11 +25,16 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef EAXEFX_EAXX_FX_SLOT_INDEX_INCLUDED
-#define EAXEFX_EAXX_FX_SLOT_INDEX_INCLUDED
+#ifndef EAXEFX_SYS_WIN32_CONDITION_VARIABLE_INCLUDED
+#define EAXEFX_SYS_WIN32_CONDITION_VARIABLE_INCLUDED
 
 
-#include "eaxefx_eax_api.h"
+#include <chrono>
+
+#include <windows.h>
+
+#include "eaxefx_shared_library.h"
+#include "eaxefx_sys_win32_critical_section.h"
 
 
 namespace eaxefx
@@ -38,62 +43,47 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-using EaxxFxSlotIndexValue = int;
-
-
-class EaxxFxSlotIndex
+class SysWin32ConditionVariable
 {
 public:
-	EaxxFxSlotIndex() noexcept;
+	SysWin32ConditionVariable();
 
-	EaxxFxSlotIndex(
-		EaxxFxSlotIndexValue index);
+	SysWin32ConditionVariable(
+		const SysWin32ConditionVariable& rhs) = delete;
 
-	EaxxFxSlotIndex(
-		const EaxxFxSlotIndex& rhs) noexcept;
+	SysWin32ConditionVariable& operator=(
+		const SysWin32ConditionVariable& rhs) = delete;
 
-	void operator=(
-		EaxxFxSlotIndexValue index);
-
-	void operator=(
-		const GUID& guid);
-
-	void operator=(
-		const EaxxFxSlotIndex& rhs) noexcept;
+	~SysWin32ConditionVariable();
 
 
-	bool has_value() const noexcept;
+	bool sleep(
+		SysWin32CriticalSection& critical_section,
+		std::chrono::milliseconds timeout);
 
-	EaxxFxSlotIndexValue get() const;
-
-	void reset() noexcept;
-
-	void set(
-		EaxxFxSlotIndexValue index);
-
-	void set(
-		const GUID& guid);
-
-	operator EaxxFxSlotIndexValue() const;
+	void wake();
 
 
 private:
-	bool has_value_;
-	EaxxFxSlotIndexValue value_;
-}; // EaxxFxSlotIndex
+	using InitializeConditionVariableFunc = VOID (WINAPI *)(
+		PCONDITION_VARIABLE ConditionVariable);
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	using WakeConditionVariableFunc = VOID (WINAPI *)(
+		PCONDITION_VARIABLE ConditionVariable);
+
+	using SleepConditionVariableCSFunc = BOOL (WINAPI *)(
+		PCONDITION_VARIABLE ConditionVariable,
+		PCRITICAL_SECTION CriticalSection,
+		DWORD dwMilliseconds);
 
 
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	SharedLibraryUPtr kernel32_shared_library_{};
+	InitializeConditionVariableFunc initialize_condition_variable_func_{};
+	WakeConditionVariableFunc wake_condition_variable_func_{};
+	SleepConditionVariableCSFunc sleep_condition_variable_cs_func_{};
 
-bool operator==(
-	const EaxxFxSlotIndex& lhs,
-	const EaxxFxSlotIndex& rhs) noexcept;
-
-bool operator!=(
-	const EaxxFxSlotIndex& lhs,
-	const EaxxFxSlotIndex& rhs) noexcept;
+	CONDITION_VARIABLE condition_variable_;
+}; // SysWin32ConditionVariable
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -101,4 +91,4 @@ bool operator!=(
 } // eaxefx
 
 
-#endif // !EAXEFX_EAXX_FX_SLOT_INDEX_INCLUDED
+#endif // !EAXEFX_SYS_WIN32_CONDITION_VARIABLE_INCLUDED

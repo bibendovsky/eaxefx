@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -39,32 +39,32 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class FileImplException :
+class Win32FileException :
 	public Exception
 {
 public:
-	explicit FileImplException(
-		std::string_view message)
+	explicit Win32FileException(
+		const char* message)
 		:
-		Exception{"EAXEFX_FILE", message}
+		Exception{"WIN32_FILE", message}
 	{
 	}
-}; // FileImplException
+}; // Win32FileException
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class FileImpl :
+class Win32File :
 	public File
 {
 public:
-	FileImpl(
+	Win32File(
 		const String& path,
 		FileOpenMode open_mode);
 
-	~FileImpl() override;
+	~Win32File() override;
 
 
 	void set_position(
@@ -91,20 +91,20 @@ private:
 	bool is_handle_valid() noexcept;
 
 	void ensure_is_open();
-}; // FileImpl
+}; // Win32File
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-FileImpl::FileImpl(
+Win32File::Win32File(
 	const String& path,
 	FileOpenMode open_mode)
 {
 	if (path.empty())
 	{
-		throw FileImplException{"Empty path."};
+		throw Win32FileException{"Empty path."};
 	}
 
 	constexpr auto mode_error_message = "Unsupported open mode.";
@@ -127,7 +127,7 @@ FileImpl::FileImpl(
 
 	if (win32_desired_access == 0)
 	{
-		throw FileImplException{mode_error_message};
+		throw Win32FileException{mode_error_message};
 	}
 
 
@@ -137,7 +137,7 @@ FileImpl::FileImpl(
 	{
 		if (!is_writable)
 		{
-			throw FileImplException{mode_error_message};
+			throw Win32FileException{mode_error_message};
 		}
 
 		win32_creation_disposition = CREATE_ALWAYS;
@@ -154,7 +154,7 @@ FileImpl::FileImpl(
 		}
 		else
 		{
-			throw FileImplException{mode_error_message};
+			throw Win32FileException{mode_error_message};
 		}
 	}
 
@@ -172,14 +172,14 @@ FileImpl::FileImpl(
 
 	if (!is_handle_valid())
 	{
-		throw FileImplException{"Failed to open file."};
+		throw Win32FileException{"Failed to open file."};
 	}
 
 	is_readable_ = is_readable;
 	is_writable_ = is_writable;
 }
 
-FileImpl::~FileImpl()
+Win32File::~Win32File()
 {
 	if (is_handle_valid())
 	{
@@ -187,7 +187,7 @@ FileImpl::~FileImpl()
 	}
 }
 
-void FileImpl::set_position(
+void Win32File::set_position(
 	int position)
 {
 	ensure_is_open();
@@ -204,11 +204,11 @@ void FileImpl::set_position(
 
 	if (!win32_result)
 	{
-		throw FileImplException{"Failed to set position."};
+		throw Win32FileException{"Failed to set position."};
 	}
 }
 
-void FileImpl::move_to_the_end()
+void Win32File::move_to_the_end()
 {
 	ensure_is_open();
 
@@ -223,11 +223,11 @@ void FileImpl::move_to_the_end()
 
 	if (!win32_result)
 	{
-		throw FileImplException{"Failed to set position to the end."};
+		throw Win32FileException{"Failed to set position to the end."};
 	}
 }
 
-int FileImpl::read(
+int Win32File::read(
 	void* buffer,
 	int size)
 {
@@ -235,7 +235,7 @@ int FileImpl::read(
 
 	if (!is_readable_)
 	{
-		throw FileImplException{"Not readable."};
+		throw Win32FileException{"Not readable."};
 	}
 
 	if (buffer == nullptr || size <= 0)
@@ -255,13 +255,13 @@ int FileImpl::read(
 
 	if (!win32_result)
 	{
-		throw FileImplException{"I/O read error."};
+		throw Win32FileException{"I/O read error."};
 	}
 
 	return static_cast<int>(read_size);
 }
 
-int FileImpl::write(
+int Win32File::write(
 	const void* buffer,
 	int size)
 {
@@ -269,7 +269,7 @@ int FileImpl::write(
 
 	if (!is_writable_)
 	{
-		throw FileImplException{"Not writable."};
+		throw Win32FileException{"Not writable."};
 	}
 
 	if (buffer == nullptr || size <= 0)
@@ -289,22 +289,22 @@ int FileImpl::write(
 
 	if (!win32_result)
 	{
-		throw FileImplException{"I/O write error."};
+		throw Win32FileException{"I/O write error."};
 	}
 
 	return static_cast<int>(written_size);
 }
 
-bool FileImpl::is_handle_valid() noexcept
+bool Win32File::is_handle_valid() noexcept
 {
 	return handle_ != nullptr && handle_ != INVALID_HANDLE_VALUE;
 }
 
-void FileImpl::ensure_is_open()
+void Win32File::ensure_is_open()
 {
 	if (!is_handle_valid())
 	{
-		throw FileImplException{"Not open."};
+		throw Win32FileException{"Not open."};
 	}
 }
 
@@ -317,7 +317,7 @@ FileUPtr make_file(
 	const String& path,
 	FileOpenMode open_mode)
 {
-	return std::make_unique<FileImpl>(path, open_mode);
+	return std::make_unique<Win32File>(path, open_mode);
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

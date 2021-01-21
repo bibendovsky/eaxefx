@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,9 +26,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include "eaxefx_eaxx_context.h"
-
-#include <exception>
-#include <string_view>
 
 #include "eaxefx_exception.h"
 #include "eaxefx_not_null.h"
@@ -70,9 +67,9 @@ class EaxxContextException :
 {
 public:
 	explicit EaxxContextException(
-		std::string_view message)
+		const char* message)
 		:
-		Exception{"EAXEFX_EAXX_CONTEXT", message}
+		Exception{"EAXX_CONTEXT", message}
 	{
 	}
 }; // EaxxContextException
@@ -247,12 +244,12 @@ void EaxxContext::ensure_compatibility()
 
 	if (aux_send_count < EAX_MAX_FXSLOTS)
 	{
-		const auto& message =
+		const auto message =
 			"Expected at least " +
 			to_string(EAX_MAX_FXSLOTS) +
 			" EFX auxiliary effect slots.";
 
-		throw EaxxContextException{message};
+		throw EaxxContextException{message.c_str()};
 	}
 
 	const auto low_pass_efx_object = make_efx_filter_object();

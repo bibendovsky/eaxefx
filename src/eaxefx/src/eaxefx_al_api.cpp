@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +25,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
+#include <exception>
 #include <functional>
 #include <memory>
 #include <string_view>
@@ -40,7 +41,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_eax_api.h"
 #include "eaxefx_eaxx.h"
 #include "eaxefx_exception.h"
-#include "eaxefx_file_system.h"
 #include "eaxefx_logger.h"
 #include "eaxefx_shared_library.h"
 
@@ -58,7 +58,7 @@ class AlApiException :
 {
 public:
 	explicit AlApiException(
-		std::string_view message)
+		const char* message)
 		:
 		Exception{"AL_API", message}
 	{
@@ -314,34 +314,22 @@ void AlApi::initialize_al_shared_library()
 		"soft_oal.dll",
 	};
 
-	auto is_found = false;
-
 	for (const auto& known_name : known_names)
 	{
-		const auto path = String{known_name};
-
-		if (file_system::is_exists(path))
+		try
 		{
-			const auto name = String{known_name};
+			logger_->info("Try to load a driver \"" + String{known_name} + "\".");
+			al_library_ = make_shared_library(known_name);
 
-			try
-			{
-				logger_->info("Try to load driver \"" + name + "\".");
-				al_library_ = make_shared_library(path);
-				is_found = true;
-				break;
-			}
-			catch (const std::exception& ex)
-			{
-				logger_->error(ex);
-			}
+			return;
+		}
+		catch (const std::exception& ex)
+		{
+			logger_->error(ex);
 		}
 	}
 
-	if (!is_found)
-	{
-		throw AlApiException{"Failed to load any suitable driver."};
-	}
+	throw AlApiException{"Failed to load any suitable driver."};
 }
 
 void AlApi::initialize_internal()

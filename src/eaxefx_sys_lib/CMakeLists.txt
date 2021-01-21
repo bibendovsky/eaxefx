@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 cmake_minimum_required (VERSION 3.8.2 FATAL_ERROR)
-project (eaxefx_sys_lib VERSION 1.0.1 LANGUAGES CXX)
+project (eaxefx_sys_lib VERSION 1.0.2 LANGUAGES CXX)
 
 
 if (NOT WIN32)
@@ -181,7 +181,6 @@ target_sources (
 		include/eaxefx_encoding.h
 		include/eaxefx_exception.h
 		include/eaxefx_file.h
-		include/eaxefx_file_system.h
 		include/eaxefx_logger.h
 		include/eaxefx_mutex.h
 		include/eaxefx_not_null.h
@@ -195,9 +194,9 @@ target_sources (
 		include/eaxefx_unit_converters.h
 		include/eaxefx_rc.h
 
-		src/eaxefx_win32_condition_variable.h
-		src/eaxefx_win32_critical_section.h
-		src/eaxefx_win32_event.h
+		src/eaxefx_sys_win32_critical_section.h
+		src/eaxefx_sys_win32_condition_variable.h
+		src/eaxefx_sys_win32_event.h
 )
 
 
@@ -207,22 +206,23 @@ target_sources (
 target_sources (
 	${PROJECT_NAME}
 	PRIVATE
-		src/eaxefx_condition_variable.cpp
-		src/eaxefx_console.cpp
-		src/eaxefx_encoding.cpp
 		src/eaxefx_exception.cpp
-		src/eaxefx_file.cpp
-		src/eaxefx_file_system.cpp
 		src/eaxefx_logger.cpp
-		src/eaxefx_mutex.cpp
-		src/eaxefx_platform.cpp
-		src/eaxefx_process.cpp
-		src/eaxefx_shared_library.cpp
-		src/eaxefx_string.cpp
 		src/eaxefx_system_time.cpp
-		src/eaxefx_thread.cpp
 
 		src/eaxefx_win32_condition_variable.cpp
-		src/eaxefx_win32_critical_section.cpp
-		src/eaxefx_win32_event.cpp
+		src/eaxefx_win32_console.cpp
+		src/eaxefx_win32_encoding.cpp
+		src/eaxefx_win32_file.cpp
+		src/eaxefx_win32_mutex.cpp
+		src/eaxefx_win32_platform.cpp
+		src/eaxefx_win32_process.cpp
+		src/eaxefx_win32_shared_library.cpp
+		src/eaxefx_win32_string.cpp
+		src/eaxefx_win32_system_time.cpp
+		src/eaxefx_win32_thread.cpp
+
+		src/eaxefx_sys_win32_critical_section.cpp
+		src/eaxefx_sys_win32_condition_variable.cpp
+		src/eaxefx_sys_win32_event.cpp
 )

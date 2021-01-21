@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,11 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "eaxefx_win32_critical_section.h"
+#ifndef EAXEFX_SYS_WIN32_CRITICAL_SECTION_INCLUDED
+#define EAXEFX_SYS_WIN32_CRITICAL_SECTION_INCLUDED
+
+
+#include <windows.h>
 
 
 namespace eaxefx
@@ -34,33 +38,36 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-Win32CriticalSection::Win32CriticalSection()
+class SysWin32CriticalSection
 {
-	InitializeCriticalSection(&critical_section_);
-}
+public:
+	SysWin32CriticalSection();
 
-Win32CriticalSection::~Win32CriticalSection()
-{
-	DeleteCriticalSection(&critical_section_);
-}
+	SysWin32CriticalSection(
+		const SysWin32CriticalSection& rhs) = delete;
 
-void Win32CriticalSection::lock()
-{
-	EnterCriticalSection(&critical_section_);
-}
+	SysWin32CriticalSection& operator=(
+		const SysWin32CriticalSection& rhs) = delete;
 
-void Win32CriticalSection::unlock()
-{
-	LeaveCriticalSection(&critical_section_);
-}
+	~SysWin32CriticalSection();
 
-CRITICAL_SECTION& Win32CriticalSection::get() noexcept
-{
-	return critical_section_;
-}
+
+	void lock();
+
+	void unlock();
+
+
+	CRITICAL_SECTION& get() noexcept;
+
+
+private:
+	CRITICAL_SECTION critical_section_;
+}; // SysWin32CriticalSection
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-
 } // eaxefx
+
+
+#endif // !EAXEFX_SYS_WIN32_CRITICAL_SECTION_INCLUDED

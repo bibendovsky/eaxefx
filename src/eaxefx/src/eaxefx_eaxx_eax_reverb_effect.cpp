@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <algorithm>
 #include <array>
-#include <string_view>
 
 #include "eaxefx_exception.h"
 
@@ -68,7 +67,7 @@ class EaxxEaxReverbEffectException :
 {
 public:
 	explicit EaxxEaxReverbEffectException(
-		std::string_view message)
+		const char* message)
 		:
 		Exception{"EAXX_EAX_REVERB_EFFECT", message}
 	{
@@ -1117,7 +1116,7 @@ void EaxxEaxReverbEffect::defer_environment_size(
 		if ((eax_d_.ulFlags & EAXREVERBFLAGS_REFLECTIONSDELAYSCALE) != 0)
 		{
 			const auto lReflections = std::clamp(
-				eax_d_.lReflections - static_cast<std::int32_t>(gain_to_mb(scale)),
+				eax_d_.lReflections - static_cast<std::int32_t>(gain_to_level_mb(scale)),
 				EAXREVERB_MINREFLECTIONS,
 				EAXREVERB_MAXREFLECTIONS
 			);

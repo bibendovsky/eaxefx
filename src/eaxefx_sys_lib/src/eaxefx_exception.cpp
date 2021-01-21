@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_exception.h"
 
-#include <exception>
+#include <cassert>
+
 #include <string_view>
 
 
@@ -38,40 +39,56 @@ namespace eaxefx
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 Exception::Exception(
-	std::string_view context,
-	std::string_view message)
+	const char* context,
+	const char* message)
 {
-	make_message(
-		context.empty() ? "???" : context,
-		message.empty() ? "???" : message
-	);
-}
+	assert(context != nullptr);
+	assert(message != nullptr);
 
+	const auto context_sv = std::string_view{context};
+	const auto message_sv = std::string_view{message};
+
+	static constexpr auto left_prefix = std::string_view{"["};
+	static constexpr auto right_prefix = std::string_view{"] "};
+
+	const auto what_size =
+		left_prefix.size() +
+		context_sv.size() +
+		right_prefix.size() +
+		message_sv.size() +
+		1
+	;
+
+	what_ = std::make_unique<char[]>(what_size);
+	auto what = what_.get();
+	copy_string(left_prefix.data(), left_prefix.size(), what);
+	copy_string(context_sv.data(), context_sv.size(), what);
+	copy_string(right_prefix.data(), right_prefix.size(), what);
+	copy_string(message_sv.data(), message_sv.size(), what);
+	*what = '\0';
+}
 
 const char* Exception::what() const noexcept
 {
-	return what_.c_str();
+	assert(what_ != nullptr);
+
+	return what_.get();
 }
 
-void Exception::make_message(
-	std::string_view context_string_view,
-	std::string_view message_string_view)
+void Exception::copy_string(
+	const char* src,
+	std::size_t src_size,
+	char*& dst)
 {
-	static constexpr auto left_prefix_string_view = std::string_view{"["};
-	static constexpr auto right_prefix_string_view = std::string_view{"] "};
+	assert(src != nullptr);
+	assert(dst != nullptr);
 
-	const auto what_size =
-		left_prefix_string_view.size() +
-		context_string_view.size() +
-		right_prefix_string_view.size() +
-		message_string_view.size();
+	for (auto i = std::size_t{}; i < src_size; ++i)
+	{
+		dst[i] = src[i];
+	}
 
-	what_.reserve(what_size);
-
-	what_ += left_prefix_string_view;
-	what_ += context_string_view;
-	what_ += right_prefix_string_view;
-	what_ += message_string_view;
+	dst += src_size;
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

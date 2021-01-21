@@ -1,6 +1,12 @@
 # EAXEFX changelog
 
 
+## [1.0.3] - 2021-01-21
+### Fixed
+- Do not check for existence of driver's file.
+- Use run-time dynamic linking for conditional variables.
+
+
 ## [1.0.2] - 2020-12-14
 ### Added
 - Support all EAX features (2.0/3.0/4.0/5.0) with few exceptions.

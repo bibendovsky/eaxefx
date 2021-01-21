@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,8 +30,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cassert>
 
 #include <algorithm>
-#include <exception>
-#include <string_view>
 
 #include "eaxefx_exception.h"
 #include "eaxefx_unit_converters.h"
@@ -52,9 +50,9 @@ class EaxxFxSlotException :
 {
 public:
 	explicit EaxxFxSlotException(
-		std::string_view message)
+		const char* message)
 		:
-		Exception{"EAXEFX_EAXX_FX_SLOT", message}
+		Exception{"EAXX_FX_SLOT", message}
 	{
 	}
 }; // EaxxFxSlotException

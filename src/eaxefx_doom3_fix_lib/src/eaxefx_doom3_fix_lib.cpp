@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,9 +29,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <algorithm>
 #include <array>
-#include <exception>
 #include <memory>
-#include <string_view>
 #include <vector>
 
 #include <windows.h>
@@ -53,7 +51,7 @@ class Doom3FixLibException :
 {
 public:
 	explicit Doom3FixLibException(
-		std::string_view message)
+		const char* message)
 		:
 		Exception{"DOOM3_FIX_LIB", message}
 	{

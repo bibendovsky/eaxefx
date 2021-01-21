@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,8 +27,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_eaxx_fx_slot_index.h"
 
-#include <string_view>
-
 #include "eaxefx_exception.h"
 
 
@@ -43,9 +41,9 @@ class EaxxFxSlotIndexException :
 {
 public:
 	explicit EaxxFxSlotIndexException(
-		std::string_view message)
+		const char* message)
 		:
-		Exception{"EAXEFX_EAXX_FX_SLOT_INDEX", message}
+		Exception{"EAXX_FX_SLOT_INDEX", message}
 	{
 	}
 }; // EaxxFxSlotIndexException

@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -53,7 +53,7 @@ float level_mb_to_gain(
 
 template<
 	typename T>
-float gain_to_mb(
+float gain_to_level_mb(
 	T x) noexcept
 {
 	if (static_cast<float>(x) <= 0.0F)

@@ -2,7 +2,7 @@
 
 EAX OpenAL Extension
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,29 +29,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <charconv>
 
-#include <windows.h>
-
 
 namespace eaxefx
 {
-
-
-SystemTime make_system_time() noexcept
-{
-	SYSTEMTIME win32_system_time;
-	GetLocalTime(&win32_system_time);
-
-	auto system_time = SystemTime{};
-	system_time.year = win32_system_time.wYear;
-	system_time.month = win32_system_time.wMonth;
-	system_time.day = win32_system_time.wDay;
-	system_time.hour = win32_system_time.wHour;
-	system_time.minute = win32_system_time.wMinute;
-	system_time.second = win32_system_time.wSecond;
-	system_time.millisecond = win32_system_time.wMilliseconds;
-
-	return system_time;
-}
 
 
 void make_system_time_string(

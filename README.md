@@ -70,6 +70,9 @@ Context:
 Source:
 - Speaker levels (EAX 5.0)
 
+General:
+- X-RAM
+
 
 5 - Known issues
 ================
@@ -84,11 +87,11 @@ Terminology:
 - `DIR` - the directory with applications's main executable.
 
 Steps:
-- Backup (if necessary) `OpenAL32.dll` and `soft_oal.dll` in the `DIR`.
-- Extract the release package into some directory.
-- Copy extracted `OpenAL32.dll` into the `DIR`.
-- If the `DIR` does not contain any driver mentioned in the item 4, copy there extracted `soft_oal.dll`.
-- Enable appropriate EAX options in the application and restart it if necessary.
+1. Backup (if necessary) `OpenAL32.dll` and `soft_oal.dll` in the `DIR`.
+2. Extract the release package into some directory.
+3. Copy extracted `OpenAL32.dll` into the `DIR`.
+4. If the `DIR` does not contain any driver mentioned in the item 4, copy there extracted `soft_oal.dll`.
+5. Enable appropriate EAX options in the application and restart it if necessary.
 
 
 7 - Compiling requirements
@@ -113,7 +116,7 @@ Minimum:
 9 - Disclaimer
 ==============
 
-Copyright (c) 2020 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
