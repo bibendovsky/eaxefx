@@ -39,13 +39,13 @@ namespace eaxefx
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void AlcDeviceDeleter::operator()(
-	ALCdevice* alc_device) const noexcept
+	::ALCdevice* alc_device) const noexcept
 {
 	static_cast<void>(alcCloseDevice_(alc_device));
 }
 
 void AlcContextDeleter::operator()(
-	ALCcontext* alc_context) const noexcept
+	::ALCcontext* alc_context) const noexcept
 {
 	alcDestroyContext_(alc_context);
 }

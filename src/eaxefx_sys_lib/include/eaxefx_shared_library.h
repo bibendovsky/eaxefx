@@ -31,8 +31,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <memory>
 
-#include "eaxefx_string.h"
-
 
 namespace eaxefx
 {
@@ -60,7 +58,7 @@ public:
 using SharedLibraryUPtr = std::unique_ptr<SharedLibrary>;
 
 SharedLibraryUPtr make_shared_library(
-	const String& path);
+	const char* path);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

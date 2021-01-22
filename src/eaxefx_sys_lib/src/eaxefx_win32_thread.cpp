@@ -30,6 +30,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <windows.h>
 #include <process.h>
 
+#include <cassert>
+
 #include "eaxefx_encoding.h"
 #include "eaxefx_exception.h"
 #include "eaxefx_shared_library.h"
@@ -41,30 +43,32 @@ namespace eaxefx::thread
 
 
 void set_name(
-	const String& utf8_name)
+	const char* utf8_name)
 {
+	assert(utf8_name);
+
 	auto shared_library = make_shared_library("kernel32.dll");
 
-	using SetThreadDescriptionFunc = HRESULT (WINAPI*)(
-		HANDLE hThread,
-		PCWSTR lpThreadDescription
+	using SetThreadDescriptionFunc = ::HRESULT (WINAPI*)(
+		::HANDLE hThread,
+		::PCWSTR lpThreadDescription
 	);
 
 	const auto set_thread_description_func =
 		reinterpret_cast<SetThreadDescriptionFunc>(shared_library->resolve("SetThreadDescription"));
 
-	if (set_thread_description_func == nullptr)
+	if (!set_thread_description_func)
 	{
 		return;
 	}
 
-	const auto thread_handle = GetCurrentThread();
+	const auto thread_handle = ::GetCurrentThread();
 
 	const auto& utf16_name = encoding::to_utf16(utf8_name);
 
 	set_thread_description_func(
 		thread_handle,
-		reinterpret_cast<LPCWSTR>(utf16_name.c_str())
+		reinterpret_cast<::LPCWSTR>(utf16_name.c_str())
 	);
 }
 
@@ -114,7 +118,7 @@ public:
 
 
 private:
-	HANDLE handle_;
+	::HANDLE handle_;
 	ThreadFunction thread_function_{};
 	void* thread_argument_{};
 
@@ -137,14 +141,14 @@ ThreadImpl::ThreadImpl(
 	thread_function_{thread_function},
 	thread_argument_{thread_argument}
 {
-	if (thread_function == nullptr)
+	if (!thread_function)
 	{
 		throw ThreadException{"Null thread function."};
 	}
 
 	constexpr auto stack_size = 1U << 20;
 
-	handle_ = reinterpret_cast<HANDLE>(_beginthreadex(
+	handle_ = reinterpret_cast<::HANDLE>(::_beginthreadex(
 		nullptr,
 		stack_size,
 		proxy_thread_function,
@@ -153,13 +157,13 @@ ThreadImpl::ThreadImpl(
 		nullptr
 	));
 
-	if (handle_ == nullptr)
+	if (!handle_)
 	{
 		throw ThreadException{"Failed to create a thread."};
 	}
 
-	const auto resume_result = ResumeThread(handle_);
-	constexpr auto invalid_resume_result = DWORD{} - DWORD{1};
+	const auto resume_result = ::ResumeThread(handle_);
+	constexpr auto invalid_resume_result = ::DWORD{} - ::DWORD{1};
 
 	if (resume_result == invalid_resume_result)
 	{
@@ -169,12 +173,12 @@ ThreadImpl::ThreadImpl(
 
 ThreadImpl::~ThreadImpl()
 {
-	if (handle_ != nullptr)
+	if (handle_)
 	{
 		constexpr auto timeout_ms = 10;
 
-		WaitForSingleObject(handle_, timeout_ms);
-		CloseHandle(handle_);
+		::WaitForSingleObject(handle_, timeout_ms);
+		::CloseHandle(handle_);
 	}
 }
 
@@ -191,7 +195,7 @@ unsigned int __stdcall ThreadImpl::proxy_thread_function(
 	{
 	}
 
-	_endthreadex(0);
+	::_endthreadex(0);
 
 	return 0;
 }

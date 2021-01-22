@@ -42,8 +42,8 @@ Exception::Exception(
 	const char* context,
 	const char* message)
 {
-	assert(context != nullptr);
-	assert(message != nullptr);
+	assert(context);
+	assert(message);
 
 	const auto context_sv = std::string_view{context};
 	const auto message_sv = std::string_view{message};
@@ -70,7 +70,7 @@ Exception::Exception(
 
 const char* Exception::what() const noexcept
 {
-	assert(what_ != nullptr);
+	assert(what_);
 
 	return what_.get();
 }
@@ -80,8 +80,8 @@ void Exception::copy_string(
 	std::size_t src_size,
 	char*& dst)
 {
-	assert(src != nullptr);
-	assert(dst != nullptr);
+	assert(src);
+	assert(dst);
 
 	for (auto i = std::size_t{}; i < src_size; ++i)
 	{

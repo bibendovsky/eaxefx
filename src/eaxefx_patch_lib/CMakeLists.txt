@@ -26,7 +26,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 cmake_minimum_required (VERSION 3.8.2 FATAL_ERROR)
-project (eaxefx_doom3_fix VERSION 1.0.2 LANGUAGES CXX)
+project (eaxefx_patch_lib VERSION 1.0.0 LANGUAGES CXX)
 
 
 if (NOT WIN32)
@@ -49,8 +49,8 @@ include (make_version_string)
 #
 # Version.
 #
-make_version_string (EAXEFX_DOOM3_FIX_VERSION)
-message (STATUS "[${PROJECT_NAME}] v${EAXEFX_DOOM3_FIX_VERSION}")
+make_version_string (EAXEFX_PATCH_LIB_VERSION)
+message (STATUS "[${PROJECT_NAME}] v${EAXEFX_PATCH_LIB_VERSION}")
 
 
 #
@@ -71,16 +71,8 @@ message (STATUS "[${PROJECT_NAME}] Static linking: ${EAXEFX_USE_STATIC_LINKING}"
 #
 # Target.
 #
-add_executable (${PROJECT_NAME} "")
-
-
-#
-# Configure files.
-#
-configure_file (
-	"${PROJECT_SOURCE_DIR}/src/eaxefx_doom3_fix.rc.in"
-	"${PROJECT_BINARY_DIR}/src/eaxefx_doom3_fix.rc"
-)
+add_library (${PROJECT_NAME} STATIC "")
+add_library (eaxefx::patch_lib ALIAS ${PROJECT_NAME})
 
 
 #
@@ -98,6 +90,11 @@ set_target_properties (
 #
 # Include directories.
 #
+target_include_directories (
+	${PROJECT_NAME}
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
 
 
 #
@@ -106,7 +103,6 @@ set_target_properties (
 target_compile_definitions (
 	${PROJECT_NAME}
 	PRIVATE
-		"EAXEFX_DOOM3_FIX_VERSION=\"${EAXEFX_DOOM3_FIX_VERSION}\""
 		_UNICODE
 		UNICODE
 		NOMINMAX
@@ -159,27 +155,24 @@ endif ()
 
 target_link_libraries (
 	${PROJECT_NAME}
-	PRIVATE
-		eaxefx::doom3_fix_lib
+	PUBLIC
+		eaxefx::sys_lib
 )
-
-
-#
-# Custom commands.
-#
-if (CMAKE_STRIP AND CMAKE_BUILD_TYPE STREQUAL Release)
-	add_custom_command (
-		TARGET
-			${PROJECT_NAME}
-		POST_BUILD
-			COMMAND ${CMAKE_STRIP} $<TARGET_FILE:${PROJECT_NAME}>
-	)
-endif ()
 
 
 #
 # Header files.
 #
+target_sources (
+	${PROJECT_NAME}
+	PRIVATE
+		include/eaxefx_patch.h
+		include/eaxefx_patch_collection.h
+
+		include/eaxefx_file_patcher.h
+		include/eaxefx_patch_validator.h
+		include/eaxefx_win32_process_patcher.h
+)
 
 
 #
@@ -188,17 +181,10 @@ endif ()
 target_sources (
 	${PROJECT_NAME}
 	PRIVATE
-		src/eaxefx_doom3_fix.cpp
-		"${PROJECT_BINARY_DIR}/src/eaxefx_doom3_fix.rc"
-)
+		src/eaxefx_patch.cpp
+		src/eaxefx_patch_collection.cpp
 
-
-#
-# Install.
-#
-install (
-	TARGETS
-		${PROJECT_NAME}
-	RUNTIME DESTINATION
-		"."
+		src/eaxefx_file_patcher.cpp
+		src/eaxefx_patch_validator.cpp
+		src/eaxefx_win32_process_patcher.cpp
 )

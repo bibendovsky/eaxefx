@@ -69,9 +69,11 @@ constexpr int to_string_max_length() noexcept
 	if (false)
 	{
 	}
-	else if constexpr (
-		std::is_same_v<T, int> || std::is_same_v<T, unsigned int> ||
-		std::is_same_v<T, long> || std::is_same_v<T, unsigned long>)
+	else if constexpr (std::is_same_v<T, int> || std::is_same_v<T, long>)
+	{
+		return 11;
+	}
+	else if constexpr (std::is_same_v<T, unsigned int> || std::is_same_v<T, unsigned long>)
 	{
 		return 10;
 	}
@@ -89,19 +91,19 @@ constexpr int to_string_max_length() noexcept
 template<
 	typename T
 >
-String to_string_generic(
+inline void to_string_generic(
 	T value,
-	const char* format_string)
+	const char* format_string,
+	String& string)
 {
 	constexpr auto max_length = to_string_max_length<T>();
 
-	auto result = String{};
-	result.resize(max_length);
+	string.resize(max_length);
 
-	const auto data = result.data();
+	const auto data = string.data();
 	char* data_end = nullptr;
 
-	const auto win32_result = StringCbPrintfExA(
+	const auto win32_result = ::StringCbPrintfExA(
 		data,
 		max_length + 1,
 		&data_end,
@@ -116,13 +118,37 @@ String to_string_generic(
 		throw ToStringException{"Failed to convert."};
 	}
 
-	result.resize(data_end - data);
-
-	return result;
+	string.resize(static_cast<String::size_type>(data_end - data));
 }
 
 
 } // namespace
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+void to_string(
+	int value,
+	String& string)
+{
+	to_string_generic(value, "%d", string);
+}
+
+void to_string(
+	unsigned int value,
+	String& string)
+{
+	to_string_generic(value, "%u", string);
+}
+
+void to_string(
+	float value,
+	String& string)
+{
+	to_string_generic(value, "%f", string);
+}
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -134,7 +160,9 @@ String to_string(
 {
 	static_assert(sizeof(int) == 4);
 
-	return to_string_generic(value, "%d");
+	auto string = String{};
+	to_string_generic(value, "%d", string);
+	return string;
 }
 
 String to_string(
@@ -142,7 +170,9 @@ String to_string(
 {
 	static_assert(sizeof(unsigned int) == 4);
 
-	return to_string_generic(value, "%u");
+	auto string = String{};
+	to_string_generic(value, "%u", string);
+	return string;
 }
 
 String to_string(
@@ -150,7 +180,9 @@ String to_string(
 {
 	static_assert(sizeof(float) == 4);
 
-	return to_string_generic(value, "%f");
+	auto string = String{};
+	to_string_generic(value, "%f", string);
+	return string;
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

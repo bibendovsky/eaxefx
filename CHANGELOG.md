@@ -1,6 +1,18 @@
 # EAXEFX changelog
 
 
+## [1.0.4] - 2021-04-23
+### Added
+- Quake 4 (2005) source occlusion patch.
+- Prey (2006) source occlusion patch.
+
+### Changed
+- Replaced Doom 3 (2004) twitch fix application with a patcher one.
+
+### Removed
+- Bundled `OpenAL Soft` binary.
+
+
 ## [1.0.3] - 2021-01-21
 ### Fixed
 - Do not check for existence of driver's file.

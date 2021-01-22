@@ -183,7 +183,6 @@ target_sources (
 		include/eaxefx_file.h
 		include/eaxefx_logger.h
 		include/eaxefx_mutex.h
-		include/eaxefx_not_null.h
 		include/eaxefx_platform.h
 		include/eaxefx_process.h
 		include/eaxefx_scope_exit.h
@@ -208,6 +207,7 @@ target_sources (
 	PRIVATE
 		src/eaxefx_exception.cpp
 		src/eaxefx_logger.cpp
+		src/eaxefx_string.cpp
 		src/eaxefx_system_time.cpp
 
 		src/eaxefx_win32_condition_variable.cpp

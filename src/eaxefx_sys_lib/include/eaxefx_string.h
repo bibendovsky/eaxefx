@@ -51,7 +51,7 @@ struct CharTraitsT
 		const TChar* src,
 		std::size_t count)
 	{
-		assert(dest != nullptr && src != nullptr);
+		assert(dest && src);
 
 		for (auto i = std::size_t{}; i < count; ++i)
 		{
@@ -64,7 +64,7 @@ struct CharTraitsT
 	static std::size_t length(
 		const TChar* s)
 	{
-		assert(s != nullptr);
+		assert(s);
 
 		auto count = std::size_t{};
 
@@ -81,7 +81,7 @@ struct CharTraitsT
 		const TChar* s2,
 		std::size_t count)
 	{
-		assert(s1 != nullptr && s2 != nullptr);
+		assert(s1 && s2);
 
 		for (auto i = std::size_t{}; i < count; ++i)
 		{
@@ -119,9 +119,22 @@ public:
 	}
 
 	StringT(
+		value_type ch)
+	{
+		ctor_c_string(&ch, 1);
+	}
+
+	StringT(
 		const value_type* c_string)
 	{
 		ctor_c_string(c_string);
+	}
+
+	StringT(
+		const value_type* c_string,
+		size_type c_string_length)
+	{
+		ctor_c_string(c_string, c_string_length);
 	}
 
 	StringT(
@@ -142,6 +155,17 @@ public:
 		const value_type* c_string)
 	{
 		return assign(c_string);
+	}
+
+	StringT& operator=(
+		const StringT& rhs)
+	{
+		if (std::addressof(rhs) != this)
+		{
+			return assign(rhs);
+		}
+
+		return *this;
 	}
 
 	StringT& operator=(
@@ -253,7 +277,7 @@ public:
 		const value_type* c_string,
 		size_type count)
 	{
-		assert(c_string != nullptr);
+		assert(c_string);
 
 		reserve(length_ + count);
 
@@ -267,7 +291,7 @@ public:
 	StringT& append(
 		const value_type* c_string)
 	{
-		assert(c_string != nullptr);
+		assert(c_string);
 
 		const auto length = traits_type::length(c_string);
 
@@ -339,6 +363,23 @@ public:
 		}
 	}
 
+	int compare(
+		const StringT& rhs) const
+	{
+		if (length_ == rhs.length_)
+		{
+			return traits_type::compare(data(), rhs.data(), rhs.length_);
+		}
+		else if (length_ < rhs.length_)
+		{
+			return -1;
+		}
+		else
+		{
+			return 1;
+		}
+	}
+
 
 private:
 	static constexpr auto max_internal_buffer_length = 15;
@@ -396,18 +437,25 @@ private:
 	}
 
 	void ctor_c_string(
+		const value_type* c_string,
+		size_type c_string_length)
+	{
+		if (c_string_length <= max_internal_buffer_length)
+		{
+			ctor_c_string_internal_buffer(c_string, c_string_length);
+		}
+		else
+		{
+			ctor_c_string_external_buffer(c_string, c_string_length);
+		}
+	}
+
+	void ctor_c_string(
 		const value_type* c_string)
 	{
 		const auto length = traits_type::length(c_string);
 
-		if (length <= max_internal_buffer_length)
-		{
-			ctor_c_string_internal_buffer(c_string, length);
-		}
-		else
-		{
-			ctor_c_string_external_buffer(c_string, length);
-		}
+		ctor_c_string(c_string, length);
 	}
 
 	void move(
@@ -434,7 +482,7 @@ private:
 template<
 	typename TChar
 >
-StringT<TChar> operator+(
+inline StringT<TChar> operator+(
 	const TChar* lhs,
 	const StringT<TChar>& rhs)
 {
@@ -452,7 +500,7 @@ StringT<TChar> operator+(
 template<
 	typename TChar
 >
-StringT<TChar> operator+(
+inline StringT<TChar> operator+(
 	const StringT<TChar>& lhs,
 	TChar rhs)
 {
@@ -466,7 +514,7 @@ StringT<TChar> operator+(
 template<
 	typename TChar
 >
-StringT<TChar> operator+(
+inline StringT<TChar> operator+(
 	const StringT<TChar>& lhs,
 	const TChar* rhs)
 {
@@ -484,7 +532,7 @@ StringT<TChar> operator+(
 template<
 	typename TChar
 >
-StringT<TChar> operator+(
+inline StringT<TChar> operator+(
 	const StringT<TChar>& lhs,
 	const StringT<TChar>& rhs)
 {
@@ -498,7 +546,7 @@ StringT<TChar> operator+(
 template<
 	typename TChar
 >
-StringT<TChar>& operator+=(
+inline StringT<TChar>& operator+=(
 	StringT<TChar>& lhs,
 	TChar rhs)
 {
@@ -508,7 +556,7 @@ StringT<TChar>& operator+=(
 template<
 	typename TChar
 >
-StringT<TChar>& operator+=(
+inline StringT<TChar>& operator+=(
 	StringT<TChar>& lhs,
 	const TChar* rhs)
 {
@@ -519,7 +567,7 @@ template<
 	typename TChar,
 	typename TStringViewCharTraits
 >
-StringT<TChar>& operator+=(
+inline StringT<TChar>& operator+=(
 	StringT<TChar>& lhs,
 	const std::basic_string_view<TChar, TStringViewCharTraits>& rhs)
 {
@@ -529,7 +577,7 @@ StringT<TChar>& operator+=(
 template<
 	typename TChar
 >
-StringT<TChar>& operator+=(
+inline StringT<TChar>& operator+=(
 	StringT<TChar>& lhs,
 	const StringT<TChar>& rhs)
 {
@@ -539,8 +587,8 @@ StringT<TChar>& operator+=(
 template<
 	typename TChar
 >
-bool operator==(
-	StringT<TChar>& lhs,
+inline bool operator==(
+	const StringT<TChar>& lhs,
 	const TChar* rhs)
 {
 	return lhs.compare(rhs) == 0;
@@ -549,7 +597,17 @@ bool operator==(
 template<
 	typename TChar
 >
-bool operator!=(
+inline bool operator==(
+	const StringT<TChar>& lhs,
+	const StringT<TChar>& rhs)
+{
+	return lhs.compare(rhs) == 0;
+}
+
+template<
+	typename TChar
+>
+inline bool operator!=(
 	StringT<TChar>& lhs,
 	const TChar* rhs)
 {
@@ -569,6 +627,23 @@ using U16String = StringT<char16_t>;
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+void to_string(
+	int value,
+	String& string);
+
+void to_string(
+	unsigned int value,
+	String& string);
+
+void to_string(
+	float value,
+	String& string);
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 String to_string(
 	int value);
 
@@ -577,6 +652,14 @@ String to_string(
 
 String to_string(
 	float value);
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+int stoi(
+	String string);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

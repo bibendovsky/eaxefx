@@ -47,8 +47,8 @@ namespace eaxefx
 
 struct EaxxSourceInitParam
 {
-	ALuint al_source{};
-	ALuint al_filter{};
+	::ALuint al_source{};
+	::ALuint al_filter{};
 	EaxxContextShared* context_shared{};
 }; // EaxxSourceInitParam
 
@@ -139,7 +139,7 @@ using EaxxSourceSendsDirtyFlagsValue = unsigned int;
 
 struct EaxxSourceSendsDirtyFlags
 {
-	EaxxSourceSendDirtyFlags sends[EAX_MAX_FXSLOTS];
+	EaxxSourceSendDirtyFlags sends[::EAX_MAX_FXSLOTS];
 }; // EaxxSourceSendsDirtyFlags
 
 static_assert(sizeof(EaxxSourceSendsDirtyFlags) == sizeof(EaxxSourceSendsDirtyFlagsValue));
@@ -165,7 +165,7 @@ public:
 
 
 	void on_initialize_context(
-		ALuint al_filter);
+		::ALuint al_filter);
 
 
 	void dispatch(
@@ -179,22 +179,22 @@ public:
 
 
 private:
-	using ActiveFxSlots = std::array<bool, EAX_MAX_FXSLOTS>;
-	using ActiveFxSlotsDirtyFlags = std::array<bool, EAX_MAX_FXSLOTS>;
+	using ActiveFxSlots = std::array<bool, ::EAX_MAX_FXSLOTS>;
+	using ActiveFxSlotsDirtyFlags = std::array<bool, ::EAX_MAX_FXSLOTS>;
 
 
 	struct Al
 	{
-		ALuint source{};
-		ALuint filter{};
+		::ALuint source{};
+		::ALuint filter{};
 	}; // Al
 
 	struct Eax
 	{
-		using Sends = std::array<EAXSOURCEALLSENDPROPERTIES, EAX_MAX_FXSLOTS>;
+		using Sends = std::array<::EAXSOURCEALLSENDPROPERTIES, ::EAX_MAX_FXSLOTS>;
 
-		EAX50ACTIVEFXSLOTS active_fx_slots{};
-		EAX50SOURCEPROPERTIES source{};
+		::EAX50ACTIVEFXSLOTS active_fx_slots{};
+		::EAX50SOURCEPROPERTIES source{};
 		Sends sends{};
 	}; // Eax
 
@@ -226,7 +226,7 @@ private:
 	void set_eax_active_fx_slots_defaults();
 
 	void set_eax_send_defaults(
-		EAXSOURCEALLSENDPROPERTIES& eax_send);
+		::EAXSOURCEALLSENDPROPERTIES& eax_send);
 
 	void set_eax_sends_defaults();
 
@@ -242,7 +242,7 @@ private:
 
 	AlLowPassParam make_room_filter(
 		const EaxxFxSlot& fx_slot,
-		const EAXSOURCEALLSENDPROPERTIES& send) const noexcept;
+		const ::EAXSOURCEALLSENDPROPERTIES& send) const noexcept;
 
 	void set_al_filter_parameters(
 		const AlLowPassParam& al_low_pass_param) const noexcept;
@@ -292,7 +292,7 @@ private:
 	// Send
 
 	static void validate_send_receiving_fx_slot_guid(
-		const GUID& guidReceivingFXSlotID);
+		const ::GUID& guidReceivingFXSlotID);
 
 	static void validate_send_send(
 		std::int32_t lSend);
@@ -319,20 +319,20 @@ private:
 		float flExclusionLFRatio);
 
 	static void validate_send(
-		const EAXSOURCESENDPROPERTIES& all);
+		const ::EAXSOURCESENDPROPERTIES& all);
 
 	static void validate_send_exclusion_all(
-		const EAXSOURCEEXCLUSIONSENDPROPERTIES& all);
+		const ::EAXSOURCEEXCLUSIONSENDPROPERTIES& all);
 
 	static void validate_send_occlusion_all(
-		const EAXSOURCEOCCLUSIONSENDPROPERTIES& all);
+		const ::EAXSOURCEOCCLUSIONSENDPROPERTIES& all);
 
 	static void validate_send_all(
-		const EAXSOURCEALLSENDPROPERTIES& all);
+		const ::EAXSOURCEALLSENDPROPERTIES& all);
 
 
 	static int get_send_index(
-		const GUID& send_guid);
+		const ::GUID& send_guid);
 
 
 	void defer_send_send(
@@ -368,19 +368,19 @@ private:
 		int index);
 
 	void defer_send(
-		const EAXSOURCESENDPROPERTIES& all,
+		const ::EAXSOURCESENDPROPERTIES& all,
 		int index);
 
 	void defer_send_exclusion_all(
-		const EAXSOURCEEXCLUSIONSENDPROPERTIES& all,
+		const ::EAXSOURCEEXCLUSIONSENDPROPERTIES& all,
 		int index);
 
 	void defer_send_occlusion_all(
-		const EAXSOURCEOCCLUSIONSENDPROPERTIES& all,
+		const ::EAXSOURCEOCCLUSIONSENDPROPERTIES& all,
 		int index);
 
 	void defer_send_all(
-		const EAXSOURCEALLSENDPROPERTIES& all,
+		const ::EAXSOURCEALLSENDPROPERTIES& all,
 		int index);
 
 
@@ -462,28 +462,28 @@ private:
 		float macro_fx_factor);
 
 	static void validate_source_2d_all(
-		const EAXSOURCE2DPROPERTIES& all,
+		const ::EAXSOURCE2DPROPERTIES& all,
 		int eax_version);
 
 	static void validate_source_obstruction_all(
-		const EAXOBSTRUCTIONPROPERTIES& all);
+		const ::EAXOBSTRUCTIONPROPERTIES& all);
 
 	static void validate_source_exclusion_all(
-		const EAXEXCLUSIONPROPERTIES& all);
+		const ::EAXEXCLUSIONPROPERTIES& all);
 
 	static void validate_source_occlusion_all(
-		const EAXOCCLUSIONPROPERTIES& all);
+		const ::EAXOCCLUSIONPROPERTIES& all);
 
 	static void validate_source_all(
-		const EAX20BUFFERPROPERTIES& all,
+		const ::EAX20BUFFERPROPERTIES& all,
 		int eax_version);
 
 	static void validate_source_all(
-		const EAX30SOURCEPROPERTIES& all,
+		const ::EAX30SOURCEPROPERTIES& all,
 		int eax_version);
 
 	static void validate_source_all(
-		const EAX50SOURCEPROPERTIES& all,
+		const ::EAX50SOURCEPROPERTIES& all,
 		int eax_version);
 
 
@@ -545,25 +545,25 @@ private:
 		float flMacroFXFactor);
 
 	void defer_source_2d_all(
-		const EAXSOURCE2DPROPERTIES& all);
+		const ::EAXSOURCE2DPROPERTIES& all);
 
 	void defer_source_obstruction_all(
-		const EAXOBSTRUCTIONPROPERTIES& all);
+		const ::EAXOBSTRUCTIONPROPERTIES& all);
 
 	void defer_source_exclusion_all(
-		const EAXEXCLUSIONPROPERTIES& all);
+		const ::EAXEXCLUSIONPROPERTIES& all);
 
 	void defer_source_occlusion_all(
-		const EAXOCCLUSIONPROPERTIES& all);
+		const ::EAXOCCLUSIONPROPERTIES& all);
 
 	void defer_source_all(
-		const EAX20BUFFERPROPERTIES& all);
+		const ::EAX20BUFFERPROPERTIES& all);
 
 	void defer_source_all(
-		const EAX30SOURCEPROPERTIES& all);
+		const ::EAX30SOURCEPROPERTIES& all);
 
 	void defer_source_all(
-		const EAX50SOURCEPROPERTIES& all);
+		const ::EAX50SOURCEPROPERTIES& all);
 
 
 	void defer_source_direct(
@@ -671,25 +671,25 @@ private:
 		const EaxxEaxCall& eax_call);
 
 
-	static const GUID& get_send_fx_slot_guid(
+	static const ::GUID& get_send_fx_slot_guid(
 		int eax_version,
 		int fx_slot_index);
 
 	static void copy_send(
-		const EAXSOURCEALLSENDPROPERTIES& src_send,
-		EAXSOURCESENDPROPERTIES& dst_send);
+		const ::EAXSOURCEALLSENDPROPERTIES& src_send,
+		::EAXSOURCESENDPROPERTIES& dst_send);
 
 	static void copy_send(
-		const EAXSOURCEALLSENDPROPERTIES& src_send,
-		EAXSOURCEALLSENDPROPERTIES& dst_send);
+		const ::EAXSOURCEALLSENDPROPERTIES& src_send,
+		::EAXSOURCEALLSENDPROPERTIES& dst_send);
 
 	static void copy_send(
-		const EAXSOURCEALLSENDPROPERTIES& src_send,
-		EAXSOURCEOCCLUSIONSENDPROPERTIES& dst_send);
+		const ::EAXSOURCEALLSENDPROPERTIES& src_send,
+		::EAXSOURCEOCCLUSIONSENDPROPERTIES& dst_send);
 
 	static void copy_send(
-		const EAXSOURCEALLSENDPROPERTIES& src_send,
-		EAXSOURCEEXCLUSIONSENDPROPERTIES& dst_send);
+		const ::EAXSOURCEALLSENDPROPERTIES& src_send,
+		::EAXSOURCEEXCLUSIONSENDPROPERTIES& dst_send);
 
 	template<
 		typename TException,

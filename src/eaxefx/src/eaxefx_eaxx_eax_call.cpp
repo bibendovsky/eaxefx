@@ -56,13 +56,13 @@ public:
 
 EaxxEaxCall::EaxxEaxCall(
 	bool is_get,
-	const GUID* property_set_guid,
-	ALuint property_id,
-	ALuint property_al_name,
-	ALvoid* property_buffer,
-	ALuint property_size)
+	const ::GUID* property_set_guid,
+	::ALuint property_id,
+	::ALuint property_al_name,
+	::ALvoid* property_buffer,
+	::ALuint property_size)
 {
-	if (property_set_guid == nullptr)
+	if (!property_set_guid)
 	{
 		throw EaxxEaxCallException{"Null property set GUID."};
 	}
@@ -85,12 +85,12 @@ EaxxEaxCall::EaxxEaxCall(
 	if (false)
 	{
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX40_Context)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX40_Context)
 	{
 		version_ = 4;
 		property_set_id_ = EaxxEaxCallPropertySetId::context;
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX50_Context)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX50_Context)
 	{
 		version_ = 5;
 		property_set_id_ = EaxxEaxCallPropertySetId::context;
@@ -108,55 +108,55 @@ EaxxEaxCall::EaxxEaxCall(
 		fx_slot_index_ = 0;
 		property_set_id_ = EaxxEaxCallPropertySetId::fx_slot_effect;
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX40_FXSlot0)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX40_FXSlot0)
 	{
 		version_ = 4;
 		fx_slot_index_ = 0;
 		property_set_id_ = EaxxEaxCallPropertySetId::fx_slot;
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX50_FXSlot0)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX50_FXSlot0)
 	{
 		version_ = 5;
 		fx_slot_index_ = 0;
 		property_set_id_ = EaxxEaxCallPropertySetId::fx_slot;
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX40_FXSlot1)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX40_FXSlot1)
 	{
 		version_ = 4;
 		fx_slot_index_ = 1;
 		property_set_id_ = EaxxEaxCallPropertySetId::fx_slot;
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX50_FXSlot1)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX50_FXSlot1)
 	{
 		version_ = 5;
 		fx_slot_index_ = 1;
 		property_set_id_ = EaxxEaxCallPropertySetId::fx_slot;
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX40_FXSlot2)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX40_FXSlot2)
 	{
 		version_ = 4;
 		fx_slot_index_ = 2;
 		property_set_id_ = EaxxEaxCallPropertySetId::fx_slot;
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX50_FXSlot2)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX50_FXSlot2)
 	{
 		version_ = 5;
 		fx_slot_index_ = 2;
 		property_set_id_ = EaxxEaxCallPropertySetId::fx_slot;
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX40_FXSlot3)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX40_FXSlot3)
 	{
 		version_ = 4;
 		fx_slot_index_ = 3;
 		property_set_id_ = EaxxEaxCallPropertySetId::fx_slot;
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX50_FXSlot3)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX50_FXSlot3)
 	{
 		version_ = 5;
 		fx_slot_index_ = 3;
 		property_set_id_ = EaxxEaxCallPropertySetId::fx_slot;
 	}
-	else if (property_set_guid_ == DSPROPSETID_EAX20_BufferProperties)
+	else if (property_set_guid_ == ::DSPROPSETID_EAX20_BufferProperties)
 	{
 		version_ = 2;
 		property_set_id_ = EaxxEaxCallPropertySetId::source;
@@ -167,12 +167,12 @@ EaxxEaxCall::EaxxEaxCall(
 		version_ = 3;
 		property_set_id_ = EaxxEaxCallPropertySetId::source;
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX40_Source)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX40_Source)
 	{
 		version_ = 4;
 		property_set_id_ = EaxxEaxCallPropertySetId::source;
 	}
-	else if (property_set_guid_ == EAXPROPERTYID_EAX50_Source)
+	else if (property_set_guid_ == ::EAXPROPERTYID_EAX50_Source)
 	{
 		version_ = 5;
 		property_set_id_ = EaxxEaxCallPropertySetId::source;
@@ -199,7 +199,7 @@ EaxxEaxCall::EaxxEaxCall(
 		if (property_set_id_ != EaxxEaxCallPropertySetId::fx_slot &&
 			property_id_ != 0)
 		{
-			if (property_buffer == nullptr)
+			if (!property_buffer)
 			{
 				throw EaxxEaxCallException{"Null property buffer."};
 			}
@@ -219,7 +219,7 @@ EaxxEaxCall::EaxxEaxCall(
 
 	if (property_set_id_ == EaxxEaxCallPropertySetId::fx_slot)
 	{
-		if (property_id_ < EAXFXSLOT_NONE)
+		if (property_id_ < ::EAXFXSLOT_NONE)
 		{
 			property_set_id_ = EaxxEaxCallPropertySetId::fx_slot_effect;
 		}
@@ -246,12 +246,12 @@ EaxxEaxCallPropertySetId EaxxEaxCall::get_property_set_id() const noexcept
 	return property_set_id_;
 }
 
-ALuint EaxxEaxCall::get_property_id() const noexcept
+::ALuint EaxxEaxCall::get_property_id() const noexcept
 {
 	return property_id_;
 }
 
-ALuint EaxxEaxCall::get_property_al_name() const noexcept
+::ALuint EaxxEaxCall::get_property_al_name() const noexcept
 {
 	return property_al_name_;
 }
@@ -261,113 +261,113 @@ EaxxFxSlotIndex EaxxEaxCall::get_fx_slot_index() const noexcept
 	return fx_slot_index_;
 }
 
-ALuint EaxxEaxCall::convert_eax_2_listener_property_id(
-	ALuint property_id)
+::ALuint EaxxEaxCall::convert_eax_2_listener_property_id(
+	::ALuint property_id)
 {
 	switch (property_id)
 	{
-		case DSPROPERTY_EAX20LISTENER_NONE:
-			return EAXREVERB_NONE;
+		case ::DSPROPERTY_EAX20LISTENER_NONE:
+			return ::EAXREVERB_NONE;
 
-		case DSPROPERTY_EAX20LISTENER_ALLPARAMETERS:
-			return EAXREVERB_ALLPARAMETERS;
+		case ::DSPROPERTY_EAX20LISTENER_ALLPARAMETERS:
+			return ::EAXREVERB_ALLPARAMETERS;
 
-		case DSPROPERTY_EAX20LISTENER_ROOM:
-			return EAXREVERB_ROOM;
+		case ::DSPROPERTY_EAX20LISTENER_ROOM:
+			return ::EAXREVERB_ROOM;
 
-		case DSPROPERTY_EAX20LISTENER_ROOMHF:
-			return EAXREVERB_ROOMHF;
+		case ::DSPROPERTY_EAX20LISTENER_ROOMHF:
+			return ::EAXREVERB_ROOMHF;
 
-		case DSPROPERTY_EAX20LISTENER_ROOMROLLOFFFACTOR:
-			return EAXREVERB_ROOMROLLOFFFACTOR;
+		case ::DSPROPERTY_EAX20LISTENER_ROOMROLLOFFFACTOR:
+			return ::EAXREVERB_ROOMROLLOFFFACTOR;
 
-		case DSPROPERTY_EAX20LISTENER_DECAYTIME:
-			return EAXREVERB_DECAYTIME;
+		case ::DSPROPERTY_EAX20LISTENER_DECAYTIME:
+			return ::EAXREVERB_DECAYTIME;
 
-		case DSPROPERTY_EAX20LISTENER_DECAYHFRATIO:
-			return EAXREVERB_DECAYHFRATIO;
+		case ::DSPROPERTY_EAX20LISTENER_DECAYHFRATIO:
+			return ::EAXREVERB_DECAYHFRATIO;
 
-		case DSPROPERTY_EAX20LISTENER_REFLECTIONS:
-			return EAXREVERB_REFLECTIONS;
+		case ::DSPROPERTY_EAX20LISTENER_REFLECTIONS:
+			return ::EAXREVERB_REFLECTIONS;
 
-		case DSPROPERTY_EAX20LISTENER_REFLECTIONSDELAY:
-			return EAXREVERB_REFLECTIONSDELAY;
+		case ::DSPROPERTY_EAX20LISTENER_REFLECTIONSDELAY:
+			return ::EAXREVERB_REFLECTIONSDELAY;
 
-		case DSPROPERTY_EAX20LISTENER_REVERB:
-			return EAXREVERB_REVERB;
+		case ::DSPROPERTY_EAX20LISTENER_REVERB:
+			return ::EAXREVERB_REVERB;
 
-		case DSPROPERTY_EAX20LISTENER_REVERBDELAY:
-			return EAXREVERB_REVERBDELAY;
+		case ::DSPROPERTY_EAX20LISTENER_REVERBDELAY:
+			return ::EAXREVERB_REVERBDELAY;
 
-		case DSPROPERTY_EAX20LISTENER_ENVIRONMENT:
-			return EAXREVERB_ENVIRONMENT;
+		case ::DSPROPERTY_EAX20LISTENER_ENVIRONMENT:
+			return ::EAXREVERB_ENVIRONMENT;
 
-		case DSPROPERTY_EAX20LISTENER_ENVIRONMENTSIZE:
-			return EAXREVERB_ENVIRONMENTSIZE;
+		case ::DSPROPERTY_EAX20LISTENER_ENVIRONMENTSIZE:
+			return ::EAXREVERB_ENVIRONMENTSIZE;
 
-		case DSPROPERTY_EAX20LISTENER_ENVIRONMENTDIFFUSION:
-			return EAXREVERB_ENVIRONMENTDIFFUSION;
+		case ::DSPROPERTY_EAX20LISTENER_ENVIRONMENTDIFFUSION:
+			return ::EAXREVERB_ENVIRONMENTDIFFUSION;
 
-		case DSPROPERTY_EAX20LISTENER_AIRABSORPTIONHF:
-			return EAXREVERB_AIRABSORPTIONHF;
+		case ::DSPROPERTY_EAX20LISTENER_AIRABSORPTIONHF:
+			return ::EAXREVERB_AIRABSORPTIONHF;
 
-		case DSPROPERTY_EAX20LISTENER_FLAGS:
-			return EAXREVERB_FLAGS;
+		case ::DSPROPERTY_EAX20LISTENER_FLAGS:
+			return ::EAXREVERB_FLAGS;
 
 		default:
 			throw EaxxEaxCallException{"Unsupported EAX 2.0 listener property id."};
 	}
 }
 
-ALuint EaxxEaxCall::convert_eax_2_buffer_property_id(
-	ALuint property_id)
+::ALuint EaxxEaxCall::convert_eax_2_buffer_property_id(
+	::ALuint property_id)
 {
 	switch (property_id)
 	{
-		case DSPROPERTY_EAX20BUFFER_NONE:
-			return DSPROPERTY_EAX20BUFFER_NONE;
+		case ::DSPROPERTY_EAX20BUFFER_NONE:
+			return ::DSPROPERTY_EAX20BUFFER_NONE;
 
-		case DSPROPERTY_EAX20BUFFER_ALLPARAMETERS:
-			return EAXSOURCE_ALLPARAMETERS;
+		case ::DSPROPERTY_EAX20BUFFER_ALLPARAMETERS:
+			return ::EAXSOURCE_ALLPARAMETERS;
 
-		case DSPROPERTY_EAX20BUFFER_DIRECT:
-			return EAXSOURCE_DIRECT;
+		case ::DSPROPERTY_EAX20BUFFER_DIRECT:
+			return ::EAXSOURCE_DIRECT;
 
-		case DSPROPERTY_EAX20BUFFER_DIRECTHF:
-			return EAXSOURCE_DIRECTHF;
+		case ::DSPROPERTY_EAX20BUFFER_DIRECTHF:
+			return ::EAXSOURCE_DIRECTHF;
 
-		case DSPROPERTY_EAX20BUFFER_ROOM:
-			return EAXSOURCE_ROOM;
+		case ::DSPROPERTY_EAX20BUFFER_ROOM:
+			return ::EAXSOURCE_ROOM;
 
-		case DSPROPERTY_EAX20BUFFER_ROOMHF:
-			return EAXSOURCE_ROOMHF;
+		case ::DSPROPERTY_EAX20BUFFER_ROOMHF:
+			return ::EAXSOURCE_ROOMHF;
 
-		case DSPROPERTY_EAX20BUFFER_ROOMROLLOFFFACTOR:
-			return EAXSOURCE_ROOMROLLOFFFACTOR;
+		case ::DSPROPERTY_EAX20BUFFER_ROOMROLLOFFFACTOR:
+			return ::EAXSOURCE_ROOMROLLOFFFACTOR;
 
-		case DSPROPERTY_EAX20BUFFER_OBSTRUCTION:
-			return EAXSOURCE_OBSTRUCTION;
+		case ::DSPROPERTY_EAX20BUFFER_OBSTRUCTION:
+			return ::EAXSOURCE_OBSTRUCTION;
 
-		case DSPROPERTY_EAX20BUFFER_OBSTRUCTIONLFRATIO:
-			return EAXSOURCE_OBSTRUCTIONLFRATIO;
+		case ::DSPROPERTY_EAX20BUFFER_OBSTRUCTIONLFRATIO:
+			return ::EAXSOURCE_OBSTRUCTIONLFRATIO;
 
-		case DSPROPERTY_EAX20BUFFER_OCCLUSION:
-			return EAXSOURCE_OCCLUSION;
+		case ::DSPROPERTY_EAX20BUFFER_OCCLUSION:
+			return ::EAXSOURCE_OCCLUSION;
 
-		case DSPROPERTY_EAX20BUFFER_OCCLUSIONLFRATIO:
-			return EAXSOURCE_OCCLUSIONLFRATIO;
+		case ::DSPROPERTY_EAX20BUFFER_OCCLUSIONLFRATIO:
+			return ::EAXSOURCE_OCCLUSIONLFRATIO;
 
-		case DSPROPERTY_EAX20BUFFER_OCCLUSIONROOMRATIO:
-			return EAXSOURCE_OCCLUSIONROOMRATIO;
+		case ::DSPROPERTY_EAX20BUFFER_OCCLUSIONROOMRATIO:
+			return ::EAXSOURCE_OCCLUSIONROOMRATIO;
 
-		case DSPROPERTY_EAX20BUFFER_OUTSIDEVOLUMEHF:
-			return EAXSOURCE_OUTSIDEVOLUMEHF;
+		case ::DSPROPERTY_EAX20BUFFER_OUTSIDEVOLUMEHF:
+			return ::EAXSOURCE_OUTSIDEVOLUMEHF;
 
-		case DSPROPERTY_EAX20BUFFER_AIRABSORPTIONFACTOR:
-			return EAXSOURCE_AIRABSORPTIONFACTOR;
+		case ::DSPROPERTY_EAX20BUFFER_AIRABSORPTIONFACTOR:
+			return ::EAXSOURCE_AIRABSORPTIONFACTOR;
 
-		case DSPROPERTY_EAX20BUFFER_FLAGS:
-			return EAXSOURCE_FLAGS;
+		case ::DSPROPERTY_EAX20BUFFER_FLAGS:
+			return ::EAXSOURCE_FLAGS;
 
 		default:
 			throw EaxxEaxCallException{"Unsupported EAX 2.0 buffer property id."};
@@ -381,11 +381,11 @@ ALuint EaxxEaxCall::convert_eax_2_buffer_property_id(
 
 EaxxEaxCall make_eax_call(
 	bool is_get,
-	const GUID* property_set_id,
-	ALuint property_id,
-	ALuint property_al_name,
-	ALvoid* property_buffer,
-	ALuint property_size)
+	const ::GUID* property_set_id,
+	::ALuint property_id,
+	::ALuint property_al_name,
+	::ALvoid* property_buffer,
+	::ALuint property_size)
 {
 	return EaxxEaxCall{
 		is_get,

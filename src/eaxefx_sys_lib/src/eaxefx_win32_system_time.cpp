@@ -36,8 +36,8 @@ namespace eaxefx
 
 SystemTime make_system_time() noexcept
 {
-	SYSTEMTIME win32_system_time;
-	GetLocalTime(&win32_system_time);
+	::SYSTEMTIME win32_system_time;
+	::GetLocalTime(&win32_system_time);
 
 	auto system_time = SystemTime{};
 	system_time.year = win32_system_time.wYear;

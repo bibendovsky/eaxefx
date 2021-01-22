@@ -53,7 +53,7 @@ public:
 
 
 private:
-	using Items = std::array<EaxxFxSlot, EAX_MAX_FXSLOTS>;
+	using Items = std::array<EaxxFxSlot, ::EAX_MAX_FXSLOTS>;
 
 
 	Items fx_slots_{};

@@ -61,7 +61,7 @@ class Win32File :
 {
 public:
 	Win32File(
-		const String& path,
+		const char* path,
 		FileOpenMode open_mode);
 
 	~Win32File() override;
@@ -85,7 +85,7 @@ public:
 private:
 	bool is_readable_{};
 	bool is_writable_{};
-	HANDLE handle_{};
+	::HANDLE handle_{};
 
 
 	bool is_handle_valid() noexcept;
@@ -99,12 +99,12 @@ private:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 Win32File::Win32File(
-	const String& path,
+	const char* path,
 	FileOpenMode open_mode)
 {
-	if (path.empty())
+	if (!path || path[0] == '\0')
 	{
-		throw Win32FileException{"Empty path."};
+		throw Win32FileException{"Null or empty path."};
 	}
 
 	constexpr auto mode_error_message = "Unsupported open mode.";
@@ -113,7 +113,7 @@ Win32File::Win32File(
 	const auto is_writable = (open_mode & file_open_mode_write) != 0;
 	const auto is_truncate = (open_mode & file_open_mode_truncate) != 0;
 
-	auto win32_desired_access = DWORD{};
+	auto win32_desired_access = ::DWORD{};
 
 	if (is_readable)
 	{
@@ -131,7 +131,7 @@ Win32File::Win32File(
 	}
 
 
-	auto win32_creation_disposition = DWORD{};
+	auto win32_creation_disposition = ::DWORD{};
 
 	if (is_truncate)
 	{
@@ -160,8 +160,8 @@ Win32File::Win32File(
 
 	const auto utf16_path = encoding::to_utf16(path);
 
-	handle_ = CreateFileW(
-		reinterpret_cast<LPCWSTR>(utf16_path.c_str()),
+	handle_ = ::CreateFileW(
+		reinterpret_cast<::LPCWSTR>(utf16_path.c_str()),
 		win32_desired_access,
 		0,
 		nullptr,
@@ -183,7 +183,7 @@ Win32File::~Win32File()
 {
 	if (is_handle_valid())
 	{
-		CloseHandle(handle_);
+		::CloseHandle(handle_);
 	}
 }
 
@@ -192,10 +192,10 @@ void Win32File::set_position(
 {
 	ensure_is_open();
 
-	LARGE_INTEGER win32_position;
+	::LARGE_INTEGER win32_position;
 	win32_position.QuadPart = position;
 
-	const auto win32_result = SetFilePointerEx(
+	const auto win32_result = ::SetFilePointerEx(
 		handle_,
 		win32_position,
 		nullptr,
@@ -212,9 +212,9 @@ void Win32File::move_to_the_end()
 {
 	ensure_is_open();
 
-	auto win32_position = LARGE_INTEGER{};
+	auto win32_position = ::LARGE_INTEGER{};
 
-	const auto win32_result = SetFilePointerEx(
+	const auto win32_result = ::SetFilePointerEx(
 		handle_,
 		win32_position,
 		nullptr,
@@ -238,17 +238,17 @@ int Win32File::read(
 		throw Win32FileException{"Not readable."};
 	}
 
-	if (buffer == nullptr || size <= 0)
+	if (!buffer || size <= 0)
 	{
 		return 0;
 	}
 
-	DWORD read_size;
+	::DWORD read_size;
 
-	const auto win32_result = ReadFile(
+	const auto win32_result = ::ReadFile(
 		handle_,
 		buffer,
-		static_cast<DWORD>(size),
+		static_cast<::DWORD>(size),
 		&read_size,
 		nullptr
 	);
@@ -272,17 +272,17 @@ int Win32File::write(
 		throw Win32FileException{"Not writable."};
 	}
 
-	if (buffer == nullptr || size <= 0)
+	if (!buffer || size <= 0)
 	{
 		return 0;
 	}
 
-	DWORD written_size;
+	::DWORD written_size;
 
-	const auto win32_result = WriteFile(
+	const auto win32_result = ::WriteFile(
 		handle_,
 		buffer,
-		static_cast<DWORD>(size),
+		static_cast<::DWORD>(size),
 		&written_size,
 		nullptr
 	);
@@ -297,7 +297,7 @@ int Win32File::write(
 
 bool Win32File::is_handle_valid() noexcept
 {
-	return handle_ != nullptr && handle_ != INVALID_HANDLE_VALUE;
+	return handle_ && handle_ != INVALID_HANDLE_VALUE;
 }
 
 void Win32File::ensure_is_open()
@@ -314,7 +314,7 @@ void Win32File::ensure_is_open()
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 FileUPtr make_file(
-	const String& path,
+	const char* path,
 	FileOpenMode open_mode)
 {
 	return std::make_unique<Win32File>(path, open_mode);

@@ -57,14 +57,14 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void EfxEffectSlotObjectDeleter::operator()(
-	ALuint al_name) const noexcept
+	::ALuint al_name) const noexcept
 {
 	alDeleteAuxiliaryEffectSlots_(1, &al_name);
 }
 
 EfxEffectSlotObject make_efx_effect_slot_object()
 {
-	auto al_effect_slot_name = ALuint{};
+	auto al_effect_slot_name = ::ALuint{};
 	alGenAuxiliaryEffectSlots_(1, &al_effect_slot_name);
 
 	if (al_effect_slot_name == 0)
@@ -81,13 +81,13 @@ EfxEffectSlotObject make_efx_effect_slot_object()
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void EfxEffectObjectDeleter::operator()(
-	ALuint al_name) const noexcept
+	::ALuint al_name) const noexcept
 {
 	alDeleteEffects_(1, &al_name);
 }
 
 EfxEffectObject make_efx_effect_object(
-	ALint al_effect_type)
+	::ALint al_effect_type)
 {
 	switch (al_effect_type)
 	{
@@ -110,7 +110,7 @@ EfxEffectObject make_efx_effect_object(
 			throw AlObjectException{"Unsupported AL effect type."};
 	}
 
-	auto al_effect = ALuint{};
+	auto al_effect = ::ALuint{};
 	alGenEffects_(1, &al_effect);
 
 	if (al_effect == 0)
@@ -120,7 +120,7 @@ EfxEffectObject make_efx_effect_object(
 
 	auto efx_effect_object = EfxEffectObject{al_effect};
 
-	auto new_al_effect_type = ALint{-1};
+	auto new_al_effect_type = ::ALint{-1};
 
 	alEffecti_(al_effect, AL_EFFECT_TYPE, al_effect_type);
 	alGetEffecti_(al_effect, AL_EFFECT_TYPE, &new_al_effect_type);
@@ -139,14 +139,14 @@ EfxEffectObject make_efx_effect_object(
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void EfxFilterObjectDeleter::operator()(
-	ALuint al_name) const noexcept
+	::ALuint al_name) const noexcept
 {
 	alDeleteFilters_(1, &al_name);
 }
 
 EfxFilterObject make_efx_filter_object()
 {
-	auto al_filter_name = ALuint{};
+	auto al_filter_name = ::ALuint{};
 	alGenFilters_(1, &al_filter_name);
 
 	if (al_filter_name == 0)

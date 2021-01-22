@@ -38,7 +38,7 @@ namespace eaxefx
 
 template<
 	typename T>
-float level_mb_to_gain(
+inline float level_mb_to_gain(
 	T x) noexcept
 {
 	if (x <= static_cast<T>(-10'000))
@@ -53,7 +53,7 @@ float level_mb_to_gain(
 
 template<
 	typename T>
-float gain_to_level_mb(
+inline float gain_to_level_mb(
 	T x) noexcept
 {
 	if (static_cast<float>(x) <= 0.0F)

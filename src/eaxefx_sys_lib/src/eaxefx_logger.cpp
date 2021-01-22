@@ -35,13 +35,13 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <iterator>
 #include <memory>
 #include <mutex>
-#include <string_view>
 
 #include "eaxefx_condition_variable.h"
 #include "eaxefx_console.h"
 #include "eaxefx_file.h"
 #include "eaxefx_mutex.h"
 #include "eaxefx_process.h"
+#include "eaxefx_string.h"
 #include "eaxefx_system_time.h"
 #include "eaxefx_thread.h"
 
@@ -53,19 +53,19 @@ namespace eaxefx
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void Logger::info(
-	const String& message) noexcept
+	const char* message) noexcept
 {
 	write(LoggerMessageType::info, message);
 }
 
 void Logger::warning(
-	const String& message) noexcept
+	const char* message) noexcept
 {
 	write(LoggerMessageType::warning, message);
 }
 
 void Logger::error(
-	const String& message) noexcept
+	const char* message) noexcept
 {
 	write(LoggerMessageType::error, message);
 }
@@ -78,7 +78,7 @@ void Logger::error(
 
 void Logger::error(
 	const std::exception& exception,
-	const String& message) noexcept
+	const char* message) noexcept
 {
 	error(message);
 	write(exception);
@@ -97,7 +97,7 @@ struct LoggerMessage
 
 	LoggerMessage(
 		LoggerMessageType type,
-		const String& message)
+		const char* message)
 		:
 		type{type},
 		message{message}
@@ -127,7 +127,7 @@ public:
 
 	void write(
 		LoggerMessageType message_type,
-		const String& message) noexcept override;
+		const char* message) noexcept override;
 
 	void write(
 		const std::exception& ex) noexcept override;
@@ -248,7 +248,7 @@ void LoggerImpl::set_immediate_mode() noexcept
 
 void LoggerImpl::write(
 	LoggerMessageType message_type,
-	const String& message) noexcept
+	const char* message) noexcept
 try
 {
 	{
@@ -283,9 +283,9 @@ catch (...)
 void LoggerImpl::clear_log_file()
 try
 {
-	make_file(path_, FileOpenMode{file_open_mode_write | file_open_mode_truncate});
+	make_file(path_.c_str(), FileOpenMode{file_open_mode_write | file_open_mode_truncate});
 }
-catch (const std::exception&)
+catch (...)
 {
 }
 
@@ -312,7 +312,7 @@ try
 		return;
 	}
 
-	auto file = make_file(path_, FileOpenMode{file_open_mode_write});
+	auto file = make_file(path_.c_str(), FileOpenMode{file_open_mode_write});
 	file->move_to_the_end();
 
 	for (const auto& message : messages)
@@ -371,7 +371,7 @@ try
 
 		file->write(message_buffer_.c_str(), static_cast<int>(message_buffer_.size()));
 
-		if (console_ != nullptr)
+		if (console_)
 		{
 			if (is_error_for_console)
 			{
@@ -384,7 +384,7 @@ try
 		}
 	}
 
-	if (console_ != nullptr && !messages.empty())
+	if (console_ && !messages.empty())
 	{
 		console_->flush();
 	}
@@ -459,7 +459,7 @@ try
 		cv_ack_.notify_one();
 	}
 }
-catch (const std::exception&)
+catch (...)
 {
 }
 

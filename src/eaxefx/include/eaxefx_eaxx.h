@@ -53,54 +53,54 @@ public:
 	virtual ~Eaxx() = default;
 
 
-	virtual ALboolean alIsExtensionPresent(
-		const ALchar* extname) = 0;
+	virtual ::ALboolean alIsExtensionPresent(
+		const ::ALchar* extname) = 0;
 
 
-	virtual const ALchar* alGetString(
-		ALenum param) = 0;
+	virtual const ::ALchar* alGetString(
+		::ALenum param) = 0;
 
 
-	virtual ALCdevice* alcOpenDevice(
-		const ALCchar* devicename) = 0;
+	virtual ::ALCdevice* alcOpenDevice(
+		const ::ALCchar* devicename) = 0;
 
-	virtual ALCboolean alcCloseDevice(
-		ALCdevice* device) = 0;
+	virtual ::ALCboolean alcCloseDevice(
+		::ALCdevice* device) = 0;
 
 
 	virtual void alGenSources(
-		ALsizei n,
-		ALuint* sources) = 0;
+		::ALsizei n,
+		::ALuint* sources) = 0;
 
 	virtual void alDeleteSources(
-		ALsizei n,
-		const ALuint* sources) = 0;
+		::ALsizei n,
+		const ::ALuint* sources) = 0;
 
 
-	virtual ALCcontext* alcCreateContext(
-		ALCdevice* device,
-		const ALCint* attrlist) = 0;
+	virtual ::ALCcontext* alcCreateContext(
+		::ALCdevice* device,
+		const ::ALCint* attrlist) = 0;
 
-	virtual ALCboolean alcMakeContextCurrent(
-		ALCcontext* context) = 0;
+	virtual ::ALCboolean alcMakeContextCurrent(
+		::ALCcontext* context) = 0;
 
 	virtual void alcDestroyContext(
-		ALCcontext* context) = 0;
+		::ALCcontext* context) = 0;
 
 
-	virtual ALenum EAXSet(
-		const GUID* property_set_guid,
-		ALuint property_id,
-		ALuint property_al_name,
-		ALvoid* property_buffer,
-		ALuint property_size) noexcept = 0;
+	virtual ::ALenum EAXSet(
+		const ::GUID* property_set_guid,
+		::ALuint property_id,
+		::ALuint property_al_name,
+		::ALvoid* property_buffer,
+		::ALuint property_size) noexcept = 0;
 
-	virtual ALenum EAXGet(
-		const GUID* property_set_guid,
-		ALuint property_id,
-		ALuint property_al_name,
-		ALvoid* property_buffer,
-		ALuint property_size) noexcept = 0;
+	virtual ::ALenum EAXGet(
+		const ::GUID* property_set_guid,
+		::ALuint property_id,
+		::ALuint property_al_name,
+		::ALvoid* property_buffer,
+		::ALuint property_size) noexcept = 0;
 }; // Eaxx
 
 using EaxxUPtr = std::unique_ptr<Eaxx>;

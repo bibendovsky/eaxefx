@@ -93,7 +93,7 @@ class EaxxEaxReverbEffect final :
 {
 public:
 	EaxxEaxReverbEffect(
-		ALuint al_effect_slot);
+		::ALuint al_effect_slot);
 
 
 	// ----------------------------------------------------------------------
@@ -109,11 +109,11 @@ public:
 
 
 private:
-	ALuint al_effect_slot_;
+	::ALuint al_effect_slot_;
 	EfxEffectObject efx_effect_object_;
 
-	EAXREVERBPROPERTIES eax_;
-	EAXREVERBPROPERTIES eax_d_;
+	::EAXREVERBPROPERTIES eax_;
+	::EAXREVERBPROPERTIES eax_d_;
 	EaxxEaxReverbEffectDirtyFlags eax_dirty_flags_{};
 
 
@@ -212,7 +212,7 @@ private:
 		float flReflectionsDelay);
 
 	void validate_reflections_pan(
-		const EAXVECTOR& vReflectionsPan);
+		const ::EAXVECTOR& vReflectionsPan);
 
 	void validate_reverb(
 		std::int32_t lReverb);
@@ -221,7 +221,7 @@ private:
 		float flReverbDelay);
 
 	void validate_reverb_pan(
-		const EAXVECTOR& vReverbPan);
+		const ::EAXVECTOR& vReverbPan);
 
 	void validate_echo_time(
 		float flEchoTime);
@@ -251,11 +251,11 @@ private:
 		std::uint32_t ulFlags);
 
 	void validate_all(
-		const EAX20LISTENERPROPERTIES& all,
+		const ::EAX20LISTENERPROPERTIES& all,
 		int version);
 
 	void validate_all(
-		const EAXREVERBPROPERTIES& all,
+		const ::EAXREVERBPROPERTIES& all,
 		int version);
 
 
@@ -293,7 +293,7 @@ private:
 		float flReflectionsDelay);
 
 	void defer_reflections_pan(
-		const EAXVECTOR& vReflectionsPan);
+		const ::EAXVECTOR& vReflectionsPan);
 
 	void defer_reverb(
 		std::int32_t lReverb);
@@ -302,7 +302,7 @@ private:
 		float flReverbDelay);
 
 	void defer_reverb_pan(
-		const EAXVECTOR& vReverbPan);
+		const ::EAXVECTOR& vReverbPan);
 
 	void defer_echo_time(
 		float flEchoTime);
@@ -332,10 +332,10 @@ private:
 		std::uint32_t ulFlags);
 
 	void defer_all(
-		const EAX20LISTENERPROPERTIES& all);
+		const ::EAX20LISTENERPROPERTIES& all);
 
 	void defer_all(
-		const EAXREVERBPROPERTIES& all);
+		const ::EAXREVERBPROPERTIES& all);
 
 
 	void defer_environment(

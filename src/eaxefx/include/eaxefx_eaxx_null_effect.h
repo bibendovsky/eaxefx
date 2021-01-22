@@ -48,7 +48,7 @@ class EaxxNullEffect final :
 {
 public:
 	EaxxNullEffect(
-		ALuint al_effect_slot);
+		::ALuint al_effect_slot);
 
 
 	void load() override;
@@ -58,7 +58,7 @@ public:
 
 
 private:
-	const ALuint al_effect_slot_;
+	const ::ALuint al_effect_slot_;
 	EfxEffectObject efx_effect_object_;
 }; // EaxxNullEffect
 

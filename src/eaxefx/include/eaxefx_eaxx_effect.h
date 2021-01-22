@@ -66,6 +66,7 @@ public:
 enum class EaxxEffectType
 {
 	none,
+
 	null,
 	auto_wah,
 	chorus,
@@ -84,7 +85,7 @@ enum class EaxxEffectType
 struct EaxxEffectParam
 {
 	EaxxEffectType effect_type;
-	ALuint al_effect_slot;
+	::ALuint al_effect_slot;
 }; // EaxxEffectParam
 
 using EaxxEffectUPtr = std::unique_ptr<EaxxEffect>;

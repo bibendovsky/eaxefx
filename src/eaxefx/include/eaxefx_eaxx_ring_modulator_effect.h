@@ -69,7 +69,7 @@ class EaxxRingModulatorEffect final :
 {
 public:
 	EaxxRingModulatorEffect(
-		ALuint al_effect_slot);
+		::ALuint al_effect_slot);
 
 
 	void load() override;
@@ -79,11 +79,11 @@ public:
 
 
 private:
-	const ALuint al_effect_slot_;
+	const ::ALuint al_effect_slot_;
 	EfxEffectObject efx_effect_object_;
 
-	EAXRINGMODULATORPROPERTIES eax_;
-	EAXRINGMODULATORPROPERTIES eax_d_;
+	::EAXRINGMODULATORPROPERTIES eax_;
+	::EAXRINGMODULATORPROPERTIES eax_d_;
 	EaxxRingModulatorEffectEaxDirtyFlags eax_dirty_flags_{};
 
 
@@ -113,7 +113,7 @@ private:
 		std::uint32_t ulWaveform);
 
 	void validate_all(
-		const EAXRINGMODULATORPROPERTIES& all);
+		const ::EAXRINGMODULATORPROPERTIES& all);
 
 
 	void defer_frequency(
@@ -126,7 +126,7 @@ private:
 		std::uint32_t ulWaveform);
 
 	void defer_all(
-		const EAXRINGMODULATORPROPERTIES& all);
+		const ::EAXRINGMODULATORPROPERTIES& all);
 
 
 	void defer_frequency(

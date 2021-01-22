@@ -33,7 +33,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <memory>
 
 #include "eaxefx_console.h"
-#include "eaxefx_string.h"
 
 
 namespace eaxefx
@@ -69,20 +68,20 @@ public:
 
 	virtual void write(
 		LoggerMessageType message_type,
-		const String& message) noexcept = 0;
+		const char* message) noexcept = 0;
 
 	virtual void write(
 		const std::exception& exception) noexcept = 0;
 
 
 	void info(
-		const String& message) noexcept;
+		const char* message) noexcept;
 
 	void warning(
-		const String& message) noexcept;
+		const char* message) noexcept;
 
 	void error(
-		const String& message) noexcept;
+		const char* message) noexcept;
 
 
 	void error(
@@ -90,7 +89,7 @@ public:
 
 	void error(
 		const std::exception& exception,
-		const String& message) noexcept;
+		const char* message) noexcept;
 }; // Logger
 
 using LoggerUPtr = std::unique_ptr<Logger>;
@@ -104,7 +103,7 @@ struct LoggerParam
 {
 	bool skip_message_prefix{};
 	Console* console{};
-	String path{};
+	const char* path{};
 }; // LoggerParam
 
 

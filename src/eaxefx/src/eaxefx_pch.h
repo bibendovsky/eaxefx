@@ -46,6 +46,9 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "AL/efx.h"
 
 #include "eaxefx_exception.h"
+#include "eaxefx_file.h"
+#include "eaxefx_logger.h"
 #include "eaxefx_platform.h"
-#include "eaxefx_not_null.h"
+#include "eaxefx_scope_exit.h"
 #include "eaxefx_string.h"
+#include "eaxefx_unit_converters.h"

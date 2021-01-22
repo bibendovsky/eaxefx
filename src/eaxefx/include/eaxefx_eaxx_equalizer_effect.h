@@ -76,7 +76,7 @@ class EaxxEqualizerEffect final :
 {
 public:
 	EaxxEqualizerEffect(
-		ALuint al_effect_slot);
+		::ALuint al_effect_slot);
 
 
 	void load() override;
@@ -86,11 +86,11 @@ public:
 
 
 private:
-	const ALuint al_effect_slot_;
+	const ::ALuint al_effect_slot_;
 	EfxEffectObject efx_effect_object_;
 
-	EAXEQUALIZERPROPERTIES eax_;
-	EAXEQUALIZERPROPERTIES eax_d_;
+	::EAXEQUALIZERPROPERTIES eax_;
+	::EAXEQUALIZERPROPERTIES eax_d_;
 	EaxxEqualizerEffectEaxDirtyFlags eax_dirty_flags_;
 
 
@@ -155,7 +155,7 @@ private:
 		float flHighCutOff);
 
 	void validate_all(
-		const EAXEQUALIZERPROPERTIES& all);
+		const ::EAXEQUALIZERPROPERTIES& all);
 
 
 	void defer_low_gain(
@@ -189,7 +189,7 @@ private:
 		float flHighCutOff);
 
 	void defer_all(
-		const EAXEQUALIZERPROPERTIES& all);
+		const ::EAXEQUALIZERPROPERTIES& all);
 
 
 	void defer_low_gain(

@@ -42,9 +42,9 @@ void on_process_detach() noexcept;
 } // eaxefx
 
 
-BOOL WINAPI DllMain(
+::BOOL WINAPI DllMain(
 	HINSTANCE hinstDLL,
-	DWORD fdwReason,
+	::DWORD fdwReason,
 	LPVOID lpvReserved)
 {
 	static_cast<void>(hinstDLL);

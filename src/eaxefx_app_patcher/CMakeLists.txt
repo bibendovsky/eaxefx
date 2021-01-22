@@ -26,7 +26,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 cmake_minimum_required (VERSION 3.8.2 FATAL_ERROR)
-project (eaxefx_doom3_fix_lib VERSION 1.0.2 LANGUAGES CXX)
+project (eaxefx_app_patcher VERSION 1.0.0 LANGUAGES CXX)
 
 
 if (NOT WIN32)
@@ -49,8 +49,8 @@ include (make_version_string)
 #
 # Version.
 #
-make_version_string (EAXEFX_DOOM3_FIX_LIB_VERSION)
-message (STATUS "[${PROJECT_NAME}] v${EAXEFX_DOOM3_FIX_LIB_VERSION}")
+make_version_string (EAXEFX_APP_PATCHER_VERSION)
+message (STATUS "[${PROJECT_NAME}] v${EAXEFX_APP_PATCHER_VERSION}")
 
 
 #
@@ -71,8 +71,16 @@ message (STATUS "[${PROJECT_NAME}] Static linking: ${EAXEFX_USE_STATIC_LINKING}"
 #
 # Target.
 #
-add_library (${PROJECT_NAME} STATIC "")
-add_library (eaxefx::doom3_fix_lib ALIAS ${PROJECT_NAME})
+add_executable (${PROJECT_NAME} "")
+
+
+#
+# Configure files.
+#
+configure_file (
+	"${PROJECT_SOURCE_DIR}/src/eaxefx_app_patcher.rc.in"
+	"${PROJECT_BINARY_DIR}/src/eaxefx_app_patcher.rc"
+)
 
 
 #
@@ -90,11 +98,6 @@ set_target_properties (
 #
 # Include directories.
 #
-target_include_directories (
-	${PROJECT_NAME}
-	PUBLIC
-		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-)
 
 
 #
@@ -103,6 +106,7 @@ target_include_directories (
 target_compile_definitions (
 	${PROJECT_NAME}
 	PRIVATE
+		"EAXEFX_APP_PATCHER_VERSION=\"${EAXEFX_APP_PATCHER_VERSION}\""
 		_UNICODE
 		UNICODE
 		NOMINMAX
@@ -155,19 +159,27 @@ endif ()
 
 target_link_libraries (
 	${PROJECT_NAME}
-	PUBLIC
-		eaxefx::sys_lib
+	PRIVATE
+		eaxefx::patch_lib
 )
+
+
+#
+# Custom commands.
+#
+if (CMAKE_STRIP AND CMAKE_BUILD_TYPE STREQUAL Release)
+	add_custom_command (
+		TARGET
+			${PROJECT_NAME}
+		POST_BUILD
+			COMMAND ${CMAKE_STRIP} $<TARGET_FILE:${PROJECT_NAME}>
+	)
+endif ()
 
 
 #
 # Header files.
 #
-target_sources (
-	${PROJECT_NAME}
-	PRIVATE
-		include/eaxefx_doom3_fix_lib.h
-)
 
 
 #
@@ -176,5 +188,17 @@ target_sources (
 target_sources (
 	${PROJECT_NAME}
 	PRIVATE
-		src/eaxefx_doom3_fix_lib.cpp
+		src/eaxefx_app_patcher.cpp
+		"${PROJECT_BINARY_DIR}/src/eaxefx_app_patcher.rc"
+)
+
+
+#
+# Install.
+#
+install (
+	TARGETS
+		${PROJECT_NAME}
+	RUNTIME DESTINATION
+		"."
 )

@@ -25,8 +25,11 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef EAXEFX_NOT_NULL_INCLUDED
-#define EAXEFX_NOT_NULL_INCLUDED
+#ifndef EAXEFX_PATCH_VALIDATOR_INCLUDED
+#define EAXEFX_PATCH_VALIDATOR_INCLUDED
+
+
+#include "eaxefx_patch.h"
 
 
 namespace eaxefx
@@ -35,22 +38,17 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-template<
-	typename TException,
-	typename T
->
-T* not_null(
-	T* pointer)
+struct PatchValidator
 {
-	if (pointer == nullptr)
-	{
-		throw TException{};
-	}
-	else
-	{
-		return pointer;
-	}
-}
+	static void validate_patch_block(
+		const PatchBlock& patch_block);
+
+	static void validate_patch_blocks(
+		const PatchBlocks& patch_blocks);
+
+	static void validate_patch(
+		const Patch& patch);
+}; // PatchValidator
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -58,4 +56,4 @@ T* not_null(
 } // eaxefx
 
 
-#endif // !EAXEFX_NOT_NULL_INCLUDED
+#endif // !EAXEFX_PATCH_VALIDATOR_INCLUDED

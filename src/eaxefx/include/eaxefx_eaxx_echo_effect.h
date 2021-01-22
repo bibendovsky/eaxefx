@@ -71,7 +71,7 @@ class EaxxEchoEffect final :
 {
 public:
 	EaxxEchoEffect(
-		ALuint al_effect_slot);
+		::ALuint al_effect_slot);
 
 
 	void load() override;
@@ -81,11 +81,11 @@ public:
 
 
 private:
-	const ALuint al_effect_slot_;
+	const ::ALuint al_effect_slot_;
 	EfxEffectObject efx_effect_object_;
 
-	EAXECHOPROPERTIES eax_;
-	EAXECHOPROPERTIES eax_d_;
+	::EAXECHOPROPERTIES eax_;
+	::EAXECHOPROPERTIES eax_d_;
 	EaxxEchoEffectEaxDirtyFlags eax_dirty_flags_{};
 
 
@@ -125,7 +125,7 @@ private:
 		float flSpread);
 
 	void validate_all(
-		const EAXECHOPROPERTIES& all);
+		const ::EAXECHOPROPERTIES& all);
 
 
 	void defer_delay(
@@ -144,7 +144,7 @@ private:
 		float flSpread);
 
 	void defer_all(
-		const EAXECHOPROPERTIES& all);
+		const ::EAXECHOPROPERTIES& all);
 
 
 	void defer_delay(

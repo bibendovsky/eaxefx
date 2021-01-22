@@ -76,7 +76,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxAutoWahEffect::EaxxAutoWahEffect(
-	ALuint al_effect_slot)
+	::ALuint al_effect_slot)
 	:
 	al_effect_slot_{al_effect_slot},
 	efx_effect_object_{make_efx_effect_object(AL_EFFECT_AUTOWAH)}
@@ -90,7 +90,7 @@ void EaxxAutoWahEffect::load()
 	alAuxiliaryEffectSloti_(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<ALint>(efx_effect_object_.get())
+		static_cast<::ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -109,10 +109,10 @@ void EaxxAutoWahEffect::dispatch(
 
 void EaxxAutoWahEffect::set_eax_defaults()
 {
-	eax_.flAttackTime = EAXAUTOWAH_DEFAULTATTACKTIME;
-	eax_.flReleaseTime = EAXAUTOWAH_DEFAULTRELEASETIME;
-	eax_.lResonance = EAXAUTOWAH_DEFAULTRESONANCE;
-	eax_.lPeakLevel = EAXAUTOWAH_DEFAULTPEAKLEVEL;
+	eax_.flAttackTime = ::EAXAUTOWAH_DEFAULTATTACKTIME;
+	eax_.flReleaseTime = ::EAXAUTOWAH_DEFAULTRELEASETIME;
+	eax_.lResonance = ::EAXAUTOWAH_DEFAULTRESONANCE;
+	eax_.lPeakLevel = ::EAXAUTOWAH_DEFAULTPEAKLEVEL;
 
 	eax_d_ = eax_;
 }
@@ -174,26 +174,26 @@ void EaxxAutoWahEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXAUTOWAH_NONE:
+		case ::EAXAUTOWAH_NONE:
 			break;
 
-		case EAXAUTOWAH_ALLPARAMETERS:
+		case ::EAXAUTOWAH_ALLPARAMETERS:
 			eax_call.set_value<EaxxAutoWahEffectException>(eax_);
 			break;
 
-		case EAXAUTOWAH_ATTACKTIME:
+		case ::EAXAUTOWAH_ATTACKTIME:
 			eax_call.set_value<EaxxAutoWahEffectException>(eax_.flAttackTime);
 			break;
 
-		case EAXAUTOWAH_RELEASETIME:
+		case ::EAXAUTOWAH_RELEASETIME:
 			eax_call.set_value<EaxxAutoWahEffectException>(eax_.flReleaseTime);
 			break;
 
-		case EAXAUTOWAH_RESONANCE:
+		case ::EAXAUTOWAH_RESONANCE:
 			eax_call.set_value<EaxxAutoWahEffectException>(eax_.lResonance);
 			break;
 
-		case EAXAUTOWAH_PEAKLEVEL:
+		case ::EAXAUTOWAH_PEAKLEVEL:
 			eax_call.set_value<EaxxAutoWahEffectException>(eax_.lPeakLevel);
 			break;
 
@@ -208,8 +208,8 @@ void EaxxAutoWahEffect::validate_attack_time(
 	eaxx_validate_range<EaxxAutoWahEffectException>(
 		"Attack Time",
 		flAttackTime,
-		EAXAUTOWAH_MINATTACKTIME,
-		EAXAUTOWAH_MAXATTACKTIME
+		::EAXAUTOWAH_MINATTACKTIME,
+		::EAXAUTOWAH_MAXATTACKTIME
 	);
 }
 
@@ -219,8 +219,8 @@ void EaxxAutoWahEffect::validate_release_time(
 	eaxx_validate_range<EaxxAutoWahEffectException>(
 		"Release Time",
 		flReleaseTime,
-		EAXAUTOWAH_MINRELEASETIME,
-		EAXAUTOWAH_MAXRELEASETIME
+		::EAXAUTOWAH_MINRELEASETIME,
+		::EAXAUTOWAH_MAXRELEASETIME
 	);
 }
 
@@ -230,8 +230,8 @@ void EaxxAutoWahEffect::validate_resonance(
 	eaxx_validate_range<EaxxAutoWahEffectException>(
 		"Resonance",
 		lResonance,
-		EAXAUTOWAH_MINRESONANCE,
-		EAXAUTOWAH_MAXRESONANCE
+		::EAXAUTOWAH_MINRESONANCE,
+		::EAXAUTOWAH_MAXRESONANCE
 	);
 }
 
@@ -241,13 +241,13 @@ void EaxxAutoWahEffect::validate_peak_level(
 	eaxx_validate_range<EaxxAutoWahEffectException>(
 		"Peak Level",
 		lPeakLevel,
-		EAXAUTOWAH_MINPEAKLEVEL,
-		EAXAUTOWAH_MAXPEAKLEVEL
+		::EAXAUTOWAH_MINPEAKLEVEL,
+		::EAXAUTOWAH_MAXPEAKLEVEL
 	);
 }
 
 void EaxxAutoWahEffect::validate_all(
-	const EAXAUTOWAHPROPERTIES& eax_all)
+	const ::EAXAUTOWAHPROPERTIES& eax_all)
 {
 	validate_attack_time(eax_all.flAttackTime);
 	validate_release_time(eax_all.flReleaseTime);
@@ -284,7 +284,7 @@ void EaxxAutoWahEffect::defer_peak_level(
 }
 
 void EaxxAutoWahEffect::defer_all(
-	const EAXAUTOWAHPROPERTIES& eax_all)
+	const ::EAXAUTOWAHPROPERTIES& eax_all)
 {
 	validate_all(eax_all);
 
@@ -298,7 +298,7 @@ void EaxxAutoWahEffect::defer_attack_time(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& attack_time =
-		eax_call.get_value<EaxxAutoWahEffectException, const decltype(EAXAUTOWAHPROPERTIES::flAttackTime)>();
+		eax_call.get_value<EaxxAutoWahEffectException, const decltype(::EAXAUTOWAHPROPERTIES::flAttackTime)>();
 
 	validate_attack_time(attack_time);
 	defer_attack_time(attack_time);
@@ -308,7 +308,7 @@ void EaxxAutoWahEffect::defer_release_time(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& release_time =
-		eax_call.get_value<EaxxAutoWahEffectException, const decltype(EAXAUTOWAHPROPERTIES::flReleaseTime)>();
+		eax_call.get_value<EaxxAutoWahEffectException, const decltype(::EAXAUTOWAHPROPERTIES::flReleaseTime)>();
 
 	validate_release_time(release_time);
 	defer_release_time(release_time);
@@ -318,7 +318,7 @@ void EaxxAutoWahEffect::defer_resonance(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& resonance =
-		eax_call.get_value<EaxxAutoWahEffectException, const decltype(EAXAUTOWAHPROPERTIES::lResonance)>();
+		eax_call.get_value<EaxxAutoWahEffectException, const decltype(::EAXAUTOWAHPROPERTIES::lResonance)>();
 
 	validate_resonance(resonance);
 	defer_resonance(resonance);
@@ -328,7 +328,7 @@ void EaxxAutoWahEffect::defer_peak_level(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& peak_level =
-		eax_call.get_value<EaxxAutoWahEffectException, const decltype(EAXAUTOWAHPROPERTIES::lPeakLevel)>();
+		eax_call.get_value<EaxxAutoWahEffectException, const decltype(::EAXAUTOWAHPROPERTIES::lPeakLevel)>();
 
 	validate_peak_level(peak_level);
 	defer_peak_level(peak_level);
@@ -338,7 +338,7 @@ void EaxxAutoWahEffect::defer_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& all =
-		eax_call.get_value<EaxxAutoWahEffectException, const EAXAUTOWAHPROPERTIES>();
+		eax_call.get_value<EaxxAutoWahEffectException, const ::EAXAUTOWAHPROPERTIES>();
 
 	validate_all(all);
 	defer_all(all);
@@ -383,26 +383,26 @@ void EaxxAutoWahEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXAUTOWAH_NONE:
+		case ::EAXAUTOWAH_NONE:
 			break;
 
-		case EAXAUTOWAH_ALLPARAMETERS:
+		case ::EAXAUTOWAH_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case EAXAUTOWAH_ATTACKTIME:
+		case ::EAXAUTOWAH_ATTACKTIME:
 			defer_attack_time(eax_call);
 			break;
 
-		case EAXAUTOWAH_RELEASETIME:
+		case ::EAXAUTOWAH_RELEASETIME:
 			defer_release_time(eax_call);
 			break;
 
-		case EAXAUTOWAH_RESONANCE:
+		case ::EAXAUTOWAH_RESONANCE:
 			defer_resonance(eax_call);
 			break;
 
-		case EAXAUTOWAH_PEAKLEVEL:
+		case ::EAXAUTOWAH_PEAKLEVEL:
 			defer_peak_level(eax_call);
 			break;
 

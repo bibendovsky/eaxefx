@@ -64,14 +64,14 @@ public:
 
 
 private:
-	HANDLE handle_{};
+	::HANDLE handle_{};
 
 
-	static HANDLE make_win32_event();
+	static ::HANDLE make_win32_event();
 
 
 	bool wait_for_ms_internal(
-		DWORD timeout_ms);
+		::DWORD timeout_ms);
 }; // SysWin32Event
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

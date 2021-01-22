@@ -5,18 +5,20 @@ EAX OpenAL Extension
 Contents
 ========
 
-1. Overview  
-   1.1 Doom 3 visual twitch fix
-2. Supported drivers
-3. Expected driver file names
-4. Missing features  
-   4.1 Bypassed  
-   4.2 Not supported
-5. Known issues
-6. Usage
-7. Compiling requirements
-8. Third party use
-9. Disclaimer
+1. Overview
+2. Minimum requirements
+3. Patches
+4. Supported drivers
+5. Driver file name convention
+6. Missing features  
+   6.1 Bypassed  
+   6.2 Not supported
+7. Known issues
+8. Usage
+9. Compiling requirements
+10. FAQ
+11. Third party use
+12. Disclaimer
 
 
 1 - Overview
@@ -27,35 +29,52 @@ The project enables EAX OpenAL Extension for systems without appropriate hardwar
 OpenAL wrapper implements EAX calls with Effects Extension by using underlying OpenAL driver.
 
 
-1.1 - Doom 3 visual twitch fix
-==============================
+2 - Minimum requirements
+========================
 
-OpenAL wrapper embedded with runtime patch to fix Doom 3 [visual twitch bug](http://www.pcgamingwiki.com/wiki/Doom_3#Visual_twitch_bug_with_OpenAL.2FEAX).
-
-Included console application `eaxefx_doom3_fix.exe` has the same purpose but offline.
-
-Tested on `Doom 3 v1.3.1`.
+Operating system:
+- Windows XP with Service Pack 3
 
 
-2 - Supported drivers
+3 - Patches
+===========
+
+Several runtime patches are embeded into the wrapper to fix EAX issues.
+
+Separate application `eaxefx_app_patcher.exe` is available for offline patching.
+
+Resolved issues:
+- Doom 3 (2004) [visual twitch bug](http://www.pcgamingwiki.com/wiki/Doom_3#Visual_twitch_bug_with_OpenAL.2FEAX).
+- Quake 4 (2005) source occlusion out of range.
+- Prey (2006) source occlusion out of range.  
+  Only runtime patching is supported for Steam version.
+
+
+4 - Supported drivers
 =====================
 
-- `OpenAL Soft`
+- [OpenAL Soft](http://openal-soft.org)
 
-The release package bundled with `OpenAL Soft` driver.
+Notes:
+- Driver is not included into release package.
 
 
-3 - Expected driver file names
-==============================
+5 - Driver file name convention
+===============================
 
+The driver should be named with one of the following names:
 - `eaxefx_driver.dll`
 - `dsoal-aldrv.dll`
 - `soft_oal.dll`
 
-The wrapper tries to load one of this driver in the order specified above.
+The wrapper tries to load a driver in the order specified above.
 
 
-4.1 - Bypassed features
+6 - Missing features
+====================
+
+
+6.1 - Bypassed features
 =======================
 
 Context:
@@ -64,7 +83,7 @@ Context:
 - Speaker configuration (EAX 5.0)
 
 
-4.2 - Not supported
+6.2 - Not supported
 ===================
 
 Source:
@@ -74,47 +93,60 @@ General:
 - X-RAM
 
 
-5 - Known issues
+7 - Known issues
 ================
 
-- `OpenAL Soft` official binaries `v1.20.x` may cause a crash upon exiting the application.
+- OpenAL Soft official binaries v1.20.x may cause a crash upon exiting the application.
 
 
-6 - Usage
+8 - Usage
 =========
 
 Terminology:
-- `DIR` - the directory with applications's main executable.
+- `DIR` - the directory with application's main executable.
 
 Steps:
-1. Backup (if necessary) `OpenAL32.dll` and `soft_oal.dll` in the `DIR`.
+1. Backup (if necessary) `OpenAL32.dll` in the `DIR`.
 2. Extract the release package into some directory.
 3. Copy extracted `OpenAL32.dll` into the `DIR`.
-4. If the `DIR` does not contain any driver mentioned in the item 4, copy there extracted `soft_oal.dll`.
+4. Put properly named driver into the `DIR`.
 5. Enable appropriate EAX options in the application and restart it if necessary.
 
 
-7 - Compiling requirements
+9 - Compiling requirements
 ==========================
 
 Common:
-- Windows build target.
-- 32-bit build target.
+- Windows 32-bit build target.
 
 Minimum:
 - CMake v3.8.2
 - C++17 compatible compiler.
 
 
-8 - Third party use
-===================
+10 - FAQ
+========
+
+Q: There is a subtle difference in audio when using the wrapper.
+
+A: Search driver's documentation about amplifying EAX properties.  
+In case of OpenAL Soft it's [`boost` option in `reverb` section](http://github.com/kcat/openal-soft/blob/master/alsoftrc.sample).  
+Example of `alsoft.ini`:
+```
+[reverb]
+boost = 8
+```
+
+
+11 - Third party use
+====================
 
 * [OpenAL Soft](http://openal-soft.org/)  
   See file `eaxefx_openal_soft_license.txt` for license information.  
 
 
-9 - Disclaimer
-==============
+12 - Disclaimer
+===============
 
 Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 

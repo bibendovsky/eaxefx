@@ -75,7 +75,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxEchoEffect::EaxxEchoEffect(
-	ALuint al_effect_slot)
+	::ALuint al_effect_slot)
 	:
 	al_effect_slot_{al_effect_slot},
 	efx_effect_object_{make_efx_effect_object(AL_EFFECT_ECHO)}
@@ -89,7 +89,7 @@ void EaxxEchoEffect::load()
 	alAuxiliaryEffectSloti_(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<ALint>(efx_effect_object_.get())
+		static_cast<::ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -108,11 +108,11 @@ void EaxxEchoEffect::dispatch(
 
 void EaxxEchoEffect::set_eax_defaults()
 {
-	eax_.flDelay = EAXECHO_DEFAULTDELAY;
-	eax_.flLRDelay = EAXECHO_DEFAULTLRDELAY;
-	eax_.flDamping = EAXECHO_DEFAULTDAMPING;
-	eax_.flFeedback = EAXECHO_DEFAULTFEEDBACK;
-	eax_.flSpread = EAXECHO_DEFAULTSPREAD;
+	eax_.flDelay = ::EAXECHO_DEFAULTDELAY;
+	eax_.flLRDelay = ::EAXECHO_DEFAULTLRDELAY;
+	eax_.flDamping = ::EAXECHO_DEFAULTDAMPING;
+	eax_.flFeedback = ::EAXECHO_DEFAULTFEEDBACK;
+	eax_.flSpread = ::EAXECHO_DEFAULTSPREAD;
 
 	eax_d_ = eax_;
 }
@@ -186,30 +186,30 @@ void EaxxEchoEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXECHO_NONE:
+		case ::EAXECHO_NONE:
 			break;
 
-		case EAXECHO_ALLPARAMETERS:
+		case ::EAXECHO_ALLPARAMETERS:
 			eax_call.set_value<EaxxEchoEffectException>(eax_);
 			break;
 
-		case EAXECHO_DELAY:
+		case ::EAXECHO_DELAY:
 			eax_call.set_value<EaxxEchoEffectException>(eax_.flDelay);
 			break;
 
-		case EAXECHO_LRDELAY:
+		case ::EAXECHO_LRDELAY:
 			eax_call.set_value<EaxxEchoEffectException>(eax_.flLRDelay);
 			break;
 
-		case EAXECHO_DAMPING:
+		case ::EAXECHO_DAMPING:
 			eax_call.set_value<EaxxEchoEffectException>(eax_.flDamping);
 			break;
 
-		case EAXECHO_FEEDBACK:
+		case ::EAXECHO_FEEDBACK:
 			eax_call.set_value<EaxxEchoEffectException>(eax_.flFeedback);
 			break;
 
-		case EAXECHO_SPREAD:
+		case ::EAXECHO_SPREAD:
 			eax_call.set_value<EaxxEchoEffectException>(eax_.flSpread);
 			break;
 
@@ -224,8 +224,8 @@ void EaxxEchoEffect::validate_delay(
 	eaxx_validate_range<EaxxEchoEffectException>(
 		"Delay",
 		flDelay,
-		EAXECHO_MINDELAY,
-		EAXECHO_MAXDELAY
+		::EAXECHO_MINDELAY,
+		::EAXECHO_MAXDELAY
 	);
 }
 
@@ -235,8 +235,8 @@ void EaxxEchoEffect::validate_lr_delay(
 	eaxx_validate_range<EaxxEchoEffectException>(
 		"LR Delay",
 		flLRDelay,
-		EAXECHO_MINLRDELAY,
-		EAXECHO_MAXLRDELAY
+		::EAXECHO_MINLRDELAY,
+		::EAXECHO_MAXLRDELAY
 	);
 }
 
@@ -246,8 +246,8 @@ void EaxxEchoEffect::validate_damping(
 	eaxx_validate_range<EaxxEchoEffectException>(
 		"Damping",
 		flDamping,
-		EAXECHO_MINDAMPING,
-		EAXECHO_MAXDAMPING
+		::EAXECHO_MINDAMPING,
+		::EAXECHO_MAXDAMPING
 	);
 }
 
@@ -257,8 +257,8 @@ void EaxxEchoEffect::validate_feedback(
 	eaxx_validate_range<EaxxEchoEffectException>(
 		"Feedback",
 		flFeedback,
-		EAXECHO_MINFEEDBACK,
-		EAXECHO_MAXFEEDBACK
+		::EAXECHO_MINFEEDBACK,
+		::EAXECHO_MAXFEEDBACK
 	);
 }
 
@@ -268,13 +268,13 @@ void EaxxEchoEffect::validate_spread(
 	eaxx_validate_range<EaxxEchoEffectException>(
 		"Spread",
 		flSpread,
-		EAXECHO_MINSPREAD,
-		EAXECHO_MAXSPREAD
+		::EAXECHO_MINSPREAD,
+		::EAXECHO_MAXSPREAD
 	);
 }
 
 void EaxxEchoEffect::validate_all(
-	const EAXECHOPROPERTIES& all)
+	const ::EAXECHOPROPERTIES& all)
 {
 	validate_delay(all.flDelay);
 	validate_lr_delay(all.flLRDelay);
@@ -319,7 +319,7 @@ void EaxxEchoEffect::defer_spread(
 }
 
 void EaxxEchoEffect::defer_all(
-	const EAXECHOPROPERTIES& all)
+	const ::EAXECHOPROPERTIES& all)
 {
 	defer_delay(all.flDelay);
 	defer_lr_delay(all.flLRDelay);
@@ -332,7 +332,7 @@ void EaxxEchoEffect::defer_delay(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& delay =
-		eax_call.get_value<EaxxEchoEffectException, const decltype(EAXECHOPROPERTIES::flDelay)>();
+		eax_call.get_value<EaxxEchoEffectException, const decltype(::EAXECHOPROPERTIES::flDelay)>();
 
 	validate_delay(delay);
 	defer_delay(delay);
@@ -342,7 +342,7 @@ void EaxxEchoEffect::defer_lr_delay(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& lr_delay =
-		eax_call.get_value<EaxxEchoEffectException, const decltype(EAXECHOPROPERTIES::flLRDelay)>();
+		eax_call.get_value<EaxxEchoEffectException, const decltype(::EAXECHOPROPERTIES::flLRDelay)>();
 
 	validate_lr_delay(lr_delay);
 	defer_lr_delay(lr_delay);
@@ -352,7 +352,7 @@ void EaxxEchoEffect::defer_damping(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& damping =
-		eax_call.get_value<EaxxEchoEffectException, const decltype(EAXECHOPROPERTIES::flDamping)>();
+		eax_call.get_value<EaxxEchoEffectException, const decltype(::EAXECHOPROPERTIES::flDamping)>();
 
 	validate_damping(damping);
 	defer_damping(damping);
@@ -362,7 +362,7 @@ void EaxxEchoEffect::defer_feedback(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& feedback =
-		eax_call.get_value<EaxxEchoEffectException, const decltype(EAXECHOPROPERTIES::flFeedback)>();
+		eax_call.get_value<EaxxEchoEffectException, const decltype(::EAXECHOPROPERTIES::flFeedback)>();
 
 	validate_feedback(feedback);
 	defer_feedback(feedback);
@@ -372,7 +372,7 @@ void EaxxEchoEffect::defer_spread(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& spread =
-		eax_call.get_value<EaxxEchoEffectException, const decltype(EAXECHOPROPERTIES::flSpread)>();
+		eax_call.get_value<EaxxEchoEffectException, const decltype(::EAXECHOPROPERTIES::flSpread)>();
 
 	validate_spread(spread);
 	defer_spread(spread);
@@ -382,7 +382,7 @@ void EaxxEchoEffect::defer_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& all =
-		eax_call.get_value<EaxxEchoEffectException, const EAXECHOPROPERTIES>();
+		eax_call.get_value<EaxxEchoEffectException, const ::EAXECHOPROPERTIES>();
 
 	validate_all(all);
 	defer_all(all);
@@ -432,30 +432,30 @@ void EaxxEchoEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXECHO_NONE:
+		case ::EAXECHO_NONE:
 			break;
 
-		case EAXECHO_ALLPARAMETERS:
+		case ::EAXECHO_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case EAXECHO_DELAY:
+		case ::EAXECHO_DELAY:
 			defer_delay(eax_call);
 			break;
 
-		case EAXECHO_LRDELAY:
+		case ::EAXECHO_LRDELAY:
 			defer_lr_delay(eax_call);
 			break;
 
-		case EAXECHO_DAMPING:
+		case ::EAXECHO_DAMPING:
 			defer_damping(eax_call);
 			break;
 
-		case EAXECHO_FEEDBACK:
+		case ::EAXECHO_FEEDBACK:
 			defer_feedback(eax_call);
 			break;
 
-		case EAXECHO_SPREAD:
+		case ::EAXECHO_SPREAD:
 			defer_spread(eax_call);
 			break;
 

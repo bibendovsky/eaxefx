@@ -65,16 +65,16 @@ public:
 
 
 private:
-	using InitializeConditionVariableFunc = VOID (WINAPI *)(
-		PCONDITION_VARIABLE ConditionVariable);
+	using InitializeConditionVariableFunc = void (WINAPI *)(
+		::PCONDITION_VARIABLE ConditionVariable);
 
-	using WakeConditionVariableFunc = VOID (WINAPI *)(
-		PCONDITION_VARIABLE ConditionVariable);
+	using WakeConditionVariableFunc = void (WINAPI *)(
+		::PCONDITION_VARIABLE ConditionVariable);
 
-	using SleepConditionVariableCSFunc = BOOL (WINAPI *)(
-		PCONDITION_VARIABLE ConditionVariable,
-		PCRITICAL_SECTION CriticalSection,
-		DWORD dwMilliseconds);
+	using SleepConditionVariableCSFunc = ::BOOL (WINAPI *)(
+		::PCONDITION_VARIABLE ConditionVariable,
+		::PCRITICAL_SECTION CriticalSection,
+		::DWORD dwMilliseconds);
 
 
 	SharedLibraryUPtr kernel32_shared_library_{};
@@ -82,7 +82,7 @@ private:
 	WakeConditionVariableFunc wake_condition_variable_func_{};
 	SleepConditionVariableCSFunc sleep_condition_variable_cs_func_{};
 
-	CONDITION_VARIABLE condition_variable_;
+	::CONDITION_VARIABLE condition_variable_;
 }; // SysWin32ConditionVariable
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

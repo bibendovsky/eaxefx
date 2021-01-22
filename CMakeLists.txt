@@ -30,7 +30,7 @@ project (eaxefx_solution VERSION 1.0.0 LANGUAGES NONE)
 
 
 add_subdirectory (src/eaxefx_sys_lib)
-add_subdirectory (src/eaxefx_doom3_fix_lib)
+add_subdirectory (src/eaxefx_patch_lib)
 
 add_subdirectory (src/eaxefx)
-add_subdirectory (src/eaxefx_doom3_fix)
+add_subdirectory (src/eaxefx_app_patcher)

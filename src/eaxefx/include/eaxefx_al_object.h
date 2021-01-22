@@ -47,7 +47,7 @@ template<
 class AlObject
 {
 public:
-	using Value = ALuint;
+	using Value = ::ALuint;
 
 
 	AlObject() noexcept = default;
@@ -136,7 +136,7 @@ private:
 struct EfxEffectSlotObjectDeleter
 {
 	void operator()(
-		ALuint al_name) const noexcept;
+		::ALuint al_name) const noexcept;
 }; // EfxEffectSlotObjectDeleter
 
 using EfxEffectSlotObject = AlObject<EfxEffectSlotObjectDeleter>;
@@ -151,13 +151,13 @@ EfxEffectSlotObject make_efx_effect_slot_object();
 struct EfxEffectObjectDeleter
 {
 	void operator()(
-		ALuint al_name) const noexcept;
+		::ALuint al_name) const noexcept;
 }; // EfxEffectObjectDeleter
 
 using EfxEffectObject = AlObject<EfxEffectObjectDeleter>;
 
 EfxEffectObject make_efx_effect_object(
-	ALint al_effect_type);
+	::ALint al_effect_type);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -167,7 +167,7 @@ EfxEffectObject make_efx_effect_object(
 struct EfxFilterObjectDeleter
 {
 	void operator()(
-		ALuint al_name) const noexcept;
+		::ALuint al_name) const noexcept;
 }; // EfxFilterObjectDeleter
 
 using EfxFilterObject = AlObject<EfxFilterObjectDeleter>;

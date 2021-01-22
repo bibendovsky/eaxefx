@@ -29,11 +29,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #define EAXEFX_THREAD_INCLUDED
 
 
-#include <cstdint>
-
 #include <memory>
-
-#include "eaxefx_string.h"
 
 
 namespace eaxefx::thread
@@ -43,7 +39,7 @@ namespace eaxefx::thread
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void set_name(
-	const String& utf8_name);
+	const char* utf8_name);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

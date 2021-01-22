@@ -76,7 +76,7 @@ private:
 	{
 		symbol = reinterpret_cast<T>(shared_library_->resolve(symbol_name));
 
-		if (symbol == nullptr)
+		if (!symbol)
 		{
 			has_missing_symbol_ = true;
 		}
@@ -97,7 +97,7 @@ AlLoaderImpl::AlLoaderImpl(
 	:
 	shared_library_{shared_library}
 {
-	if (shared_library_ == nullptr)
+	if (!shared_library_)
 	{
 		throw AlLoaderImplException("Null shared library.");
 	}

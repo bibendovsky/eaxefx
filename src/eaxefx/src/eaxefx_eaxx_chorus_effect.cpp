@@ -75,7 +75,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxChorusEffect::EaxxChorusEffect(
-	ALuint al_effect_slot)
+	::ALuint al_effect_slot)
 	:
 	al_effect_slot_{al_effect_slot},
 	efx_effect_object_{make_efx_effect_object(AL_EFFECT_CHORUS)}
@@ -89,7 +89,7 @@ void EaxxChorusEffect::load()
 	alAuxiliaryEffectSloti_(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<ALint>(efx_effect_object_.get())
+		static_cast<::ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -108,12 +108,12 @@ void EaxxChorusEffect::dispatch(
 
 void EaxxChorusEffect::set_eax_defaults()
 {
-	eax_.ulWaveform = EAXCHORUS_DEFAULTWAVEFORM;
-	eax_.lPhase = EAXCHORUS_DEFAULTPHASE;
-	eax_.flRate = EAXCHORUS_DEFAULTRATE;
-	eax_.flDepth = EAXCHORUS_DEFAULTDEPTH;
-	eax_.flFeedback = EAXCHORUS_DEFAULTFEEDBACK;
-	eax_.flDelay = EAXCHORUS_DEFAULTDELAY;
+	eax_.ulWaveform = ::EAXCHORUS_DEFAULTWAVEFORM;
+	eax_.lPhase = ::EAXCHORUS_DEFAULTPHASE;
+	eax_.flRate = ::EAXCHORUS_DEFAULTRATE;
+	eax_.flDepth = ::EAXCHORUS_DEFAULTDEPTH;
+	eax_.flFeedback = ::EAXCHORUS_DEFAULTFEEDBACK;
+	eax_.flDelay = ::EAXCHORUS_DEFAULTDELAY;
 
 	eax_d_ = eax_;
 }
@@ -121,7 +121,7 @@ void EaxxChorusEffect::set_eax_defaults()
 void EaxxChorusEffect::set_efx_waveform()
 {
 	const auto wave_form = std::clamp(
-		static_cast<ALint>(eax_.ulWaveform),
+		static_cast<::ALint>(eax_.ulWaveform),
 		AL_CHORUS_MIN_PHASE,
 		AL_CHORUS_MAX_PHASE
 	);
@@ -132,7 +132,7 @@ void EaxxChorusEffect::set_efx_waveform()
 void EaxxChorusEffect::set_efx_phase()
 {
 	const auto phase = std::clamp(
-		static_cast<ALint>(eax_.lPhase),
+		static_cast<::ALint>(eax_.lPhase),
 		AL_CHORUS_MIN_PHASE,
 		AL_CHORUS_MAX_PHASE
 	);
@@ -199,34 +199,34 @@ void EaxxChorusEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXCHORUS_NONE:
+		case ::EAXCHORUS_NONE:
 			break;
 
-		case EAXCHORUS_ALLPARAMETERS:
+		case ::EAXCHORUS_ALLPARAMETERS:
 			eax_call.set_value<EaxxChorusEffectException>(eax_);
 			break;
 
-		case EAXCHORUS_WAVEFORM:
+		case ::EAXCHORUS_WAVEFORM:
 			eax_call.set_value<EaxxChorusEffectException>(eax_.ulWaveform);
 			break;
 
-		case EAXCHORUS_PHASE:
+		case ::EAXCHORUS_PHASE:
 			eax_call.set_value<EaxxChorusEffectException>(eax_.lPhase);
 			break;
 
-		case EAXCHORUS_RATE:
+		case ::EAXCHORUS_RATE:
 			eax_call.set_value<EaxxChorusEffectException>(eax_.flRate);
 			break;
 
-		case EAXCHORUS_DEPTH:
+		case ::EAXCHORUS_DEPTH:
 			eax_call.set_value<EaxxChorusEffectException>(eax_.flDepth);
 			break;
 
-		case EAXCHORUS_FEEDBACK:
+		case ::EAXCHORUS_FEEDBACK:
 			eax_call.set_value<EaxxChorusEffectException>(eax_.flFeedback);
 			break;
 
-		case EAXCHORUS_DELAY:
+		case ::EAXCHORUS_DELAY:
 			eax_call.set_value<EaxxChorusEffectException>(eax_.flDelay);
 			break;
 
@@ -241,8 +241,8 @@ void EaxxChorusEffect::validate_waveform(
 	eaxx_validate_range<EaxxChorusEffectException>(
 		"Waveform",
 		ulWaveform,
-		EAXCHORUS_MINWAVEFORM,
-		EAXCHORUS_MAXWAVEFORM
+		::EAXCHORUS_MINWAVEFORM,
+		::EAXCHORUS_MAXWAVEFORM
 	);
 }
 
@@ -252,8 +252,8 @@ void EaxxChorusEffect::validate_phase(
 	eaxx_validate_range<EaxxChorusEffectException>(
 		"Phase",
 		lPhase,
-		EAXCHORUS_MINPHASE,
-		EAXCHORUS_MAXPHASE
+		::EAXCHORUS_MINPHASE,
+		::EAXCHORUS_MAXPHASE
 	);
 }
 
@@ -263,8 +263,8 @@ void EaxxChorusEffect::validate_rate(
 	eaxx_validate_range<EaxxChorusEffectException>(
 		"Rate",
 		flRate,
-		EAXCHORUS_MINRATE,
-		EAXCHORUS_MAXRATE
+		::EAXCHORUS_MINRATE,
+		::EAXCHORUS_MAXRATE
 	);
 }
 
@@ -274,8 +274,8 @@ void EaxxChorusEffect::validate_depth(
 	eaxx_validate_range<EaxxChorusEffectException>(
 		"Depth",
 		flDepth,
-		EAXCHORUS_MINDEPTH,
-		EAXCHORUS_MAXDEPTH
+		::EAXCHORUS_MINDEPTH,
+		::EAXCHORUS_MAXDEPTH
 	);
 }
 
@@ -285,8 +285,8 @@ void EaxxChorusEffect::validate_feedback(
 	eaxx_validate_range<EaxxChorusEffectException>(
 		"Feedback",
 		flFeedback,
-		EAXCHORUS_MINFEEDBACK,
-		EAXCHORUS_MAXFEEDBACK
+		::EAXCHORUS_MINFEEDBACK,
+		::EAXCHORUS_MAXFEEDBACK
 	);
 }
 
@@ -296,13 +296,13 @@ void EaxxChorusEffect::validate_delay(
 	eaxx_validate_range<EaxxChorusEffectException>(
 		"Delay",
 		flDelay,
-		EAXCHORUS_MINDELAY,
-		EAXCHORUS_MAXDELAY
+		::EAXCHORUS_MINDELAY,
+		::EAXCHORUS_MAXDELAY
 	);
 }
 
 void EaxxChorusEffect::validate_all(
-	const EAXCHORUSPROPERTIES& eax_all)
+	const ::EAXCHORUSPROPERTIES& eax_all)
 {
 	validate_waveform(eax_all.ulWaveform);
 	validate_phase(eax_all.lPhase);
@@ -355,7 +355,7 @@ void EaxxChorusEffect::defer_delay(
 }
 
 void EaxxChorusEffect::defer_all(
-	const EAXCHORUSPROPERTIES& eax_all)
+	const ::EAXCHORUSPROPERTIES& eax_all)
 {
 	defer_waveform(eax_all.ulWaveform);
 	defer_phase(eax_all.lPhase);
@@ -369,7 +369,7 @@ void EaxxChorusEffect::defer_waveform(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& waveform =
-		eax_call.get_value<EaxxChorusEffectException, const decltype(EAXCHORUSPROPERTIES::ulWaveform)>();
+		eax_call.get_value<EaxxChorusEffectException, const decltype(::EAXCHORUSPROPERTIES::ulWaveform)>();
 
 	validate_waveform(waveform);
 	defer_waveform(waveform);
@@ -379,7 +379,7 @@ void EaxxChorusEffect::defer_phase(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& phase =
-		eax_call.get_value<EaxxChorusEffectException, const decltype(EAXCHORUSPROPERTIES::lPhase)>();
+		eax_call.get_value<EaxxChorusEffectException, const decltype(::EAXCHORUSPROPERTIES::lPhase)>();
 
 	validate_phase(phase);
 	defer_phase(phase);
@@ -389,7 +389,7 @@ void EaxxChorusEffect::defer_rate(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& rate =
-		eax_call.get_value<EaxxChorusEffectException, const decltype(EAXCHORUSPROPERTIES::flRate)>();
+		eax_call.get_value<EaxxChorusEffectException, const decltype(::EAXCHORUSPROPERTIES::flRate)>();
 
 	validate_rate(rate);
 	defer_rate(rate);
@@ -399,7 +399,7 @@ void EaxxChorusEffect::defer_depth(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& depth =
-		eax_call.get_value<EaxxChorusEffectException, const decltype(EAXCHORUSPROPERTIES::flDepth)>();
+		eax_call.get_value<EaxxChorusEffectException, const decltype(::EAXCHORUSPROPERTIES::flDepth)>();
 
 	validate_depth(depth);
 	defer_depth(depth);
@@ -409,7 +409,7 @@ void EaxxChorusEffect::defer_feedback(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& feedback =
-		eax_call.get_value<EaxxChorusEffectException, const decltype(EAXCHORUSPROPERTIES::flFeedback)>();
+		eax_call.get_value<EaxxChorusEffectException, const decltype(::EAXCHORUSPROPERTIES::flFeedback)>();
 
 	validate_feedback(feedback);
 	defer_feedback(feedback);
@@ -419,7 +419,7 @@ void EaxxChorusEffect::defer_delay(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& delay =
-		eax_call.get_value<EaxxChorusEffectException, const decltype(EAXCHORUSPROPERTIES::flDelay)>();
+		eax_call.get_value<EaxxChorusEffectException, const decltype(::EAXCHORUSPROPERTIES::flDelay)>();
 
 	validate_delay(delay);
 	defer_delay(delay);
@@ -429,7 +429,7 @@ void EaxxChorusEffect::defer_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& all =
-		eax_call.get_value<EaxxChorusEffectException, const EAXCHORUSPROPERTIES>();
+		eax_call.get_value<EaxxChorusEffectException, const ::EAXCHORUSPROPERTIES>();
 
 	validate_all(all);
 	defer_all(all);
@@ -484,34 +484,34 @@ void EaxxChorusEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXCHORUS_NONE:
+		case ::EAXCHORUS_NONE:
 			break;
 
-		case EAXCHORUS_ALLPARAMETERS:
+		case ::EAXCHORUS_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case EAXCHORUS_WAVEFORM:
+		case ::EAXCHORUS_WAVEFORM:
 			defer_waveform(eax_call);
 			break;
 
-		case EAXCHORUS_PHASE:
+		case ::EAXCHORUS_PHASE:
 			defer_phase(eax_call);
 			break;
 
-		case EAXCHORUS_RATE:
+		case ::EAXCHORUS_RATE:
 			defer_rate(eax_call);
 			break;
 
-		case EAXCHORUS_DEPTH:
+		case ::EAXCHORUS_DEPTH:
 			defer_depth(eax_call);
 			break;
 
-		case EAXCHORUS_FEEDBACK:
+		case ::EAXCHORUS_FEEDBACK:
 			defer_feedback(eax_call);
 			break;
 
-		case EAXCHORUS_DELAY:
+		case ::EAXCHORUS_DELAY:
 			defer_delay(eax_call);
 			break;
 

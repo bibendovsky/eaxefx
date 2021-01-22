@@ -77,7 +77,7 @@ private:
 template<
 	typename TFunctor
 >
-auto make_scope_exit(
+inline auto make_scope_exit(
 	TFunctor&& functor) noexcept
 {
 	return ScopeExit<TFunctor>{std::forward<TFunctor>(functor)};

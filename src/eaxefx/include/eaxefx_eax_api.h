@@ -59,21 +59,22 @@ typedef struct _GUID
 #endif // GUID_DEFINED
 
 bool operator==(
-	const GUID& lhs,
-	const GUID& rhs) noexcept;
+	const ::GUID& lhs,
+	const ::GUID& rhs) noexcept;
 
 bool operator!=(
-	const GUID& lhs,
-	const GUID& rhs) noexcept;
+	const ::GUID& lhs,
+	const ::GUID& rhs) noexcept;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-extern "C" const GUID DSPROPSETID_EAX20_ListenerProperties;
+extern "C" const ::GUID DSPROPSETID_EAX20_ListenerProperties;
 
-enum DSPROPERTY_EAX20_LISTENERPROPERTY : std::uint32_t
+enum DSPROPERTY_EAX20_LISTENERPROPERTY :
+	std::uint32_t
 {
 	DSPROPERTY_EAX20LISTENER_NONE,
 	DSPROPERTY_EAX20LISTENER_ALLPARAMETERS,
@@ -116,10 +117,11 @@ struct EAX20LISTENERPROPERTIES
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-extern "C" const GUID DSPROPSETID_EAX20_BufferProperties;
+extern "C" const ::GUID DSPROPSETID_EAX20_BufferProperties;
 
 
-enum DSPROPERTY_EAX20_BUFFERPROPERTY : std::uint32_t
+enum DSPROPERTY_EAX20_BUFFERPROPERTY :
+	std::uint32_t
 {
 	DSPROPERTY_EAX20BUFFER_NONE,
 	DSPROPERTY_EAX20BUFFER_ALLPARAMETERS,
@@ -152,7 +154,7 @@ struct EAX20BUFFERPROPERTIES
 	float flOcclusionLFRatio; // occlusion low-frequency level re. main control
 	float flOcclusionRoomRatio; // occlusion room effect level re. main control
 	std::int32_t lOutsideVolumeHF; // outside sound cone level at high frequencies
-	float flAirAbsorptionFactor; // multiplies DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF
+	float flAirAbsorptionFactor; // multiplies ::DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF
 	std::uint32_t dwFlags; // modifies the behavior of properties
 }; // EAX20BUFFERPROPERTIES
 
@@ -161,11 +163,12 @@ struct EAX20BUFFERPROPERTIES
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-extern "C" const GUID DSPROPSETID_EAX30_ListenerProperties;
+extern "C" const ::GUID DSPROPSETID_EAX30_ListenerProperties;
 
-extern "C" const GUID DSPROPSETID_EAX30_BufferProperties;
+extern "C" const ::GUID DSPROPSETID_EAX30_BufferProperties;
 
-enum DSPROPERTY_EAX_BUFFERPROPERTY : std::uint32_t
+enum DSPROPERTY_EAX_BUFFERPROPERTY :
+	std::uint32_t
 {
 	DSPROPERTY_EAXBUFFER_NONE,
 	DSPROPERTY_EAXBUFFER_ALLPARAMETERS,
@@ -210,7 +213,7 @@ struct EAXBUFFERPROPERTIES
 	float flDopplerFactor; // like DS3D flDopplerFactor but per source
 	float flRolloffFactor; // like DS3D flRolloffFactor but per source
 	float flRoomRolloffFactor; // like DS3D flRolloffFactor but for room effect
-	float flAirAbsorptionFactor; // multiplies DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF
+	float flAirAbsorptionFactor; // multiplies ::DSPROPERTY_EAXLISTENER_AIRABSORPTIONHF
 	std::uint32_t ulFlags; // modifies the behavior of properties
 }; // EAXBUFFERPROPERTIES
 
@@ -234,9 +237,9 @@ constexpr auto EAXERR_INCOMPATIBLE_SOURCE_TYPE = -5;
 constexpr auto EAXERR_INCOMPATIBLE_EAX_VERSION = -6;
 
 
-extern "C" const GUID EAX_NULL_GUID;
+extern "C" const ::GUID EAX_NULL_GUID;
 
-extern "C" const GUID EAX_PrimaryFXSlotID;
+extern "C" const ::GUID EAX_PrimaryFXSlotID;
 
 
 struct EAXVECTOR
@@ -247,24 +250,25 @@ struct EAXVECTOR
 }; // EAXVECTOR
 
 bool operator==(
-	const EAXVECTOR& lhs,
-	const EAXVECTOR& rhs) noexcept;
+	const ::EAXVECTOR& lhs,
+	const ::EAXVECTOR& rhs) noexcept;
 
 bool operator!=(
-	const EAXVECTOR& lhs,
-	const EAXVECTOR& rhs) noexcept;
+	const ::EAXVECTOR& lhs,
+	const ::EAXVECTOR& rhs) noexcept;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-extern "C" const GUID EAXPROPERTYID_EAX40_Context;
+extern "C" const ::GUID EAXPROPERTYID_EAX40_Context;
 
-extern "C" const GUID EAXPROPERTYID_EAX50_Context;
+extern "C" const ::GUID EAXPROPERTYID_EAX50_Context;
 
 // EAX50
-enum : std::uint32_t
+enum :
+	std::uint32_t
 {
 	HEADPHONES = 0,
 	SPEAKERS_2,
@@ -275,15 +279,16 @@ enum : std::uint32_t
 };
 
 // EAX50
-enum : std::uint32_t
+enum :
+	std::uint32_t
 {
 	EAX_40 = 5, // EAX 4.0
 	EAX_50 = 6, // EAX 5.0
 };
 
-constexpr auto EAXCONTEXT_MINEAXSESSION = EAX_40;
-constexpr auto EAXCONTEXT_MAXEAXSESSION = EAX_50;
-constexpr auto EAXCONTEXT_DEFAULTEAXSESSION = EAX_40;
+constexpr auto EAXCONTEXT_MINEAXSESSION = ::EAX_40;
+constexpr auto EAXCONTEXT_MAXEAXSESSION = ::EAX_50;
+constexpr auto EAXCONTEXT_DEFAULTEAXSESSION = ::EAX_40;
 
 constexpr auto EAXCONTEXT_MINMAXACTIVESENDS = 2U;
 constexpr auto EAXCONTEXT_MAXMAXACTIVESENDS = 4U;
@@ -296,7 +301,8 @@ struct EAXSESSIONPROPERTIES
 	std::uint32_t ulMaxActiveSends;
 }; // EAXSESSIONPROPERTIES
 
-enum EAXCONTEXT_PROPERTY : std::uint32_t
+enum EAXCONTEXT_PROPERTY :
+	std::uint32_t
 {
 	EAXCONTEXT_NONE = 0,
 	EAXCONTEXT_ALLPARAMETERS,
@@ -314,26 +320,26 @@ enum EAXCONTEXT_PROPERTY : std::uint32_t
 
 struct EAX40CONTEXTPROPERTIES
 {
-	GUID guidPrimaryFXSlotID;
+	::GUID guidPrimaryFXSlotID;
 	float flDistanceFactor;
 	float flAirAbsorptionHF;
 	float flHFReference;
 }; // EAX40CONTEXTPROPERTIES
 
 struct EAX50CONTEXTPROPERTIES :
-	public EAX40CONTEXTPROPERTIES
+	public ::EAX40CONTEXTPROPERTIES
 {
 	float flMacroFXFactor;
 }; // EAX40CONTEXTPROPERTIES
 
 
 bool operator==(
-	const EAX40CONTEXTPROPERTIES& lhs,
-	const EAX40CONTEXTPROPERTIES& rhs) noexcept;
+	const ::EAX40CONTEXTPROPERTIES& lhs,
+	const ::EAX40CONTEXTPROPERTIES& rhs) noexcept;
 
 bool operator==(
-	const EAX50CONTEXTPROPERTIES& lhs,
-	const EAX50CONTEXTPROPERTIES& rhs) noexcept;
+	const ::EAX50CONTEXTPROPERTIES& lhs,
+	const ::EAX50CONTEXTPROPERTIES& rhs) noexcept;
 
 
 constexpr auto EAXCONTEXT_MINDISTANCEFACTOR = FLT_MIN;
@@ -353,25 +359,26 @@ constexpr auto EAXCONTEXT_MAXMACROFXFACTOR = 1.0F;
 constexpr auto EAXCONTEXT_DEFAULTMACROFXFACTOR = 0.0F;
 
 
-extern "C" const GUID EAXPROPERTYID_EAX40_FXSlot0;
+extern "C" const ::GUID EAXPROPERTYID_EAX40_FXSlot0;
 
-extern "C" const GUID EAXPROPERTYID_EAX50_FXSlot0;
+extern "C" const ::GUID EAXPROPERTYID_EAX50_FXSlot0;
 
-extern "C" const GUID EAXPROPERTYID_EAX40_FXSlot1;
+extern "C" const ::GUID EAXPROPERTYID_EAX40_FXSlot1;
 
-extern "C" const GUID EAXPROPERTYID_EAX50_FXSlot1;
+extern "C" const ::GUID EAXPROPERTYID_EAX50_FXSlot1;
 
-extern "C" const GUID EAXPROPERTYID_EAX40_FXSlot2;
+extern "C" const ::GUID EAXPROPERTYID_EAX40_FXSlot2;
 
-extern "C" const GUID EAXPROPERTYID_EAX50_FXSlot2;
+extern "C" const ::GUID EAXPROPERTYID_EAX50_FXSlot2;
 
-extern "C" const GUID EAXPROPERTYID_EAX40_FXSlot3;
+extern "C" const ::GUID EAXPROPERTYID_EAX40_FXSlot3;
 
-extern "C" const GUID EAXPROPERTYID_EAX50_FXSlot3;
+extern "C" const ::GUID EAXPROPERTYID_EAX50_FXSlot3;
 
-extern "C" const GUID EAXCONTEXT_DEFAULTPRIMARYFXSLOTID;
+extern "C" const ::GUID EAXCONTEXT_DEFAULTPRIMARYFXSLOTID;
 
-enum EAXFXSLOT_PROPERTY : std::uint32_t
+enum EAXFXSLOT_PROPERTY :
+	std::uint32_t
 {
 	EAXFXSLOT_PARAMETER = 0,
 
@@ -402,7 +409,8 @@ constexpr auto EAXFXSLOT_DEFAULTVOLUME = 0;
 constexpr auto EAXFXSLOT_MINLOCK = 0;
 constexpr auto EAXFXSLOT_MAXLOCK = 1;
 
-enum : std::int32_t
+enum :
+	std::int32_t
 {
 	EAXFXSLOT_UNLOCKED = 0,
 	EAXFXSLOT_LOCKED = 1
@@ -416,42 +424,43 @@ constexpr auto EAXFXSLOT_MINOCCLUSIONLFRATIO = 0.0F;
 constexpr auto EAXFXSLOT_MAXOCCLUSIONLFRATIO = 1.0F;
 constexpr auto EAXFXSLOT_DEFAULTOCCLUSIONLFRATIO = 0.25F;
 
-constexpr auto EAX40FXSLOT_DEFAULTFLAGS = EAXFXSLOTFLAGS_ENVIRONMENT;
+constexpr auto EAX40FXSLOT_DEFAULTFLAGS = ::EAXFXSLOTFLAGS_ENVIRONMENT;
 
 constexpr auto EAX50FXSLOT_DEFAULTFLAGS =
-	EAXFXSLOTFLAGS_ENVIRONMENT |
-	EAXFXSLOTFLAGS_UPMIX // ignored for reverb
+	::EAXFXSLOTFLAGS_ENVIRONMENT |
+	::EAXFXSLOTFLAGS_UPMIX // ignored for reverb
 ;
 
 struct EAX40FXSLOTPROPERTIES
 {
-	GUID guidLoadEffect;
+	::GUID guidLoadEffect;
 	std::int32_t lVolume;
 	std::int32_t lLock;
 	std::uint32_t ulFlags;
 }; // EAX40FXSLOTPROPERTIES
 
 struct EAX50FXSLOTPROPERTIES :
-	public EAX40FXSLOTPROPERTIES
+	public ::EAX40FXSLOTPROPERTIES
 {
 	std::int32_t lOcclusion;
 	float flOcclusionLFRatio;
 }; // EAX50FXSLOTPROPERTIES
 
 bool operator==(
-	const EAX40FXSLOTPROPERTIES& lhs,
-	const EAX40FXSLOTPROPERTIES& rhs) noexcept;
+	const ::EAX40FXSLOTPROPERTIES& lhs,
+	const ::EAX40FXSLOTPROPERTIES& rhs) noexcept;
 
 bool operator==(
-	const EAX50FXSLOTPROPERTIES& lhs,
-	const EAX50FXSLOTPROPERTIES& rhs) noexcept;
+	const ::EAX50FXSLOTPROPERTIES& lhs,
+	const ::EAX50FXSLOTPROPERTIES& rhs) noexcept;
 
-extern "C" const GUID EAXPROPERTYID_EAX40_Source;
+extern "C" const ::GUID EAXPROPERTYID_EAX40_Source;
 
-extern "C" const GUID EAXPROPERTYID_EAX50_Source;
+extern "C" const ::GUID EAXPROPERTYID_EAX50_Source;
 
 // Source object properties
-enum EAXSOURCE_PROPERTY : std::uint32_t
+enum EAXSOURCE_PROPERTY :
+	std::uint32_t
 {
 	// EAX30
 	EAXSOURCE_NONE,
@@ -494,9 +503,9 @@ enum EAXSOURCE_PROPERTY : std::uint32_t
 }; // EAXSOURCE_PROPERTY
 
 
-constexpr auto EAXSOURCEFLAGS_DIRECTHFAUTO = 0x00000001U; // relates to EAXSOURCE_DIRECTHF
-constexpr auto EAXSOURCEFLAGS_ROOMAUTO = 0x00000002U; // relates to EAXSOURCE_ROOM
-constexpr auto EAXSOURCEFLAGS_ROOMHFAUTO = 0x00000004U; // relates to EAXSOURCE_ROOMHF
+constexpr auto EAXSOURCEFLAGS_DIRECTHFAUTO = 0x00000001U; // relates to ::EAXSOURCE_DIRECTHF
+constexpr auto EAXSOURCEFLAGS_ROOMAUTO = 0x00000002U; // relates to ::EAXSOURCE_ROOM
+constexpr auto EAXSOURCEFLAGS_ROOMHFAUTO = 0x00000004U; // relates to ::EAXSOURCE_ROOMHF
 // EAX50
 constexpr auto EAXSOURCEFLAGS_3DELEVATIONFILTER = 0x00000008U;
 // EAX50
@@ -597,12 +606,13 @@ constexpr auto EAXSOURCE_MAXSPEAKERLEVEL = 0;
 constexpr auto EAXSOURCE_DEFAULTSPEAKERLEVEL = -10'000;
 
 constexpr auto EAXSOURCE_DEFAULTFLAGS =
-	EAXSOURCEFLAGS_DIRECTHFAUTO |
-	EAXSOURCEFLAGS_ROOMAUTO |
-	EAXSOURCEFLAGS_ROOMHFAUTO
+	::EAXSOURCEFLAGS_DIRECTHFAUTO |
+	::EAXSOURCEFLAGS_ROOMAUTO |
+	::EAXSOURCEFLAGS_ROOMHFAUTO
 ;
 
-enum : std::int32_t
+enum :
+	std::int32_t
 {
 	EAXSPEAKER_FRONT_LEFT = 1,
 	EAXSPEAKER_FRONT_CENTER = 2,
@@ -618,10 +628,10 @@ enum : std::int32_t
 // EAXSOURCEFLAGS_DIRECTHFAUTO, EAXSOURCEFLAGS_ROOMAUTO and EAXSOURCEFLAGS_ROOMHFAUTO are ignored for 2D sources
 // EAXSOURCEFLAGS_UPMIX is ignored for 3D sources
 constexpr auto EAX50SOURCE_DEFAULTFLAGS =
-	EAXSOURCEFLAGS_DIRECTHFAUTO |
-	EAXSOURCEFLAGS_ROOMAUTO |
-	EAXSOURCEFLAGS_ROOMHFAUTO |
-	EAXSOURCEFLAGS_UPMIX
+	::EAXSOURCEFLAGS_DIRECTHFAUTO |
+	::EAXSOURCEFLAGS_ROOMAUTO |
+	::EAXSOURCEFLAGS_ROOMHFAUTO |
+	::EAXSOURCEFLAGS_UPMIX
 ;
 
 struct EAX30SOURCEPROPERTIES
@@ -642,19 +652,19 @@ struct EAX30SOURCEPROPERTIES
 	float flDopplerFactor; // like DS3D flDopplerFactor but per source
 	float flRolloffFactor; // like DS3D flRolloffFactor but per source
 	float flRoomRolloffFactor; // like DS3D flRolloffFactor but for room effect
-	float flAirAbsorptionFactor; // multiplies EAXREVERB_AIRABSORPTIONHF
+	float flAirAbsorptionFactor; // multiplies ::EAXREVERB_AIRABSORPTIONHF
 	std::uint32_t ulFlags; // modifies the behavior of properties
 }; // EAX30SOURCEPROPERTIES
 
 struct EAX50SOURCEPROPERTIES :
-	public EAX30SOURCEPROPERTIES
+	public ::EAX30SOURCEPROPERTIES
 {
 	float flMacroFXFactor;
 }; // EAX50SOURCEPROPERTIES
 
 struct EAXSOURCEALLSENDPROPERTIES
 {
-	GUID guidReceivingFXSlotID;
+	::GUID guidReceivingFXSlotID;
 	std::int32_t lSend; // send level (at low and mid frequencies)
 	std::int32_t lSendHF; // relative send level at high frequencies
 	std::int32_t lOcclusion;
@@ -682,21 +692,21 @@ struct EAXSPEAKERLEVELPROPERTIES
 
 struct EAX40ACTIVEFXSLOTS
 {
-	GUID guidActiveFXSlots[EAX40_MAX_ACTIVE_FXSLOTS];
+	::GUID guidActiveFXSlots[::EAX40_MAX_ACTIVE_FXSLOTS];
 }; // EAX40ACTIVEFXSLOTS
 
 struct EAX50ACTIVEFXSLOTS
 {
-	GUID guidActiveFXSlots[EAX50_MAX_ACTIVE_FXSLOTS];
+	::GUID guidActiveFXSlots[::EAX50_MAX_ACTIVE_FXSLOTS];
 }; // EAX50ACTIVEFXSLOTS
 
 bool operator==(
-	const EAX50ACTIVEFXSLOTS& lhs,
-	const EAX50ACTIVEFXSLOTS& rhs) noexcept;
+	const ::EAX50ACTIVEFXSLOTS& lhs,
+	const ::EAX50ACTIVEFXSLOTS& rhs) noexcept;
 
 bool operator!=(
-	const EAX50ACTIVEFXSLOTS& lhs,
-	const EAX50ACTIVEFXSLOTS& rhs) noexcept;
+	const ::EAX50ACTIVEFXSLOTS& lhs,
+	const ::EAX50ACTIVEFXSLOTS& rhs) noexcept;
 
 // Use this structure for EAXSOURCE_OBSTRUCTIONPARAMETERS property.
 struct EAXOBSTRUCTIONPROPERTIES
@@ -724,7 +734,7 @@ struct EAXEXCLUSIONPROPERTIES
 // Use this structure for EAXSOURCE_SENDPARAMETERS properties.
 struct EAXSOURCESENDPROPERTIES
 {
-	GUID guidReceivingFXSlotID;
+	::GUID guidReceivingFXSlotID;
 	std::int32_t lSend;
 	std::int32_t lSendHF;
 }; // EAXSOURCESENDPROPERTIES
@@ -732,7 +742,7 @@ struct EAXSOURCESENDPROPERTIES
 // Use this structure for EAXSOURCE_OCCLUSIONSENDPARAMETERS 
 struct EAXSOURCEOCCLUSIONSENDPROPERTIES
 {
-	GUID guidReceivingFXSlotID;
+	::GUID guidReceivingFXSlotID;
 	std::int32_t lOcclusion;
 	float flOcclusionLFRatio;
 	float flOcclusionRoomRatio;
@@ -742,16 +752,16 @@ struct EAXSOURCEOCCLUSIONSENDPROPERTIES
 // Use this structure for EAXSOURCE_EXCLUSIONSENDPARAMETERS
 struct EAXSOURCEEXCLUSIONSENDPROPERTIES
 {
-	GUID guidReceivingFXSlotID;
+	::GUID guidReceivingFXSlotID;
 	std::int32_t lExclusion;
 	float flExclusionLFRatio;
 }; // EAXSOURCEEXCLUSIONSENDPROPERTIES
 
-extern const EAX50ACTIVEFXSLOTS EAX40SOURCE_DEFAULTACTIVEFXSLOTID;
+extern const ::EAX50ACTIVEFXSLOTS EAX40SOURCE_DEFAULTACTIVEFXSLOTID;
 
-extern const EAX50ACTIVEFXSLOTS EAX50SOURCE_3DDEFAULTACTIVEFXSLOTID;
+extern const ::EAX50ACTIVEFXSLOTS EAX50SOURCE_3DDEFAULTACTIVEFXSLOTID;
 
-extern const EAX50ACTIVEFXSLOTS EAX50SOURCE_2DDEFAULTACTIVEFXSLOTID;
+extern const ::EAX50ACTIVEFXSLOTS EAX50SOURCE_2DDEFAULTACTIVEFXSLOTID;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -759,10 +769,11 @@ extern const EAX50ACTIVEFXSLOTS EAX50SOURCE_2DDEFAULTACTIVEFXSLOTID;
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // EAX Reverb Effect
 
-extern "C" const GUID EAX_REVERB_EFFECT;
+extern "C" const ::GUID EAX_REVERB_EFFECT;
 
 // Reverb effect properties
-enum EAXREVERB_PROPERTY : std::uint32_t
+enum EAXREVERB_PROPERTY :
+	std::uint32_t
 {
 	EAXREVERB_NONE,
 	EAXREVERB_ALLPARAMETERS,
@@ -793,7 +804,8 @@ enum EAXREVERB_PROPERTY : std::uint32_t
 }; // EAXREVERB_PROPERTY
 
 // used by EAXREVERB_ENVIRONMENT
-enum : std::uint32_t
+enum :
+	std::uint32_t
 {
 	EAX_ENVIRONMENT_GENERIC,
 	EAX_ENVIRONMENT_PADDEDCELL,
@@ -871,10 +883,10 @@ struct EAXREVERBPROPERTIES
 	float flDecayLFRatio; // low-frequency to mid-frequency decay time ratio   
 	std::int32_t lReflections; // early reflections level relative to room effect
 	float flReflectionsDelay; // initial reflection delay time
-	EAXVECTOR vReflectionsPan; // early reflections panning vector
+	::EAXVECTOR vReflectionsPan; // early reflections panning vector
 	std::int32_t lReverb; // late reverberation level relative to room effect
 	float flReverbDelay; // late reverberation delay time relative to initial reflection
-	EAXVECTOR vReverbPan; // late reverberation panning vector
+	::EAXVECTOR vReverbPan; // late reverberation panning vector
 	float flEchoTime; // echo time
 	float flEchoDepth; // echo depth
 	float flModulationTime; // modulation time
@@ -887,18 +899,18 @@ struct EAXREVERBPROPERTIES
 }; // EAXREVERBPROPERTIES
 
 bool operator==(
-	const EAXREVERBPROPERTIES& lhs,
-	const EAXREVERBPROPERTIES& rhs) noexcept;
+	const ::EAXREVERBPROPERTIES& lhs,
+	const ::EAXREVERBPROPERTIES& rhs) noexcept;
 
 bool operator!=(
-	const EAXREVERBPROPERTIES& lhs,
-	const EAXREVERBPROPERTIES& rhs) noexcept;
+	const ::EAXREVERBPROPERTIES& lhs,
+	const ::EAXREVERBPROPERTIES& rhs) noexcept;
 
 
 constexpr auto EAXREVERB_MINENVIRONMENT = 0U;
-constexpr auto EAX20REVERB_MAXENVIRONMENT = EAX_ENVIRONMENT_COUNT - 2U;
-constexpr auto EAX30REVERB_MAXENVIRONMENT = EAX_ENVIRONMENT_COUNT - 1U;
-constexpr auto EAXREVERB_DEFAULTENVIRONMENT = EAX_ENVIRONMENT_GENERIC;
+constexpr auto EAX20REVERB_MAXENVIRONMENT = ::EAX_ENVIRONMENT_COUNT - 2U;
+constexpr auto EAX30REVERB_MAXENVIRONMENT = ::EAX_ENVIRONMENT_COUNT - 1U;
+constexpr auto EAXREVERB_DEFAULTENVIRONMENT = ::EAX_ENVIRONMENT_GENERIC;
 
 constexpr auto EAXREVERB_MINENVIRONMENTSIZE = 1.0F;
 constexpr auto EAXREVERB_MAXENVIRONMENTSIZE = 100.0F;
@@ -940,7 +952,7 @@ constexpr auto EAXREVERB_MINREFLECTIONSDELAY = 0.0F;
 constexpr auto EAXREVERB_MAXREFLECTIONSDELAY = 0.3F;
 constexpr auto EAXREVERB_DEFAULTREFLECTIONSDELAY = 0.007F;
 
-constexpr auto EAXREVERB_DEFAULTREFLECTIONSPAN = EAXVECTOR{0.0F, 0.0F, 0.0F};
+constexpr auto EAXREVERB_DEFAULTREFLECTIONSPAN = ::EAXVECTOR{0.0F, 0.0F, 0.0F};
 
 constexpr auto EAXREVERB_MINREVERB = -10'000;
 constexpr auto EAXREVERB_MAXREVERB = 2'000;
@@ -950,7 +962,7 @@ constexpr auto EAXREVERB_MINREVERBDELAY = 0.0F;
 constexpr auto EAXREVERB_MAXREVERBDELAY = 0.1F;
 constexpr auto EAXREVERB_DEFAULTREVERBDELAY = 0.011F;
 
-constexpr auto EAXREVERB_DEFAULTREVERBPAN = EAXVECTOR{0.0F, 0.0F, 0.0F};
+constexpr auto EAXREVERB_DEFAULTREVERBPAN = ::EAXVECTOR{0.0F, 0.0F, 0.0F};
 
 constexpr auto EAXREVERB_MINECHOTIME = 0.075F;
 constexpr auto EAXREVERB_MAXECHOTIME = 0.25F;
@@ -985,45 +997,45 @@ constexpr auto EAXREVERB_MAXROOMROLLOFFFACTOR = 10.0F;
 constexpr auto EAXREVERB_DEFAULTROOMROLLOFFFACTOR = 0.0F;
 
 constexpr auto EAXREVERB_DEFAULTFLAGS =
-	EAXREVERBFLAGS_DECAYTIMESCALE |
-	EAXREVERBFLAGS_REFLECTIONSSCALE |
-	EAXREVERBFLAGS_REFLECTIONSDELAYSCALE |
-	EAXREVERBFLAGS_REVERBSCALE |
-	EAXREVERBFLAGS_REVERBDELAYSCALE |
-	EAXREVERBFLAGS_DECAYHFLIMIT
+	::EAXREVERBFLAGS_DECAYTIMESCALE |
+	::EAXREVERBFLAGS_REFLECTIONSSCALE |
+	::EAXREVERBFLAGS_REFLECTIONSDELAYSCALE |
+	::EAXREVERBFLAGS_REVERBSCALE |
+	::EAXREVERBFLAGS_REVERBDELAYSCALE |
+	::EAXREVERBFLAGS_DECAYHFLIMIT
 ;
 
 
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_GENERIC;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_PADDEDCEL;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_ROOM;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_BATHROOM;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_LIVINGROOM;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_STONEROOM;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_AUDITORIUM;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_CONCERTHAL;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_CAVE;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_ARENA;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_HANGAR;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_CARPETTEDHALLWAY;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_HALLWAY;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_STONECORRIDOR;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_ALLEY;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_FOREST;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_CITY;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_MOUNTAINS;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_QUARRY;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_PLAIN;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_PARKINGLOT;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_SEWERPIPE;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_UNDERWATER;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_DRUGGED;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_DIZZY;
-extern const EAXREVERBPROPERTIES EAXREVERB_PRESET_PSYCHOTIC;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_GENERIC;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_PADDEDCEL;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_ROOM;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_BATHROOM;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_LIVINGROOM;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_STONEROOM;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_AUDITORIUM;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_CONCERTHAL;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_CAVE;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_ARENA;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_HANGAR;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_CARPETTEDHALLWAY;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_HALLWAY;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_STONECORRIDOR;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_ALLEY;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_FOREST;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_CITY;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_MOUNTAINS;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_QUARRY;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_PLAIN;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_PARKINGLOT;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_SEWERPIPE;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_UNDERWATER;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_DRUGGED;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_DIZZY;
+extern const ::EAXREVERBPROPERTIES EAXREVERB_PRESET_PSYCHOTIC;
 
 
-using EaxReverbPresets = std::array<EAXREVERBPROPERTIES, EAX_ENVIRONMENT_UNDEFINED>;
-extern const EaxReverbPresets EAXREVERB_PRESETS;
+using EaxReverbPresets = std::array<::EAXREVERBPROPERTIES, ::EAX_ENVIRONMENT_UNDEFINED>;
+extern const ::EaxReverbPresets EAXREVERB_PRESETS;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -1031,9 +1043,10 @@ extern const EaxReverbPresets EAXREVERB_PRESETS;
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // AGC Compressor Effect
 
-extern "C" const GUID EAX_AGCCOMPRESSOR_EFFECT;
+extern "C" const ::GUID EAX_AGCCOMPRESSOR_EFFECT;
 
-enum EAXAGCCOMPRESSOR_PROPERTY : std::uint32_t
+enum EAXAGCCOMPRESSOR_PROPERTY :
+	std::uint32_t
 {
 	EAXAGCCOMPRESSOR_NONE,
 	EAXAGCCOMPRESSOR_ALLPARAMETERS,
@@ -1048,7 +1061,7 @@ struct EAXAGCCOMPRESSORPROPERTIES
 
 constexpr auto EAXAGCCOMPRESSOR_MINONOFF = 0U;
 constexpr auto EAXAGCCOMPRESSOR_MAXONOFF = 1U;
-constexpr auto EAXAGCCOMPRESSOR_DEFAULTONOFF = EAXAGCCOMPRESSOR_MAXONOFF;
+constexpr auto EAXAGCCOMPRESSOR_DEFAULTONOFF = ::EAXAGCCOMPRESSOR_MAXONOFF;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -1056,9 +1069,10 @@ constexpr auto EAXAGCCOMPRESSOR_DEFAULTONOFF = EAXAGCCOMPRESSOR_MAXONOFF;
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Autowah Effect
 
-extern "C" const GUID EAX_AUTOWAH_EFFECT;
+extern "C" const ::GUID EAX_AUTOWAH_EFFECT;
 
-enum EAXAUTOWAH_PROPERTY : std::uint32_t
+enum EAXAUTOWAH_PROPERTY :
+	std::uint32_t
 {
 	EAXAUTOWAH_NONE,
 	EAXAUTOWAH_ALLPARAMETERS,
@@ -1074,7 +1088,7 @@ struct EAXAUTOWAHPROPERTIES
 	float flReleaseTime; // Release time (seconds)
 	std::int32_t lResonance; // Resonance (mB)
 	std::int32_t lPeakLevel; // Peak level (mB)
-}; // EAXAUTOWAHPROPERTIES
+}; // ::EAXAUTOWAHPROPERTIES
 
 
 constexpr auto EAXAUTOWAH_MINATTACKTIME = 0.0001F;
@@ -1099,10 +1113,11 @@ constexpr auto EAXAUTOWAH_DEFAULTPEAKLEVEL = 2100;
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Chorus Effect
 
-extern "C" const GUID EAX_CHORUS_EFFECT;
+extern "C" const ::GUID EAX_CHORUS_EFFECT;
 
 
-enum EAXCHORUS_PROPERTY : std::uint32_t
+enum EAXCHORUS_PROPERTY :
+	std::uint32_t
 {
 	EAXCHORUS_NONE,
 	EAXCHORUS_ALLPARAMETERS,
@@ -1114,7 +1129,8 @@ enum EAXCHORUS_PROPERTY : std::uint32_t
 	EAXCHORUS_DELAY,
 }; // EAXCHORUS_PROPERTY
 
-enum : std::uint32_t
+enum :
+	std::uint32_t
 {
 	EAX_CHORUS_SINUSOID,
 	EAX_CHORUS_TRIANGLE,
@@ -1161,9 +1177,10 @@ constexpr auto EAXCHORUS_DEFAULTDELAY = 0.016F;
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Distortion Effect
 
-extern "C" const GUID EAX_DISTORTION_EFFECT;
+extern "C" const ::GUID EAX_DISTORTION_EFFECT;
 
-enum EAXDISTORTION_PROPERTY : std::uint32_t
+enum EAXDISTORTION_PROPERTY :
+	std::uint32_t
 {
 	EAXDISTORTION_NONE,
 	EAXDISTORTION_ALLPARAMETERS,
@@ -1211,10 +1228,11 @@ constexpr auto EAXDISTORTION_DEFAULTEQBANDWIDTH = 3600.0F;
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Echo Effect
 
-extern "C" const GUID EAX_ECHO_EFFECT;
+extern "C" const ::GUID EAX_ECHO_EFFECT;
 
 
-enum EAXECHO_PROPERTY : std::uint32_t
+enum EAXECHO_PROPERTY :
+	std::uint32_t
 {
 	EAXECHO_NONE,
 	EAXECHO_ALLPARAMETERS,
@@ -1262,10 +1280,11 @@ constexpr auto EAXECHO_DEFAULTSPREAD = -1.0F;
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Equalizer Effect
 
-extern "C" const GUID EAX_EQUALIZER_EFFECT;
+extern "C" const ::GUID EAX_EQUALIZER_EFFECT;
 
 
-enum EAXEQUALIZER_PROPERTY : std::uint32_t
+enum EAXEQUALIZER_PROPERTY :
+	std::uint32_t
 {
 	EAXEQUALIZER_NONE,
 	EAXEQUALIZER_ALLPARAMETERS,
@@ -1343,9 +1362,10 @@ constexpr auto EAXEQUALIZER_DEFAULTHIGHCUTOFF = 6000.0F;
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Flanger Effect
 
-extern "C" const GUID EAX_FLANGER_EFFECT;
+extern "C" const ::GUID EAX_FLANGER_EFFECT;
 
-enum EAXFLANGER_PROPERTY : std::uint32_t
+enum EAXFLANGER_PROPERTY :
+	std::uint32_t
 {
 	EAXFLANGER_NONE,
 	EAXFLANGER_ALLPARAMETERS,
@@ -1357,7 +1377,8 @@ enum EAXFLANGER_PROPERTY : std::uint32_t
 	EAXFLANGER_DELAY,
 }; // EAXFLANGER_PROPERTY
 
-enum
+enum :
+	std::uint32_t
 {
 	EAX_FLANGER_SINUSOID,
 	EAX_FLANGER_TRIANGLE,
@@ -1404,9 +1425,10 @@ constexpr auto EAXFLANGER_DEFAULTDELAY = 0.002F;
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Frequency Shifter Effect
 
-extern "C" const GUID EAX_FREQUENCYSHIFTER_EFFECT;
+extern "C" const ::GUID EAX_FREQUENCYSHIFTER_EFFECT;
 
-enum EAXFREQUENCYSHIFTER_PROPERTY : std::uint32_t
+enum EAXFREQUENCYSHIFTER_PROPERTY :
+	std::uint32_t
 {
 	EAXFREQUENCYSHIFTER_NONE,
 	EAXFREQUENCYSHIFTER_ALLPARAMETERS,
@@ -1415,7 +1437,8 @@ enum EAXFREQUENCYSHIFTER_PROPERTY : std::uint32_t
 	EAXFREQUENCYSHIFTER_RIGHTDIRECTION,
 }; // EAXFREQUENCYSHIFTER_PROPERTY
 
-enum : std::uint32_t
+enum :
+	std::uint32_t
 {
 	EAX_FREQUENCYSHIFTER_DOWN,
 	EAX_FREQUENCYSHIFTER_UP,
@@ -1427,20 +1450,20 @@ struct EAXFREQUENCYSHIFTERPROPERTIES
 	float flFrequency; // (Hz)
 	std::uint32_t ulLeftDirection; // see enum above
 	std::uint32_t ulRightDirection; // see enum above
-}; // EAXFREQUENCYSHIFTERPROPERTIES
+}; // ::EAXFREQUENCYSHIFTERPROPERTIES
 
 
 constexpr auto EAXFREQUENCYSHIFTER_MINFREQUENCY = 0.0F;
 constexpr auto EAXFREQUENCYSHIFTER_MAXFREQUENCY = 24000.0F;
-constexpr auto EAXFREQUENCYSHIFTER_DEFAULTFREQUENCY = EAXFREQUENCYSHIFTER_MINFREQUENCY;
+constexpr auto EAXFREQUENCYSHIFTER_DEFAULTFREQUENCY = ::EAXFREQUENCYSHIFTER_MINFREQUENCY;
 
 constexpr auto EAXFREQUENCYSHIFTER_MINLEFTDIRECTION = 0U;
 constexpr auto EAXFREQUENCYSHIFTER_MAXLEFTDIRECTION = 2U;
-constexpr auto EAXFREQUENCYSHIFTER_DEFAULTLEFTDIRECTION = EAXFREQUENCYSHIFTER_MINLEFTDIRECTION;
+constexpr auto EAXFREQUENCYSHIFTER_DEFAULTLEFTDIRECTION = ::EAXFREQUENCYSHIFTER_MINLEFTDIRECTION;
 
 constexpr auto EAXFREQUENCYSHIFTER_MINRIGHTDIRECTION = 0U;
 constexpr auto EAXFREQUENCYSHIFTER_MAXRIGHTDIRECTION = 2U;
-constexpr auto EAXFREQUENCYSHIFTER_DEFAULTRIGHTDIRECTION = EAXFREQUENCYSHIFTER_MINRIGHTDIRECTION;
+constexpr auto EAXFREQUENCYSHIFTER_DEFAULTRIGHTDIRECTION = ::EAXFREQUENCYSHIFTER_MINRIGHTDIRECTION;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -1448,9 +1471,10 @@ constexpr auto EAXFREQUENCYSHIFTER_DEFAULTRIGHTDIRECTION = EAXFREQUENCYSHIFTER_M
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Vocal Morpher Effect
 
-extern "C" const GUID EAX_VOCALMORPHER_EFFECT;
+extern "C" const ::GUID EAX_VOCALMORPHER_EFFECT;
 
-enum EAXVOCALMORPHER_PROPERTY : std::uint32_t
+enum EAXVOCALMORPHER_PROPERTY :
+	std::uint32_t
 {
 	EAXVOCALMORPHER_NONE,
 	EAXVOCALMORPHER_ALLPARAMETERS,
@@ -1462,13 +1486,43 @@ enum EAXVOCALMORPHER_PROPERTY : std::uint32_t
 	EAXVOCALMORPHER_RATE,
 }; // EAXVOCALMORPHER_PROPERTY
 
-enum : std::uint32_t
+enum :
+	std::uint32_t
 {
-	A, E, I, O, U, AA, AE, AH, AO, EH, ER, IH, IY, UH, UW,
-	B, D, F, G, J, K, L, M, N, P, R, S, T, V, Z,
+	A,
+	E,
+	I,
+	O,
+	U,
+	AA,
+	AE,
+	AH,
+	AO,
+	EH,
+	ER,
+	IH,
+	IY,
+	UH,
+	UW,
+	B,
+	D,
+	F,
+	G,
+	J,
+	K,
+	L,
+	M,
+	N,
+	P,
+	R,
+	S,
+	T,
+	V,
+	Z,
 };
 
-enum : std::uint32_t
+enum :
+	std::uint32_t
 {
 	EAX_VOCALMORPHER_SINUSOID,
 	EAX_VOCALMORPHER_TRIANGLE,
@@ -1489,7 +1543,7 @@ struct EAXVOCALMORPHERPROPERTIES
 
 constexpr auto EAXVOCALMORPHER_MINPHONEMEA = 0U;
 constexpr auto EAXVOCALMORPHER_MAXPHONEMEA = 29U;
-constexpr auto EAXVOCALMORPHER_DEFAULTPHONEMEA = EAXVOCALMORPHER_MINPHONEMEA;
+constexpr auto EAXVOCALMORPHER_DEFAULTPHONEMEA = ::EAXVOCALMORPHER_MINPHONEMEA;
 
 constexpr auto EAXVOCALMORPHER_MINPHONEMEACOARSETUNING = -24;
 constexpr auto EAXVOCALMORPHER_MAXPHONEMEACOARSETUNING = 24;
@@ -1505,7 +1559,7 @@ constexpr auto EAXVOCALMORPHER_DEFAULTPHONEMEBCOARSETUNING = 0;
 
 constexpr auto EAXVOCALMORPHER_MINWAVEFORM = 0U;
 constexpr auto EAXVOCALMORPHER_MAXWAVEFORM = 2U;
-constexpr auto EAXVOCALMORPHER_DEFAULTWAVEFORM = EAXVOCALMORPHER_MINWAVEFORM;
+constexpr auto EAXVOCALMORPHER_DEFAULTWAVEFORM = ::EAXVOCALMORPHER_MINWAVEFORM;
 
 constexpr auto EAXVOCALMORPHER_MINRATE = 0.0F;
 constexpr auto EAXVOCALMORPHER_MAXRATE = 10.0F;
@@ -1517,9 +1571,10 @@ constexpr auto EAXVOCALMORPHER_DEFAULTRATE = 1.41F;
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Pitch Shifter Effect
 
-extern "C" const GUID EAX_PITCHSHIFTER_EFFECT;
+extern "C" const ::GUID EAX_PITCHSHIFTER_EFFECT;
 
-enum EAXPITCHSHIFTER_PROPERTY : std::uint32_t
+enum EAXPITCHSHIFTER_PROPERTY :
+	std::uint32_t
 {
 	EAXPITCHSHIFTER_NONE,
 	EAXPITCHSHIFTER_ALLPARAMETERS,
@@ -1548,7 +1603,7 @@ constexpr auto EAXPITCHSHIFTER_DEFAULTFINETUNE = 0;
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 // Ring Modulator Effect
 
-extern "C" const GUID EAX_RINGMODULATOR_EFFECT;
+extern "C" const ::GUID EAX_RINGMODULATOR_EFFECT;
 
 enum EAXRINGMODULATOR_PROPERTY
 {
@@ -1559,7 +1614,8 @@ enum EAXRINGMODULATOR_PROPERTY
 	EAXRINGMODULATOR_WAVEFORM,
 }; // EAXRINGMODULATOR_PROPERTY
 
-enum
+enum :
+	std::uint32_t
 {
 	EAX_RINGMODULATOR_SINUSOID,
 	EAX_RINGMODULATOR_SAWTOOTH,
@@ -1585,7 +1641,7 @@ constexpr auto EAXRINGMODULATOR_DEFAULTHIGHPASSCUTOFF = 800.0F;
 
 constexpr auto EAXRINGMODULATOR_MINWAVEFORM = 0U;
 constexpr auto EAXRINGMODULATOR_MAXWAVEFORM = 2U;
-constexpr auto EAXRINGMODULATOR_DEFAULTWAVEFORM = EAXRINGMODULATOR_MINWAVEFORM;
+constexpr auto EAXRINGMODULATOR_DEFAULTWAVEFORM = ::EAXRINGMODULATOR_MINWAVEFORM;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -1594,19 +1650,19 @@ extern "C"
 {
 
 
-AL_API ALenum AL_APIENTRY EAXSet(
-	const GUID* property_set_guid,
-	ALuint property_id,
-	ALuint property_al_name,
-	ALvoid* property_buffer,
-	ALuint property_size);
+AL_API ::ALenum AL_APIENTRY EAXSet(
+	const ::GUID* property_set_guid,
+	::ALuint property_id,
+	::ALuint property_al_name,
+	::ALvoid* property_buffer,
+	::ALuint property_size);
 
-AL_API ALenum AL_APIENTRY EAXGet(
-	const GUID* property_set_guid,
-	ALuint property_id,
-	ALuint property_al_name,
-	ALvoid* property_buffer,
-	ALuint property_size);
+AL_API ::ALenum AL_APIENTRY EAXGet(
+	const ::GUID* property_set_guid,
+	::ALuint property_id,
+	::ALuint property_al_name,
+	::ALvoid* property_buffer,
+	::ALuint property_size);
 
 
 } // extern "C"

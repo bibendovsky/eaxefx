@@ -25,36 +25,29 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "eaxefx_rc.h"
+#ifndef EAXEFX_PATCH_COLLECTION_INCLUDED
+#define EAXEFX_PATCH_COLLECTION_INCLUDED
 
 
-VS_VERSION_INFO VERSIONINFO
-FILEVERSION ${PROJECT_VERSION_MAJOR}, ${PROJECT_VERSION_MINOR}, ${PROJECT_VERSION_PATCH}
-PRODUCTVERSION ${PROJECT_VERSION_MAJOR}, ${PROJECT_VERSION_MINOR}, ${PROJECT_VERSION_PATCH}
-FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
-FILEFLAGS VER_DBG
-FILEOS VOS_NT
-FILETYPE VFT_DRV
-FILESUBTYPE VFT2_DRV_SYSTEM
-BEGIN
-	BLOCK "StringFileInfo"
-	BEGIN
-		BLOCK "040904B0"
-		BEGIN
-			VALUE "Comments", L"Doom 3 fix for visual twitch bug"
-			VALUE "CompanyName", L"Boris I. Bendovsky"
-			VALUE "FileDescription", L"Doom 3 fix for visual twitch bug"
-			VALUE "FileVersion", L"${EAXEFX_DOOM3_FIX_VERSION}"
-			VALUE "InternalName", L"${PROJECT_NAME}"
-			VALUE "LegalCopyright", L"Copyright (c) Boris I. Bendovsky 2020"
-			VALUE "OriginalFilename", L"${PROJECT_NAME}.exe"
-			VALUE "ProductName", L"EAXEFX"
-			VALUE "ProductVersion", L"${EAXEFX_DOOM3_FIX_VERSION}"
-		END
-	END
+#include <vector>
 
-	BLOCK "VarFileInfo"
-	BEGIN
-		VALUE "Translation", 0x0409, 1200
-	END
-END
+#include "eaxefx_patch.h"
+
+
+namespace eaxefx
+{
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+using PatchCollection = std::vector<Patch>;
+
+PatchCollection make_patch_collection();
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+} // eaxefx
+
+
+#endif // !EAXEFX_PATCH_COLLECTION_INCLUDED

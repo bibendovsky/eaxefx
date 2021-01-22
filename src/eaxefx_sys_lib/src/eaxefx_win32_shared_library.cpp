@@ -63,7 +63,7 @@ class Win32SharedLibrary :
 {
 public:
 	Win32SharedLibrary(
-		const String& path);
+		const char* path);
 
 	~Win32SharedLibrary() override;
 
@@ -73,7 +73,7 @@ public:
 
 
 private:
-	HMODULE win32_module_;
+	::HMODULE win32_module_;
 }; // Win32SharedLibrary
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -82,31 +82,31 @@ private:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 Win32SharedLibrary::Win32SharedLibrary(
-	const String& path)
+	const char* path)
 	:
 	win32_module_{}
 {
 	const auto u16_path = encoding::to_utf16(path);
-	win32_module_ = LoadLibraryW(reinterpret_cast<LPCWSTR>(u16_path.c_str()));
+	win32_module_ = ::LoadLibraryW(reinterpret_cast<::LPCWSTR>(u16_path.c_str()));
 
-	if (win32_module_ == nullptr)
+	if (!win32_module_)
 	{
-		throw Win32SharedLibraryException{"LoadLibraryW failed."};
+		throw Win32SharedLibraryException{"::LoadLibraryW failed."};
 	}
 }
 
 Win32SharedLibrary::~Win32SharedLibrary()
 {
-	if (win32_module_ != nullptr)
+	if (win32_module_)
 	{
-		static_cast<void>(FreeLibrary(win32_module_));
+		static_cast<void>(::FreeLibrary(win32_module_));
 	}
 }
 
 void* Win32SharedLibrary::resolve(
 	const char* symbol_name) noexcept
 {
-	return reinterpret_cast<void*>(GetProcAddress(win32_module_, symbol_name));
+	return reinterpret_cast<void*>(::GetProcAddress(win32_module_, symbol_name));
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -115,7 +115,7 @@ void* Win32SharedLibrary::resolve(
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 SharedLibraryUPtr make_shared_library(
-	const String& path)
+	const char* path)
 {
 	return std::make_unique<Win32SharedLibrary>(path);
 }

@@ -25,7 +25,14 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
+#ifndef EAXEFX_PATCH_LIB_INCLUDED
+#define EAXEFX_PATCH_LIB_INCLUDED
+
+
 #include <memory>
+#include <vector>
+
+#include "eaxefx_string.h"
 
 
 namespace eaxefx
@@ -34,56 +41,108 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-enum class Doom3FixTarget
-{
-	file,
-	process,
-}; // Doom3FixTarget
+constexpr auto max_patch_block_size = 4'096;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-enum class Doom3FixStatus
+enum class PatchStatus
 {
 	unsupported,
+
 	patched,
 	unpatched,
-}; // Doom3FixStatus
+}; // PatchStatus
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class Doom3Fix
+using PatchBytes = std::vector<unsigned char>;
+
+struct PatchBlock
+{
+	int offset{};
+	PatchBytes unpatched_bytes{};
+	PatchBytes patched_bytes{};
+}; // PatchBlock
+
+using PatchBlocks = std::vector<PatchBlock>;
+
+struct Patch
+{
+	const char* name{};
+	const char* file_name{};
+	const char* description{};
+
+	PatchBlocks patch_blocks{};
+}; // Patch
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+class FilePatcher
 {
 public:
-	Doom3Fix() = default;
+	FilePatcher() noexcept = default;
 
-	virtual ~Doom3Fix() = default;
+	virtual ~FilePatcher() = default;
 
 
-	virtual Doom3FixStatus get_status() const noexcept = 0;
+	virtual PatchStatus get_status() const noexcept = 0;
 
-	virtual void patch() = 0;
+	virtual void apply() = 0;
 
-	virtual void unpatch() = 0;
-}; // Doom3Fix
+	virtual void revert() = 0;
+}; // FilePatcher
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-using Doom3FixUPtr = std::unique_ptr<Doom3Fix>;
+class ProcessPatcher
+{
+public:
+	ProcessPatcher() noexcept = default;
+
+	virtual ~ProcessPatcher() = default;
 
 
-Doom3FixUPtr make_doom_3_fix(
-	Doom3FixTarget fix_target);
+	virtual PatchStatus get_status() const noexcept = 0;
+
+	virtual void apply() = 0;
+}; // ProcessPatcher
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+using FilePatcherUPtr = std::unique_ptr<FilePatcher>;
+
+FilePatcherUPtr make_file_patcher(
+	const Patch& patch);
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+using ProcessPatcherUPtr = std::unique_ptr<ProcessPatcher>;
+
+ProcessPatcherUPtr make_process_patcher(
+	const Patch& patch);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 } // eaxefx
+
+
+#endif // !EAXEFX_PATCH_LIB_INCLUDED

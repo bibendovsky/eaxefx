@@ -80,7 +80,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxEaxReverbEffect::EaxxEaxReverbEffect(
-	ALuint al_effect_slot)
+	::ALuint al_effect_slot)
 	:
 	al_effect_slot_{al_effect_slot},
 	efx_effect_object_{make_efx_effect_object(AL_EFFECT_EAXREVERB)}
@@ -103,7 +103,7 @@ void EaxxEaxReverbEffect::load()
 	alAuxiliaryEffectSloti_(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<ALint>(efx_effect_object_.get())
+		static_cast<::ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -125,7 +125,7 @@ void EaxxEaxReverbEffect::dispatch(
 
 void EaxxEaxReverbEffect::set_eax_defaults()
 {
-	eax_ = EAXREVERB_PRESETS[EAX_ENVIRONMENT_GENERIC];
+	eax_ = ::EAXREVERB_PRESETS[::EAX_ENVIRONMENT_GENERIC];
 
 	eax_d_ = eax_;
 }
@@ -374,7 +374,7 @@ void EaxxEaxReverbEffect::set_efx_flags()
 	alEffecti_(
 		efx_effect_object_.get(),
 		AL_EAXREVERB_DECAY_HFLIMIT,
-		(eax_.ulFlags & EAXREVERBFLAGS_DECAYHFLIMIT) != 0
+		(eax_.ulFlags & ::EAXREVERBFLAGS_DECAYHFLIMIT) != 0
 	);
 }
 
@@ -410,7 +410,7 @@ void EaxxEaxReverbEffect::get_all(
 {
 	if (eax_call.get_version() == 2)
 	{
-		auto& eax_reverb = eax_call.get_value<EaxxEaxReverbEffectException, EAX20LISTENERPROPERTIES>();
+		auto& eax_reverb = eax_call.get_value<EaxxEaxReverbEffectException, ::EAX20LISTENERPROPERTIES>();
 		eax_reverb.lRoom = eax_.lRoom;
 		eax_reverb.lRoomHF = eax_.lRoomHF;
 		eax_reverb.flRoomRolloffFactor = eax_.flRoomRolloffFactor;
@@ -437,106 +437,106 @@ void EaxxEaxReverbEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXREVERB_NONE:
+		case ::EAXREVERB_NONE:
 			break;
 
-		case EAXREVERB_ALLPARAMETERS:
+		case ::EAXREVERB_ALLPARAMETERS:
 			get_all(eax_call);
 			break;
 
-		case EAXREVERB_ENVIRONMENT:
+		case ::EAXREVERB_ENVIRONMENT:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.ulEnvironment);
 			break;
 
-		case EAXREVERB_ENVIRONMENTSIZE:
+		case ::EAXREVERB_ENVIRONMENTSIZE:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flEnvironmentSize);
 			break;
 
-		case EAXREVERB_ENVIRONMENTDIFFUSION:
+		case ::EAXREVERB_ENVIRONMENTDIFFUSION:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flEnvironmentDiffusion);
 			break;
 
-		case EAXREVERB_ROOM:
+		case ::EAXREVERB_ROOM:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.lRoom);
 			break;
 
-		case EAXREVERB_ROOMHF:
+		case ::EAXREVERB_ROOMHF:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.lRoomHF);
 			break;
 
-		case EAXREVERB_ROOMLF:
+		case ::EAXREVERB_ROOMLF:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.lRoomLF);
 			break;
 
-		case EAXREVERB_DECAYTIME:
+		case ::EAXREVERB_DECAYTIME:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flDecayTime);
 			break;
 
-		case EAXREVERB_DECAYHFRATIO:
+		case ::EAXREVERB_DECAYHFRATIO:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flDecayHFRatio);
 			break;
 
-		case EAXREVERB_DECAYLFRATIO:
+		case ::EAXREVERB_DECAYLFRATIO:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flDecayLFRatio);
 			break;
 
-		case EAXREVERB_REFLECTIONS:
+		case ::EAXREVERB_REFLECTIONS:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.lReflections);
 			break;
 
-		case EAXREVERB_REFLECTIONSDELAY:
+		case ::EAXREVERB_REFLECTIONSDELAY:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flReflectionsDelay);
 			break;
 
-		case EAXREVERB_REFLECTIONSPAN:
+		case ::EAXREVERB_REFLECTIONSPAN:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.vReflectionsPan);
 			break;
 
-		case EAXREVERB_REVERB:
+		case ::EAXREVERB_REVERB:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.lReverb);
 			break;
 
-		case EAXREVERB_REVERBDELAY:
+		case ::EAXREVERB_REVERBDELAY:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flReverbDelay);
 			break;
 
-		case EAXREVERB_REVERBPAN:
+		case ::EAXREVERB_REVERBPAN:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.vReverbPan);
 			break;
 
-		case EAXREVERB_ECHOTIME:
+		case ::EAXREVERB_ECHOTIME:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flEchoTime);
 			break;
 
-		case EAXREVERB_ECHODEPTH:
+		case ::EAXREVERB_ECHODEPTH:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flEchoDepth);
 			break;
 
-		case EAXREVERB_MODULATIONTIME:
+		case ::EAXREVERB_MODULATIONTIME:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flModulationTime);
 			break;
 
-		case EAXREVERB_MODULATIONDEPTH:
+		case ::EAXREVERB_MODULATIONDEPTH:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flModulationDepth);
 			break;
 
-		case EAXREVERB_AIRABSORPTIONHF:
+		case ::EAXREVERB_AIRABSORPTIONHF:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flAirAbsorptionHF);
 			break;
 
-		case EAXREVERB_HFREFERENCE:
+		case ::EAXREVERB_HFREFERENCE:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flHFReference);
 			break;
 
-		case EAXREVERB_LFREFERENCE:
+		case ::EAXREVERB_LFREFERENCE:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flLFReference);
 			break;
 
-		case EAXREVERB_ROOMROLLOFFFACTOR:
+		case ::EAXREVERB_ROOMROLLOFFFACTOR:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.flRoomRolloffFactor);
 			break;
 
-		case EAXREVERB_FLAGS:
+		case ::EAXREVERB_FLAGS:
 			eax_call.set_value<EaxxEaxReverbEffectException>(eax_.ulFlags);
 			break;
 
@@ -553,8 +553,8 @@ void EaxxEaxReverbEffect::validate_environment(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Environment",
 		ulEnvironment,
-		EAXREVERB_MINENVIRONMENT,
-		(version == 2 || is_standalone) ? EAX20REVERB_MAXENVIRONMENT : EAX30REVERB_MAXENVIRONMENT
+		::EAXREVERB_MINENVIRONMENT,
+		(version == 2 || is_standalone) ? ::EAX20REVERB_MAXENVIRONMENT : ::EAX30REVERB_MAXENVIRONMENT
 	);
 }
 
@@ -564,8 +564,8 @@ void EaxxEaxReverbEffect::validate_environment_size(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Environment Size",
 		flEnvironmentSize,
-		EAXREVERB_MINENVIRONMENTSIZE,
-		EAXREVERB_MAXENVIRONMENTSIZE
+		::EAXREVERB_MINENVIRONMENTSIZE,
+		::EAXREVERB_MAXENVIRONMENTSIZE
 	);
 }
 
@@ -575,8 +575,8 @@ void EaxxEaxReverbEffect::validate_environment_diffusion(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Environment Diffusion",
 		flEnvironmentDiffusion,
-		EAXREVERB_MINENVIRONMENTDIFFUSION,
-		EAXREVERB_MAXENVIRONMENTDIFFUSION
+		::EAXREVERB_MINENVIRONMENTDIFFUSION,
+		::EAXREVERB_MAXENVIRONMENTDIFFUSION
 	);
 }
 
@@ -586,8 +586,8 @@ void EaxxEaxReverbEffect::validate_room(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Room",
 		lRoom,
-		EAXREVERB_MINROOM,
-		EAXREVERB_MAXROOM
+		::EAXREVERB_MINROOM,
+		::EAXREVERB_MAXROOM
 	);
 }
 
@@ -597,8 +597,8 @@ void EaxxEaxReverbEffect::validate_room_hf(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Room HF",
 		lRoomHF,
-		EAXREVERB_MINROOMHF,
-		EAXREVERB_MAXROOMHF
+		::EAXREVERB_MINROOMHF,
+		::EAXREVERB_MAXROOMHF
 	);
 }
 
@@ -608,8 +608,8 @@ void EaxxEaxReverbEffect::validate_room_lf(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Room LF",
 		lRoomLF,
-		EAXREVERB_MINROOMLF,
-		EAXREVERB_MAXROOMLF
+		::EAXREVERB_MINROOMLF,
+		::EAXREVERB_MAXROOMLF
 	);
 }
 
@@ -619,8 +619,8 @@ void EaxxEaxReverbEffect::validate_decay_time(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Decay Time",
 		flDecayTime,
-		EAXREVERB_MINDECAYTIME,
-		EAXREVERB_MAXDECAYTIME
+		::EAXREVERB_MINDECAYTIME,
+		::EAXREVERB_MAXDECAYTIME
 	);
 }
 
@@ -630,8 +630,8 @@ void EaxxEaxReverbEffect::validate_decay_hf_ratio(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Decay HF Ratio",
 		flDecayHFRatio,
-		EAXREVERB_MINDECAYHFRATIO,
-		EAXREVERB_MAXDECAYHFRATIO
+		::EAXREVERB_MINDECAYHFRATIO,
+		::EAXREVERB_MAXDECAYHFRATIO
 	);
 }
 
@@ -641,8 +641,8 @@ void EaxxEaxReverbEffect::validate_decay_lf_ratio(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Decay LF Ratio",
 		flDecayLFRatio,
-		EAXREVERB_MINDECAYLFRATIO,
-		EAXREVERB_MAXDECAYLFRATIO
+		::EAXREVERB_MINDECAYLFRATIO,
+		::EAXREVERB_MAXDECAYLFRATIO
 	);
 }
 
@@ -652,8 +652,8 @@ void EaxxEaxReverbEffect::validate_reflections(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Reflections",
 		lReflections,
-		EAXREVERB_MINREFLECTIONS,
-		EAXREVERB_MAXREFLECTIONS
+		::EAXREVERB_MINREFLECTIONS,
+		::EAXREVERB_MAXREFLECTIONS
 	);
 }
 
@@ -663,13 +663,13 @@ void EaxxEaxReverbEffect::validate_reflections_delay(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Reflections Delay",
 		flReflectionsDelay,
-		EAXREVERB_MINREFLECTIONSDELAY,
-		EAXREVERB_MAXREFLECTIONSDELAY
+		::EAXREVERB_MINREFLECTIONSDELAY,
+		::EAXREVERB_MAXREFLECTIONSDELAY
 	);
 }
 
 void EaxxEaxReverbEffect::validate_reflections_pan(
-	const EAXVECTOR& vReflectionsPan)
+	const ::EAXVECTOR& vReflectionsPan)
 {
 	static_cast<void>(vReflectionsPan);
 }
@@ -680,8 +680,8 @@ void EaxxEaxReverbEffect::validate_reverb(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Reverb",
 		lReverb,
-		EAXREVERB_MINREVERB,
-		EAXREVERB_MAXREVERB
+		::EAXREVERB_MINREVERB,
+		::EAXREVERB_MAXREVERB
 	);
 }
 
@@ -691,13 +691,13 @@ void EaxxEaxReverbEffect::validate_reverb_delay(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Reverb Delay",
 		flReverbDelay,
-		EAXREVERB_MINREVERBDELAY,
-		EAXREVERB_MAXREVERBDELAY
+		::EAXREVERB_MINREVERBDELAY,
+		::EAXREVERB_MAXREVERBDELAY
 	);
 }
 
 void EaxxEaxReverbEffect::validate_reverb_pan(
-	const EAXVECTOR& vReverbPan)
+	const ::EAXVECTOR& vReverbPan)
 {
 	static_cast<void>(vReverbPan);
 }
@@ -708,8 +708,8 @@ void EaxxEaxReverbEffect::validate_echo_time(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Echo Time",
 		flEchoTime,
-		EAXREVERB_MINECHOTIME,
-		EAXREVERB_MAXECHOTIME
+		::EAXREVERB_MINECHOTIME,
+		::EAXREVERB_MAXECHOTIME
 	);
 }
 
@@ -719,8 +719,8 @@ void EaxxEaxReverbEffect::validate_echo_depth(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Echo Depth",
 		flEchoDepth,
-		EAXREVERB_MINECHODEPTH,
-		EAXREVERB_MAXECHODEPTH
+		::EAXREVERB_MINECHODEPTH,
+		::EAXREVERB_MAXECHODEPTH
 	);
 }
 
@@ -730,8 +730,8 @@ void EaxxEaxReverbEffect::validate_modulation_time(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Modulation Time",
 		flModulationTime,
-		EAXREVERB_MINMODULATIONTIME,
-		EAXREVERB_MAXMODULATIONTIME
+		::EAXREVERB_MINMODULATIONTIME,
+		::EAXREVERB_MAXMODULATIONTIME
 	);
 }
 
@@ -741,8 +741,8 @@ void EaxxEaxReverbEffect::validate_modulation_depth(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Modulation Depth",
 		flModulationDepth,
-		EAXREVERB_MINMODULATIONDEPTH,
-		EAXREVERB_MAXMODULATIONDEPTH
+		::EAXREVERB_MINMODULATIONDEPTH,
+		::EAXREVERB_MAXMODULATIONDEPTH
 	);
 }
 
@@ -752,8 +752,8 @@ void EaxxEaxReverbEffect::validate_air_absorbtion_hf(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Air Absorbtion HF",
 		air_absorbtion_hf,
-		EAXREVERB_MINAIRABSORPTIONHF,
-		EAXREVERB_MAXAIRABSORPTIONHF
+		::EAXREVERB_MINAIRABSORPTIONHF,
+		::EAXREVERB_MAXAIRABSORPTIONHF
 	);
 }
 
@@ -763,8 +763,8 @@ void EaxxEaxReverbEffect::validate_hf_reference(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"HF Reference",
 		flHFReference,
-		EAXREVERB_MINHFREFERENCE,
-		EAXREVERB_MAXHFREFERENCE
+		::EAXREVERB_MINHFREFERENCE,
+		::EAXREVERB_MAXHFREFERENCE
 	);
 }
 
@@ -774,8 +774,8 @@ void EaxxEaxReverbEffect::validate_lf_reference(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"LF Reference",
 		flLFReference,
-		EAXREVERB_MINLFREFERENCE,
-		EAXREVERB_MAXLFREFERENCE
+		::EAXREVERB_MINLFREFERENCE,
+		::EAXREVERB_MAXLFREFERENCE
 	);
 }
 
@@ -785,8 +785,8 @@ void EaxxEaxReverbEffect::validate_room_rolloff_factor(
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Room Rolloff Factor",
 		flRoomRolloffFactor,
-		EAXREVERB_MINROOMROLLOFFFACTOR,
-		EAXREVERB_MAXROOMROLLOFFFACTOR
+		::EAXREVERB_MINROOMROLLOFFFACTOR,
+		::EAXREVERB_MAXROOMROLLOFFFACTOR
 	);
 }
 
@@ -797,12 +797,12 @@ void EaxxEaxReverbEffect::validate_flags(
 		"Flags",
 		ulFlags,
 		0U,
-		~EAXREVERBFLAGS_RESERVED
+		~::EAXREVERBFLAGS_RESERVED
 	);
 }
 
 void EaxxEaxReverbEffect::validate_all(
-	const EAX20LISTENERPROPERTIES& listener,
+	const ::EAX20LISTENERPROPERTIES& listener,
 	int version)
 {
 	validate_room(listener.lRoom);
@@ -822,7 +822,7 @@ void EaxxEaxReverbEffect::validate_all(
 }
 
 void EaxxEaxReverbEffect::validate_all(
-	const EAXREVERBPROPERTIES& lReverb,
+	const ::EAXREVERBPROPERTIES& lReverb,
 	int version)
 {
 	validate_environment(lReverb.ulEnvironment, version, false);
@@ -927,7 +927,7 @@ void EaxxEaxReverbEffect::defer_reflections_delay(
 }
 
 void EaxxEaxReverbEffect::defer_reflections_pan(
-	const EAXVECTOR& vReflectionsPan)
+	const ::EAXVECTOR& vReflectionsPan)
 {
 	eax_d_.vReflectionsPan = vReflectionsPan;
 	eax_dirty_flags_.vReflectionsPan = (eax_.vReflectionsPan != eax_d_.vReflectionsPan);
@@ -948,7 +948,7 @@ void EaxxEaxReverbEffect::defer_reverb_delay(
 }
 
 void EaxxEaxReverbEffect::defer_reverb_pan(
-	const EAXVECTOR& vReverbPan)
+	const ::EAXVECTOR& vReverbPan)
 {
 	eax_d_.vReverbPan = vReverbPan;
 	eax_dirty_flags_.vReverbPan = (eax_.vReverbPan != eax_d_.vReverbPan);
@@ -1018,7 +1018,7 @@ void EaxxEaxReverbEffect::defer_flags(
 }
 
 void EaxxEaxReverbEffect::defer_all(
-	const EAX20LISTENERPROPERTIES& listener)
+	const ::EAX20LISTENERPROPERTIES& listener)
 {
 	defer_room(listener.lRoom);
 	defer_room_hf(listener.lRoomHF);
@@ -1037,7 +1037,7 @@ void EaxxEaxReverbEffect::defer_all(
 }
 
 void EaxxEaxReverbEffect::defer_all(
-	const EAXREVERBPROPERTIES& lReverb)
+	const ::EAXREVERBPROPERTIES& lReverb)
 {
 	defer_environment(lReverb.ulEnvironment);
 	defer_environment_size(lReverb.flEnvironmentSize);
@@ -1069,7 +1069,7 @@ void EaxxEaxReverbEffect::defer_environment(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& ulEnvironment =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::ulEnvironment)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::ulEnvironment)>();
 
 	validate_environment(ulEnvironment, eax_call.get_version(), true);
 
@@ -1078,7 +1078,7 @@ void EaxxEaxReverbEffect::defer_environment(
 		return;
 	}
 
-	const auto& reverb_preset = EAXREVERB_PRESETS[ulEnvironment];
+	const auto& reverb_preset = ::EAXREVERB_PRESETS[ulEnvironment];
 
 	defer_all(reverb_preset);
 }
@@ -1087,7 +1087,7 @@ void EaxxEaxReverbEffect::defer_environment_size(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flEnvironmentSize =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flEnvironmentSize)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flEnvironmentSize)>();
 
 	validate_environment_size(flEnvironmentSize);
 
@@ -1100,83 +1100,83 @@ void EaxxEaxReverbEffect::defer_environment_size(
 
 	defer_environment_size(flEnvironmentSize);
 
-	if ((eax_d_.ulFlags & EAXREVERBFLAGS_DECAYTIMESCALE) != 0)
+	if ((eax_d_.ulFlags & ::EAXREVERBFLAGS_DECAYTIMESCALE) != 0)
 	{
 		const auto flDecayTime = std::clamp(
 			scale * eax_d_.flDecayTime,
-			EAXREVERB_MINDECAYTIME,
-			EAXREVERB_MAXDECAYTIME
+			::EAXREVERB_MINDECAYTIME,
+			::EAXREVERB_MAXDECAYTIME
 		);
 
 		defer_decay_time(flDecayTime);
 	}
 
-	if ((eax_d_.ulFlags & EAXREVERBFLAGS_REFLECTIONSSCALE) != 0)
+	if ((eax_d_.ulFlags & ::EAXREVERBFLAGS_REFLECTIONSSCALE) != 0)
 	{
-		if ((eax_d_.ulFlags & EAXREVERBFLAGS_REFLECTIONSDELAYSCALE) != 0)
+		if ((eax_d_.ulFlags & ::EAXREVERBFLAGS_REFLECTIONSDELAYSCALE) != 0)
 		{
 			const auto lReflections = std::clamp(
 				eax_d_.lReflections - static_cast<std::int32_t>(gain_to_level_mb(scale)),
-				EAXREVERB_MINREFLECTIONS,
-				EAXREVERB_MAXREFLECTIONS
+				::EAXREVERB_MINREFLECTIONS,
+				::EAXREVERB_MAXREFLECTIONS
 			);
 
 			defer_reflections(lReflections);
 		}
 	}
 
-	if ((eax_d_.ulFlags & EAXREVERBFLAGS_REFLECTIONSDELAYSCALE) != 0)
+	if ((eax_d_.ulFlags & ::EAXREVERBFLAGS_REFLECTIONSDELAYSCALE) != 0)
 	{
 		const auto flReflectionsDelay = std::clamp(
 			eax_d_.flReflectionsDelay * scale,
-			EAXREVERB_MINREFLECTIONSDELAY,
-			EAXREVERB_MAXREFLECTIONSDELAY
+			::EAXREVERB_MINREFLECTIONSDELAY,
+			::EAXREVERB_MAXREFLECTIONSDELAY
 		);
 
 		defer_reflections_delay(flReflectionsDelay);
 	}
 
-	if ((eax_d_.ulFlags & EAXREVERBFLAGS_REVERBSCALE) != 0)
+	if ((eax_d_.ulFlags & ::EAXREVERBFLAGS_REVERBSCALE) != 0)
 	{
-		const auto log_scalar = ((eax_d_.ulFlags & EAXREVERBFLAGS_DECAYTIMESCALE) != 0) ? 2'000.0F : 3'000.0F;
+		const auto log_scalar = ((eax_d_.ulFlags & ::EAXREVERBFLAGS_DECAYTIMESCALE) != 0) ? 2'000.0F : 3'000.0F;
 
 		const auto lReverb = std::clamp(
 			eax_d_.lReverb - static_cast<std::int32_t>(std::log10(scale) * log_scalar),
-			EAXREVERB_MINREVERB,
-			EAXREVERB_MAXREVERB
+			::EAXREVERB_MINREVERB,
+			::EAXREVERB_MAXREVERB
 		);
 
 		defer_reverb(lReverb);
 	}
 
-	if ((eax_d_.ulFlags & EAXREVERBFLAGS_REVERBDELAYSCALE) != 0)
+	if ((eax_d_.ulFlags & ::EAXREVERBFLAGS_REVERBDELAYSCALE) != 0)
 	{
 		const auto flReverbDelay = std::clamp(
 			scale * eax_d_.flReverbDelay,
-			EAXREVERB_MINREVERBDELAY,
-			EAXREVERB_MAXREVERBDELAY
+			::EAXREVERB_MINREVERBDELAY,
+			::EAXREVERB_MAXREVERBDELAY
 		);
 
 		defer_reverb_delay(flReverbDelay);
 	}
 
-	if ((eax_d_.ulFlags & EAXREVERBFLAGS_ECHOTIMESCALE) != 0)
+	if ((eax_d_.ulFlags & ::EAXREVERBFLAGS_ECHOTIMESCALE) != 0)
 	{
 		const auto flEchoTime = std::clamp(
 			eax_d_.flEchoTime * scale,
-			EAXREVERB_MINECHOTIME,
-			EAXREVERB_MAXECHOTIME
+			::EAXREVERB_MINECHOTIME,
+			::EAXREVERB_MAXECHOTIME
 		);
 
 		defer_echo_time(flEchoTime);
 	}
 
-	if ((eax_d_.ulFlags & EAXREVERBFLAGS_MODULATIONTIMESCALE) != 0)
+	if ((eax_d_.ulFlags & ::EAXREVERBFLAGS_MODULATIONTIMESCALE) != 0)
 	{
 		const auto flModulationTime = std::clamp(
 			scale * eax_d_.flModulationTime,
-			EAXREVERB_MINMODULATIONTIME,
-			EAXREVERB_MAXMODULATIONTIME
+			::EAXREVERB_MINMODULATIONTIME,
+			::EAXREVERB_MAXMODULATIONTIME
 		);
 
 		defer_modulation_time(flModulationTime);
@@ -1187,7 +1187,7 @@ void EaxxEaxReverbEffect::defer_environment_diffusion(
 		const EaxxEaxCall& eax_call)
 {
 	const auto& flEnvironmentDiffusion =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flEnvironmentDiffusion)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flEnvironmentDiffusion)>();
 
 	validate_environment_diffusion(flEnvironmentDiffusion);
 	defer_environment_diffusion(flEnvironmentDiffusion);
@@ -1197,7 +1197,7 @@ void EaxxEaxReverbEffect::defer_room(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& lRoom =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::lRoom)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::lRoom)>();
 
 	validate_room(lRoom);
 	defer_room(lRoom);
@@ -1207,7 +1207,7 @@ void EaxxEaxReverbEffect::defer_room_hf(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& lRoomHF =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::lRoomHF)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::lRoomHF)>();
 
 	validate_room_hf(lRoomHF);
 	defer_room_hf(lRoomHF);
@@ -1217,7 +1217,7 @@ void EaxxEaxReverbEffect::defer_room_lf(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& lRoomLF =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::lRoomLF)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::lRoomLF)>();
 
 	validate_room_lf(lRoomLF);
 	defer_room_lf(lRoomLF);
@@ -1227,7 +1227,7 @@ void EaxxEaxReverbEffect::defer_decay_time(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flDecayTime =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flDecayTime)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flDecayTime)>();
 
 	validate_decay_time(flDecayTime);
 	defer_decay_time(flDecayTime);
@@ -1237,7 +1237,7 @@ void EaxxEaxReverbEffect::defer_decay_hf_ratio(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flDecayHFRatio =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flDecayHFRatio)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flDecayHFRatio)>();
 
 	validate_decay_hf_ratio(flDecayHFRatio);
 	defer_decay_hf_ratio(flDecayHFRatio);
@@ -1247,7 +1247,7 @@ void EaxxEaxReverbEffect::defer_decay_lf_ratio(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flDecayLFRatio =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flDecayLFRatio)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flDecayLFRatio)>();
 
 	validate_decay_lf_ratio(flDecayLFRatio);
 	defer_decay_lf_ratio(flDecayLFRatio);
@@ -1257,7 +1257,7 @@ void EaxxEaxReverbEffect::defer_reflections(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& lReflections =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::lReflections)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::lReflections)>();
 
 	validate_reflections(lReflections);
 	defer_reflections(lReflections);
@@ -1267,7 +1267,7 @@ void EaxxEaxReverbEffect::defer_reflections_delay(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flReflectionsDelay =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flReflectionsDelay)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flReflectionsDelay)>();
 
 	validate_reflections_delay(flReflectionsDelay);
 	defer_reflections_delay(flReflectionsDelay);
@@ -1277,7 +1277,7 @@ void EaxxEaxReverbEffect::defer_reflections_pan(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& vReflectionsPan =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::vReflectionsPan)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::vReflectionsPan)>();
 
 	validate_reflections_pan(vReflectionsPan);
 	defer_reflections_pan(vReflectionsPan);
@@ -1287,7 +1287,7 @@ void EaxxEaxReverbEffect::defer_reverb(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& lReverb =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::lReverb)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::lReverb)>();
 
 	validate_reverb(lReverb);
 	defer_reverb(lReverb);
@@ -1297,7 +1297,7 @@ void EaxxEaxReverbEffect::defer_reverb_delay(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flReverbDelay =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flReverbDelay)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flReverbDelay)>();
 
 	validate_reverb_delay(flReverbDelay);
 	defer_reverb_delay(flReverbDelay);
@@ -1307,7 +1307,7 @@ void EaxxEaxReverbEffect::defer_reverb_pan(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& vReverbPan =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::vReverbPan)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::vReverbPan)>();
 
 	validate_reverb_pan(vReverbPan);
 	defer_reverb_pan(vReverbPan);
@@ -1317,7 +1317,7 @@ void EaxxEaxReverbEffect::defer_echo_time(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flEchoTime =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flEchoTime)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flEchoTime)>();
 
 	validate_echo_time(flEchoTime);
 	defer_echo_time(flEchoTime);
@@ -1327,7 +1327,7 @@ void EaxxEaxReverbEffect::defer_echo_depth(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flEchoDepth =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flEchoDepth)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flEchoDepth)>();
 
 	validate_echo_depth(flEchoDepth);
 	defer_echo_depth(flEchoDepth);
@@ -1337,7 +1337,7 @@ void EaxxEaxReverbEffect::defer_modulation_time(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flModulationTime =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flModulationTime)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flModulationTime)>();
 
 	validate_modulation_time(flModulationTime);
 	defer_modulation_time(flModulationTime);
@@ -1347,7 +1347,7 @@ void EaxxEaxReverbEffect::defer_modulation_depth(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flModulationDepth =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flModulationDepth)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flModulationDepth)>();
 
 	validate_modulation_depth(flModulationDepth);
 	defer_modulation_depth(flModulationDepth);
@@ -1357,7 +1357,7 @@ void EaxxEaxReverbEffect::defer_air_absorbtion_hf(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& air_absorbtion_hf =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flAirAbsorptionHF)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flAirAbsorptionHF)>();
 
 	validate_air_absorbtion_hf(air_absorbtion_hf);
 	defer_air_absorbtion_hf(air_absorbtion_hf);
@@ -1367,7 +1367,7 @@ void EaxxEaxReverbEffect::defer_hf_reference(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flHFReference =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flHFReference)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flHFReference)>();
 
 	validate_hf_reference(flHFReference);
 	defer_hf_reference(flHFReference);
@@ -1377,7 +1377,7 @@ void EaxxEaxReverbEffect::defer_lf_reference(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flLFReference =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flLFReference)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flLFReference)>();
 
 	validate_lf_reference(flLFReference);
 	defer_lf_reference(flLFReference);
@@ -1387,7 +1387,7 @@ void EaxxEaxReverbEffect::defer_room_rolloff_factor(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& flRoomRolloffFactor =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::flRoomRolloffFactor)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::flRoomRolloffFactor)>();
 
 	validate_room_rolloff_factor(flRoomRolloffFactor);
 	defer_room_rolloff_factor(flRoomRolloffFactor);
@@ -1397,7 +1397,7 @@ void EaxxEaxReverbEffect::defer_flags(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& ulFlags =
-		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(EAXREVERBPROPERTIES::ulFlags)>();
+		eax_call.get_value<EaxxEaxReverbEffectException, const decltype(::EAXREVERBPROPERTIES::ulFlags)>();
 
 	validate_flags(ulFlags);
 	defer_flags(ulFlags);
@@ -1411,7 +1411,7 @@ void EaxxEaxReverbEffect::defer_all(
 	if (eax_version == 2)
 	{
 		const auto& listener =
-			eax_call.get_value<EaxxEaxReverbEffectException, const EAX20LISTENERPROPERTIES>();
+			eax_call.get_value<EaxxEaxReverbEffectException, const ::EAX20LISTENERPROPERTIES>();
 
 		validate_all(listener, eax_version);
 		defer_all(listener);
@@ -1419,7 +1419,7 @@ void EaxxEaxReverbEffect::defer_all(
 	else
 	{
 		const auto& reverb_all =
-			eax_call.get_value<EaxxEaxReverbEffectException, const EAXREVERBPROPERTIES>();
+			eax_call.get_value<EaxxEaxReverbEffectException, const ::EAXREVERBPROPERTIES>();
 
 		validate_all(reverb_all, eax_version);
 		defer_all(reverb_all);
@@ -1564,106 +1564,106 @@ void EaxxEaxReverbEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXREVERB_NONE:
+		case ::EAXREVERB_NONE:
 			break;
 
-		case EAXREVERB_ALLPARAMETERS:
+		case ::EAXREVERB_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case EAXREVERB_ENVIRONMENT:
+		case ::EAXREVERB_ENVIRONMENT:
 			defer_environment(eax_call);
 			break;
 
-		case EAXREVERB_ENVIRONMENTSIZE:
+		case ::EAXREVERB_ENVIRONMENTSIZE:
 			defer_environment_size(eax_call);
 			break;
 
-		case EAXREVERB_ENVIRONMENTDIFFUSION:
+		case ::EAXREVERB_ENVIRONMENTDIFFUSION:
 			defer_environment_diffusion(eax_call);
 			break;
 
-		case EAXREVERB_ROOM:
+		case ::EAXREVERB_ROOM:
 			defer_room(eax_call);
 			break;
 
-		case EAXREVERB_ROOMHF:
+		case ::EAXREVERB_ROOMHF:
 			defer_room_hf(eax_call);
 			break;
 
-		case EAXREVERB_ROOMLF:
+		case ::EAXREVERB_ROOMLF:
 			defer_room_lf(eax_call);
 			break;
 
-		case EAXREVERB_DECAYTIME:
+		case ::EAXREVERB_DECAYTIME:
 			defer_decay_time(eax_call);
 			break;
 
-		case EAXREVERB_DECAYHFRATIO:
+		case ::EAXREVERB_DECAYHFRATIO:
 			defer_decay_hf_ratio(eax_call);
 			break;
 
-		case EAXREVERB_DECAYLFRATIO:
+		case ::EAXREVERB_DECAYLFRATIO:
 			defer_decay_lf_ratio(eax_call);
 			break;
 
-		case EAXREVERB_REFLECTIONS:
+		case ::EAXREVERB_REFLECTIONS:
 			defer_reflections(eax_call);
 			break;
 
-		case EAXREVERB_REFLECTIONSDELAY:
+		case ::EAXREVERB_REFLECTIONSDELAY:
 			defer_reflections_delay(eax_call);
 			break;
 
-		case EAXREVERB_REFLECTIONSPAN:
+		case ::EAXREVERB_REFLECTIONSPAN:
 			defer_reflections_pan(eax_call);
 			break;
 
-		case EAXREVERB_REVERB:
+		case ::EAXREVERB_REVERB:
 			defer_reverb(eax_call);
 			break;
 
-		case EAXREVERB_REVERBDELAY:
+		case ::EAXREVERB_REVERBDELAY:
 			defer_reverb_delay(eax_call);
 			break;
 
-		case EAXREVERB_REVERBPAN:
+		case ::EAXREVERB_REVERBPAN:
 			defer_reverb_pan(eax_call);
 			break;
 
-		case EAXREVERB_ECHOTIME:
+		case ::EAXREVERB_ECHOTIME:
 			defer_echo_time(eax_call);
 			break;
 
-		case EAXREVERB_ECHODEPTH:
+		case ::EAXREVERB_ECHODEPTH:
 			defer_echo_depth(eax_call);
 			break;
 
-		case EAXREVERB_MODULATIONTIME:
+		case ::EAXREVERB_MODULATIONTIME:
 			defer_modulation_time(eax_call);
 			break;
 
-		case EAXREVERB_MODULATIONDEPTH:
+		case ::EAXREVERB_MODULATIONDEPTH:
 			defer_modulation_depth(eax_call);
 			break;
 
-		case EAXREVERB_AIRABSORPTIONHF:
+		case ::EAXREVERB_AIRABSORPTIONHF:
 			defer_air_absorbtion_hf(eax_call);
 			break;
 
-		case EAXREVERB_HFREFERENCE:
+		case ::EAXREVERB_HFREFERENCE:
 			defer_hf_reference(eax_call);
 			break;
 
-		case EAXREVERB_LFREFERENCE:
+		case ::EAXREVERB_LFREFERENCE:
 			defer_lf_reference(eax_call);
 			break;
 
-		case EAXREVERB_ROOMROLLOFFFACTOR:
+		case ::EAXREVERB_ROOMROLLOFFFACTOR:
 			defer_room_rolloff_factor(eax_call);
 			break;
 
-		case EAXREVERB_FLAGS:
+		case ::EAXREVERB_FLAGS:
 			defer_flags(eax_call);
 			break;
 

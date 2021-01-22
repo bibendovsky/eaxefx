@@ -76,7 +76,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxDistortionEffect::EaxxDistortionEffect(
-	ALuint al_effect_slot)
+	::ALuint al_effect_slot)
 	:
 	al_effect_slot_{al_effect_slot},
 	efx_effect_object_{make_efx_effect_object(AL_EFFECT_DISTORTION)}
@@ -90,7 +90,7 @@ void EaxxDistortionEffect::load()
 	alAuxiliaryEffectSloti_(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<ALint>(efx_effect_object_.get())
+		static_cast<::ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -109,11 +109,11 @@ void EaxxDistortionEffect::dispatch(
 
 void EaxxDistortionEffect::set_eax_defaults()
 {
-	eax_.flEdge = EAXDISTORTION_DEFAULTEDGE;
-	eax_.lGain = EAXDISTORTION_DEFAULTGAIN;
-	eax_.flLowPassCutOff = EAXDISTORTION_DEFAULTLOWPASSCUTOFF;
-	eax_.flEQCenter = EAXDISTORTION_DEFAULTEQCENTER;
-	eax_.flEQBandwidth = EAXDISTORTION_DEFAULTEQBANDWIDTH;
+	eax_.flEdge = ::EAXDISTORTION_DEFAULTEDGE;
+	eax_.lGain = ::EAXDISTORTION_DEFAULTGAIN;
+	eax_.flLowPassCutOff = ::EAXDISTORTION_DEFAULTLOWPASSCUTOFF;
+	eax_.flEQCenter = ::EAXDISTORTION_DEFAULTEQCENTER;
+	eax_.flEQBandwidth = ::EAXDISTORTION_DEFAULTEQBANDWIDTH;
 
 	eax_d_ = eax_;
 }
@@ -187,30 +187,30 @@ void EaxxDistortionEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXDISTORTION_NONE:
+		case ::EAXDISTORTION_NONE:
 			break;
 
-		case EAXDISTORTION_ALLPARAMETERS:
+		case ::EAXDISTORTION_ALLPARAMETERS:
 			eax_call.set_value<EaxxDistortionEffectException>(eax_);
 			break;
 
-		case EAXDISTORTION_EDGE:
+		case ::EAXDISTORTION_EDGE:
 			eax_call.set_value<EaxxDistortionEffectException>(eax_.flEdge);
 			break;
 
-		case EAXDISTORTION_GAIN:
+		case ::EAXDISTORTION_GAIN:
 			eax_call.set_value<EaxxDistortionEffectException>(eax_.lGain);
 			break;
 
-		case EAXDISTORTION_LOWPASSCUTOFF:
+		case ::EAXDISTORTION_LOWPASSCUTOFF:
 			eax_call.set_value<EaxxDistortionEffectException>(eax_.flLowPassCutOff);
 			break;
 
-		case EAXDISTORTION_EQCENTER:
+		case ::EAXDISTORTION_EQCENTER:
 			eax_call.set_value<EaxxDistortionEffectException>(eax_.flEQCenter);
 			break;
 
-		case EAXDISTORTION_EQBANDWIDTH:
+		case ::EAXDISTORTION_EQBANDWIDTH:
 			eax_call.set_value<EaxxDistortionEffectException>(eax_.flEQBandwidth);
 			break;
 
@@ -225,8 +225,8 @@ void EaxxDistortionEffect::validate_edge(
 	eaxx_validate_range<EaxxDistortionEffectException>(
 		"Edge",
 		flEdge,
-		EAXDISTORTION_MINEDGE,
-		EAXDISTORTION_MAXEDGE
+		::EAXDISTORTION_MINEDGE,
+		::EAXDISTORTION_MAXEDGE
 	);
 }
 
@@ -236,8 +236,8 @@ void EaxxDistortionEffect::validate_gain(
 	eaxx_validate_range<EaxxDistortionEffectException>(
 		"Gain",
 		lGain,
-		EAXDISTORTION_MINGAIN,
-		EAXDISTORTION_MAXGAIN
+		::EAXDISTORTION_MINGAIN,
+		::EAXDISTORTION_MAXGAIN
 	);
 }
 
@@ -247,8 +247,8 @@ void EaxxDistortionEffect::validate_low_pass_cutoff(
 	eaxx_validate_range<EaxxDistortionEffectException>(
 		"Low-pass Cut-off",
 		flLowPassCutOff,
-		EAXDISTORTION_MINLOWPASSCUTOFF,
-		EAXDISTORTION_MAXLOWPASSCUTOFF
+		::EAXDISTORTION_MINLOWPASSCUTOFF,
+		::EAXDISTORTION_MAXLOWPASSCUTOFF
 	);
 }
 
@@ -258,8 +258,8 @@ void EaxxDistortionEffect::validate_eq_center(
 	eaxx_validate_range<EaxxDistortionEffectException>(
 		"EQ Center",
 		flEQCenter,
-		EAXDISTORTION_MINEQCENTER,
-		EAXDISTORTION_MAXEQCENTER
+		::EAXDISTORTION_MINEQCENTER,
+		::EAXDISTORTION_MAXEQCENTER
 	);
 }
 
@@ -269,13 +269,13 @@ void EaxxDistortionEffect::validate_eq_bandwidth(
 	eaxx_validate_range<EaxxDistortionEffectException>(
 		"EQ Bandwidth",
 		flEQBandwidth,
-		EAXDISTORTION_MINEQBANDWIDTH,
-		EAXDISTORTION_MAXEQBANDWIDTH
+		::EAXDISTORTION_MINEQBANDWIDTH,
+		::EAXDISTORTION_MAXEQBANDWIDTH
 	);
 }
 
 void EaxxDistortionEffect::validate_all(
-	const EAXDISTORTIONPROPERTIES& eax_all)
+	const ::EAXDISTORTIONPROPERTIES& eax_all)
 {
 	validate_edge(eax_all.flEdge);
 	validate_gain(eax_all.lGain);
@@ -320,7 +320,7 @@ void EaxxDistortionEffect::defer_eq_bandwidth(
 }
 
 void EaxxDistortionEffect::defer_all(
-	const EAXDISTORTIONPROPERTIES& eax_all)
+	const ::EAXDISTORTIONPROPERTIES& eax_all)
 {
 	defer_edge(eax_all.flEdge);
 	defer_gain(eax_all.lGain);
@@ -333,7 +333,7 @@ void EaxxDistortionEffect::defer_edge(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& edge =
-		eax_call.get_value<EaxxDistortionEffectException, const decltype(EAXDISTORTIONPROPERTIES::flEdge)>();
+		eax_call.get_value<EaxxDistortionEffectException, const decltype(::EAXDISTORTIONPROPERTIES::flEdge)>();
 
 	validate_edge(edge);
 	defer_edge(edge);
@@ -343,7 +343,7 @@ void EaxxDistortionEffect::defer_gain(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& gain =
-		eax_call.get_value<EaxxDistortionEffectException, const decltype(EAXDISTORTIONPROPERTIES::lGain)>();
+		eax_call.get_value<EaxxDistortionEffectException, const decltype(::EAXDISTORTIONPROPERTIES::lGain)>();
 
 	validate_gain(gain);
 	defer_gain(gain);
@@ -353,7 +353,7 @@ void EaxxDistortionEffect::defer_low_pass_cutoff(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& low_pass_cutoff =
-		eax_call.get_value<EaxxDistortionEffectException, const decltype(EAXDISTORTIONPROPERTIES::flLowPassCutOff)>();
+		eax_call.get_value<EaxxDistortionEffectException, const decltype(::EAXDISTORTIONPROPERTIES::flLowPassCutOff)>();
 
 	validate_low_pass_cutoff(low_pass_cutoff);
 	defer_low_pass_cutoff(low_pass_cutoff);
@@ -363,7 +363,7 @@ void EaxxDistortionEffect::defer_eq_center(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& eq_center =
-		eax_call.get_value<EaxxDistortionEffectException, const decltype(EAXDISTORTIONPROPERTIES::flEQCenter)>();
+		eax_call.get_value<EaxxDistortionEffectException, const decltype(::EAXDISTORTIONPROPERTIES::flEQCenter)>();
 
 	validate_eq_center(eq_center);
 	defer_eq_center(eq_center);
@@ -373,7 +373,7 @@ void EaxxDistortionEffect::defer_eq_bandwidth(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& eq_bandwidth =
-		eax_call.get_value<EaxxDistortionEffectException, const decltype(EAXDISTORTIONPROPERTIES::flEQBandwidth)>();
+		eax_call.get_value<EaxxDistortionEffectException, const decltype(::EAXDISTORTIONPROPERTIES::flEQBandwidth)>();
 
 	validate_eq_bandwidth(eq_bandwidth);
 	defer_eq_bandwidth(eq_bandwidth);
@@ -383,7 +383,7 @@ void EaxxDistortionEffect::defer_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& all =
-		eax_call.get_value<EaxxDistortionEffectException, const EAXDISTORTIONPROPERTIES>();
+		eax_call.get_value<EaxxDistortionEffectException, const ::EAXDISTORTIONPROPERTIES>();
 
 	validate_all(all);
 	defer_all(all);
@@ -433,30 +433,30 @@ void EaxxDistortionEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXDISTORTION_NONE:
+		case ::EAXDISTORTION_NONE:
 			break;
 
-		case EAXDISTORTION_ALLPARAMETERS:
+		case ::EAXDISTORTION_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case EAXDISTORTION_EDGE:
+		case ::EAXDISTORTION_EDGE:
 			defer_edge(eax_call);
 			break;
 
-		case EAXDISTORTION_GAIN:
+		case ::EAXDISTORTION_GAIN:
 			defer_gain(eax_call);
 			break;
 
-		case EAXDISTORTION_LOWPASSCUTOFF:
+		case ::EAXDISTORTION_LOWPASSCUTOFF:
 			defer_low_pass_cutoff(eax_call);
 			break;
 
-		case EAXDISTORTION_EQCENTER:
+		case ::EAXDISTORTION_EQCENTER:
 			defer_eq_center(eax_call);
 			break;
 
-		case EAXDISTORTION_EQBANDWIDTH:
+		case ::EAXDISTORTION_EQBANDWIDTH:
 			defer_eq_bandwidth(eax_call);
 			break;
 

@@ -44,6 +44,7 @@ namespace eaxefx
 enum class EaxxEaxCallPropertySetId
 {
 	none,
+
 	context,
 	fx_slot,
 	source,
@@ -74,11 +75,11 @@ class EaxxEaxCall
 public:
 	EaxxEaxCall(
 		bool is_get,
-		const GUID* property_set_guid,
-		ALuint property_id,
-		ALuint property_al_name,
-		ALvoid* property_buffer,
-		ALuint property_size);
+		const ::GUID* property_set_guid,
+		::ALuint property_id,
+		::ALuint property_al_name,
+		::ALvoid* property_buffer,
+		::ALuint property_size);
 
 	bool is_get() const noexcept;
 
@@ -88,9 +89,9 @@ public:
 
 	EaxxEaxCallPropertySetId get_property_set_id() const noexcept;
 
-	ALuint get_property_id() const noexcept;
+	::ALuint get_property_id() const noexcept;
 
-	ALuint get_property_al_name() const noexcept;
+	::ALuint get_property_al_name() const noexcept;
 
 	EaxxFxSlotIndex get_fx_slot_index() const noexcept;
 
@@ -101,7 +102,7 @@ public:
 	>
 	TValue& get_value() const
 	{
-		if (property_size_ < static_cast<ALuint>(sizeof(TValue)))
+		if (property_size_ < static_cast<::ALuint>(sizeof(TValue)))
 		{
 			throw TException{"Property buffer too small."};
 		}
@@ -115,7 +116,7 @@ public:
 	>
 	EaxxEaxCallSpan<TValue> get_values() const
 	{
-		if (property_size_ < static_cast<ALuint>(sizeof(TValue)))
+		if (property_size_ < static_cast<::ALuint>(sizeof(TValue)))
 		{
 			throw TException{"Property buffer too small."};
 		}
@@ -142,18 +143,18 @@ private:
 	EaxxFxSlotIndex fx_slot_index_;
 	EaxxEaxCallPropertySetId property_set_id_;
 
-	GUID property_set_guid_;
-	ALuint property_id_;
-	ALuint property_al_name_;
-	ALvoid* property_buffer_;
-	ALuint property_size_;
+	::GUID property_set_guid_;
+	::ALuint property_id_;
+	::ALuint property_al_name_;
+	::ALvoid* property_buffer_;
+	::ALuint property_size_;
 
 
-	static ALuint convert_eax_2_listener_property_id(
-		ALuint property_id);
+	static ::ALuint convert_eax_2_listener_property_id(
+		::ALuint property_id);
 
-	static ALuint convert_eax_2_buffer_property_id(
-		ALuint property_id);
+	static ::ALuint convert_eax_2_buffer_property_id(
+		::ALuint property_id);
 }; // EaxxEaxCall
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -163,11 +164,11 @@ private:
 
 EaxxEaxCall make_eax_call(
 	bool is_get,
-	const GUID* property_set_id,
-	ALuint property_id,
-	ALuint property_al_name,
-	ALvoid* property_buffer,
-	ALuint property_size);
+	const ::GUID* property_set_id,
+	::ALuint property_id,
+	::ALuint property_al_name,
+	::ALvoid* property_buffer,
+	::ALuint property_size);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

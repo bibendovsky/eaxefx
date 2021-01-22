@@ -75,7 +75,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxCompressorEffect::EaxxCompressorEffect(
-	ALuint al_effect_slot)
+	::ALuint al_effect_slot)
 	:
 	al_effect_slot_{al_effect_slot},
 	efx_effect_object_{make_efx_effect_object(AL_EFFECT_COMPRESSOR)}
@@ -89,7 +89,7 @@ void EaxxCompressorEffect::load()
 	alAuxiliaryEffectSloti_(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<ALint>(efx_effect_object_.get())
+		static_cast<::ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -108,7 +108,7 @@ void EaxxCompressorEffect::dispatch(
 
 void EaxxCompressorEffect::set_eax_defaults()
 {
-	eax_.ulOnOff = EAXAGCCOMPRESSOR_DEFAULTONOFF;
+	eax_.ulOnOff = ::EAXAGCCOMPRESSOR_DEFAULTONOFF;
 
 	eax_d_ = eax_;
 }
@@ -116,7 +116,7 @@ void EaxxCompressorEffect::set_eax_defaults()
 void EaxxCompressorEffect::set_efx_on_off()
 {
 	const auto on_off = std::clamp(
-		static_cast<ALint>(eax_.ulOnOff),
+		static_cast<::ALint>(eax_.ulOnOff),
 		AL_COMPRESSOR_MIN_ONOFF,
 		AL_COMPRESSOR_MAX_ONOFF
 	);
@@ -134,14 +134,14 @@ void EaxxCompressorEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXAGCCOMPRESSOR_NONE:
+		case ::EAXAGCCOMPRESSOR_NONE:
 			break;
 
-		case EAXAGCCOMPRESSOR_ALLPARAMETERS:
+		case ::EAXAGCCOMPRESSOR_ALLPARAMETERS:
 			eax_call.set_value<EaxxCompressorEffectException>(eax_);
 			break;
 
-		case EAXAGCCOMPRESSOR_ONOFF:
+		case ::EAXAGCCOMPRESSOR_ONOFF:
 			eax_call.set_value<EaxxCompressorEffectException>(eax_.ulOnOff);
 			break;
 
@@ -156,13 +156,13 @@ void EaxxCompressorEffect::validate_on_off(
 	eaxx_validate_range<EaxxCompressorEffectException>(
 		"On-Off",
 		ulOnOff,
-		EAXAGCCOMPRESSOR_MINONOFF,
-		EAXAGCCOMPRESSOR_MAXONOFF
+		::EAXAGCCOMPRESSOR_MINONOFF,
+		::EAXAGCCOMPRESSOR_MAXONOFF
 	);
 }
 
 void EaxxCompressorEffect::validate_all(
-	const EAXAGCCOMPRESSORPROPERTIES& eax_all)
+	const ::EAXAGCCOMPRESSORPROPERTIES& eax_all)
 {
 	validate_on_off(eax_all.ulOnOff);
 }
@@ -175,7 +175,7 @@ void EaxxCompressorEffect::defer_on_off(
 }
 
 void EaxxCompressorEffect::defer_all(
-	const EAXAGCCOMPRESSORPROPERTIES& eax_all)
+	const ::EAXAGCCOMPRESSORPROPERTIES& eax_all)
 {
 	defer_on_off(eax_all.ulOnOff);
 }
@@ -184,7 +184,7 @@ void EaxxCompressorEffect::defer_on_off(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& on_off =
-		eax_call.get_value<EaxxCompressorEffectException, const decltype(EAXAGCCOMPRESSORPROPERTIES::ulOnOff)>();
+		eax_call.get_value<EaxxCompressorEffectException, const decltype(::EAXAGCCOMPRESSORPROPERTIES::ulOnOff)>();
 
 	validate_on_off(on_off);
 	defer_on_off(on_off);
@@ -194,7 +194,7 @@ void EaxxCompressorEffect::defer_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& all =
-		eax_call.get_value<EaxxCompressorEffectException, const EAXAGCCOMPRESSORPROPERTIES>();
+		eax_call.get_value<EaxxCompressorEffectException, const ::EAXAGCCOMPRESSORPROPERTIES>();
 
 	validate_all(all);
 	defer_all(all);
@@ -224,14 +224,14 @@ void EaxxCompressorEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case EAXAGCCOMPRESSOR_NONE:
+		case ::EAXAGCCOMPRESSOR_NONE:
 			break;
 
-		case EAXAGCCOMPRESSOR_ALLPARAMETERS:
+		case ::EAXAGCCOMPRESSOR_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case EAXAGCCOMPRESSOR_ONOFF:
+		case ::EAXAGCCOMPRESSOR_ONOFF:
 			defer_on_off(eax_call);
 			break;
 

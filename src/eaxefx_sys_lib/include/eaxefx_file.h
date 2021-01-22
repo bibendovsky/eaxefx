@@ -31,8 +31,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <memory>
 
-#include "eaxefx_string.h"
-
 
 namespace eaxefx
 {
@@ -84,7 +82,7 @@ enum FileOpenMode :
 using FileUPtr = std::unique_ptr<File>;
 
 FileUPtr make_file(
-	const String& path,
+	const char* path,
 	FileOpenMode open_mode);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

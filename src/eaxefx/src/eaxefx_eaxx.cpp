@@ -199,54 +199,54 @@ public:
 	~EaxxImpl() override = default;
 
 
-	ALboolean alIsExtensionPresent(
-		const ALchar* extname) override;
+	::ALboolean alIsExtensionPresent(
+		const ::ALchar* extname) override;
 
 
-	const ALchar* alGetString(
-		ALenum param) override;
+	const ::ALchar* alGetString(
+		::ALenum param) override;
 
 
-	ALCdevice* alcOpenDevice(
-		const ALCchar* devicename) override;
+	::ALCdevice* alcOpenDevice(
+		const ::ALCchar* devicename) override;
 
-	ALCboolean alcCloseDevice(
-		ALCdevice* device) override;
+	::ALCboolean alcCloseDevice(
+		::ALCdevice* device) override;
 
 
 	void alGenSources(
-		ALsizei n,
-		ALuint* sources) override;
+		::ALsizei n,
+		::ALuint* sources) override;
 
 	void alDeleteSources(
-		ALsizei n,
-		const ALuint* sources) override;
+		::ALsizei n,
+		const ::ALuint* sources) override;
 
 
-	ALCcontext* alcCreateContext(
-		ALCdevice* device,
-		const ALCint* attrlist) override;
+	::ALCcontext* alcCreateContext(
+		::ALCdevice* device,
+		const ::ALCint* attrlist) override;
 
-	ALCboolean alcMakeContextCurrent(
-		ALCcontext* context) override;
+	::ALCboolean alcMakeContextCurrent(
+		::ALCcontext* context) override;
 
 	void alcDestroyContext(
-		ALCcontext* context) override;
+		::ALCcontext* context) override;
 
 
-	ALenum EAXSet(
-		const GUID* property_set_guid,
-		ALuint property_id,
-		ALuint property_al_name,
-		ALvoid* property_buffer,
-		ALuint property_size) noexcept override;
+	::ALenum EAXSet(
+		const ::GUID* property_set_guid,
+		::ALuint property_id,
+		::ALuint property_al_name,
+		::ALvoid* property_buffer,
+		::ALuint property_size) noexcept override;
 
-	ALenum EAXGet(
-		const GUID* property_set_guid,
-		ALuint property_id,
-		ALuint property_al_name,
-		ALvoid* property_buffer,
-		ALuint property_size) noexcept override;
+	::ALenum EAXGet(
+		const ::GUID* property_set_guid,
+		::ALuint property_id,
+		::ALuint property_al_name,
+		::ALvoid* property_buffer,
+		::ALuint property_size) noexcept override;
 
 
 private:
@@ -256,31 +256,31 @@ private:
 	static constexpr auto al_contexts_reserve = al_devices_reserve;
 
 
-	using AlcAttrCache = std::vector<ALCint>;
+	using AlcAttrCache = std::vector<::ALCint>;
 	using AlExtsBuffer = String;
 
 
 	struct Device
 	{
-		ALCdevice* al_device;
+		::ALCdevice* al_device;
 
 
 		explicit Device(
-			ALCdevice* al_device) noexcept
+			::ALCdevice* al_device) noexcept
 			:
 			al_device{al_device}
 		{
 		}
 	}; // Device
 
-	using DeviceMap = std::unordered_map<ALCdevice*, Device>;
-	using ContextMap = std::unordered_map<ALCcontext*, EaxxContext>;
+	using DeviceMap = std::unordered_map<::ALCdevice*, Device>;
+	using ContextMap = std::unordered_map<::ALCcontext*, EaxxContext>;
 
 
 	Logger* logger_{};
 	AlLoader* al_loader_{};
 	Mutex mutex_{};
-	const ALchar* al_exts_ref_{};
+	const ::ALchar* al_exts_ref_{};
 	AlExtsBuffer al_exts_buffer_{};
 	AlcAttrCache al_context_attr_buffer_{};
 	DeviceMap device_map_{};
@@ -299,21 +299,21 @@ private:
 	void ensure_context_for_eax_get_set();
 
 	void open_device(
-		const ALCchar* al_device_name,
-		ALCdevice* al_device);
+		const ::ALCchar* al_device_name,
+		::ALCdevice* al_device);
 
 	Device* find_device(
-		ALCdevice* al_device) noexcept;
+		::ALCdevice* al_device) noexcept;
 
 	void append_eax_extension_if_not_exist(
 		std::string_view al_exts,
 		std::string_view eax_ext);
 
-	const ALchar* make_al_exts(
-		const ALchar* al_exts);
+	const ::ALchar* make_al_exts(
+		const ::ALchar* al_exts);
 
-	const ALCint* make_al_context_attrs(
-		const ALCint* al_context_attrs);
+	const ::ALCint* make_al_context_attrs(
+		const ::ALCint* al_context_attrs);
 
 	void initialize_current_context() noexcept;
 
@@ -340,12 +340,12 @@ EaxxImpl::EaxxImpl(
 	logger_{logger},
 	al_loader_{al_loader}
 {
-	if (logger_ == nullptr)
+	if (!logger_)
 	{
 		throw EaxxImplException{"Null logger."};
 	}
 
-	if (al_loader_ == nullptr)
+	if (!al_loader_)
 	{
 		throw EaxxImplException{"Null AL loader."};
 	}
@@ -356,12 +356,12 @@ EaxxImpl::EaxxImpl(
 	context_map_.reserve(al_contexts_reserve);
 }
 
-ALboolean EaxxImpl::alIsExtensionPresent(
-	const ALchar* extname)
+::ALboolean EaxxImpl::alIsExtensionPresent(
+	const ::ALchar* extname)
 {
 	const auto lock = std::scoped_lock{mutex_};
 
-	if (extname != nullptr)
+	if (extname)
 	{
 		const auto extname_view = std::string_view{extname};
 
@@ -377,8 +377,8 @@ ALboolean EaxxImpl::alIsExtensionPresent(
 	return alIsExtensionPresent_(extname);
 }
 
-const ALchar* EaxxImpl::alGetString(
-	ALenum param)
+const ::ALchar* EaxxImpl::alGetString(
+	::ALenum param)
 {
 	const auto lock = std::scoped_lock{mutex_};
 
@@ -392,19 +392,22 @@ const ALchar* EaxxImpl::alGetString(
 	return al_exts;
 }
 
-ALCdevice* EaxxImpl::alcOpenDevice(
-	const ALCchar* devicename)
+::ALCdevice* EaxxImpl::alcOpenDevice(
+	const ::ALCchar* devicename)
 {
 	const auto lock = std::scoped_lock{mutex_};
 
-	logger_->info(
-		devicename != nullptr ?
-			"Open device \"" + String{devicename} + "\"." :
-			"Open default device.");
+	const auto message =
+		devicename ?
+		"Open device \"" + String{devicename} + "\"." :
+		"Open default device."
+	;
+
+	logger_->info(message.c_str());
 
 	const auto al_device = alcOpenDevice_(devicename);
 
-	if (al_device != nullptr)
+	if (al_device)
 	{
 		open_device(devicename, al_device);
 	}
@@ -412,8 +415,8 @@ ALCdevice* EaxxImpl::alcOpenDevice(
 	return al_device;
 }
 
-ALCboolean EaxxImpl::alcCloseDevice(
-	ALCdevice* device)
+::ALCboolean EaxxImpl::alcCloseDevice(
+	::ALCdevice* device)
 {
 	const auto lock = std::scoped_lock{mutex_};
 
@@ -430,16 +433,16 @@ ALCboolean EaxxImpl::alcCloseDevice(
 }
 
 void EaxxImpl::alGenSources(
-	ALsizei n,
-	ALuint* sources)
+	::ALsizei n,
+	::ALuint* sources)
 {
 	auto has_sources = false;
 
-	if (n > 0 && sources != nullptr)
+	if (n > 0 && sources)
 	{
 		has_sources = true;
 
-		for (auto i = ALsizei{}; i < n; ++i)
+		for (auto i = ::ALsizei{}; i < n; ++i)
 		{
 			sources[i] = 0;
 		}
@@ -451,7 +454,7 @@ void EaxxImpl::alGenSources(
 	{
 		const auto lock = std::scoped_lock{mutex_};
 
-		if (current_context_ != nullptr)
+		if (current_context_)
 		{
 			current_context_->initialize_sources(n, sources);
 		}
@@ -459,41 +462,41 @@ void EaxxImpl::alGenSources(
 }
 
 void EaxxImpl::alDeleteSources(
-	ALsizei n,
-	const ALuint* sources)
+	::ALsizei n,
+	const ::ALuint* sources)
 {
 	alDeleteSources_(n, sources);
 
 
 	const auto lock = std::scoped_lock{mutex_};
 
-	if (current_context_ != nullptr &&
+	if (current_context_ &&
 		n > 0 &&
-		sources != nullptr &&
+		sources &&
 		sources[0] != 0)
 	{
 		current_context_->uninitialize_sources(n, sources);
 	}
 }
 
-ALCcontext* EaxxImpl::alcCreateContext(
-	ALCdevice* device,
-	const ALCint* attrlist)
+::ALCcontext* EaxxImpl::alcCreateContext(
+	::ALCdevice* device,
+	const ::ALCint* attrlist)
 {
 	const auto lock = std::scoped_lock{mutex_};
 
-	if (device != nullptr)
+	if (device)
 	{
 		attrlist = make_al_context_attrs(attrlist);
 	}
 
 	const auto al_context = alcCreateContext_(device, attrlist);
 
-	if (al_context != nullptr)
+	if (al_context)
 	{
 		const auto our_device = find_device(device);
 
-		if (our_device != nullptr)
+		if (our_device)
 		{
 			context_map_.emplace(al_context, EaxxContext{device, al_context});
 		}
@@ -506,8 +509,8 @@ ALCcontext* EaxxImpl::alcCreateContext(
 	return al_context;
 }
 
-ALCboolean EaxxImpl::alcMakeContextCurrent(
-	ALCcontext* context)
+::ALCboolean EaxxImpl::alcMakeContextCurrent(
+	::ALCcontext* context)
 {
 	const auto al_result = alcMakeContextCurrent_(context);
 
@@ -517,7 +520,7 @@ ALCboolean EaxxImpl::alcMakeContextCurrent(
 
 		current_context_ = nullptr;
 
-		if (context != nullptr)
+		if (context)
 		{
 			for (auto& [context_key, context_value] : context_map_)
 			{
@@ -534,13 +537,13 @@ ALCboolean EaxxImpl::alcMakeContextCurrent(
 }
 
 void EaxxImpl::alcDestroyContext(
-	ALCcontext* context)
+	::ALCcontext* context)
 {
 	const auto lock = std::scoped_lock{mutex_};
 
-	if (context != nullptr)
+	if (context)
 	{
-		if (current_context_ != nullptr && current_context_->get_al_context() == context)
+		if (current_context_ && current_context_->get_al_context() == context)
 		{
 			current_context_ = nullptr;
 		}
@@ -551,12 +554,12 @@ void EaxxImpl::alcDestroyContext(
 	alcDestroyContext_(context);
 }
 
-ALenum EaxxImpl::EAXSet(
-	const GUID* property_set_guid,
-	ALuint property_id,
-	ALuint property_al_name,
-	ALvoid* property_buffer,
-	ALuint property_size) noexcept
+::ALenum EaxxImpl::EAXSet(
+	const ::GUID* property_set_guid,
+	::ALuint property_id,
+	::ALuint property_al_name,
+	::ALvoid* property_buffer,
+	::ALuint property_size) noexcept
 try
 {
 	const auto lock = std::scoped_lock{mutex_};
@@ -599,12 +602,12 @@ catch (const std::exception& ex)
 	return AL_INVALID_OPERATION;
 }
 
-ALenum EaxxImpl::EAXGet(
-	const GUID* property_set_guid,
-	ALuint property_id,
-	ALuint property_al_name,
-	ALvoid* property_buffer,
-	ALuint property_size) noexcept
+::ALenum EaxxImpl::EAXGet(
+	const ::GUID* property_set_guid,
+	::ALuint property_id,
+	::ALuint property_al_name,
+	::ALvoid* property_buffer,
+	::ALuint property_size) noexcept
 try
 {
 	const auto lock = std::scoped_lock{mutex_};
@@ -650,13 +653,13 @@ catch (const std::exception& ex)
 bool EaxxImpl::has_current_context() const noexcept
 {
 	return
-		current_context_ != nullptr &&
+		current_context_ &&
 		current_context_->is_initialized();
 }
 
 void EaxxImpl::ensure_context_for_eax_get_set()
 {
-	if (current_context_ == nullptr)
+	if (!current_context_)
 	{
 		throw EaxxImplException{"Null current context."};
 	}
@@ -670,18 +673,19 @@ void EaxxImpl::ensure_context_for_eax_get_set()
 }
 
 void EaxxImpl::open_device(
-	const ALCchar* al_device_name,
-	ALCdevice* al_device)
+	const ::ALCchar* al_device_name,
+	::ALCdevice* al_device)
 {
 	device_map_.emplace(al_device, Device{al_device});
 
-	if (al_device_name == nullptr)
+	if (!al_device_name)
 	{
 		const auto real_device_name = alcGetString_(al_device, ALC_DEVICE_SPECIFIER);
 
-		if (real_device_name != nullptr)
+		if (real_device_name)
 		{
-			logger_->info("Device name: \"" + String{real_device_name} + "\".");
+			const auto message = "Device name: \"" + String{real_device_name} + "\".";
+			logger_->info(message.c_str());
 		}
 		else
 		{
@@ -691,7 +695,7 @@ void EaxxImpl::open_device(
 }
 
 EaxxImpl::Device* EaxxImpl::find_device(
-	ALCdevice* al_device) noexcept
+	::ALCdevice* al_device) noexcept
 {
 	const auto device_it = device_map_.find(al_device);
 
@@ -718,10 +722,10 @@ void EaxxImpl::append_eax_extension_if_not_exist(
 	}
 }
 
-const ALchar* EaxxImpl::make_al_exts(
-	const ALchar* al_exts)
+const ::ALchar* EaxxImpl::make_al_exts(
+	const ::ALchar* al_exts)
 {
-	if (al_exts == nullptr)
+	if (!al_exts)
 	{
 		return nullptr;
 	}
@@ -757,14 +761,14 @@ const ALchar* EaxxImpl::make_al_exts(
 	return al_exts_buffer_.data();
 }
 
-const ALCint* EaxxImpl::make_al_context_attrs(
-	const ALCint* al_context_attrs)
+const ::ALCint* EaxxImpl::make_al_context_attrs(
+	const ::ALCint* al_context_attrs)
 {
 	al_context_attr_buffer_.clear();
 
-	auto max_aux_sends = ALCint{};
+	auto max_aux_sends = ::ALCint{};
 
-	if (al_context_attrs != nullptr)
+	if (al_context_attrs)
 	{
 		while (true)
 		{
@@ -789,7 +793,7 @@ const ALCint* EaxxImpl::make_al_context_attrs(
 		}
 	}
 
-	max_aux_sends = std::max(max_aux_sends, EAX_MAX_FXSLOTS);
+	max_aux_sends = std::max(max_aux_sends, ::EAX_MAX_FXSLOTS);
 
 	al_context_attr_buffer_.emplace_back(ALC_MAX_AUXILIARY_SENDS);
 	al_context_attr_buffer_.emplace_back(max_aux_sends);
@@ -802,7 +806,7 @@ const ALCint* EaxxImpl::make_al_context_attrs(
 void EaxxImpl::initialize_current_context() noexcept
 try
 {
-	if (current_context_ == nullptr)
+	if (!current_context_)
 	{
 		throw EaxxImplException{"Null current context."};
 	}
@@ -843,7 +847,7 @@ void EaxxImpl::dispatch_source(
 {
 	auto source = current_context_->find_source(eax_call.get_property_al_name());
 
-	if (source == nullptr)
+	if (!source)
 	{
 		throw EaxxImplException{"Source not found."};
 	}

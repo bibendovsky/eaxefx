@@ -69,7 +69,7 @@ class EaxxFrequencyShifterEffect final :
 {
 public:
 	EaxxFrequencyShifterEffect(
-		ALuint al_effect_slot);
+		::ALuint al_effect_slot);
 
 
 	void load() override;
@@ -79,11 +79,11 @@ public:
 
 
 private:
-	const ALuint al_effect_slot_;
+	const ::ALuint al_effect_slot_;
 	EfxEffectObject efx_effect_object_;
 
-	EAXFREQUENCYSHIFTERPROPERTIES eax_;
-	EAXFREQUENCYSHIFTERPROPERTIES eax_d_;
+	::EAXFREQUENCYSHIFTERPROPERTIES eax_;
+	::EAXFREQUENCYSHIFTERPROPERTIES eax_d_;
 	EaxxFrequencyShifterEffectEaxDirtyFlags eax_dirty_flags_{};
 
 
@@ -113,7 +113,7 @@ private:
 		std::uint32_t ulRightDirection);
 
 	void validate_all(
-		const EAXFREQUENCYSHIFTERPROPERTIES& all);
+		const ::EAXFREQUENCYSHIFTERPROPERTIES& all);
 
 
 	void defer_frequency(
@@ -126,7 +126,7 @@ private:
 		std::uint32_t ulRightDirection);
 
 	void defer_all(
-		const EAXFREQUENCYSHIFTERPROPERTIES& all);
+		const ::EAXFREQUENCYSHIFTERPROPERTIES& all);
 
 
 	void defer_frequency(

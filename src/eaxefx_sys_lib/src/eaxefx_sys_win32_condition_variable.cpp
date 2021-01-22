@@ -66,9 +66,9 @@ SysWin32ConditionVariable::SysWin32ConditionVariable()
 		reinterpret_cast<SleepConditionVariableCSFunc>(
 			kernel32_shared_library_->resolve("SleepConditionVariableCS"))}
 {
-	if (initialize_condition_variable_func_ == nullptr ||
-		wake_condition_variable_func_ == nullptr ||
-		sleep_condition_variable_cs_func_ == nullptr)
+	if (!initialize_condition_variable_func_ ||
+		!wake_condition_variable_func_ ||
+		!sleep_condition_variable_cs_func_)
 	{
 		throw SysWin32ConditionVariableException{"Missing symbols."};
 	}
@@ -82,7 +82,7 @@ bool SysWin32ConditionVariable::sleep(
 	SysWin32CriticalSection& critical_section,
 	std::chrono::milliseconds timeout)
 {
-	DWORD timeout_ms;
+	::DWORD timeout_ms;
 
 	if (timeout.count() >= INFINITE)
 	{
@@ -90,7 +90,7 @@ bool SysWin32ConditionVariable::sleep(
 	}
 	else
 	{
-		timeout_ms = static_cast<DWORD>(timeout.count());
+		timeout_ms = static_cast<::DWORD>(timeout.count());
 	}
 
 	const auto win32_result = sleep_condition_variable_cs_func_(

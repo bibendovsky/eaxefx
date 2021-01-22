@@ -36,25 +36,25 @@ namespace eaxefx
 
 SysWin32CriticalSection::SysWin32CriticalSection()
 {
-	InitializeCriticalSection(&critical_section_);
+	::InitializeCriticalSection(&critical_section_);
 }
 
 SysWin32CriticalSection::~SysWin32CriticalSection()
 {
-	DeleteCriticalSection(&critical_section_);
+	::DeleteCriticalSection(&critical_section_);
 }
 
 void SysWin32CriticalSection::lock()
 {
-	EnterCriticalSection(&critical_section_);
+	::EnterCriticalSection(&critical_section_);
 }
 
 void SysWin32CriticalSection::unlock()
 {
-	LeaveCriticalSection(&critical_section_);
+	::LeaveCriticalSection(&critical_section_);
 }
 
-CRITICAL_SECTION& SysWin32CriticalSection::get() noexcept
+::CRITICAL_SECTION& SysWin32CriticalSection::get() noexcept
 {
 	return critical_section_;
 }

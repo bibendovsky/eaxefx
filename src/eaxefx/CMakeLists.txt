@@ -26,7 +26,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 cmake_minimum_required (VERSION 3.8.2 FATAL_ERROR)
-project (eaxefx VERSION 1.0.3 LANGUAGES CXX)
+project (eaxefx VERSION 1.0.4 LANGUAGES CXX)
 
 
 if (NOT WIN32)
@@ -109,7 +109,7 @@ set_target_properties (
 target_include_directories (
 	${PROJECT_NAME}
 	PRIVATE
-		lib/openal-soft/include
+		lib/openal_soft/include
 		include
 		src
 )
@@ -185,7 +185,7 @@ target_link_libraries (
 	${PROJECT_NAME}
 	PRIVATE
 		eaxefx::sys_lib
-		eaxefx::doom3_fix_lib
+		eaxefx::patch_lib
 )
 
 
@@ -325,7 +325,7 @@ install (
 
 install (
 	FILES
-		lib/openal-soft/COPYING
+		lib/openal_soft/COPYING
 	DESTINATION
 		"."
 	RENAME
