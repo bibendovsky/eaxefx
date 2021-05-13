@@ -306,11 +306,17 @@ void EaxxSource::set_eax_sends_defaults()
 	}
 }
 
+void EaxxSource::set_eax_speaker_levels_defaults()
+{
+	std::fill(eax_.speaker_levels.begin(), eax_.speaker_levels.end(), ::EAXSOURCE_DEFAULTSPEAKERLEVEL);
+}
+
 void EaxxSource::set_eax_defaults()
 {
 	set_eax_source_defaults();
 	set_eax_active_fx_slots_defaults();
 	set_eax_sends_defaults();
+	set_eax_speaker_levels_defaults();
 }
 
 float EaxxSource::calculate_dst_occlusion_mb(
@@ -1345,6 +1351,35 @@ void EaxxSource::validate_source_all(
 	validate_source_macro_fx_factor(all.flMacroFXFactor);
 }
 
+void EaxxSource::validate_source_speaker_id(
+	const std::int32_t speaker_id)
+{
+	eaxx_validate_range<EaxxSourceException>(
+		"Speaker Id",
+		speaker_id,
+		static_cast<std::int32_t>(::EAXSPEAKER_FRONT_LEFT),
+		static_cast<std::int32_t>(::EAXSPEAKER_LOW_FREQUENCY)
+	);
+}
+
+void EaxxSource::validate_source_speaker_level(
+	const std::int32_t speaker_level)
+{
+	eaxx_validate_range<EaxxSourceException>(
+		"Speaker Level",
+		speaker_level,
+		::EAXSOURCE_MINSPEAKERLEVEL,
+		::EAXSOURCE_MAXSPEAKERLEVEL
+	);
+}
+
+void EaxxSource::validate_source_speaker_level_all(
+	const ::EAXSPEAKERLEVELPROPERTIES& all)
+{
+	validate_source_speaker_id(all.lSpeakerID);
+	validate_source_speaker_level(all.lLevel);
+}
+
 void EaxxSource::defer_source_direct(
 	std::int32_t lDirect)
 {
@@ -1557,6 +1592,15 @@ void EaxxSource::defer_source_all(
 {
 	defer_source_all(static_cast<const ::EAX30SOURCEPROPERTIES&>(all));
 	defer_source_macro_fx_factor(all.flMacroFXFactor);
+}
+
+void EaxxSource::defer_source_speaker_level_all(
+	const ::EAXSPEAKERLEVELPROPERTIES& all)
+{
+	const auto speaker_index = all.lSpeakerID - 1;
+	auto& speaker_level_d = eax_d_.speaker_levels[speaker_index];
+	const auto& speaker_level = eax_.speaker_levels[speaker_index];
+	source_dirty_misc_flags_.speaker_levels |= (speaker_level != speaker_level_d);
 }
 
 void EaxxSource::defer_source_direct(
@@ -1813,6 +1857,15 @@ void EaxxSource::defer_source_all(
 	}
 }
 
+void EaxxSource::defer_source_speaker_level_all(
+	const EaxxEaxCall& eax_call)
+{
+	const auto speaker_level_properties = eax_call.get_value<EaxxSourceException, const ::EAXSPEAKERLEVELPROPERTIES>();
+
+	validate_source_speaker_level_all(speaker_level_properties);
+	defer_source_speaker_level_all(speaker_level_properties);
+}
+
 void EaxxSource::set_outside_volume_hf()
 {
 	const auto efx_gain_hf = std::clamp(
@@ -1868,9 +1921,15 @@ void EaxxSource::set_flags()
 	set_direct_hf_auto_flag();
 	set_room_auto_flag();
 	set_room_hf_auto_flag();
+	set_speaker_levels();
 }
 
 void EaxxSource::set_macro_fx_factor()
+{
+	// TODO
+}
+
+void EaxxSource::set_speaker_levels()
 {
 	// TODO
 }
@@ -2080,7 +2139,8 @@ void EaxxSource::set(
 			break;
 
 		case ::EAXSOURCE_SPEAKERLEVELS:
-			throw EaxxSourceException{"Speaker levels not implemented."};
+			defer_source_speaker_level_all(eax_call);
+			break;
 
 		case ::EAXSOURCE_ALL2DPARAMETERS:
 			defer_source_2d_all(eax_call);
@@ -2292,6 +2352,16 @@ void EaxxSource::api_get_source_all_2d(
 	eax_call.set_value<EaxxSourceException>(eax_2d_all);
 }
 
+void EaxxSource::api_get_source_speaker_level_all(
+	const EaxxEaxCall& eax_call)
+{
+	auto& all = eax_call.get_value<EaxxSourceException, ::EAXSPEAKERLEVELPROPERTIES>();
+
+	validate_source_speaker_id(all.lSpeakerID);
+	const auto speaker_index = all.lSpeakerID - 1;
+	all.lLevel = eax_.speaker_levels[speaker_index];
+}
+
 void EaxxSource::get(
 	const EaxxEaxCall& eax_call)
 {
@@ -2413,7 +2483,8 @@ void EaxxSource::get(
 			break;
 
 		case ::EAXSOURCE_SPEAKERLEVELS:
-			throw EaxxSourceException{"Speaker levels not implemented."};
+			api_get_source_speaker_level_all(eax_call);
+			break;
 
 		case ::EAXSOURCE_ALL2DPARAMETERS:
 			api_get_source_all_2d(eax_call);

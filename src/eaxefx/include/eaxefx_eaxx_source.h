@@ -97,6 +97,7 @@ struct EaxxSourceSourceDirtyMiscFlags
 	EaxxSourceSourceDirtyMiscFlagsValue flAirAbsorptionFactor : 1;
 	EaxxSourceSourceDirtyMiscFlagsValue ulFlags : 1;
 	EaxxSourceSourceDirtyMiscFlagsValue flMacroFXFactor : 1;
+	EaxxSourceSourceDirtyMiscFlagsValue speaker_levels : 1;
 }; // EaxxSourceSourceMiscDirtyFlags
 
 static_assert(sizeof(EaxxSourceSourceDirtyMiscFlags) == sizeof(EaxxSourceSourceDirtyMiscFlagsValue));
@@ -179,8 +180,11 @@ public:
 
 
 private:
+	static constexpr auto max_speakers = 9;
+
+
 	using ActiveFxSlots = std::array<bool, ::EAX_MAX_FXSLOTS>;
-	using ActiveFxSlotsDirtyFlags = std::array<bool, ::EAX_MAX_FXSLOTS>;
+	using SpeakerLevels = std::array<std::int32_t, max_speakers>;
 
 
 	struct Al
@@ -196,6 +200,7 @@ private:
 		::EAX50ACTIVEFXSLOTS active_fx_slots{};
 		::EAX50SOURCEPROPERTIES source{};
 		Sends sends{};
+		SpeakerLevels speaker_levels{};
 	}; // Eax
 
 
@@ -229,6 +234,8 @@ private:
 		::EAXSOURCEALLSENDPROPERTIES& eax_send);
 
 	void set_eax_sends_defaults();
+
+	void set_eax_speaker_levels_defaults();
 
 	void set_eax_defaults();
 
@@ -486,6 +493,15 @@ private:
 		const ::EAX50SOURCEPROPERTIES& all,
 		int eax_version);
 
+	static void validate_source_speaker_id(
+		const std::int32_t speaker_id);
+
+	static void validate_source_speaker_level(
+		const std::int32_t speaker_level);
+
+	static void validate_source_speaker_level_all(
+		const ::EAXSPEAKERLEVELPROPERTIES& all);
+
 
 	void defer_source_direct(
 		std::int32_t lDirect);
@@ -565,6 +581,9 @@ private:
 	void defer_source_all(
 		const ::EAX50SOURCEPROPERTIES& all);
 
+	void defer_source_speaker_level_all(
+		const ::EAXSPEAKERLEVELPROPERTIES& all);
+
 
 	void defer_source_direct(
 		const EaxxEaxCall& eax_call);
@@ -638,6 +657,9 @@ private:
 	void defer_source_all(
 		const EaxxEaxCall& eax_call);
 
+	void defer_source_speaker_level_all(
+		const EaxxEaxCall& eax_call);
+
 	// Source
 	// ----------------------------------------------------------------------
 
@@ -663,6 +685,8 @@ private:
 
 
 	void set_macro_fx_factor();
+
+	void set_speaker_levels();
 
 
 	void apply_deferred();
@@ -735,6 +759,9 @@ private:
 		const EaxxEaxCall& eax_call);
 
 	void api_get_source_all_2d(
+		const EaxxEaxCall& eax_call);
+
+	void api_get_source_speaker_level_all(
 		const EaxxEaxCall& eax_call);
 
 	void get(

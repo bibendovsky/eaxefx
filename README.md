@@ -82,12 +82,12 @@ Context:
 - Macro FX Factor (EAX 5.0)
 - Speaker configuration (EAX 5.0)
 
+Source:
+- Speaker levels (EAX 5.0)
+
 
 6.2 - Not supported
 ===================
-
-Source:
-- Speaker levels (EAX 5.0)
 
 General:
 - X-RAM
