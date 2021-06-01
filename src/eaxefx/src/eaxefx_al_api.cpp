@@ -393,22 +393,33 @@ catch (const std::exception& ex)
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-bool& get_is_process_initialized() noexcept
+namespace
 {
-	static auto is_process_initialized = false;
-	return is_process_initialized;
-}
+
+
+bool is_process_initialized_{};
+
+using AlApiUPtr = std::unique_ptr<AlApi>;
+AlApiUPtr al_api_{};
+
+
+} // namespace
+
 
 AlApi& get_al_api()
 {
-	static auto al_api = AlApi{};
-	get_is_process_initialized() = true;
-	return al_api;
+	if (!al_api_)
+	{
+		is_process_initialized_ = true;
+		al_api_ = std::make_unique<AlApi>();
+	}
+
+	return *al_api_;
 }
 
 void on_thread_detach() noexcept
 {
-	if (get_is_process_initialized())
+	if (is_process_initialized_)
 	{
 		auto& al_api = get_al_api();
 		al_api.on_thread_detach();
@@ -417,12 +428,12 @@ void on_thread_detach() noexcept
 
 void on_process_attach() noexcept
 {
-	get_is_process_initialized() = false;
+	is_process_initialized_ = false;
 }
 
 void on_process_detach() noexcept
 {
-	if (get_is_process_initialized())
+	if (is_process_initialized_)
 	{
 		auto& al_api = get_al_api();
 		al_api.on_process_detach();

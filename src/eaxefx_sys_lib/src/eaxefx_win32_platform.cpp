@@ -57,11 +57,26 @@ bool win32_is_vista_or_higher_internal() noexcept
 }
 
 
+namespace
+{
+
+
+bool is_vista_or_higher_is_initialized_{};
+bool is_vista_or_higher_{};
+
+
+} // namespace
+
+
 bool is_vista_or_higher() noexcept
 {
-	static auto result = win32_is_vista_or_higher_internal();
+	if (!is_vista_or_higher_is_initialized_)
+	{
+		is_vista_or_higher_is_initialized_ = true;
+		is_vista_or_higher_ = win32_is_vista_or_higher_internal();
+	}
 
-	return result;
+	return is_vista_or_higher_;
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

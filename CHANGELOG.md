@@ -2,6 +2,8 @@
 
 
 ## [1.0.6] - ????-??-??
+### Fixed
+- Crash in Windows XP for some applications (for example, `ALCapsViewer32.exe`).
 
 
 ## [1.0.5] - 2021-05-13
