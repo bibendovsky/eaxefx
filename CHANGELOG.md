@@ -1,6 +1,9 @@
 # EAXEFX changelog
 
 
+## [1.0.6] - ????-??-??
+
+
 ## [1.0.5] - 2021-05-13
 ### Added
 - Bypass EAX 5.0 Speaker Levels feature.
