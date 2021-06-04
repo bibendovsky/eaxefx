@@ -1937,6 +1937,7 @@ void EaxxSource::set_speaker_levels()
 void EaxxSource::apply_deferred()
 {
 	if (
+		!are_active_fx_slots_dirty_ &&
 		sends_dirty_flags_ == EaxxSourceSendsDirtyFlags{} &&
 		source_dirty_filter_flags_ == EaxxSourceSourceDirtyFilterFlags{} &&
 		source_dirty_misc_flags_ == EaxxSourceSourceDirtyMiscFlags{})
@@ -2339,6 +2340,30 @@ void EaxxSource::api_get_source_all_exclusion(
 	eax_call.set_value<EaxxSourceException>(eax_exclusion_all);
 }
 
+void EaxxSource::api_get_source_active_fx_slot_id(
+	const EaxxEaxCall& eax_call)
+{
+	switch (eax_call.get_version())
+	{
+		case 4:
+			{
+				const auto& active_fx_slots = reinterpret_cast<const ::EAX40ACTIVEFXSLOTS&>(eax_.active_fx_slots);
+				eax_call.set_value<EaxxSourceException>(active_fx_slots);
+			}
+			break;
+
+		case 5:
+			{
+				const auto& active_fx_slots = reinterpret_cast<const ::EAX50ACTIVEFXSLOTS&>(eax_.active_fx_slots);
+				eax_call.set_value<EaxxSourceException>(active_fx_slots);
+			}
+			break;
+
+		default:
+			throw EaxxSourceException{"Unsupported EAX version."};
+	}
+}
+
 void EaxxSource::api_get_source_all_2d(
 	const EaxxEaxCall& eax_call)
 {
@@ -2475,7 +2500,7 @@ void EaxxSource::get(
 			break;
 
 		case ::EAXSOURCE_ACTIVEFXSLOTID:
-			eax_call.set_value<EaxxSourceException>(eax_.active_fx_slots);
+			api_get_source_active_fx_slot_id(eax_call);
 			break;
 
 		case ::EAXSOURCE_MACROFXFACTOR:

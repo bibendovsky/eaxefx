@@ -5,6 +5,9 @@
 ### Fixed
 - Crash in Windows XP for some applications (for example, `ALCapsViewer32.exe`).
 
+### Fixed
+- Get active FX slots for source.
+
 
 ## [1.0.5] - 2021-05-13
 ### Added
