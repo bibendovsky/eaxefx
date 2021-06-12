@@ -758,6 +758,9 @@ private:
 	void api_get_source_all_exclusion(
 		const EaxxEaxCall& eax_call);
 
+	void api_get_source_active_fx_slot_id(
+		const EaxxEaxCall& eax_call);
+
 	void api_get_source_all_2d(
 		const EaxxEaxCall& eax_call);
 
