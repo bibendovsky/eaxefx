@@ -98,8 +98,6 @@ General:
 
 - OpenAL Soft official binaries v1.20.x may cause a crash upon exiting the application.
 
-- EAX effects are missing in Unreal Tournament 2004 with [X-Fi Sound Blaster patch](http://www.unrealcentral.com/ut2004-v3369-x-fi-sound-blaster-patch/).
-
 
 8 - Usage
 =========
