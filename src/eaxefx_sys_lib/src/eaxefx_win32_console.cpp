@@ -208,7 +208,7 @@ String Win32Console::utf8_to_oem(
 		CP_UTF8,
 		0,
 		utf8_view.data(),
-		utf8_view.size(),
+		static_cast<int>(utf8_view.size()),
 		nullptr,
 		0
 	);
@@ -224,7 +224,7 @@ String Win32Console::utf8_to_oem(
 		CP_UTF8,
 		0,
 		utf8_view.data(),
-		utf8_view.size(),
+		static_cast<int>(utf8_view.size()),
 		wide_buffer.get(),
 		wide_size
 	);
@@ -287,7 +287,7 @@ String Win32Console::oem_to_utf8(
 		code_page,
 		0,
 		oem_view.data(),
-		oem_view.size(),
+		static_cast<int>(oem_view.size()),
 		nullptr,
 		0
 	);
@@ -303,7 +303,7 @@ String Win32Console::oem_to_utf8(
 		code_page,
 		0,
 		oem_view.data(),
-		oem_view.size(),
+		static_cast<int>(oem_view.size()),
 		wide_buffer.get(),
 		wide_size
 	);
@@ -408,12 +408,24 @@ void Win32Console::write_internal(
 
 		if (!oem_string.empty())
 		{
-			::WriteFile(handle, oem_string.data(), oem_string.size(), nullptr, nullptr);
+			::WriteFile(
+				handle,
+				oem_string.data(),
+				static_cast<::DWORD>(oem_string.size()),
+				nullptr,
+				nullptr
+			);
 		}
 	}
 	else
 	{
-		::WriteFile(handle, view.data(), view.size(), nullptr, nullptr);
+		::WriteFile(
+			handle,
+			view.data(),
+			static_cast<::DWORD>(view.size()),
+			nullptr,
+			nullptr
+		);
 	}
 }
 
