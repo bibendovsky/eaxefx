@@ -305,94 +305,96 @@ String LoggerImpl::make_message_buffer()
 
 void LoggerImpl::write_messages(
 	Messages& messages) noexcept
-try
 {
 	if (messages.empty())
 	{
 		return;
 	}
 
-	auto file = make_file(path_.c_str(), FileOpenMode{file_open_mode_write});
-	file->move_to_the_end();
-
-	for (const auto& message : messages)
+	try
 	{
-		auto is_error_for_console = false;
+		auto file = make_file(path_.c_str(), FileOpenMode{file_open_mode_write});
+		file->move_to_the_end();
 
-		const auto& system_time = make_system_time();
-		make_system_time_string(system_time, timestamp_buffer_);
-
-		message_buffer_.clear();
-
-		if (!skip_message_prefix_)
+		for (const auto& message : messages)
 		{
-			message_buffer_ += '[';
-			message_buffer_ += timestamp_buffer_;
-			message_buffer_ += "] ";
-			message_buffer_ += "[EAXEFX] ";
-			message_buffer_ += '[';
+			auto is_error_for_console = false;
 
-			switch (message.type)
+			const auto& system_time = make_system_time();
+			make_system_time_string(system_time, timestamp_buffer_);
+
+			message_buffer_.clear();
+
+			if (!skip_message_prefix_)
 			{
-				case LoggerMessageType::info:
-					message_buffer_ += 'I';
-					break;
+				message_buffer_ += '[';
+				message_buffer_ += timestamp_buffer_;
+				message_buffer_ += "] ";
+				message_buffer_ += "[EAXEFX] ";
+				message_buffer_ += '[';
 
-				case LoggerMessageType::warning:
-					is_error_for_console = true;
-					message_buffer_ += 'W';
-					break;
+				switch (message.type)
+				{
+					case LoggerMessageType::info:
+						message_buffer_ += 'I';
+						break;
 
-				case LoggerMessageType::error:
-					is_error_for_console = true;
-					message_buffer_ += 'E';
-					break;
+					case LoggerMessageType::warning:
+						is_error_for_console = true;
+						message_buffer_ += 'W';
+						break;
 
-				default:
-					is_error_for_console = true;
-					message_buffer_ += '?';
-					break;
+					case LoggerMessageType::error:
+						is_error_for_console = true;
+						message_buffer_ += 'E';
+						break;
+
+					default:
+						is_error_for_console = true;
+						message_buffer_ += '?';
+						break;
+				}
+
+				message_buffer_ += ']';
 			}
 
-			message_buffer_ += ']';
+			if (!message.message.empty())
+			{
+				if (!message_buffer_.empty())
+				{
+					message_buffer_ += ' ';
+				}
+
+				message_buffer_ += message.message;
+			}
+
+			message_buffer_ += '\n';
+
+			file->write(message_buffer_.c_str(), static_cast<int>(message_buffer_.size()));
+
+			if (console_)
+			{
+				if (is_error_for_console)
+				{
+					console_->write_error(message_buffer_);
+				}
+				else
+				{
+					console_->write(message_buffer_);
+				}
+			}
 		}
 
-		if (!message.message.empty())
+		if (console_ && !messages.empty())
 		{
-			if (!message_buffer_.empty())
-			{
-				message_buffer_ += ' ';
-			}
-
-			message_buffer_ += message.message;
-		}
-
-		message_buffer_ += '\n';
-
-		file->write(message_buffer_.c_str(), static_cast<int>(message_buffer_.size()));
-
-		if (console_)
-		{
-			if (is_error_for_console)
-			{
-				console_->write_error(message_buffer_);
-			}
-			else
-			{
-				console_->write(message_buffer_);
-			}
+			console_->flush();
 		}
 	}
-
-	if (console_ && !messages.empty())
+	catch (...)
 	{
-		console_->flush();
 	}
 
 	messages.clear();
-}
-catch (...)
-{
 }
 
 void LoggerImpl::write_messages() noexcept
