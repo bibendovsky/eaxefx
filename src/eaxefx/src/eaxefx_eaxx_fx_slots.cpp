@@ -57,9 +57,15 @@ public:
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-void EaxxFxSlots::initialize()
+void EaxxFxSlots::initialize(
+	const AlEfxSymbols* al_efx_symbols)
 {
-	initialize_fx_slots();
+	if (!al_efx_symbols)
+	{
+		throw EaxxFxSlotsException{"Null EFX symbols."};
+	}
+
+	initialize_fx_slots(al_efx_symbols);
 	initialize_default_slot();
 }
 
@@ -79,11 +85,12 @@ EaxxFxSlot& EaxxFxSlots::get(
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-void EaxxFxSlots::initialize_fx_slots()
+void EaxxFxSlots::initialize_fx_slots(
+	const AlEfxSymbols* al_efx_symbols)
 {
 	for (auto& fx_slot : fx_slots_)
 	{
-		fx_slot.initialize();
+		fx_slot.initialize(al_efx_symbols);
 	}
 }
 

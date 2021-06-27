@@ -25,11 +25,11 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef EAXEFX_AL_SCOPE_EXIT_INCLUDED
-#define EAXEFX_AL_SCOPE_EXIT_INCLUDED
+#include "eaxefx_moveable_mutex_lock.h"
 
+#include <utility>
 
-#include "eaxefx_scope_exit.h"
+#include "eaxefx_mutex.h"
 
 
 namespace eaxefx
@@ -38,19 +38,31 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-struct AlContextFunctor
+MoveableMutexLock::MoveableMutexLock() noexcept = default;
+
+MoveableMutexLock::MoveableMutexLock(
+	Mutex& mutex) noexcept
+	:
+	mutex_{&mutex}
 {
-	void operator()() const noexcept;
-}; // AlContextFunctor
+	mutex_->lock();
+}
 
-using AlContextScopeExit = ScopeExit<AlContextFunctor>;
+MoveableMutexLock::MoveableMutexLock(
+	MoveableMutexLock&& rhs) noexcept
+{
+	std::swap(mutex_, rhs.mutex_);
+}
 
-AlContextScopeExit make_al_context_scope_exit() noexcept;
+MoveableMutexLock::~MoveableMutexLock()
+{
+	if (mutex_)
+	{
+		mutex_->unlock();
+	}
+}
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 } // eaxefx
-
-
-#endif // !EAXEFX_AL_SCOPE_EXIT_INCLUDED

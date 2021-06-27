@@ -27,6 +27,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_al_object.h"
 
+#include <cassert>
+
 #include "AL/efx.h"
 
 #include "eaxefx_exception.h"
@@ -56,23 +58,60 @@ public:
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+EfxEffectSlotObjectDeleter::EfxEffectSlotObjectDeleter(
+	const AlEfxSymbols* al_efx_symbols)
+{
+	if (!al_efx_symbols)
+	{
+		throw AlObjectException{"Null EFX symbols."};
+	}
+
+	al_efx_symbols_ = al_efx_symbols;
+}
+
+EfxEffectSlotObjectDeleter::EfxEffectSlotObjectDeleter(
+	const EfxEffectSlotObjectDeleter& rhs) noexcept
+	:
+	al_efx_symbols_{rhs.al_efx_symbols_}
+{
+}
+
+void EfxEffectSlotObjectDeleter::operator=(
+	const EfxEffectSlotObjectDeleter& rhs) noexcept
+{
+	al_efx_symbols_ = rhs.al_efx_symbols_;
+}
+
 void EfxEffectSlotObjectDeleter::operator()(
 	::ALuint al_name) const noexcept
 {
-	alDeleteAuxiliaryEffectSlots_(1, &al_name);
+	if (al_efx_symbols_)
+	{
+		al_efx_symbols_->alDeleteAuxiliaryEffectSlots(1, &al_name);
+	}
+	else
+	{
+		assert(!"Null EFX symbols.");
+	}
 }
 
-EfxEffectSlotObject make_efx_effect_slot_object()
+EfxEffectSlotObject make_efx_effect_slot_object(
+	const AlEfxSymbols* al_efx_symbols)
 {
+	if (!al_efx_symbols)
+	{
+		throw AlObjectException{"Null EFX symbols."};
+	}
+
 	auto al_effect_slot_name = ::ALuint{};
-	alGenAuxiliaryEffectSlots_(1, &al_effect_slot_name);
+	al_efx_symbols->alGenAuxiliaryEffectSlots(1, &al_effect_slot_name);
 
 	if (al_effect_slot_name == 0)
 	{
 		throw AlObjectException{"Failed to create EFX effect slot."};
 	}
 
-	return EfxEffectSlotObject{al_effect_slot_name};
+	return EfxEffectSlotObject{al_effect_slot_name, EfxEffectSlotObjectDeleter{al_efx_symbols}};
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -80,14 +119,46 @@ EfxEffectSlotObject make_efx_effect_slot_object()
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+EfxEffectObjectDeleter::EfxEffectObjectDeleter(
+	const AlEfxSymbols* al_efx_symbols)
+{
+	if (!al_efx_symbols)
+	{
+		throw AlObjectException{"Null EFX symbols."};
+	}
+
+	al_efx_symbols_ = al_efx_symbols;
+}
+
+EfxEffectObjectDeleter::EfxEffectObjectDeleter(
+	const EfxEffectObjectDeleter& rhs) noexcept
+	:
+	al_efx_symbols_{rhs.al_efx_symbols_}
+{
+}
+
+void EfxEffectObjectDeleter::operator=(
+	const EfxEffectObjectDeleter& rhs) noexcept
+{
+	al_efx_symbols_ = rhs.al_efx_symbols_;
+}
+
 void EfxEffectObjectDeleter::operator()(
 	::ALuint al_name) const noexcept
 {
-	alDeleteEffects_(1, &al_name);
+	if (al_efx_symbols_)
+	{
+		al_efx_symbols_->alDeleteEffects(1, &al_name);
+	}
+	else
+	{
+		assert(!"Null EFX symbols.");
+	}
 }
 
 EfxEffectObject make_efx_effect_object(
-	::ALint al_effect_type)
+	::ALint al_effect_type,
+	const AlEfxSymbols* al_efx_symbols)
 {
 	switch (al_effect_type)
 	{
@@ -110,20 +181,25 @@ EfxEffectObject make_efx_effect_object(
 			throw AlObjectException{"Unsupported AL effect type."};
 	}
 
-	auto al_effect = ::ALuint{};
-	alGenEffects_(1, &al_effect);
+	if (!al_efx_symbols)
+	{
+		throw AlObjectException{"Null EFX symbols."};
+	}
 
-	if (al_effect == 0)
+	auto al_effect = ::ALuint{};
+	al_efx_symbols->alGenEffects(1, &al_effect);
+
+	if (al_effect == AL_NONE)
 	{
 		throw AlObjectException{"Failed to create AL effect object."};
 	}
 
-	auto efx_effect_object = EfxEffectObject{al_effect};
+	auto efx_effect_object = EfxEffectObject{al_effect, EfxEffectObjectDeleter{al_efx_symbols}};
 
 	auto new_al_effect_type = ::ALint{-1};
 
-	alEffecti_(al_effect, AL_EFFECT_TYPE, al_effect_type);
-	alGetEffecti_(al_effect, AL_EFFECT_TYPE, &new_al_effect_type);
+	al_efx_symbols->alEffecti(al_effect, AL_EFFECT_TYPE, al_effect_type);
+	al_efx_symbols->alGetEffecti(al_effect, AL_EFFECT_TYPE, &new_al_effect_type);
 
 	if (new_al_effect_type != al_effect_type)
 	{
@@ -138,23 +214,60 @@ EfxEffectObject make_efx_effect_object(
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+EfxFilterObjectDeleter::EfxFilterObjectDeleter(
+	const AlEfxSymbols* al_efx_symbols)
+{
+	if (!al_efx_symbols)
+	{
+		throw AlObjectException{"Null EFX symbols."};
+	}
+
+	al_efx_symbols_ = al_efx_symbols;
+}
+
+EfxFilterObjectDeleter::EfxFilterObjectDeleter(
+	const EfxFilterObjectDeleter& rhs) noexcept
+	:
+	al_efx_symbols_{rhs.al_efx_symbols_}
+{
+}
+
+void EfxFilterObjectDeleter::operator=(
+	const EfxFilterObjectDeleter& rhs) noexcept
+{
+	al_efx_symbols_ = rhs.al_efx_symbols_;
+}
+
 void EfxFilterObjectDeleter::operator()(
 	::ALuint al_name) const noexcept
 {
-	alDeleteFilters_(1, &al_name);
+	if (al_efx_symbols_)
+	{
+		al_efx_symbols_->alDeleteFilters(1, &al_name);
+	}
+	else
+	{
+		assert(!"Null EFX symbols.");
+	}
 }
 
-EfxFilterObject make_efx_filter_object()
+EfxFilterObject make_efx_filter_object(
+	const AlEfxSymbols* al_efx_symbols)
 {
-	auto al_filter_name = ::ALuint{};
-	alGenFilters_(1, &al_filter_name);
+	if (!al_efx_symbols)
+	{
+		throw AlObjectException{"Null EFX symbols."};
+	}
 
-	if (al_filter_name == 0)
+	auto al_filter_name = ::ALuint{};
+	al_efx_symbols->alGenFilters(1, &al_filter_name);
+
+	if (al_filter_name == AL_NONE)
 	{
 		throw AlObjectException{"Failed to create EFX filter."};
 	}
 
-	return EfxFilterObject{al_filter_name};
+	return EfxFilterObject{al_filter_name, EfxFilterObjectDeleter{al_efx_symbols}};
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

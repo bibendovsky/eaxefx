@@ -56,7 +56,6 @@ typedef struct _GUID
 	std::uint16_t Data3;
 	std::uint8_t Data4[8];
 } GUID;
-#endif // GUID_DEFINED
 
 bool operator==(
 	const ::GUID& lhs,
@@ -65,6 +64,7 @@ bool operator==(
 bool operator!=(
 	const ::GUID& lhs,
 	const ::GUID& rhs) noexcept;
+#endif // GUID_DEFINED
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -1646,26 +1646,19 @@ constexpr auto EAXRINGMODULATOR_DEFAULTWAVEFORM = ::EAXRINGMODULATOR_MINWAVEFORM
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-extern "C"
-{
-
-
-AL_API ::ALenum AL_APIENTRY EAXSet(
+using EAXSet = ::ALenum (AL_APIENTRY *)(
 	const ::GUID* property_set_guid,
 	::ALuint property_id,
 	::ALuint property_al_name,
 	::ALvoid* property_buffer,
 	::ALuint property_size);
 
-AL_API ::ALenum AL_APIENTRY EAXGet(
+using EAXGet = ::ALenum (AL_APIENTRY *)(
 	const ::GUID* property_set_guid,
 	::ALuint property_id,
 	::ALuint property_al_name,
 	::ALvoid* property_buffer,
 	::ALuint property_size);
-
-
-} // extern "C"
 
 
 #endif // !EAXEFX_EAX_API_INCLUDED

@@ -32,6 +32,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 
 #include "eaxefx_al_object.h"
+#include "eaxefx_al_symbols.h"
 #include "eaxefx_eax_api.h"
 
 #include "eaxefx_eaxx_eax_call.h"
@@ -67,7 +68,8 @@ class EaxxCompressorEffect final :
 {
 public:
 	EaxxCompressorEffect(
-		::ALuint al_effect_slot);
+		::ALuint al_effect_slot,
+		const AlEfxSymbols* al_efx_symbols);
 
 
 	void load() override;
@@ -78,6 +80,7 @@ public:
 
 private:
 	const ::ALuint al_effect_slot_;
+	const AlEfxSymbols* al_efx_symbols_;
 	EfxEffectObject efx_effect_object_;
 
 	::EAXAGCCOMPRESSORPROPERTIES eax_;

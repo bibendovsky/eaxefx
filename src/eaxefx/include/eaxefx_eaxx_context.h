@@ -34,6 +34,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "AL/al.h"
 #include "AL/alc.h"
 
+#include "eaxefx_al_api.h"
+#include "eaxefx_al_symbols.h"
 #include "eaxefx_eax_api.h"
 #include "eaxefx_eaxx_context_shared.h"
 #include "eaxefx_eaxx_eax_call.h"
@@ -73,22 +75,22 @@ bool operator!=(
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+struct EaxxContextCreateParam
+{
+	const AlEfxSymbols* al_efx_symbols{};
+}; // EaxxContextCreateParam
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 class EaxxContext
 {
 public:
-	EaxxContext(
-		::ALCdevice* al_device,
-		::ALCcontext* al_context);
+	explicit EaxxContext(
+		const EaxxContextCreateParam& param);
 
-
-	bool is_tried_to_initialize() const noexcept;
-
-	void initialize();
-
-	bool is_initialized() const noexcept;
-
-
-	::ALCcontext* get_al_context() const noexcept;
 
 	EaxxFxSlot& get_slot(
 		EaxxFxSlotIndex fx_slot_index);
@@ -116,6 +118,10 @@ public:
 private:
 	struct Al
 	{
+		const AlAlcSymbols* alc_symbols{};
+		const AlAlSymbols* al_symbols{};
+		const AlEfxSymbols* efx_symbols{};
+
 		::ALCdevice* device{};
 		::ALCcontext* context{};
 		::ALuint filter{};
@@ -123,14 +129,12 @@ private:
 
 	struct Eax
 	{
-		EAX50CONTEXTPROPERTIES context{};
+		::EAX50CONTEXTPROPERTIES context{};
 	}; // Eax
 
 	using SourceMap = std::unordered_map<::ALuint, EaxxSource>;
 
 
-	bool is_tried_to_initialize_{};
-	bool is_initialized_{};
 	std::int32_t eax_last_error_{};
 	std::uint32_t eax_speaker_config_{};
 	EaxxContextShared shared_{};

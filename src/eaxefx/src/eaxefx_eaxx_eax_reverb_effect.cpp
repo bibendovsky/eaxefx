@@ -80,10 +80,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxEaxReverbEffect::EaxxEaxReverbEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_EAXREVERB)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_EAXREVERB, al_efx_symbols_)}
 {
 	if (al_effect_slot == 0)
 	{
@@ -100,7 +102,7 @@ EaxxEaxReverbEffect::EaxxEaxReverbEffect(
 
 void EaxxEaxReverbEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -140,7 +142,7 @@ void EaxxEaxReverbEffect::set_efx_density()
 		AL_EAXREVERB_MAX_DENSITY
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_DENSITY, efx_density);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_DENSITY, efx_density);
 }
 
 void EaxxEaxReverbEffect::set_efx_diffusion()
@@ -151,7 +153,7 @@ void EaxxEaxReverbEffect::set_efx_diffusion()
 		AL_EAXREVERB_MAX_DIFFUSION
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_DIFFUSION, efx_environment_diffusion);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_DIFFUSION, efx_environment_diffusion);
 }
 
 void EaxxEaxReverbEffect::set_efx_gain()
@@ -162,7 +164,7 @@ void EaxxEaxReverbEffect::set_efx_gain()
 		AL_EAXREVERB_MAX_GAIN
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_GAIN, efx_room);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_GAIN, efx_room);
 }
 
 void EaxxEaxReverbEffect::set_efx_gain_hf()
@@ -173,7 +175,7 @@ void EaxxEaxReverbEffect::set_efx_gain_hf()
 		AL_EAXREVERB_MAX_GAINHF
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_GAINHF, efx_room_hf);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_GAINHF, efx_room_hf);
 }
 
 void EaxxEaxReverbEffect::set_efx_gain_lf()
@@ -184,7 +186,7 @@ void EaxxEaxReverbEffect::set_efx_gain_lf()
 		AL_EAXREVERB_MAX_GAINLF
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_GAINLF, efx_room_lf);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_GAINLF, efx_room_lf);
 }
 
 void EaxxEaxReverbEffect::set_efx_decay_time()
@@ -195,7 +197,7 @@ void EaxxEaxReverbEffect::set_efx_decay_time()
 		AL_EAXREVERB_MAX_DECAY_TIME
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_DECAY_TIME, efx_decay_time);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_DECAY_TIME, efx_decay_time);
 }
 
 void EaxxEaxReverbEffect::set_efx_decay_hf_ratio()
@@ -206,7 +208,7 @@ void EaxxEaxReverbEffect::set_efx_decay_hf_ratio()
 		AL_EAXREVERB_MAX_DECAY_HFRATIO
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_DECAY_HFRATIO, efx_decay_hf_ratio);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_DECAY_HFRATIO, efx_decay_hf_ratio);
 }
 
 void EaxxEaxReverbEffect::set_efx_decay_lf_ratio()
@@ -217,7 +219,7 @@ void EaxxEaxReverbEffect::set_efx_decay_lf_ratio()
 		AL_EAXREVERB_MAX_DECAY_LFRATIO
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_DECAY_LFRATIO, efx_decay_lf_ratio);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_DECAY_LFRATIO, efx_decay_lf_ratio);
 }
 
 void EaxxEaxReverbEffect::set_efx_reflections_gain()
@@ -228,7 +230,7 @@ void EaxxEaxReverbEffect::set_efx_reflections_gain()
 		AL_EAXREVERB_MAX_REFLECTIONS_GAIN
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_REFLECTIONS_GAIN, efx_reflections);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_REFLECTIONS_GAIN, efx_reflections);
 }
 
 void EaxxEaxReverbEffect::set_efx_reflections_delay()
@@ -239,12 +241,12 @@ void EaxxEaxReverbEffect::set_efx_reflections_delay()
 		AL_EAXREVERB_MAX_REFLECTIONS_DELAY
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_REFLECTIONS_DELAY, efx_reflections_delay);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_REFLECTIONS_DELAY, efx_reflections_delay);
 }
 
 void EaxxEaxReverbEffect::set_efx_reflections_pan()
 {
-	alEffectfv_(
+	al_efx_symbols_->alEffectfv(
 		efx_effect_object_.get(),
 		AL_EAXREVERB_REFLECTIONS_PAN,
 		&eax_.vReflectionsPan.x
@@ -259,7 +261,7 @@ void EaxxEaxReverbEffect::set_efx_late_reverb_gain()
 		AL_EAXREVERB_MAX_LATE_REVERB_GAIN
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_LATE_REVERB_GAIN, efx_reverb);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_LATE_REVERB_GAIN, efx_reverb);
 }
 
 void EaxxEaxReverbEffect::set_efx_late_reverb_delay()
@@ -269,12 +271,12 @@ void EaxxEaxReverbEffect::set_efx_late_reverb_delay()
 		AL_EAXREVERB_MIN_LATE_REVERB_DELAY,
 		AL_EAXREVERB_MAX_LATE_REVERB_DELAY);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_LATE_REVERB_DELAY, efx_reverb_delay);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_LATE_REVERB_DELAY, efx_reverb_delay);
 }
 
 void EaxxEaxReverbEffect::set_efx_late_reverb_pan()
 {
-	alEffectfv_(
+	al_efx_symbols_->alEffectfv(
 		efx_effect_object_.get(),
 		AL_EAXREVERB_LATE_REVERB_PAN,
 		&eax_.vReverbPan.x
@@ -289,7 +291,7 @@ void EaxxEaxReverbEffect::set_efx_echo_time()
 		AL_EAXREVERB_MAX_ECHO_TIME
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_ECHO_TIME, efx_echo_time);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_ECHO_TIME, efx_echo_time);
 }
 
 void EaxxEaxReverbEffect::set_efx_echo_depth()
@@ -300,7 +302,7 @@ void EaxxEaxReverbEffect::set_efx_echo_depth()
 		AL_EAXREVERB_MAX_ECHO_DEPTH
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_ECHO_DEPTH, efx_echo_depth);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_ECHO_DEPTH, efx_echo_depth);
 }
 
 void EaxxEaxReverbEffect::set_efx_modulation_time()
@@ -311,7 +313,7 @@ void EaxxEaxReverbEffect::set_efx_modulation_time()
 		AL_EAXREVERB_MAX_MODULATION_TIME
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_MODULATION_TIME, efx_modulation_time);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_MODULATION_TIME, efx_modulation_time);
 }
 
 void EaxxEaxReverbEffect::set_efx_modulation_depth()
@@ -322,7 +324,7 @@ void EaxxEaxReverbEffect::set_efx_modulation_depth()
 		AL_EAXREVERB_MAX_MODULATION_DEPTH
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_MODULATION_DEPTH, efx_modulation_depth);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_MODULATION_DEPTH, efx_modulation_depth);
 }
 
 void EaxxEaxReverbEffect::set_efx_air_absorption_gain_hf()
@@ -333,7 +335,7 @@ void EaxxEaxReverbEffect::set_efx_air_absorption_gain_hf()
 		AL_EAXREVERB_MAX_AIR_ABSORPTION_GAINHF
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_AIR_ABSORPTION_GAINHF, efx_air_absorption_hf);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_AIR_ABSORPTION_GAINHF, efx_air_absorption_hf);
 }
 
 void EaxxEaxReverbEffect::set_efx_hf_reference()
@@ -344,7 +346,7 @@ void EaxxEaxReverbEffect::set_efx_hf_reference()
 		AL_EAXREVERB_MAX_HFREFERENCE
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_HFREFERENCE, efx_hf_reference);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_HFREFERENCE, efx_hf_reference);
 }
 
 void EaxxEaxReverbEffect::set_efx_lf_reference()
@@ -355,7 +357,7 @@ void EaxxEaxReverbEffect::set_efx_lf_reference()
 		AL_EAXREVERB_MAX_LFREFERENCE
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_LFREFERENCE, efx_lf_reference);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_LFREFERENCE, efx_lf_reference);
 }
 
 void EaxxEaxReverbEffect::set_efx_room_rolloff_factor()
@@ -366,12 +368,12 @@ void EaxxEaxReverbEffect::set_efx_room_rolloff_factor()
 		AL_EAXREVERB_MAX_ROOM_ROLLOFF_FACTOR
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, efx_room_rolloff_factor);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EAXREVERB_ROOM_ROLLOFF_FACTOR, efx_room_rolloff_factor);
 }
 
 void EaxxEaxReverbEffect::set_efx_flags()
 {
-	alEffecti_(
+	al_efx_symbols_->alEffecti(
 		efx_effect_object_.get(),
 		AL_EAXREVERB_DECAY_HFLIMIT,
 		(eax_.ulFlags & ::EAXREVERBFLAGS_DECAYHFLIMIT) != 0

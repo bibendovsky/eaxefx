@@ -226,10 +226,12 @@ target_sources (
 	PRIVATE
 		src/eaxefx_pch.h
 
+		include/eaxefx_al_api.h
+		include/eaxefx_al_api_context.h
+		include/eaxefx_al_api_utils.h
 		include/eaxefx_al_loader.h
 		include/eaxefx_al_low_pass_param.h
 		include/eaxefx_al_object.h
-		include/eaxefx_al_scope_exit.h
 		include/eaxefx_al_symbols.h
 		include/eaxefx_al_uresources.h
 		include/eaxefx_eax_api.h
@@ -267,9 +269,10 @@ target_sources (
 	${PROJECT_NAME}
 	PRIVATE
 		src/eaxefx_al_api.cpp
+		src/eaxefx_al_api_context.cpp
+		src/eaxefx_al_api_utils.cpp
 		src/eaxefx_al_loader.cpp
 		src/eaxefx_al_object.cpp
-		src/eaxefx_al_scope_exit.cpp
 		src/eaxefx_al_symbols.cpp
 		src/eaxefx_al_uresources.cpp
 		src/eaxefx_eax_api.cpp

@@ -75,10 +75,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxRingModulatorEffect::EaxxRingModulatorEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_RING_MODULATOR)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_RING_MODULATOR, al_efx_symbols_)}
 {
 	set_eax_defaults();
 	set_efx_defaults();
@@ -86,7 +88,7 @@ EaxxRingModulatorEffect::EaxxRingModulatorEffect(
 
 void EaxxRingModulatorEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -123,7 +125,7 @@ void EaxxRingModulatorEffect::set_efx_frequency()
 		AL_RING_MODULATOR_MAX_FREQUENCY
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_RING_MODULATOR_FREQUENCY, frequency);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_RING_MODULATOR_FREQUENCY, frequency);
 }
 
 void EaxxRingModulatorEffect::set_efx_high_pass_cutoff()
@@ -134,7 +136,7 @@ void EaxxRingModulatorEffect::set_efx_high_pass_cutoff()
 		AL_RING_MODULATOR_MAX_HIGHPASS_CUTOFF
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_RING_MODULATOR_HIGHPASS_CUTOFF, high_pass_cutoff);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_RING_MODULATOR_HIGHPASS_CUTOFF, high_pass_cutoff);
 }
 
 void EaxxRingModulatorEffect::set_efx_waveform()
@@ -145,7 +147,7 @@ void EaxxRingModulatorEffect::set_efx_waveform()
 		AL_RING_MODULATOR_MAX_WAVEFORM
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_RING_MODULATOR_WAVEFORM, waveform);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_RING_MODULATOR_WAVEFORM, waveform);
 }
 
 void EaxxRingModulatorEffect::set_efx_defaults()

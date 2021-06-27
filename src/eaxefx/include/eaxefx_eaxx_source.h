@@ -33,6 +33,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "AL/al.h"
 
+#include "eaxefx_al_symbols.h"
 #include "eaxefx_al_low_pass_param.h"
 #include "eaxefx_eaxx_context_shared.h"
 #include "eaxefx_eaxx_eax_call.h"
@@ -50,6 +51,7 @@ struct EaxxSourceInitParam
 	::ALuint al_source{};
 	::ALuint al_filter{};
 	EaxxContextShared* context_shared{};
+	const AlEfxSymbols* al_efx_symbols{};
 }; // EaxxSourceInitParam
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -191,6 +193,9 @@ private:
 	{
 		::ALuint source{};
 		::ALuint filter{};
+
+		const AlAlSymbols* al_symbols{};
+		const AlEfxSymbols* efx_symbols{};
 	}; // Al
 
 	struct Eax

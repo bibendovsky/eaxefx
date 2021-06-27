@@ -34,6 +34,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "AL/al.h"
 
+#include "eaxefx_al_symbols.h"
+
 
 namespace eaxefx
 {
@@ -48,6 +50,7 @@ class AlObject
 {
 public:
 	using Value = ::ALuint;
+	using Deleter = TDeleter;
 
 
 	AlObject() noexcept = default;
@@ -60,12 +63,22 @@ public:
 	}
 
 	AlObject(
+		Value value,
+		Deleter deleter) noexcept
+		:
+		value_{value},
+		deleter_{deleter}
+	{
+	}
+
+	AlObject(
 		const AlObject& rhs) = delete;
 
 	AlObject(
 		AlObject&& rhs) noexcept
 	{
 		std::swap(value_, rhs.value_);
+		std::swap(deleter_, rhs.deleter_);
 	}
 
 	AlObject& operator=(
@@ -76,6 +89,7 @@ public:
 	{
 		destroy();
 		std::swap(value_, rhs.value_);
+		std::swap(deleter_, rhs.deleter_);
 	}
 
 	~AlObject()
@@ -86,7 +100,7 @@ public:
 
 	bool has_value() const noexcept
 	{
-		return value_ != 0;
+		return value_ != AL_NONE;
 	}
 
 	Value get() const noexcept
@@ -117,13 +131,16 @@ public:
 
 private:
 	Value value_{};
+	Deleter deleter_{};
 
 
 	void destroy() noexcept
 	{
-		if (value_ != 0)
+		if (value_ != AL_NONE)
 		{
-			(TDeleter{})(value_);
+			const auto value = value_;
+			value_ = AL_NONE;
+			deleter_(value);
 		}
 	}
 }; // AlObject
@@ -133,31 +150,67 @@ private:
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-struct EfxEffectSlotObjectDeleter
+class EfxEffectSlotObjectDeleter
 {
+public:
+	EfxEffectSlotObjectDeleter() noexcept = default;
+
+	explicit EfxEffectSlotObjectDeleter(
+		const AlEfxSymbols* al_efx_symbols);
+
+	EfxEffectSlotObjectDeleter(
+		const EfxEffectSlotObjectDeleter& rhs) noexcept;
+
+	void operator=(
+		const EfxEffectSlotObjectDeleter& rhs) noexcept;
+
+
 	void operator()(
 		::ALuint al_name) const noexcept;
+
+
+private:
+	const AlEfxSymbols* al_efx_symbols_{};
 }; // EfxEffectSlotObjectDeleter
 
 using EfxEffectSlotObject = AlObject<EfxEffectSlotObjectDeleter>;
 
-EfxEffectSlotObject make_efx_effect_slot_object();
+EfxEffectSlotObject make_efx_effect_slot_object(
+	const AlEfxSymbols* al_efx_symbols);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-struct EfxEffectObjectDeleter
+class EfxEffectObjectDeleter
 {
+public:
+	EfxEffectObjectDeleter() noexcept = default;
+
+	explicit EfxEffectObjectDeleter(
+		const AlEfxSymbols* al_efx_symbols);
+
+	EfxEffectObjectDeleter(
+		const EfxEffectObjectDeleter& rhs) noexcept;
+
+	void operator=(
+		const EfxEffectObjectDeleter& rhs) noexcept;
+
+
 	void operator()(
 		::ALuint al_name) const noexcept;
+
+
+private:
+	const AlEfxSymbols* al_efx_symbols_{};
 }; // EfxEffectObjectDeleter
 
 using EfxEffectObject = AlObject<EfxEffectObjectDeleter>;
 
 EfxEffectObject make_efx_effect_object(
-	::ALint al_effect_type);
+	::ALint al_effect_type,
+	const AlEfxSymbols* al_efx_symbols);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -166,13 +219,31 @@ EfxEffectObject make_efx_effect_object(
 
 struct EfxFilterObjectDeleter
 {
+public:
+	EfxFilterObjectDeleter() noexcept = default;
+
+	explicit EfxFilterObjectDeleter(
+		const AlEfxSymbols* al_efx_symbols);
+
+	EfxFilterObjectDeleter(
+		const EfxFilterObjectDeleter& rhs) noexcept;
+
+	void operator=(
+		const EfxFilterObjectDeleter& rhs) noexcept;
+
+
 	void operator()(
 		::ALuint al_name) const noexcept;
+
+
+private:
+	const AlEfxSymbols* al_efx_symbols_{};
 }; // EfxFilterObjectDeleter
 
 using EfxFilterObject = AlObject<EfxFilterObjectDeleter>;
 
-EfxFilterObject make_efx_filter_object();
+EfxFilterObject make_efx_filter_object(
+	const AlEfxSymbols* al_efx_symbols);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

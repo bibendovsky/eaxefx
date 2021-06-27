@@ -76,10 +76,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxAutoWahEffect::EaxxAutoWahEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_AUTOWAH)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_AUTOWAH, al_efx_symbols_)}
 {
 	set_eax_defaults();
 	set_efx_defaults();
@@ -87,7 +89,7 @@ EaxxAutoWahEffect::EaxxAutoWahEffect(
 
 void EaxxAutoWahEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -125,7 +127,7 @@ void EaxxAutoWahEffect::set_efx_attack_time()
 		AL_AUTOWAH_MAX_ATTACK_TIME
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_AUTOWAH_ATTACK_TIME, attack_time);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_AUTOWAH_ATTACK_TIME, attack_time);
 }
 
 void EaxxAutoWahEffect::set_efx_release_time()
@@ -136,7 +138,7 @@ void EaxxAutoWahEffect::set_efx_release_time()
 		AL_AUTOWAH_MAX_RELEASE_TIME
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_AUTOWAH_RELEASE_TIME, release_time);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_AUTOWAH_RELEASE_TIME, release_time);
 }
 
 void EaxxAutoWahEffect::set_efx_resonance()
@@ -147,7 +149,7 @@ void EaxxAutoWahEffect::set_efx_resonance()
 		AL_AUTOWAH_MAX_RESONANCE
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_AUTOWAH_RESONANCE, resonance);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_AUTOWAH_RESONANCE, resonance);
 }
 
 void EaxxAutoWahEffect::set_efx_peak_gain()
@@ -158,7 +160,7 @@ void EaxxAutoWahEffect::set_efx_peak_gain()
 		AL_AUTOWAH_MAX_PEAK_GAIN
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_AUTOWAH_PEAK_GAIN, peak_gain);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_AUTOWAH_PEAK_GAIN, peak_gain);
 }
 
 void EaxxAutoWahEffect::set_efx_defaults()

@@ -75,10 +75,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxPitchShifterEffect::EaxxPitchShifterEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_PITCH_SHIFTER)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_PITCH_SHIFTER, al_efx_symbols_)}
 {
 	set_eax_defaults();
 	set_efx_defaults();
@@ -86,7 +88,7 @@ EaxxPitchShifterEffect::EaxxPitchShifterEffect(
 
 void EaxxPitchShifterEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -122,7 +124,7 @@ void EaxxPitchShifterEffect::set_efx_coarse_tune()
 		::EAXPITCHSHIFTER_MAXCOARSETUNE
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_PITCH_SHIFTER_COARSE_TUNE, coarse_tune);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_PITCH_SHIFTER_COARSE_TUNE, coarse_tune);
 }
 
 void EaxxPitchShifterEffect::set_efx_fine_tune()
@@ -133,7 +135,7 @@ void EaxxPitchShifterEffect::set_efx_fine_tune()
 		::EAXPITCHSHIFTER_MAXFINETUNE
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_PITCH_SHIFTER_FINE_TUNE, fine_tune);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_PITCH_SHIFTER_FINE_TUNE, fine_tune);
 }
 
 void EaxxPitchShifterEffect::set_efx_defaults()

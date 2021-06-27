@@ -75,10 +75,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxCompressorEffect::EaxxCompressorEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_COMPRESSOR)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_COMPRESSOR, al_efx_symbols_)}
 {
 	set_eax_defaults();
 	set_efx_defaults();
@@ -86,7 +88,7 @@ EaxxCompressorEffect::EaxxCompressorEffect(
 
 void EaxxCompressorEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -121,7 +123,7 @@ void EaxxCompressorEffect::set_efx_on_off()
 		AL_COMPRESSOR_MAX_ONOFF
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_COMPRESSOR_ONOFF, on_off);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_COMPRESSOR_ONOFF, on_off);
 }
 
 void EaxxCompressorEffect::set_efx_defaults()

@@ -78,43 +78,43 @@ EaxxEffectUPtr make_eaxx_effect(
 	switch (param.effect_type)
 	{
 		case EaxxEffectType::null:
-			return std::make_unique<EaxxNullEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxNullEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::auto_wah:
-			return std::make_unique<EaxxAutoWahEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxAutoWahEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::chorus:
-			return std::make_unique<EaxxChorusEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxChorusEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::compressor:
-			return std::make_unique<EaxxCompressorEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxCompressorEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::distortion:
-			return std::make_unique<EaxxDistortionEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxDistortionEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::eax_reverb:
-			return std::make_unique<EaxxEaxReverbEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxEaxReverbEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::echo:
-			return std::make_unique<EaxxEchoEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxEchoEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::equalizer:
-			return std::make_unique<EaxxEqualizerEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxEqualizerEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::flanger:
-			return std::make_unique<EaxxFlangerEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxFlangerEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::frequency_shifter:
-			return std::make_unique<EaxxFrequencyShifterEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxFrequencyShifterEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::pitch_shifter:
-			return std::make_unique<EaxxPitchShifterEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxPitchShifterEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::ring_modulator:
-			return std::make_unique<EaxxRingModulatorEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxRingModulatorEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		case EaxxEffectType::vocal_morpher:
-			return std::make_unique<EaxxVocalMorpherEffect>(param.al_effect_slot);
+			return std::make_unique<EaxxVocalMorpherEffect>(param.al_effect_slot, param.al_efx_symbols);
 
 		default:
 			throw EaxxEffectException{"Unsupported type."};

@@ -76,10 +76,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxDistortionEffect::EaxxDistortionEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_DISTORTION)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_DISTORTION, al_efx_symbols_)}
 {
 	set_eax_defaults();
 	set_efx_defaults();
@@ -87,7 +89,7 @@ EaxxDistortionEffect::EaxxDistortionEffect(
 
 void EaxxDistortionEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -126,7 +128,7 @@ void EaxxDistortionEffect::set_efx_edge()
 		AL_DISTORTION_MAX_EDGE
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_DISTORTION_EDGE, edge);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_DISTORTION_EDGE, edge);
 }
 
 void EaxxDistortionEffect::set_efx_gain()
@@ -137,7 +139,7 @@ void EaxxDistortionEffect::set_efx_gain()
 		AL_DISTORTION_MAX_GAIN
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_DISTORTION_GAIN, gain);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_DISTORTION_GAIN, gain);
 }
 
 void EaxxDistortionEffect::set_efx_low_pass_cutoff()
@@ -148,7 +150,7 @@ void EaxxDistortionEffect::set_efx_low_pass_cutoff()
 		AL_DISTORTION_MAX_LOWPASS_CUTOFF
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_DISTORTION_LOWPASS_CUTOFF, low_pass_cutoff);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_DISTORTION_LOWPASS_CUTOFF, low_pass_cutoff);
 }
 
 void EaxxDistortionEffect::set_efx_eq_center()
@@ -159,7 +161,7 @@ void EaxxDistortionEffect::set_efx_eq_center()
 		AL_DISTORTION_MAX_EQCENTER
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_DISTORTION_EQCENTER, eq_center);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_DISTORTION_EQCENTER, eq_center);
 }
 
 void EaxxDistortionEffect::set_efx_eq_bandwidth()
@@ -170,7 +172,7 @@ void EaxxDistortionEffect::set_efx_eq_bandwidth()
 		AL_DISTORTION_MAX_EQBANDWIDTH
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_DISTORTION_EQBANDWIDTH, eq_bandwidth);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_DISTORTION_EQBANDWIDTH, eq_bandwidth);
 }
 
 void EaxxDistortionEffect::set_efx_defaults()

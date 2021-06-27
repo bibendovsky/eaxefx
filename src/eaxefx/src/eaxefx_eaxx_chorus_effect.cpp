@@ -75,10 +75,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxChorusEffect::EaxxChorusEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_CHORUS)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_CHORUS, al_efx_symbols_)}
 {
 	set_eax_defaults();
 	set_efx_defaults();
@@ -86,7 +88,7 @@ EaxxChorusEffect::EaxxChorusEffect(
 
 void EaxxChorusEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -126,7 +128,7 @@ void EaxxChorusEffect::set_efx_waveform()
 		AL_CHORUS_MAX_PHASE
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_CHORUS_WAVEFORM, wave_form);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_CHORUS_WAVEFORM, wave_form);
 }
 
 void EaxxChorusEffect::set_efx_phase()
@@ -137,7 +139,7 @@ void EaxxChorusEffect::set_efx_phase()
 		AL_CHORUS_MAX_PHASE
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_CHORUS_PHASE, phase);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_CHORUS_PHASE, phase);
 }
 
 void EaxxChorusEffect::set_efx_rate()
@@ -148,7 +150,7 @@ void EaxxChorusEffect::set_efx_rate()
 		AL_CHORUS_MAX_RATE
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_CHORUS_RATE, rate);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_CHORUS_RATE, rate);
 }
 
 void EaxxChorusEffect::set_efx_depth()
@@ -159,7 +161,7 @@ void EaxxChorusEffect::set_efx_depth()
 		AL_CHORUS_MAX_DEPTH
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_CHORUS_DEPTH, depth);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_CHORUS_DEPTH, depth);
 }
 
 void EaxxChorusEffect::set_efx_feedback()
@@ -170,7 +172,7 @@ void EaxxChorusEffect::set_efx_feedback()
 		AL_CHORUS_MAX_FEEDBACK
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_CHORUS_FEEDBACK, feedback);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_CHORUS_FEEDBACK, feedback);
 }
 
 void EaxxChorusEffect::set_efx_delay()
@@ -181,7 +183,7 @@ void EaxxChorusEffect::set_efx_delay()
 		AL_CHORUS_MAX_DELAY
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_CHORUS_DELAY, delay);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_CHORUS_DELAY, delay);
 }
 
 void EaxxChorusEffect::set_efx_defaults()

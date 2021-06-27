@@ -31,6 +31,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "AL/al.h"
 
+#include "eaxefx_al_symbols.h"
 #include "eaxefx_eax_api.h"
 #include "eaxefx_eaxx_eax_call.h"
 #include "eaxefx_eaxx_effect.h"
@@ -45,7 +46,8 @@ namespace eaxefx
 class EaxxFxSlot
 {
 public:
-	void initialize();
+	void initialize(
+		const AlEfxSymbols* al_efx_symbols);
 
 
 	::ALuint get_efx_effect_slot() const noexcept;
@@ -72,6 +74,8 @@ private:
 		::ALuint effect_slot{};
 	}; // Efx
 
+
+	const AlEfxSymbols* al_efx_symbols_{};
 
 	Eax eax_{};
 	Efx efx_{};

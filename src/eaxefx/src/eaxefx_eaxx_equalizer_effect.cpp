@@ -76,10 +76,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxEqualizerEffect::EaxxEqualizerEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_EQUALIZER)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_EQUALIZER, al_efx_symbols_)}
 {
 	set_eax_defaults();
 	set_efx_defaults();
@@ -87,7 +89,7 @@ EaxxEqualizerEffect::EaxxEqualizerEffect(
 
 void EaxxEqualizerEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -131,7 +133,7 @@ void EaxxEqualizerEffect::set_efx_low_gain()
 		AL_EQUALIZER_MAX_LOW_GAIN
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EQUALIZER_LOW_GAIN, low_gain);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EQUALIZER_LOW_GAIN, low_gain);
 }
 
 void EaxxEqualizerEffect::set_efx_low_cutoff()
@@ -142,7 +144,7 @@ void EaxxEqualizerEffect::set_efx_low_cutoff()
 		AL_EQUALIZER_MAX_LOW_CUTOFF
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EQUALIZER_LOW_CUTOFF, low_cutoff);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EQUALIZER_LOW_CUTOFF, low_cutoff);
 }
 
 void EaxxEqualizerEffect::set_efx_mid1_gain()
@@ -153,7 +155,7 @@ void EaxxEqualizerEffect::set_efx_mid1_gain()
 		AL_EQUALIZER_MAX_MID1_GAIN
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EQUALIZER_MID1_GAIN, mid1_gain);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EQUALIZER_MID1_GAIN, mid1_gain);
 }
 
 void EaxxEqualizerEffect::set_efx_mid1_center()
@@ -164,7 +166,7 @@ void EaxxEqualizerEffect::set_efx_mid1_center()
 		AL_EQUALIZER_MAX_MID1_CENTER
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EQUALIZER_MID1_CENTER, mid1_center);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EQUALIZER_MID1_CENTER, mid1_center);
 }
 
 void EaxxEqualizerEffect::set_efx_mid1_width()
@@ -175,7 +177,7 @@ void EaxxEqualizerEffect::set_efx_mid1_width()
 		AL_EQUALIZER_MAX_MID1_WIDTH
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EQUALIZER_MID1_WIDTH, mid1_width);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EQUALIZER_MID1_WIDTH, mid1_width);
 }
 
 void EaxxEqualizerEffect::set_efx_mid2_gain()
@@ -186,7 +188,7 @@ void EaxxEqualizerEffect::set_efx_mid2_gain()
 		AL_EQUALIZER_MAX_MID2_GAIN
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EQUALIZER_MID2_GAIN, mid2_gain);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EQUALIZER_MID2_GAIN, mid2_gain);
 }
 
 void EaxxEqualizerEffect::set_efx_mid2_center()
@@ -197,7 +199,7 @@ void EaxxEqualizerEffect::set_efx_mid2_center()
 		AL_EQUALIZER_MAX_MID2_CENTER
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EQUALIZER_MID2_CENTER, mid2_center);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EQUALIZER_MID2_CENTER, mid2_center);
 }
 
 void EaxxEqualizerEffect::set_efx_mid2_width()
@@ -208,7 +210,7 @@ void EaxxEqualizerEffect::set_efx_mid2_width()
 		AL_EQUALIZER_MAX_MID2_WIDTH
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EQUALIZER_MID2_WIDTH, mid2_width);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EQUALIZER_MID2_WIDTH, mid2_width);
 }
 
 void EaxxEqualizerEffect::set_efx_high_gain()
@@ -219,7 +221,7 @@ void EaxxEqualizerEffect::set_efx_high_gain()
 		AL_EQUALIZER_MAX_HIGH_GAIN
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EQUALIZER_HIGH_GAIN, high_gain);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EQUALIZER_HIGH_GAIN, high_gain);
 }
 
 void EaxxEqualizerEffect::set_efx_high_cutoff()
@@ -230,7 +232,7 @@ void EaxxEqualizerEffect::set_efx_high_cutoff()
 		AL_EQUALIZER_MAX_HIGH_CUTOFF
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_EQUALIZER_HIGH_CUTOFF, high_cutoff);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_EQUALIZER_HIGH_CUTOFF, high_cutoff);
 }
 
 void EaxxEqualizerEffect::set_efx_defaults()

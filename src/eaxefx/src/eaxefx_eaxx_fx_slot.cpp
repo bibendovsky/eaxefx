@@ -62,8 +62,16 @@ public:
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-void EaxxFxSlot::initialize()
+void EaxxFxSlot::initialize(
+	const AlEfxSymbols* al_efx_symbols)
 {
+	al_efx_symbols_ = al_efx_symbols;
+
+	if (!al_efx_symbols_)
+	{
+		throw EaxxFxSlotException{"Null EFX symbols."};
+	}
+
 	initialize_eax();
 	initialize_efx();
 	initialize_effects();
@@ -330,7 +338,7 @@ void EaxxFxSlot::initialize_eax()
 
 void EaxxFxSlot::create_efx_effect_slot()
 {
-	efx_.effect_slot = make_efx_effect_slot_object().release();
+	efx_.effect_slot = make_efx_effect_slot_object(al_efx_symbols_).release();
 }
 
 void EaxxFxSlot::create_efx_objects()
@@ -349,6 +357,7 @@ EaxxEffectUPtr EaxxFxSlot::create_effect(
 	auto effect_param = EaxxEffectParam{};
 	effect_param.effect_type = effect_type;
 	effect_param.al_effect_slot = efx_.effect_slot;
+	effect_param.al_efx_symbols = al_efx_symbols_;
 	return make_eaxx_effect(effect_param);
 }
 
@@ -467,6 +476,7 @@ void EaxxFxSlot::set_fx_slot_effect_lazy(
 		auto effect_param = EaxxEffectParam{};
 		effect_param.al_effect_slot = efx_.effect_slot;
 		effect_param.effect_type = effect_type;
+		effect_param.al_efx_symbols = al_efx_symbols_;
 
 		effect = make_eaxx_effect(effect_param);
 	}
@@ -547,7 +557,7 @@ void EaxxFxSlot::set_efx_effect_slot_gain()
 		)
 	);
 
-	alAuxiliaryEffectSlotf_(efx_.effect_slot, AL_EFFECTSLOT_GAIN, gain);
+	al_efx_symbols_->alAuxiliaryEffectSlotf(efx_.effect_slot, AL_EFFECTSLOT_GAIN, gain);
 }
 
 void EaxxFxSlot::set_fx_slot_volume()
@@ -557,7 +567,7 @@ void EaxxFxSlot::set_fx_slot_volume()
 
 void EaxxFxSlot::set_effect_slot_send_auto()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		efx_.effect_slot,
 		AL_EFFECTSLOT_AUXILIARY_SEND_AUTO,
 		(eax_.fx_slot.ulFlags & ::EAXFXSLOTFLAGS_ENVIRONMENT) != 0

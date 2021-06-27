@@ -37,7 +37,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <mutex>
 
 #include "eaxefx_condition_variable.h"
-#include "eaxefx_console.h"
 #include "eaxefx_file.h"
 #include "eaxefx_mutex.h"
 #include "eaxefx_process.h"
@@ -70,20 +69,6 @@ void Logger::error(
 	write(LoggerMessageType::error, message);
 }
 
-void Logger::error(
-	const std::exception& exception) noexcept
-{
-	write(exception);
-}
-
-void Logger::error(
-	const std::exception& exception,
-	const char* message) noexcept
-{
-	error(message);
-	write(exception);
-}
-
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
@@ -93,6 +78,7 @@ struct LoggerMessage
 {
 	LoggerMessageType type{};
 	String message{};
+	bool is_written{};
 
 
 	LoggerMessage(
@@ -129,9 +115,6 @@ public:
 		LoggerMessageType message_type,
 		const char* message) noexcept override;
 
-	void write(
-		const std::exception& ex) noexcept override;
-
 
 private:
 	static constexpr auto min_level = 0;
@@ -140,10 +123,8 @@ private:
 	using Messages = std::deque<LoggerMessage>;
 
 
-	bool skip_message_prefix_{};
 	bool is_shared_library_{};
-	Console* console_{};
-	String path_{};
+	FileUPtr file_{};
 	String timestamp_buffer_{};
 	String message_buffer_{};
 	bool has_messages_{};
@@ -153,13 +134,12 @@ private:
 	bool is_quit_thread_ack_{};
 	Messages messages_{};
 	Messages mt_messages_{};
-	Mutex mutex_{};
+	MutexUPtr mutex_{};
+	MutexUPtr file_mutex_{};
 	ConditionVariable cv_{};
 	ConditionVariable cv_ack_{};
 	ThreadUPtr thread_{};
 
-
-	void clear_log_file();
 
 	static String make_timestamp_buffer();
 
@@ -188,18 +168,26 @@ private:
 
 LoggerImpl::LoggerImpl(
 	const LoggerParam& param)
-	:
-	skip_message_prefix_{param.skip_message_prefix},
-	is_shared_library_{process::is_shared_library()},
-	console_{param.console},
-	path_{param.path},
-	timestamp_buffer_{make_timestamp_buffer()},
-	message_buffer_{make_message_buffer()},
-	mutex_{},
-	cv_{},
-	cv_ack_{}
 {
-	clear_log_file();
+	is_shared_library_ = process::is_shared_library();
+	timestamp_buffer_ = make_timestamp_buffer();
+	message_buffer_ = make_message_buffer();
+	mutex_ = make_mutex();
+	file_mutex_ = make_mutex();
+
+	try
+	{
+		file_ = make_file(
+			param.file_path,
+			static_cast<FileOpenMode>(
+				FileOpenMode::file_open_mode_read_write |
+				FileOpenMode::file_open_mode_truncate
+			)
+		);
+	}
+	catch (...)
+	{
+	}
 
 	thread_ = make_thread(thread_func_proxy, this);
 }
@@ -214,7 +202,7 @@ void LoggerImpl::flush() noexcept
 	auto is_notify = false;
 
 	{
-		const auto lock = std::scoped_lock{mutex_};
+		const auto lock = std::unique_lock{*mutex_};
 
 		if (is_quit_thread_)
 		{
@@ -232,7 +220,7 @@ void LoggerImpl::flush() noexcept
 	{
 		cv_.notify_one();
 
-		auto lock = std::unique_lock{mutex_};
+		auto lock = std::unique_lock{*mutex_};
 
 		while (!is_flushing_ack_)
 		{
@@ -252,7 +240,7 @@ void LoggerImpl::write(
 try
 {
 	{
-		const auto lock = std::scoped_lock{mutex_};
+		const auto lock = std::unique_lock{*mutex_};
 		messages_.emplace_back(LoggerMessage{message_type, message});
 
 		if (is_quit_thread_)
@@ -265,25 +253,6 @@ try
 			cv_.notify_one();
 		}
 	}
-}
-catch (...)
-{
-}
-
-void LoggerImpl::write(
-	const std::exception& ex) noexcept
-try
-{
-	write_internal(ex);
-}
-catch (...)
-{
-}
-
-void LoggerImpl::clear_log_file()
-try
-{
-	make_file(path_.c_str(), FileOpenMode{file_open_mode_write | file_open_mode_truncate});
 }
 catch (...)
 {
@@ -311,84 +280,77 @@ void LoggerImpl::write_messages(
 		return;
 	}
 
+	if (!file_)
+	{
+		messages.clear();
+		return;
+	}
+
+	for (auto& message : messages)
+	{
+		if (message.is_written)
+		{
+			continue;
+		}
+
+		const auto& system_time = make_system_time();
+		make_system_time_string(system_time, timestamp_buffer_);
+
+		message_buffer_.clear();
+
+		message_buffer_ += '[';
+		message_buffer_ += timestamp_buffer_;
+		message_buffer_ += "] ";
+		message_buffer_ += "[EAXEFX] ";
+		message_buffer_ += '[';
+
+		switch (message.type)
+		{
+			case LoggerMessageType::info:
+				message_buffer_ += 'I';
+				break;
+
+			case LoggerMessageType::warning:
+				message_buffer_ += 'W';
+				break;
+
+			case LoggerMessageType::error:
+				message_buffer_ += 'E';
+				break;
+
+			default:
+				message_buffer_ += '?';
+				break;
+		}
+
+		message_buffer_ += ']';
+
+		if (!message.message.empty())
+		{
+			if (!message_buffer_.empty())
+			{
+				message_buffer_ += ' ';
+			}
+
+			message_buffer_ += message.message;
+		}
+
+		message_buffer_ += '\n';
+
+		try
+		{
+			file_->write(message_buffer_.c_str(), static_cast<int>(message_buffer_.size()));
+		}
+		catch (...)
+		{
+		}
+
+		message.is_written = true;
+	}
+
 	try
 	{
-		auto file = make_file(path_.c_str(), FileOpenMode{file_open_mode_write});
-		file->move_to_the_end();
-
-		for (const auto& message : messages)
-		{
-			auto is_error_for_console = false;
-
-			const auto& system_time = make_system_time();
-			make_system_time_string(system_time, timestamp_buffer_);
-
-			message_buffer_.clear();
-
-			if (!skip_message_prefix_)
-			{
-				message_buffer_ += '[';
-				message_buffer_ += timestamp_buffer_;
-				message_buffer_ += "] ";
-				message_buffer_ += "[EAXEFX] ";
-				message_buffer_ += '[';
-
-				switch (message.type)
-				{
-					case LoggerMessageType::info:
-						message_buffer_ += 'I';
-						break;
-
-					case LoggerMessageType::warning:
-						is_error_for_console = true;
-						message_buffer_ += 'W';
-						break;
-
-					case LoggerMessageType::error:
-						is_error_for_console = true;
-						message_buffer_ += 'E';
-						break;
-
-					default:
-						is_error_for_console = true;
-						message_buffer_ += '?';
-						break;
-				}
-
-				message_buffer_ += ']';
-			}
-
-			if (!message.message.empty())
-			{
-				if (!message_buffer_.empty())
-				{
-					message_buffer_ += ' ';
-				}
-
-				message_buffer_ += message.message;
-			}
-
-			message_buffer_ += '\n';
-
-			file->write(message_buffer_.c_str(), static_cast<int>(message_buffer_.size()));
-
-			if (console_)
-			{
-				if (is_error_for_console)
-				{
-					console_->write_error(message_buffer_);
-				}
-				else
-				{
-					console_->write(message_buffer_);
-				}
-			}
-		}
-
-		if (console_ && !messages.empty())
-		{
-			console_->flush();
-		}
+		file_->flush();
 	}
 	catch (...)
 	{
@@ -419,7 +381,7 @@ try
 		auto is_flushing = false;
 
 		{
-			auto lock = std::unique_lock{mutex_};
+			auto lock = std::unique_lock{*mutex_};
 
 			while (!is_quit_thread_ && !is_flushing_ && !has_messages_)
 			{
@@ -448,7 +410,7 @@ try
 
 		if (is_flushing)
 		{
-			const auto lock = std::scoped_lock{mutex_};
+			const auto lock = std::unique_lock{*mutex_};
 			is_flushing_ = false;
 			is_flushing_ack_ = true;
 			cv_ack_.notify_one();
@@ -456,7 +418,7 @@ try
 	}
 
 	{
-		auto lock = std::scoped_lock{mutex_};
+		auto lock = std::unique_lock{*mutex_};
 		is_quit_thread_ack_ = true;
 		cv_ack_.notify_one();
 	}
@@ -477,7 +439,7 @@ try
 	auto is_notify = false;
 
 	{
-		const auto lock = std::scoped_lock{mutex_};
+		const auto lock = std::unique_lock{*mutex_};
 
 		if (!is_quit_thread_)
 		{
@@ -489,7 +451,7 @@ try
 
 	if (is_notify)
 	{
-		auto lock = std::unique_lock{mutex_};
+		auto lock = std::unique_lock{*mutex_};
 
 		if (is_shared_library_)
 		{
@@ -513,6 +475,71 @@ try
 }
 catch (...)
 {
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+void NullableLogger::make(
+	const LoggerParam& param)
+{
+	logger_ = nullptr;
+	logger_ = make_logger(param);
+}
+
+void NullableLogger::flush() noexcept
+{
+	if (logger_)
+	{
+		logger_->flush();
+	}
+}
+
+void NullableLogger::set_immediate_mode() noexcept
+{
+	if (logger_)
+	{
+		logger_->set_immediate_mode();
+	}
+}
+
+void NullableLogger::write(
+	LoggerMessageType message_type,
+	const char* message) noexcept
+{
+	if (logger_)
+	{
+		logger_->write(message_type, message);
+	}
+}
+
+void NullableLogger::info(
+	const char* message) noexcept
+{
+	if (logger_)
+	{
+		logger_->info(message);
+	}
+}
+
+void NullableLogger::warning(
+	const char* message) noexcept
+{
+	if (logger_)
+	{
+		logger_->warning(message);
+	}
+}
+
+void NullableLogger::error(
+	const char* message) noexcept
+{
+	if (logger_)
+	{
+		logger_->error(message);
+	}
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

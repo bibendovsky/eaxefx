@@ -29,8 +29,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_exception.h"
 
+#include "eaxefx_al_api.h"
 #include "eaxefx_al_object.h"
 #include "eaxefx_al_symbols.h"
+#include "eaxefx_eaxx_source.h"
 #include "eaxefx_eaxx_validators.h"
 
 
@@ -79,33 +81,42 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxContext::EaxxContext(
-	::ALCdevice* al_device,
-	::ALCcontext* al_context)
+	const EaxxContextCreateParam& param)
 {
-	if (!al_device)
+	al_.efx_symbols = param.al_efx_symbols;
+
+	if (!al_.efx_symbols)
 	{
-		throw EaxxContextException{"Null AL device."};
+		throw EaxxContextException{"Null EFX symbols."};
 	}
 
-	if (!al_context)
+	al_.alc_symbols = g_al_api.get_al_alc_symbols();
+
+	if (!al_.alc_symbols)
+	{
+		throw EaxxContextException{"Null ALC symbols."};
+	}
+
+	al_.al_symbols = g_al_api.get_al_al_symbols();
+
+	if (!al_.al_symbols)
+	{
+		throw EaxxContextException{"Null AL symbols."};
+	}
+
+	al_.context = al_.alc_symbols->alcGetCurrentContext();
+
+	if (!al_.context)
 	{
 		throw EaxxContextException{"Null AL context."};
 	}
-}
 
-bool EaxxContext::is_tried_to_initialize() const noexcept
-{
-	return is_tried_to_initialize_;
-}
+	al_.device = al_.alc_symbols->alcGetContextsDevice(al_.context);
 
-void EaxxContext::initialize()
-{
-	if (is_tried_to_initialize_)
+	if (!al_.device)
 	{
-		return;
+		throw EaxxContextException{"Null AL device."};
 	}
-
-	is_tried_to_initialize_ = true;
 
 	ensure_compatibility();
 	initialize_extended_filter_gain();
@@ -113,23 +124,6 @@ void EaxxContext::initialize()
 	set_eax_defaults();
 	set_air_absorbtion_hf();
 	initialize_fx_slots();
-
-	is_initialized_ = true;
-
-	for (auto& [source_key, source_value] : source_map_)
-	{
-		source_value.on_initialize_context(al_.filter);
-	}
-}
-
-bool EaxxContext::is_initialized() const noexcept
-{
-	return is_initialized_;
-}
-
-::ALCcontext* EaxxContext::get_al_context() const noexcept
-{
-	return al_.context;
 }
 
 EaxxFxSlot& EaxxContext::get_slot(
@@ -142,18 +136,20 @@ void EaxxContext::initialize_sources(
 	::ALsizei count,
 	::ALuint* al_names)
 {
+	if (count <= 0 || !al_names || al_names[0] == AL_NONE)
+	{
+		return;
+	}
+
 	auto param = EaxxSourceInitParam{};
 	param.al_filter = al_.filter;
 	param.context_shared = &shared_;
+	param.al_efx_symbols = al_.efx_symbols;
 
-	for (auto i = ::ALsizei{}; i < count; ++i)
+	for (auto i = decltype(count){}; i < count; ++i)
 	{
 		param.al_source = al_names[i];
-
-		source_map_.emplace(
-			param.al_source,
-			EaxxSource{param}
-		);
+		source_map_.emplace(param.al_source, EaxxSource{param});
 	}
 }
 
@@ -161,7 +157,12 @@ void EaxxContext::uninitialize_sources(
 	::ALsizei count,
 	const ::ALuint* al_names)
 {
-	for (auto i = ::ALsizei{}; i < count; ++i)
+	if (count <= 0 || !al_names || al_names[0] == AL_NONE)
+	{
+		return;
+	}
+
+	for (auto i = decltype(count){}; i < count; ++i)
 	{
 		const auto al_name = al_names[i];
 
@@ -205,7 +206,7 @@ void EaxxContext::update_filters()
 
 void EaxxContext::ensure_compatibility()
 {
-	const auto has_efx_extension = alcIsExtensionPresent_(al_.device, ALC_EXT_EFX_NAME);
+	const auto has_efx_extension = al_.alc_symbols->alcIsExtensionPresent(al_.device, ALC_EXT_EFX_NAME);
 
 	if (!has_efx_extension)
 	{
@@ -214,7 +215,7 @@ void EaxxContext::ensure_compatibility()
 
 	auto aux_send_count = ::ALint{};
 
-	alcGetIntegerv_(al_.device, ALC_MAX_AUXILIARY_SENDS, 1, &aux_send_count);
+	al_.alc_symbols->alcGetIntegerv(al_.device, ALC_MAX_AUXILIARY_SENDS, 1, &aux_send_count);
 
 	if (aux_send_count < ::EAX_MAX_FXSLOTS)
 	{
@@ -226,11 +227,11 @@ void EaxxContext::ensure_compatibility()
 		throw EaxxContextException{message.c_str()};
 	}
 
-	const auto low_pass_efx_object = make_efx_filter_object();
+	const auto low_pass_efx_object = make_efx_filter_object(al_.efx_symbols);
 	const auto low_pass_al_name = low_pass_efx_object.get();
 	auto efx_filter_type = ::ALint{};
-	alFilteri_(low_pass_al_name, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
-	alGetFilteri_(low_pass_al_name, AL_FILTER_TYPE, &efx_filter_type);
+	al_.efx_symbols->alFilteri(low_pass_al_name, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
+	al_.efx_symbols->alGetFilteri(low_pass_al_name, AL_FILTER_TYPE, &efx_filter_type);
 
 	if (efx_filter_type != AL_FILTER_LOWPASS)
 	{
@@ -239,7 +240,7 @@ void EaxxContext::ensure_compatibility()
 
 	try
 	{
-		make_efx_effect_object(AL_EFFECT_EAXREVERB);
+		make_efx_effect_object(AL_EFFECT_EAXREVERB, al_.efx_symbols);
 	}
 	catch (...)
 	{
@@ -251,7 +252,7 @@ bool EaxxContext::has_softx_filter_gain_ex_extension()
 {
 	const auto extension_name = "AL_SOFTX_filter_gain_ex";
 
-	const auto has_al_softx_filter_gain_ex = (alIsExtensionPresent_(extension_name) != AL_FALSE);
+	const auto has_al_softx_filter_gain_ex = (al_.al_symbols->alIsExtensionPresent(extension_name) != AL_FALSE);
 
 	return has_al_softx_filter_gain_ex;
 }
@@ -304,12 +305,12 @@ void EaxxContext::set_eax_defaults() noexcept
 
 void EaxxContext::initialize_filter()
 {
-	al_.filter = make_efx_filter_object().release();
+	al_.filter = make_efx_filter_object(al_.efx_symbols).release();
 	const auto al_filter = al_.filter;
 
-	alFilteri_(al_filter, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
+	al_.efx_symbols->alFilteri(al_filter, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
 	auto al_filter_type = ::ALint{};
-	alGetFilteri_(al_filter, AL_FILTER_TYPE, &al_filter_type);
+	al_.efx_symbols->alGetFilteri(al_filter, AL_FILTER_TYPE, &al_filter_type);
 
 	if (al_filter_type != AL_FILTER_LOWPASS)
 	{
@@ -434,7 +435,7 @@ void EaxxContext::set_primary_fx_slot_id()
 
 void EaxxContext::set_distance_factor()
 {
-	alListenerf_(AL_METERS_PER_UNIT, eax_.context.flDistanceFactor);
+	al_.al_symbols->alListenerf(AL_METERS_PER_UNIT, eax_.context.flDistanceFactor);
 }
 
 void EaxxContext::set_air_absorbtion_hf()
@@ -462,7 +463,7 @@ void EaxxContext::set_context()
 
 void EaxxContext::initialize_fx_slots()
 {
-	shared_.fx_slots.initialize();
+	shared_.fx_slots.initialize(al_.efx_symbols);
 	shared_.previous_primary_fx_slot_index = eax_.context.guidPrimaryFXSlotID;
 	shared_.primary_fx_slot_index = eax_.context.guidPrimaryFXSlotID;
 }
