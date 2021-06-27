@@ -75,10 +75,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxFlangerEffect::EaxxFlangerEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_FLANGER)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_FLANGER, al_efx_symbols_)}
 {
 	set_eax_defaults();
 	set_efx_defaults();
@@ -86,7 +88,7 @@ EaxxFlangerEffect::EaxxFlangerEffect(
 
 void EaxxFlangerEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -126,7 +128,7 @@ void EaxxFlangerEffect::set_efx_waveform()
 		AL_FLANGER_MAX_WAVEFORM
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_FLANGER_WAVEFORM, waveform);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_FLANGER_WAVEFORM, waveform);
 }
 
 void EaxxFlangerEffect::set_efx_phase()
@@ -137,7 +139,7 @@ void EaxxFlangerEffect::set_efx_phase()
 		AL_FLANGER_MAX_PHASE
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_FLANGER_PHASE, phase);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_FLANGER_PHASE, phase);
 }
 
 void EaxxFlangerEffect::set_efx_rate()
@@ -148,7 +150,7 @@ void EaxxFlangerEffect::set_efx_rate()
 		AL_FLANGER_MAX_RATE
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_FLANGER_RATE, rate);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_FLANGER_RATE, rate);
 }
 
 void EaxxFlangerEffect::set_efx_depth()
@@ -159,7 +161,7 @@ void EaxxFlangerEffect::set_efx_depth()
 		AL_FLANGER_MAX_DEPTH
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_FLANGER_DEPTH, depth);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_FLANGER_DEPTH, depth);
 }
 
 void EaxxFlangerEffect::set_efx_feedback()
@@ -170,7 +172,7 @@ void EaxxFlangerEffect::set_efx_feedback()
 		AL_FLANGER_MAX_FEEDBACK
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_FLANGER_FEEDBACK, feedback);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_FLANGER_FEEDBACK, feedback);
 }
 
 void EaxxFlangerEffect::set_efx_delay()
@@ -181,7 +183,7 @@ void EaxxFlangerEffect::set_efx_delay()
 		AL_FLANGER_MAX_DELAY
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_FLANGER_DELAY, delay);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_FLANGER_DELAY, delay);
 }
 
 void EaxxFlangerEffect::set_efx_defaults()

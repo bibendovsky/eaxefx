@@ -32,6 +32,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <memory>
 
 #include "eaxefx_al_object.h"
+#include "eaxefx_al_symbols.h"
 
 #include "eaxefx_eaxx_eax_call.h"
 #include "eaxefx_eaxx_effect.h"
@@ -48,7 +49,8 @@ class EaxxNullEffect final :
 {
 public:
 	EaxxNullEffect(
-		::ALuint al_effect_slot);
+		::ALuint al_effect_slot,
+		const AlEfxSymbols* al_efx_symbols);
 
 
 	void load() override;
@@ -59,6 +61,7 @@ public:
 
 private:
 	const ::ALuint al_effect_slot_;
+	const AlEfxSymbols* al_efx_symbols_;
 	EfxEffectObject efx_effect_object_;
 }; // EaxxNullEffect
 

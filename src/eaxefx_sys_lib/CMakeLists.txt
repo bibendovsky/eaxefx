@@ -192,12 +192,15 @@ target_sources (
 	PRIVATE
 		src/eaxefx_pch.h
 
+		include/eaxefx_c_string.h
+		include/eaxefx_core_types.h
 		include/eaxefx_condition_variable.h
 		include/eaxefx_console.h
 		include/eaxefx_encoding.h
 		include/eaxefx_exception.h
 		include/eaxefx_file.h
 		include/eaxefx_logger.h
+		include/eaxefx_moveable_mutex_lock.h
 		include/eaxefx_mutex.h
 		include/eaxefx_platform.h
 		include/eaxefx_process.h
@@ -221,8 +224,11 @@ target_sources (
 target_sources (
 	${PROJECT_NAME}
 	PRIVATE
+		src/eaxefx_c_string.cpp
+		src/eaxefx_core_types.cpp
 		src/eaxefx_exception.cpp
 		src/eaxefx_logger.cpp
+		src/eaxefx_moveable_mutex_lock.cpp
 		src/eaxefx_string.cpp
 		src/eaxefx_system_time.cpp
 

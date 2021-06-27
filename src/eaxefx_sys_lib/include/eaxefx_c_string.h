@@ -25,30 +25,43 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "eaxefx_al_scope_exit.h"
-
-#include "AL/alc.h"
-
-#include "eaxefx_al_symbols.h"
+#ifndef EAXEFX_C_STRING_INCLUDED
+#define EAXEFX_C_STRING_INCLUDED
 
 
-namespace eaxefx
+#include <cassert>
+
+#include "eaxefx_core_types.h"
+
+
+namespace eaxefx::c_string
 {
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-void AlContextFunctor::operator()() const noexcept
+template<
+	typename TChar
+>
+inline constexpr Int get_size(
+	const TChar* c_string) noexcept
 {
-	static_cast<void>(alcMakeContextCurrent_(nullptr));
-}
+	assert(c_string);
 
-AlContextScopeExit make_al_context_scope_exit() noexcept
-{
-	return AlContextScopeExit{AlContextFunctor{}};
+	auto size = Int{};
+
+	while (c_string[size] != TChar{})
+	{
+		size += 1;
+	}
+
+	return size;
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-} // eaxefx
+} // eaxefx::c_string
+
+
+#endif // !EAXEFX_C_STRING_INCLUDED

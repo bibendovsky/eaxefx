@@ -35,6 +35,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "AL/al.h"
 
+#include "eaxefx_al_symbols.h"
 #include "eaxefx_eaxx_eax_call.h"
 
 
@@ -86,6 +87,7 @@ struct EaxxEffectParam
 {
 	EaxxEffectType effect_type;
 	::ALuint al_effect_slot;
+	const AlEfxSymbols* al_efx_symbols{};
 }; // EaxxEffectParam
 
 using EaxxEffectUPtr = std::unique_ptr<EaxxEffect>;

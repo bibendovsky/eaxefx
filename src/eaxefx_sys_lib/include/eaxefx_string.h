@@ -31,6 +31,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cassert>
 
+#include <cstddef>
+
 #include <memory>
 #include <string_view>
 
@@ -381,6 +383,35 @@ public:
 	}
 
 
+	value_type* begin() noexcept
+	{
+		return data();
+	}
+
+	value_type* end() noexcept
+	{
+		return begin() + size();
+	}
+
+
+	const value_type* begin() const noexcept
+	{
+		return data();
+	}
+
+	const value_type* end() const noexcept
+	{
+		return begin() + size();
+	}
+
+
+	value_type back() const
+	{
+		assert(!empty());
+		return data()[size() - 1];
+	}
+
+
 private:
 	static constexpr auto max_internal_buffer_length = 15;
 
@@ -652,6 +683,9 @@ String to_string(
 
 String to_string(
 	float value);
+
+String to_string_hex(
+	const void* value);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

@@ -27,8 +27,11 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_al_uresources.h"
 
+#include <cassert>
+
 #include "AL/alc.h"
 
+#include "eaxefx_al_api.h"
 #include "eaxefx_al_symbols.h"
 
 
@@ -41,13 +44,31 @@ namespace eaxefx
 void AlcDeviceDeleter::operator()(
 	::ALCdevice* alc_device) const noexcept
 {
-	static_cast<void>(alcCloseDevice_(alc_device));
+	const auto al_alc_symbols = g_al_api.get_al_alc_symbols();
+
+	if (al_alc_symbols)
+	{
+		static_cast<void>(al_alc_symbols->alcCloseDevice(alc_device));
+	}
+	else
+	{
+		assert(!"Null ALC symbols.");
+	}
 }
 
 void AlcContextDeleter::operator()(
 	::ALCcontext* alc_context) const noexcept
 {
-	alcDestroyContext_(alc_context);
+	const auto al_alc_symbols = g_al_api.get_al_alc_symbols();
+
+	if (al_alc_symbols)
+	{
+		static_cast<void>(al_alc_symbols->alcDestroyContext(alc_context));
+	}
+	else
+	{
+		assert(!"Null ALC symbols.");
+	}
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

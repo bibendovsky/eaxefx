@@ -5,6 +5,10 @@
 ### Added
 - 64-bit build.
 
+### Changed
+- Load AL symbols dynamically.
+- Export EFX and EAX symbols inside context only.
+
 ### Fixed
 - Crash in Windows XP for some applications (for example, `ALCapsViewer32.exe`).
 - Getting active FX slots for source.

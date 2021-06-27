@@ -27,41 +27,25 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <windows.h>
 
-
-namespace eaxefx
-{
-
-
-void on_thread_detach() noexcept;
-
-void on_process_attach() noexcept;
-
-void on_process_detach() noexcept;
-
-
-} // eaxefx
+#include "eaxefx_al_api.h"
 
 
 ::BOOL WINAPI DllMain(
-	HINSTANCE hinstDLL,
+	::HINSTANCE hinstDLL,
 	::DWORD fdwReason,
-	LPVOID lpvReserved)
+	::LPVOID lpvReserved)
 {
 	static_cast<void>(hinstDLL);
 	static_cast<void>(lpvReserved);
 
 	switch (fdwReason)
 	{
-		case DLL_PROCESS_ATTACH:
-			eaxefx::on_process_attach();
-			break;
-
 		case DLL_PROCESS_DETACH:
-			eaxefx::on_process_detach();
+			eaxefx::g_al_api.on_process_detach();
 			break;
 
 		case DLL_THREAD_DETACH:
-			eaxefx::on_thread_detach();
+			eaxefx::g_al_api.on_thread_detach();
 			break;
 
 		default:

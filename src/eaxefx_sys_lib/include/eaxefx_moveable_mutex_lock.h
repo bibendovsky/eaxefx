@@ -25,10 +25,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "eaxefx_mutex.h"
-
-#include "eaxefx_platform.h"
-#include "eaxefx_sys_win32_critical_section.h"
+#ifndef EAXEFX_MOVEABLE_MUTEX_LOCK_INCLUDED
+#define EAXEFX_MOVEABLE_MUTEX_LOCK_INCLUDED
 
 
 namespace eaxefx
@@ -37,67 +35,38 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class Win32Mutex final :
-	public Mutex
+class Mutex;
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+class MoveableMutexLock
 {
 public:
-	// ======================================================================
-	// Mutex
+	MoveableMutexLock() noexcept;
 
-	void lock() override;
+	explicit MoveableMutexLock(
+		Mutex& mutex) noexcept;
 
-	void unlock() override;
+	MoveableMutexLock(
+		const MoveableMutexLock& rhs) = delete;
 
-	void* native_handle() noexcept override;
+	MoveableMutexLock(
+		MoveableMutexLock&& rhs) noexcept;
 
-	// Mutex
-	// ======================================================================
+	~MoveableMutexLock();
 
 
 private:
-	SysWin32CriticalSection win32_critical_section_{};
-}; // Win32Mutex
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-void Win32Mutex::lock()
-{
-	win32_critical_section_.lock();
-}
-
-void Win32Mutex::unlock()
-{
-	win32_critical_section_.unlock();
-}
-
-void* Win32Mutex::native_handle() noexcept
-{
-	return &win32_critical_section_;
-}
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-Mutex::Mutex() noexcept = default;
-
-Mutex::~Mutex() = default;
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-MutexUPtr make_mutex()
-{
-	return std::make_unique<Win32Mutex>();
-}
+	Mutex* mutex_{};
+}; // MoveableMutexLock
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 } // eaxefx
+
+
+#endif // EAXEFX_MOVEABLE_MUTEX_LOCK_INCLUDED

@@ -41,25 +41,26 @@ namespace eaxefx
 class Mutex
 {
 public:
-	Mutex();
+	Mutex() noexcept;
 
-	~Mutex();
-
-
-	void lock();
-
-	void unlock();
-
-	void* native_handle() noexcept;
+	virtual ~Mutex();
 
 
-private:
-	class Impl;
+	virtual void lock() = 0;
 
+	virtual void unlock() = 0;
 
-	using ImplUPtr = std::unique_ptr<Impl>;
-	ImplUPtr impl_;
+	virtual void* native_handle() noexcept = 0;
 }; // Mutex
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+using MutexUPtr = std::unique_ptr<Mutex>;
+
+MutexUPtr make_mutex();
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

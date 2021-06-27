@@ -32,7 +32,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_exception.h"
 
-#include "eaxefx_al_symbols.h"
+#include "eaxefx_al_api.h"
 #include "eaxefx_eax_api.h"
 #include "eaxefx_unit_converters.h"
 #include "eaxefx_eaxx_validators.h"
@@ -247,6 +247,11 @@ void EaxxSource::validate_init_param(
 	{
 		throw EaxxSourceException{"Null context shared."};
 	}
+
+	if (!param.al_efx_symbols)
+	{
+		throw EaxxSourceException{"Null EFX symbols."};
+	}
 }
 
 void EaxxSource::copy_init_param(
@@ -255,6 +260,7 @@ void EaxxSource::copy_init_param(
 	al_.source = param.al_source;
 	al_.filter = param.al_filter;
 	context_shared_ = param.context_shared;
+	al_.efx_symbols = param.al_efx_symbols;
 }
 
 void EaxxSource::set_eax_source_defaults()
@@ -432,8 +438,8 @@ AlLowPassParam EaxxSource::make_room_filter(
 void EaxxSource::set_al_filter_parameters(
 	const AlLowPassParam& al_low_pass_param) const noexcept
 {
-	alFilterf_(al_.filter, AL_LOWPASS_GAIN, al_low_pass_param.gain);
-	alFilterf_(al_.filter, AL_LOWPASS_GAINHF, al_low_pass_param.gain_hf);
+	al_.efx_symbols->alFilterf(al_.filter, AL_LOWPASS_GAIN, al_low_pass_param.gain);
+	al_.efx_symbols->alFilterf(al_.filter, AL_LOWPASS_GAINHF, al_low_pass_param.gain_hf);
 }
 
 void EaxxSource::set_fx_slots()
@@ -468,7 +474,7 @@ void EaxxSource::set_fx_slots()
 	{
 		if (!active_fx_slots_[i])
 		{
-			alSource3i_(al_.source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, i, AL_FILTER_NULL);
+			al_.al_symbols->alSource3i(al_.source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, i, AL_FILTER_NULL);
 		}
 	}
 }
@@ -482,11 +488,18 @@ void EaxxSource::initialize_fx_slots()
 void EaxxSource::initialize(
 	const EaxxSourceInitParam& param)
 {
+	al_.al_symbols = g_al_api.get_al_al_symbols();
+
+	if (!al_.al_symbols)
+	{
+		throw EaxxSourceException{"Null AL symbols."};
+	}
+
 	validate_init_param(param);
 	copy_init_param(param);
 	set_eax_defaults();
 
-	if (al_.filter != 0)
+	if (al_.filter != AL_NONE)
 	{
 		initialize_fx_slots();
 	}
@@ -498,7 +511,7 @@ void EaxxSource::update_direct_filter_internal()
 {
 	const auto& direct_param = make_direct_filter();
 	set_al_filter_parameters(direct_param);
-	alSourcei_(al_.source, AL_DIRECT_FILTER, al_.filter);
+	al_.al_symbols->alSourcei(al_.source, AL_DIRECT_FILTER, al_.filter);
 }
 
 void EaxxSource::update_room_filters_internal()
@@ -517,7 +530,7 @@ void EaxxSource::update_room_filters_internal()
 			const auto& room_param = make_room_filter(fx_slot, send);
 			const auto efx_effect_slot = fx_slot.get_efx_effect_slot();
 			set_al_filter_parameters(room_param);
-			alSource3i_(al_.source, AL_AUXILIARY_SEND_FILTER, efx_effect_slot, i, al_.filter);
+			al_.al_symbols->alSource3i(al_.source, AL_AUXILIARY_SEND_FILTER, efx_effect_slot, i, al_.filter);
 		}
 	}
 }
@@ -542,7 +555,7 @@ void EaxxSource::update_primary_fx_slot_id()
 	{
 		const auto fx_slot_index = previous_primary_fx_slot_index.get();
 		active_fx_slots_[fx_slot_index] = false;
-		alSource3i_(al_.source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, fx_slot_index, AL_FILTER_NULL);
+		al_.al_symbols->alSource3i(al_.source, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, fx_slot_index, AL_FILTER_NULL);
 	}
 
 	if (primary_fx_slot_index.has_value())
@@ -555,7 +568,7 @@ void EaxxSource::update_primary_fx_slot_id()
 		const auto& room_param = make_room_filter(fx_slot, send);
 		const auto efx_effect_slot = fx_slot.get_efx_effect_slot();
 		set_al_filter_parameters(room_param);
-		alSource3i_(al_.source, AL_AUXILIARY_SEND_FILTER, efx_effect_slot, fx_slot_index, al_.filter);
+		al_.al_symbols->alSource3i(al_.source, AL_AUXILIARY_SEND_FILTER, efx_effect_slot, fx_slot_index, al_.filter);
 	}
 
 	has_active_fx_slots_ = std::any_of(
@@ -1874,46 +1887,46 @@ void EaxxSource::set_outside_volume_hf()
 		AL_MAX_CONE_OUTER_GAINHF
 	);
 
-	alSourcef_(al_.source, AL_CONE_OUTER_GAINHF, efx_gain_hf);
+	al_.al_symbols->alSourcef(al_.source, AL_CONE_OUTER_GAINHF, efx_gain_hf);
 }
 
 void EaxxSource::set_doppler_factor()
 {
-	alSourcef_(al_.source, AL_DOPPLER_FACTOR, eax_.source.flDopplerFactor);
+	al_.al_symbols->alSourcef(al_.source, AL_DOPPLER_FACTOR, eax_.source.flDopplerFactor);
 }
 
 void EaxxSource::set_rolloff_factor()
 {
-	alSourcef_(al_.source, AL_ROLLOFF_FACTOR, eax_.source.flRolloffFactor);
+	al_.al_symbols->alSourcef(al_.source, AL_ROLLOFF_FACTOR, eax_.source.flRolloffFactor);
 }
 
 void EaxxSource::set_room_rolloff_factor()
 {
-	alSourcef_(al_.source, AL_ROOM_ROLLOFF_FACTOR, eax_.source.flRoomRolloffFactor);
+	al_.al_symbols->alSourcef(al_.source, AL_ROOM_ROLLOFF_FACTOR, eax_.source.flRoomRolloffFactor);
 }
 
 void EaxxSource::set_air_absorption_factor()
 {
 	const auto air_absorption_factor = context_shared_->air_absorption_factor * eax_.source.flAirAbsorptionFactor;
-	alSourcef_(al_.source, AL_AIR_ABSORPTION_FACTOR, air_absorption_factor);
+	al_.al_symbols->alSourcef(al_.source, AL_AIR_ABSORPTION_FACTOR, air_absorption_factor);
 }
 
 void EaxxSource::set_direct_hf_auto_flag()
 {
 	const auto is_enable = (eax_.source.ulFlags & ::EAXSOURCEFLAGS_DIRECTHFAUTO) != 0;
-	alSourcei_(al_.source, AL_DIRECT_FILTER_GAINHF_AUTO, is_enable);
+	al_.al_symbols->alSourcei(al_.source, AL_DIRECT_FILTER_GAINHF_AUTO, is_enable);
 }
 
 void EaxxSource::set_room_auto_flag()
 {
 	const auto is_enable = (eax_.source.ulFlags & ::EAXSOURCEFLAGS_ROOMAUTO) != 0;
-	alSourcei_(al_.source, AL_AUXILIARY_SEND_FILTER_GAIN_AUTO, is_enable);
+	al_.al_symbols->alSourcei(al_.source, AL_AUXILIARY_SEND_FILTER_GAIN_AUTO, is_enable);
 }
 
 void EaxxSource::set_room_hf_auto_flag()
 {
 	const auto is_enable = (eax_.source.ulFlags & ::EAXSOURCEFLAGS_ROOMHFAUTO) != 0;
-	alSourcei_(al_.source, AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO, is_enable);
+	al_.al_symbols->alSourcei(al_.source, AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO, is_enable);
 }
 
 void EaxxSource::set_flags()

@@ -25,10 +25,15 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "eaxefx_mutex.h"
+#ifndef EAXEFX_AL_API_INCLUDED
+#define EAXEFX_AL_API_INCLUDED
 
-#include "eaxefx_platform.h"
-#include "eaxefx_sys_win32_critical_section.h"
+
+#include "eaxefx_al_api_context.h"
+#include "eaxefx_al_loader.h"
+#include "eaxefx_al_symbols.h"
+#include "eaxefx_logger.h"
+#include "eaxefx_moveable_mutex_lock.h"
 
 
 namespace eaxefx
@@ -37,67 +42,42 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class Win32Mutex final :
-	public Mutex
+class AlApi
 {
 public:
-	// ======================================================================
-	// Mutex
+	AlApi() noexcept = default;
 
-	void lock() override;
-
-	void unlock() override;
-
-	void* native_handle() noexcept override;
-
-	// Mutex
-	// ======================================================================
+	virtual ~AlApi() = default;
 
 
-private:
-	SysWin32CriticalSection win32_critical_section_{};
-}; // Win32Mutex
+	virtual Logger* get_logger() noexcept = 0;
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	virtual AlLoader* get_al_loader() const noexcept = 0;
 
+	virtual AlAlcSymbols* get_al_alc_symbols() const noexcept = 0;
 
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	virtual AlAlSymbols* get_al_al_symbols() const noexcept = 0;
 
-void Win32Mutex::lock()
-{
-	win32_critical_section_.lock();
-}
+	virtual void on_thread_detach() noexcept = 0;
 
-void Win32Mutex::unlock()
-{
-	win32_critical_section_.unlock();
-}
+	virtual void on_process_detach() noexcept = 0;
 
-void* Win32Mutex::native_handle() noexcept
-{
-	return &win32_critical_section_;
-}
+	virtual MoveableMutexLock get_lock() = 0;
+
+	virtual AlApiContext& get_current_context() = 0;
+}; // AlApi
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-Mutex::Mutex() noexcept = default;
-
-Mutex::~Mutex() = default;
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-MutexUPtr make_mutex()
-{
-	return std::make_unique<Win32Mutex>();
-}
+extern AlApi& g_al_api;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 } // eaxefx
+
+
+#endif // !EAXEFX_AL_API_INCLUDED

@@ -75,10 +75,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxEchoEffect::EaxxEchoEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_ECHO)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_ECHO, al_efx_symbols_)}
 {
 	set_eax_defaults();
 	set_efx_defaults();
@@ -86,7 +88,7 @@ EaxxEchoEffect::EaxxEchoEffect(
 
 void EaxxEchoEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -125,7 +127,7 @@ void EaxxEchoEffect::set_efx_delay()
 		AL_ECHO_MAX_DELAY
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_ECHO_DELAY, delay);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_ECHO_DELAY, delay);
 }
 
 void EaxxEchoEffect::set_efx_lr_delay()
@@ -136,7 +138,7 @@ void EaxxEchoEffect::set_efx_lr_delay()
 		AL_ECHO_MAX_LRDELAY
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_ECHO_LRDELAY, lr_delay);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_ECHO_LRDELAY, lr_delay);
 }
 
 void EaxxEchoEffect::set_efx_damping()
@@ -147,7 +149,7 @@ void EaxxEchoEffect::set_efx_damping()
 		AL_ECHO_MAX_DAMPING
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_ECHO_DAMPING, damping);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_ECHO_DAMPING, damping);
 }
 
 void EaxxEchoEffect::set_efx_feedback()
@@ -158,7 +160,7 @@ void EaxxEchoEffect::set_efx_feedback()
 		AL_ECHO_MAX_FEEDBACK
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_ECHO_FEEDBACK, feedback);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_ECHO_FEEDBACK, feedback);
 }
 
 void EaxxEchoEffect::set_efx_spread()
@@ -169,7 +171,7 @@ void EaxxEchoEffect::set_efx_spread()
 		AL_ECHO_MAX_SPREAD
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_ECHO_SPREAD, spread);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_ECHO_SPREAD, spread);
 }
 
 void EaxxEchoEffect::set_efx_defaults()

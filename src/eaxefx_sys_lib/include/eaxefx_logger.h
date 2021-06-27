@@ -29,10 +29,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #define EAXEFX_LOGGER_INCLUDED
 
 
-#include <exception>
 #include <memory>
-
-#include "eaxefx_console.h"
 
 
 namespace eaxefx
@@ -47,6 +44,16 @@ enum class LoggerMessageType
 	warning,
 	error,
 }; // LoggerMessageType
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+struct LoggerParam
+{
+	const char* file_path{};
+}; // LoggerParam
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -70,27 +77,21 @@ public:
 		LoggerMessageType message_type,
 		const char* message) noexcept = 0;
 
-	virtual void write(
-		const std::exception& exception) noexcept = 0;
 
-
-	void info(
+	virtual void info(
 		const char* message) noexcept;
 
-	void warning(
+	virtual void warning(
 		const char* message) noexcept;
 
-	void error(
-		const char* message) noexcept;
-
-
-	void error(
-		const std::exception& exception) noexcept;
-
-	void error(
-		const std::exception& exception,
+	virtual void error(
 		const char* message) noexcept;
 }; // Logger
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 using LoggerUPtr = std::unique_ptr<Logger>;
 
@@ -99,13 +100,42 @@ using LoggerUPtr = std::unique_ptr<Logger>;
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-struct LoggerParam
+class NullableLogger final :
+	public Logger
 {
-	bool skip_message_prefix{};
-	Console* console{};
-	const char* path{};
-}; // LoggerParam
+public:
+	void make(
+		const LoggerParam& param);
 
+
+	void flush() noexcept override;
+
+	void set_immediate_mode() noexcept override;
+
+
+	void write(
+		LoggerMessageType message_type,
+		const char* message) noexcept override;
+
+
+	void info(
+		const char* message) noexcept override;
+
+	void warning(
+		const char* message) noexcept override;
+
+	void error(
+		const char* message) noexcept override;
+
+
+private:
+	LoggerUPtr logger_{};
+}; // NullableLogger
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 LoggerUPtr make_logger(
 	const LoggerParam& param);

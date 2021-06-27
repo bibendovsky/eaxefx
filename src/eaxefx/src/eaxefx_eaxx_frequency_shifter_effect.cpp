@@ -75,10 +75,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxFrequencyShifterEffect::EaxxFrequencyShifterEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_FREQUENCY_SHIFTER)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_FREQUENCY_SHIFTER, al_efx_symbols_)}
 {
 	set_eax_defaults();
 	set_efx_defaults();
@@ -86,7 +88,7 @@ EaxxFrequencyShifterEffect::EaxxFrequencyShifterEffect(
 
 void EaxxFrequencyShifterEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -123,7 +125,7 @@ void EaxxFrequencyShifterEffect::set_efx_frequency()
 		AL_FREQUENCY_SHIFTER_MAX_FREQUENCY
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_FREQUENCY_SHIFTER_FREQUENCY, frequency);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_FREQUENCY_SHIFTER_FREQUENCY, frequency);
 }
 
 void EaxxFrequencyShifterEffect::set_efx_left_direction()
@@ -134,7 +136,7 @@ void EaxxFrequencyShifterEffect::set_efx_left_direction()
 		AL_FREQUENCY_SHIFTER_MAX_LEFT_DIRECTION
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_FREQUENCY_SHIFTER_LEFT_DIRECTION, left_direction);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_FREQUENCY_SHIFTER_LEFT_DIRECTION, left_direction);
 }
 
 void EaxxFrequencyShifterEffect::set_efx_right_direction()
@@ -145,7 +147,7 @@ void EaxxFrequencyShifterEffect::set_efx_right_direction()
 		AL_FREQUENCY_SHIFTER_MAX_RIGHT_DIRECTION
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_FREQUENCY_SHIFTER_RIGHT_DIRECTION, right_direction);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_FREQUENCY_SHIFTER_RIGHT_DIRECTION, right_direction);
 }
 
 void EaxxFrequencyShifterEffect::set_efx_defaults()

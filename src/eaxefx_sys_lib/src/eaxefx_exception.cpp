@@ -29,7 +29,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <cassert>
 
-#include <string_view>
+#include "eaxefx_c_string.h"
 
 
 namespace eaxefx
@@ -38,57 +38,96 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+Exception::Exception(
+	const char* message) noexcept
+	:
+	Exception{nullptr, message}
+{
+}
+
 Exception::Exception(
 	const char* context,
-	const char* message)
+	const char* message) noexcept
 {
-	assert(context);
-	assert(message);
+	const auto context_size = (context ? c_string::get_size(context) : 0);
+	const auto has_contex = (context_size > 0);
 
-	const auto context_sv = std::string_view{context};
-	const auto message_sv = std::string_view{message};
+	const auto message_size = (message ? c_string::get_size(message) : 0);
+	const auto has_message = (message_size > 0);
 
-	static constexpr auto left_prefix = std::string_view{"["};
-	static constexpr auto right_prefix = std::string_view{"] "};
+	if (!has_contex && !has_message)
+	{
+		return;
+	}
+
+	constexpr auto left_prefix = "[";
+	constexpr auto left_prefix_size = c_string::get_size(left_prefix);
+
+	constexpr auto right_prefix = "] ";
+	constexpr auto right_prefix_size = c_string::get_size(right_prefix);
 
 	const auto what_size =
-		left_prefix.size() +
-		context_sv.size() +
-		right_prefix.size() +
-		message_sv.size() +
+		(
+			has_contex ?
+			left_prefix_size + context_size + right_prefix_size :
+			0
+		) +
+		message_size +
 		1
 	;
 
-	what_ = std::make_unique<char[]>(what_size);
+	what_.reset(new (std::nothrow) char[what_size]);
+
+	if (!what_)
+	{
+		return;
+	}
+
 	auto what = what_.get();
-	copy_string(left_prefix.data(), left_prefix.size(), what);
-	copy_string(context_sv.data(), context_sv.size(), what);
-	copy_string(right_prefix.data(), right_prefix.size(), what);
-	copy_string(message_sv.data(), message_sv.size(), what);
+
+	if (has_contex)
+	{
+		what = std::uninitialized_copy_n(left_prefix, left_prefix_size, what);
+		what = std::uninitialized_copy_n(context, context_size, what);
+		what = std::uninitialized_copy_n(right_prefix, right_prefix_size, what);
+	}
+
+	if (has_message)
+	{
+		what = std::uninitialized_copy_n(message, message_size, what);
+	}
+
+	*what = '\0';
+}
+
+Exception::Exception(
+	const Exception& rhs) noexcept
+{
+	if (!rhs.what_)
+	{
+		return;
+	}
+
+	const auto rhs_what = rhs.what_.get();
+	const auto what_size = c_string::get_size(rhs_what);
+
+	what_.reset(new (std::nothrow) char[what_size + 1]);
+
+	if (!what_)
+	{
+		return;
+	}
+
+	auto what = what_.get();
+	what = std::uninitialized_copy_n(rhs_what, what_size, what);
 	*what = '\0';
 }
 
 const char* Exception::what() const noexcept
 {
-	assert(what_);
-
-	return what_.get();
-}
-
-void Exception::copy_string(
-	const char* src,
-	std::size_t src_size,
-	char*& dst)
-{
-	assert(src);
-	assert(dst);
-
-	for (auto i = std::size_t{}; i < src_size; ++i)
-	{
-		dst[i] = src[i];
-	}
-
-	dst += src_size;
+	return what_ ? what_.get() : "[EAXEFX_EXCEPTION] Generic failure.";
 }
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

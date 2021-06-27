@@ -75,10 +75,12 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxVocalMorpherEffect::EaxxVocalMorpherEffect(
-	::ALuint al_effect_slot)
+	::ALuint al_effect_slot,
+	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
-	efx_effect_object_{make_efx_effect_object(AL_EFFECT_VOCAL_MORPHER)}
+	al_efx_symbols_{al_efx_symbols},
+	efx_effect_object_{make_efx_effect_object(AL_EFFECT_VOCAL_MORPHER, al_efx_symbols_)}
 {
 	set_eax_defaults();
 	set_efx_defaults();
@@ -86,7 +88,7 @@ EaxxVocalMorpherEffect::EaxxVocalMorpherEffect(
 
 void EaxxVocalMorpherEffect::load()
 {
-	alAuxiliaryEffectSloti_(
+	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
 		static_cast<::ALint>(efx_effect_object_.get())
@@ -126,7 +128,7 @@ void EaxxVocalMorpherEffect::set_efx_phoneme_a()
 		AL_VOCAL_MORPHER_MAX_PHONEMEA
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_VOCAL_MORPHER_PHONEMEA, phoneme_a);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_VOCAL_MORPHER_PHONEMEA, phoneme_a);
 }
 
 void EaxxVocalMorpherEffect::set_efx_phoneme_a_coarse_tuning()
@@ -137,7 +139,7 @@ void EaxxVocalMorpherEffect::set_efx_phoneme_a_coarse_tuning()
 		AL_VOCAL_MORPHER_MAX_PHONEMEA_COARSE_TUNING
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_VOCAL_MORPHER_PHONEMEA_COARSE_TUNING, phoneme_a_coarse_tuning);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_VOCAL_MORPHER_PHONEMEA_COARSE_TUNING, phoneme_a_coarse_tuning);
 }
 
 void EaxxVocalMorpherEffect::set_efx_phoneme_b()
@@ -148,7 +150,7 @@ void EaxxVocalMorpherEffect::set_efx_phoneme_b()
 		AL_VOCAL_MORPHER_MAX_PHONEMEB
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_VOCAL_MORPHER_PHONEMEB, phoneme_b);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_VOCAL_MORPHER_PHONEMEB, phoneme_b);
 }
 
 void EaxxVocalMorpherEffect::set_efx_phoneme_b_coarse_tuning()
@@ -159,7 +161,7 @@ void EaxxVocalMorpherEffect::set_efx_phoneme_b_coarse_tuning()
 		AL_VOCAL_MORPHER_MAX_PHONEMEB_COARSE_TUNING
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_VOCAL_MORPHER_PHONEMEB_COARSE_TUNING, phoneme_b_coarse_tuning);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_VOCAL_MORPHER_PHONEMEB_COARSE_TUNING, phoneme_b_coarse_tuning);
 }
 
 void EaxxVocalMorpherEffect::set_efx_waveform()
@@ -170,7 +172,7 @@ void EaxxVocalMorpherEffect::set_efx_waveform()
 		AL_VOCAL_MORPHER_MAX_WAVEFORM
 	);
 
-	alEffecti_(efx_effect_object_.get(), AL_VOCAL_MORPHER_WAVEFORM, waveform);
+	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_VOCAL_MORPHER_WAVEFORM, waveform);
 }
 
 void EaxxVocalMorpherEffect::set_efx_rate()
@@ -181,7 +183,7 @@ void EaxxVocalMorpherEffect::set_efx_rate()
 		AL_VOCAL_MORPHER_MAX_RATE
 	);
 
-	alEffectf_(efx_effect_object_.get(), AL_VOCAL_MORPHER_RATE, rate);
+	al_efx_symbols_->alEffectf(efx_effect_object_.get(), AL_VOCAL_MORPHER_RATE, rate);
 }
 
 void EaxxVocalMorpherEffect::set_efx_defaults()

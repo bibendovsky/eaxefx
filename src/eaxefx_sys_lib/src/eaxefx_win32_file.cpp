@@ -82,6 +82,9 @@ public:
 		int size) override;
 
 
+	void flush() override;
+
+
 private:
 	bool is_readable_{};
 	bool is_writable_{};
@@ -131,6 +134,8 @@ Win32File::Win32File(
 	}
 
 
+	constexpr auto win32_share_mode = ::DWORD{FILE_SHARE_READ};
+
 	auto win32_creation_disposition = ::DWORD{};
 
 	if (is_truncate)
@@ -163,7 +168,7 @@ Win32File::Win32File(
 	handle_ = ::CreateFileW(
 		reinterpret_cast<::LPCWSTR>(utf16_path.c_str()),
 		win32_desired_access,
-		0,
+		win32_share_mode,
 		nullptr,
 		win32_creation_disposition,
 		FILE_ATTRIBUTE_NORMAL,
@@ -293,6 +298,18 @@ int Win32File::write(
 	}
 
 	return static_cast<int>(written_size);
+}
+
+void Win32File::flush()
+{
+	ensure_is_open();
+
+	const auto win32_result = ::FlushFileBuffers(handle_);
+
+	if (win32_result == 0)
+	{
+		throw Win32FileException{"Failed to flush."};
+	}
 }
 
 bool Win32File::is_handle_valid() noexcept

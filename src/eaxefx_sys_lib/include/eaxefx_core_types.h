@@ -25,11 +25,11 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef EAXEFX_FILE_INCLUDED
-#define EAXEFX_FILE_INCLUDED
+#ifndef EAXEFX_CORE_TYPE_INCLUDED
+#define EAXEFX_CORE_TYPE_INCLUDED
 
 
-#include <memory>
+#include <cstddef>
 
 
 namespace eaxefx
@@ -38,55 +38,7 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class File
-{
-public:
-	File() = default;
-
-	virtual ~File() = default;
-
-
-	virtual void set_position(
-		int position) = 0;
-
-	virtual void move_to_the_end() = 0;
-
-
-	virtual int read(
-		void* buffer,
-		int size) = 0;
-
-	virtual int write(
-		const void* buffer,
-		int size) = 0;
-
-
-	virtual void flush() = 0;
-}; // File
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-enum FileOpenMode :
-	unsigned int
-{
-	file_open_mode_none = 0,
-
-	file_open_mode_read = 1 << 0,
-	file_open_mode_write = 1 << 1,
-	file_open_mode_truncate = 1 << 2,
-
-	file_open_mode_read_write = file_open_mode_read | file_open_mode_write,
-}; // FileOpenMode
-
-
-using FileUPtr = std::unique_ptr<File>;
-
-FileUPtr make_file(
-	const char* path,
-	FileOpenMode open_mode);
+using Int = std::ptrdiff_t;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -94,4 +46,4 @@ FileUPtr make_file(
 } // eaxefx
 
 
-#endif // !EAXEFX_FILE_INCLUDED
+#endif // !EAXEFX_CORE_TYPE_INCLUDED

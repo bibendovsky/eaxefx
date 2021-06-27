@@ -29,8 +29,6 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #define EAXEFX_EXCEPTION_INCLUDED
 
 
-#include <cstddef>
-
 #include <exception>
 #include <memory>
 
@@ -45,24 +43,25 @@ class Exception :
 	public std::exception
 {
 public:
-	Exception() = delete;
+	explicit Exception(
+		const char* message) noexcept;
 
 	Exception(
 		const char* context,
-		const char* message);
+		const char* message) noexcept;
+
+	Exception(
+		const Exception& rhs) noexcept;
 
 
 	const char* what() const noexcept override;
 
 
 private:
-	std::unique_ptr<char[]> what_{};
+	using What = std::unique_ptr<char[]>;
 
 
-	static void copy_string(
-		const char* src,
-		std::size_t src_size,
-		char*& dst);
+	What what_{};
 }; // Exception
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

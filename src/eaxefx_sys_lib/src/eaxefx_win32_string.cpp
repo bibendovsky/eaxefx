@@ -81,6 +81,10 @@ constexpr int to_string_max_length() noexcept
 	{
 		return 16;
 	}
+	else if constexpr (std::is_pointer_v<T>)
+	{
+		return 2 * static_cast<int>(sizeof(void*));
+	}
 	else
 	{
 		return 0;
@@ -182,6 +186,14 @@ String to_string(
 
 	auto string = String{};
 	to_string_generic(value, "%f", string);
+	return string;
+}
+
+String to_string_hex(
+	const void* value)
+{
+	auto string = String{};
+	to_string_generic(value, "%p", string);
 	return string;
 }
 

@@ -31,6 +31,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <array>
 
+#include "eaxefx_al_symbols.h"
 #include "eaxefx_eax_api.h"
 #include "eaxefx_eaxx_fx_slot.h"
 #include "eaxefx_eaxx_fx_slot_index.h"
@@ -45,7 +46,8 @@ namespace eaxefx
 class EaxxFxSlots
 {
 public:
-	void initialize();
+	void initialize(
+		const AlEfxSymbols* al_efx_symbols);
 
 
 	EaxxFxSlot& get(
@@ -59,7 +61,8 @@ private:
 	Items fx_slots_{};
 
 
-	void initialize_fx_slots();
+	void initialize_fx_slots(
+		const AlEfxSymbols* al_efx_symbols);
 
 	void initialize_default_slot();
 }; // EaxxFxSlots

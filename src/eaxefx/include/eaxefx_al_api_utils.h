@@ -25,87 +25,74 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef EAXEFX_EAXX_INCLUDED
-#define EAXEFX_EAXX_INCLUDED
+#ifndef EAXEFX_AL_API_UTILS_INCLUDED
+#define EAXEFX_AL_API_UTILS_INCLUDED
 
 
-#include <memory>
-#include <string_view>
-
-#include "AL/al.h"
 #include "AL/alc.h"
 
-#include "eaxefx_al_loader.h"
-#include "eaxefx_al_symbols.h"
-#include "eaxefx_eax_api.h"
 #include "eaxefx_logger.h"
+#include "eaxefx_string.h"
 
 
-namespace eaxefx
+namespace eaxefx::al_api
 {
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class Eaxx
+struct ErrorMessages
 {
-public:
-	Eaxx() = default;
-
-	virtual ~Eaxx() = default;
-
-
-	virtual void* alGetProcAddress(
-		std::string_view symbol_name) = 0;
-
-	virtual void alGenSources(
-		::ALsizei n,
-		::ALuint* sources) = 0;
-
-	virtual void alDeleteSources(
-		::ALsizei n,
-		const ::ALuint* sources) = 0;
-
-
-	virtual ::ALenum EAXSet(
-		const ::GUID* property_set_guid,
-		::ALuint property_id,
-		::ALuint property_al_name,
-		::ALvoid* property_buffer,
-		::ALuint property_size) noexcept = 0;
-
-	virtual ::ALenum EAXGet(
-		const ::GUID* property_set_guid,
-		::ALuint property_id,
-		::ALuint property_al_name,
-		::ALvoid* property_buffer,
-		::ALuint property_size) noexcept = 0;
-}; // Eaxx
-
-using EaxxUPtr = std::unique_ptr<Eaxx>;
+	static constexpr auto generic_exception = "Generic exception.";
+}; // ErrorMessages
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-struct EaxxCreateParam
+struct Strings
 {
-	const AlEfxSymbols* al_efx_symbols{};
-}; // EaxxCreateParam
+	static constexpr auto indent = "    ";
+	static constexpr auto indented_none = "    none";
+	static constexpr auto space_equals_space = " = ";
+	static constexpr auto three_question_marks = "???";
+	static constexpr auto equals_line_16 = "================";
+	static constexpr auto null = "<null>";
+
+	static constexpr auto major_version = "major version";
+	static constexpr auto minor_version = "minor version";
+	static constexpr auto mixer_frequency = "mixer frequency";
+	static constexpr auto refresh_interval = "refresh interval";
+	static constexpr auto is_synchronous = "is synchronous";
+	static constexpr auto mono_sources = "mono sources";
+	static constexpr auto stereo_sources = "stereo sources";
+	static constexpr auto max_auxiliary_sends = "max auxiliary sends";
+}; // Strings
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-EaxxUPtr make_eaxx(
-	const EaxxCreateParam& param);
+void log_context_attribute_list(
+	Logger* logger,
+	const ::ALCint* al_attributes);
+
+void log_extensions(
+	Logger* logger,
+	const char* al_extensions);
+
+void log_string(
+	Logger* logger,
+	const char* title,
+	const char* string);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-} // eaxefx
+} // eaxefx::al_api
 
 
-#endif // !EAXEFX_EAXX_INCLUDED
+#endif // !EAXEFX_AL_API_UTILS_INCLUDED
+

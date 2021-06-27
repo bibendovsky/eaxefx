@@ -24,11 +24,20 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#ifndef EAXEFX_AL_API_CONTEXT_INCLUDED
+#define EAXEFX_AL_API_CONTEXT_INCLUDED
 
+
+#include "AL/alc.h"
+
+#include <memory>
+#include <string_view>
+
+#include "eaxefx_al_loader.h"
+#include "eaxefx_al_symbols.h"
+#include "eaxefx_eaxx.h"
+#include "eaxefx_logger.h"
 #include "eaxefx_mutex.h"
-
-#include "eaxefx_platform.h"
-#include "eaxefx_sys_win32_critical_section.h"
 
 
 namespace eaxefx
@@ -37,67 +46,69 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class Win32Mutex final :
-	public Mutex
+struct AlApiContextInitParam
+{
+	::ALCdevice* al_device{};
+	const ::ALCint* al_context_attributes{};
+}; // AlApiContextInitParam
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+class AlApiContext
 {
 public:
-	// ======================================================================
-	// Mutex
+	AlApiContext() noexcept = default;
 
-	void lock() override;
-
-	void unlock() override;
-
-	void* native_handle() noexcept override;
-
-	// Mutex
-	// ======================================================================
+	virtual ~AlApiContext() = default;
 
 
-private:
-	SysWin32CriticalSection win32_critical_section_{};
-}; // Win32Mutex
+	virtual void alc_create_context(
+		const AlApiContextInitParam& param) = 0;
 
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+	virtual void alc_make_current() = 0;
+
+	virtual void alc_destroy() = 0;
+
+	virtual void* al_get_proc_address(
+		std::string_view symbol_name) const noexcept = 0;
+
+	virtual bool al_is_extension_present(
+		const char* extension_name) const noexcept = 0;
+
+	virtual const char* al_get_string(
+		::ALenum param) const noexcept = 0;
+
+	virtual void al_gen_sources(
+		::ALsizei n,
+		::ALuint* sources) = 0;
+
+	virtual void al_delete_sources(
+		::ALsizei n,
+		const ::ALuint* sources) = 0;
 
 
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+	virtual ::ALCcontext* get_al_context() const noexcept = 0;
 
-void Win32Mutex::lock()
-{
-	win32_critical_section_.lock();
-}
-
-void Win32Mutex::unlock()
-{
-	win32_critical_section_.unlock();
-}
-
-void* Win32Mutex::native_handle() noexcept
-{
-	return &win32_critical_section_;
-}
+	virtual Eaxx& get_eaxx() = 0;
+}; // AlApiContext
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-Mutex::Mutex() noexcept = default;
+using AlApiContextUPtr = std::unique_ptr<AlApiContext>;
 
-Mutex::~Mutex() = default;
-
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-MutexUPtr make_mutex()
-{
-	return std::make_unique<Win32Mutex>();
-}
+AlApiContextUPtr make_al_api_context();
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 } // eaxefx
+
+
+#endif // !EAXEFX_AL_API_CONTEXT_INCLUDED
+

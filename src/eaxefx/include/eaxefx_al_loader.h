@@ -31,6 +31,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <memory>
 
+#include "eaxefx_al_symbols.h"
 #include "eaxefx_shared_library.h"
 
 
@@ -42,20 +43,25 @@ namespace eaxefx
 
 class AlLoader
 {
-protected:
-	AlLoader() = default;
-
-
 public:
-	virtual ~AlLoader() = default;
-}; // AlLoader
+	AlLoader() noexcept = default;
 
-using AlLoaderUPtr = std::unique_ptr<AlLoader>;
+	virtual ~AlLoader() = default;
+
+
+	virtual AlAlcSymbolsUPtr load_alc_symbols() = 0;
+
+	virtual AlAlSymbolsUPtr load_al_symbols() = 0;
+
+	virtual AlEfxSymbolsUPtr load_efx() = 0;
+}; // AlLoader
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+using AlLoaderUPtr = std::unique_ptr<AlLoader>;
 
 AlLoaderUPtr make_al_loader(
 	SharedLibrary* shared_library);
