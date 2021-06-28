@@ -11,8 +11,7 @@ Contents
 4. Supported drivers
 5. Driver file name convention
 6. Missing features  
-   6.1 Bypassed  
-   6.2 Not supported
+   6.1 Bypassed
 7. Known issues
 8. Usage
 9. Compiling requirements
@@ -81,16 +80,10 @@ Context:
 - HF Reference (EAX 4.0/5.0)
 - Macro FX Factor (EAX 5.0)
 - Speaker configuration (EAX 5.0)
+- X-RAM
 
 Source:
 - Speaker levels (EAX 5.0)
-
-
-6.2 - Not supported
-===================
-
-General:
-- X-RAM
 
 
 7 - Known issues

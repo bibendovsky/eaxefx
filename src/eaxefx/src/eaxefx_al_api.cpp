@@ -61,6 +61,72 @@ namespace eaxefx
 {
 
 
+namespace
+{
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+constexpr auto max_x_ram_size = static_cast<::ALsizei>(64 * 1'024 * 1'024);
+
+constexpr auto x_ram_ram_size_enum = static_cast<::ALenum>(0x1);
+constexpr auto x_ram_ram_free_enum = static_cast<::ALenum>(0x2);
+constexpr auto x_ram_al_storage_automatic_enum = static_cast<::ALenum>(0x3);
+constexpr auto x_ram_al_storage_hardware_enum = static_cast<::ALenum>(0x4);
+constexpr auto x_ram_al_storage_accessible_enum = static_cast<::ALenum>(0x5);
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+::ALboolean AL_APIENTRY EAXSetBufferMode(
+	::ALsizei n,
+	const ::ALuint* buffers,
+	::ALint value)
+try
+{
+	const auto mutex_lock = g_al_api.get_lock();
+
+	return g_al_api.EAXSetBufferMode(n, buffers, value);
+}
+catch (const std::exception& ex)
+{
+	g_al_api.get_logger()->error(ex.what());
+	return AL_FALSE;
+}
+catch (...)
+{
+	g_al_api.get_logger()->error(al_api::ErrorMessages::generic_exception);
+	return AL_FALSE;
+}
+
+::ALenum AL_APIENTRY EAXGetBufferMode(
+	::ALuint buffer,
+	::ALint* value)
+try
+{
+	const auto mutex_lock = g_al_api.get_lock();
+
+	return g_al_api.EAXGetBufferMode(buffer, value);
+}
+catch (const std::exception& ex)
+{
+	g_al_api.get_logger()->error(ex.what());
+	return x_ram_al_storage_automatic_enum;
+}
+catch (...)
+{
+	g_al_api.get_logger()->error(al_api::ErrorMessages::generic_exception);
+	return x_ram_al_storage_automatic_enum;
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+} // namespace
+
+
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 class AlApiException :
@@ -80,7 +146,7 @@ public:
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class AlApiImpl :
+class AlApiImpl final :
 	public AlApi
 {
 public:
@@ -104,6 +170,15 @@ public:
 	MoveableMutexLock get_lock() override;
 
 	AlApiContext& get_current_context() override;
+
+	::ALboolean AL_APIENTRY EAXSetBufferMode(
+		::ALsizei n,
+		const ::ALuint* buffers,
+		::ALint value);
+
+	::ALenum AL_APIENTRY EAXGetBufferMode(
+		::ALuint buffer,
+		::ALint* value);
 
 	Eaxx* get_eaxx() const noexcept;
 
@@ -522,8 +597,17 @@ private:
 
 	static constexpr auto min_string_buffer_capacity = 4 * 1'024;
 
-
 	using AlSymbolMap = std::unordered_map<std::string_view, void*>;
+
+	struct Buffer
+	{
+		::ALsizei size{};
+		::ALenum x_ram_mode{};
+		bool x_ram_is_allocated{};
+		bool x_ram_is_dirty{};
+	}; // Buffer
+
+	using BufferMap = std::unordered_map<::ALuint, Buffer>;
 
 	using Contexts = std::list<AlApiContextUPtr>;
 
@@ -531,7 +615,9 @@ private:
 	struct Device
 	{
 		::ALCdevice* al_device{};
+		::ALsizei x_ram_free_size{};
 
+		BufferMap buffers{};
 		Contexts contexts{};
 	}; // Device
 
@@ -592,6 +678,15 @@ private:
 
 	Device& get_device(
 		::ALCdevice* al_device);
+
+	Device& get_current_device();
+
+	Buffer& get_buffer(
+		Device& device,
+		::ALuint al_buffer_name);
+
+	Buffer& get_current_buffer(
+		::ALuint al_buffer_name);
 
 
 	AlApiContext& get_context();
@@ -695,7 +790,7 @@ AlAlSymbols* AlApiImpl::get_al_al_symbols() const noexcept
 
 void AlApiImpl::on_thread_detach() noexcept
 {
-	logger_.set_immediate_mode();
+	logger_.flush();
 }
 
 void AlApiImpl::on_process_detach() noexcept
@@ -711,6 +806,91 @@ MoveableMutexLock AlApiImpl::get_lock()
 AlApiContext& AlApiImpl::get_current_context()
 {
 	return get_context();
+}
+
+::ALboolean AL_APIENTRY AlApiImpl::EAXSetBufferMode(
+	::ALsizei n,
+	const ::ALuint* buffers,
+	::ALint value)
+{
+	if (n <= 0)
+	{
+		throw AlApiException{"Buffer count out of range."};
+	}
+
+	if (!buffers)
+	{
+		throw AlApiException{"Null buffers."};
+	}
+
+	switch (value)
+	{
+		case x_ram_al_storage_automatic_enum:
+		case x_ram_al_storage_hardware_enum:
+		case x_ram_al_storage_accessible_enum:
+			break;
+
+		default:
+			throw AlApiException{"Unknown X-RAM mode."};
+	}
+
+	auto& device = get_current_device();
+
+	for (auto i = decltype(n){}; i < n; ++i)
+	{
+		const auto al_buffer_name = buffers[i];
+
+		if (al_buffer_name == AL_NONE)
+		{
+			throw AlApiException{"Null AL buffer name."};
+		}
+
+		const auto& buffer = get_buffer(device, al_buffer_name);
+
+		if (buffer.x_ram_is_dirty)
+		{
+			throw AlApiException{"Non-empty buffer."};
+		}
+	}
+
+	for (auto i = decltype(n){}; i < n; ++i)
+	{
+		const auto al_buffer_name = buffers[i];
+		auto& buffer = get_buffer(device, al_buffer_name);
+		buffer.x_ram_mode = value;
+	}
+
+	return AL_TRUE;
+}
+
+::ALenum AL_APIENTRY AlApiImpl::EAXGetBufferMode(
+	::ALuint buffer,
+	::ALint* value)
+{
+	if (buffer == AL_NONE)
+	{
+		throw AlApiException{"Null AL buffer name."};
+	}
+
+	if (!value)
+	{
+		throw AlApiException{"Null X-RAM mode."};
+	}
+
+	switch (*value)
+	{
+		case x_ram_al_storage_automatic_enum:
+		case x_ram_al_storage_hardware_enum:
+		case x_ram_al_storage_accessible_enum:
+			break;
+
+		default:
+			throw AlApiException{"Unknown X-RAM mode."};
+	}
+
+	const auto& our_buffer = get_current_buffer(buffer);
+
+	return our_buffer.x_ram_mode;
 }
 
 Eaxx* AlApiImpl::get_eaxx() const noexcept
@@ -965,6 +1145,7 @@ try
 	auto& device = devices_.back();
 
 	device.al_device = al_device;
+	device.x_ram_free_size = max_x_ram_size;
 
 	return al_device;
 }
@@ -1501,7 +1682,20 @@ try
 {
 	const auto mt_lock = initialize();
 
-	return al_al_symbols_->alGetInteger(param);
+	switch (param)
+	{
+		case x_ram_ram_size_enum:
+			return max_x_ram_size;
+
+		case x_ram_ram_free_enum:
+			{
+				const auto& device = get_current_device();
+				return device.x_ram_free_size;
+			}
+
+		default:
+			return al_al_symbols_->alGetInteger(param);
+	}
 }
 catch (const std::exception& ex)
 {
@@ -1579,6 +1773,18 @@ try
 
 	if (current_context_)
 	{
+		if (extname && extname[0] != '\0')
+		{
+			constexpr auto x_ram_view = std::string_view{"EAX-RAM"};
+
+			const auto extname_view = std::string_view{extname};
+
+			if (extname_view == x_ram_view)
+			{
+				return ALC_TRUE;
+			}
+		}
+
 		const auto is_present = current_context_->al_is_extension_present(extname);
 
 		if (is_present)
@@ -1611,7 +1817,23 @@ try
 
 	const auto mt_lock = initialize();
 
+	constexpr auto x_ram_eax_set_buffer_mode_view = std::string_view{"EAXSetBufferMode"};
+	constexpr auto x_ram_eax_get_buffer_mode_view = std::string_view{"EAXGetBufferMode"};
+
 	const auto symbol_name = std::string_view{fname};
+
+	if (false)
+	{
+	}
+	else if (symbol_name == x_ram_eax_set_buffer_mode_view)
+	{
+		return eaxefx::EAXSetBufferMode;
+	}
+	else if (symbol_name == x_ram_eax_get_buffer_mode_view)
+	{
+		return eaxefx::EAXGetBufferMode;
+	}
+
 	const auto al_symbol_it = al_al_symbol_map_.find(symbol_name);
 
 	if (al_symbol_it != al_al_symbol_map_.cend())
@@ -1646,19 +1868,58 @@ catch (...)
 	const ::ALchar* ename) noexcept
 try
 {
+	if (!ename || ename[0] == '\0')
+	{
+		throw AlApiException{"Null or empty enum name."};
+	}
+
+	constexpr auto x_ram_ram_size_view = std::string_view{"AL_EAX_RAM_SIZE"};
+	constexpr auto x_ram_ram_free_view = std::string_view{"AL_EAX_RAM_FREE"};
+	constexpr auto x_ram_al_storage_automatic_view = std::string_view{"AL_STORAGE_AUTOMATIC"};
+	constexpr auto x_ram_al_storage_hardware_view = std::string_view{"AL_STORAGE_HARDWARE"};
+	constexpr auto x_ram_al_storage_accessible_view = std::string_view{"AL_STORAGE_ACCESSIBLE"};
+
 	const auto mt_lock = initialize();
 
-	return al_al_symbols_->alGetEnumValue(ename);
+	const auto ename_view = std::string_view{ename};
+
+	if (false)
+	{
+	}
+	else if (ename_view == x_ram_ram_size_view)
+	{
+		return x_ram_ram_size_enum;
+	}
+	else if (ename_view == x_ram_ram_free_view)
+	{
+		return x_ram_ram_free_enum;
+	}
+	else if (ename_view == x_ram_al_storage_automatic_view)
+	{
+		return x_ram_al_storage_automatic_enum;
+	}
+	else if (ename_view == x_ram_al_storage_hardware_view)
+	{
+		return x_ram_al_storage_hardware_enum;
+	}
+	else if (ename_view == x_ram_al_storage_accessible_view)
+	{
+		return x_ram_al_storage_accessible_enum;
+	}
+	else
+	{
+		return al_al_symbols_->alGetEnumValue(ename);
+	}
 }
 catch (const std::exception& ex)
 {
 	logger_.error(ex.what());
-	return AL_NONE;
+	return 0;
 }
 catch (...)
 {
 	logger_.error(al_api::ErrorMessages::generic_exception);
-	return AL_NONE;
+	return 0;
 }
 
 void AL_APIENTRY AlApiImpl::alListenerf(
@@ -1890,9 +2151,22 @@ void AL_APIENTRY AlApiImpl::alGenSources(
 	::ALuint* sources) noexcept
 try
 {
+	if (n == 0)
+	{
+		return;
+	}
+
 	const auto mt_lock = initialize();
 
+	static_cast<void>(al_al_symbols_->alGetError());
 	al_al_symbols_->alGenSources(n, sources);
+	const auto al_result = al_al_symbols_->alGetError();
+
+	if (al_result != AL_NO_ERROR)
+	{
+		al_al_symbols_->alGenSources(n, sources);
+		return;
+	}
 
 	auto& context = get_current_context();
 	context.al_gen_sources(n, sources);
@@ -1911,9 +2185,23 @@ void AL_APIENTRY AlApiImpl::alDeleteSources(
 	const ::ALuint* sources) noexcept
 try
 {
+	if (n == 0)
+	{
+		return;
+	}
+
 	const auto mt_lock = initialize();
 
+	static_cast<void>(al_al_symbols_->alGetError());
 	al_al_symbols_->alDeleteSources(n, sources);
+	const auto al_result = al_al_symbols_->alGetError();
+
+	if (al_result != AL_NO_ERROR)
+	{
+		al_al_symbols_->alDeleteSources(n, sources);
+		return;
+	}
+
 	auto& context = get_current_context();
 	context.al_delete_sources(n, sources);
 }
@@ -2366,7 +2654,27 @@ try
 {
 	const auto mt_lock = initialize();
 
+	static_cast<void>(al_al_symbols_->alGetError());
 	al_al_symbols_->alGenBuffers(n, buffers);
+	const auto al_result = al_al_symbols_->alGetError();
+
+	if (al_result != AL_NO_ERROR)
+	{
+		al_al_symbols_->alGenBuffers(n, buffers);
+		return;
+	}
+
+	auto& device = get_current_device();
+	auto& our_buffers = device.buffers;
+
+	auto our_buffer = Buffer{};
+	our_buffer.x_ram_mode = x_ram_al_storage_automatic_enum;
+
+	for (auto i = decltype(n){}; i < n; ++i)
+	{
+		const auto buffer = buffers[i];
+		our_buffers.emplace(buffer, our_buffer);
+	}
 }
 catch (const std::exception& ex)
 {
@@ -2384,7 +2692,45 @@ try
 {
 	const auto mt_lock = initialize();
 
+	static_cast<void>(al_al_symbols_->alGetError());
 	al_al_symbols_->alDeleteBuffers(n, buffers);
+	const auto al_result = al_al_symbols_->alGetError();
+
+	if (al_result != AL_NO_ERROR)
+	{
+		al_al_symbols_->alDeleteBuffers(n, buffers);
+		return;
+	}
+
+	auto& device = get_current_device();
+	auto& our_buffers = device.buffers;
+
+	for (auto i = decltype(n){}; i < n; ++i)
+	{
+		const auto buffer = buffers[i];
+
+		if (buffer == AL_NONE)
+		{
+			continue;
+		}
+
+		const auto buffer_it = our_buffers.find(buffers[i]);
+
+		if (buffer_it == our_buffers.cend())
+		{
+			throw AlApiException{"Unregistered buffer."};
+		}
+
+		const auto& our_buffer = buffer_it->second;
+
+		if (our_buffer.x_ram_is_allocated)
+		{
+			device.x_ram_free_size += our_buffer.size;
+			assert(device.x_ram_free_size >= 0 && device.x_ram_free_size <= max_x_ram_size);
+		}
+
+		our_buffers.erase(buffer_it);
+	}
 }
 catch (const std::exception& ex)
 {
@@ -2424,7 +2770,98 @@ try
 {
 	const auto mt_lock = initialize();
 
+	auto& device = get_current_device();
+	auto& our_buffer = get_buffer(device, buffer);
+
+
+	// At-first, prepare information.
+	//
+	auto x_ram_is_allocated = our_buffer.x_ram_is_allocated;
+	auto x_ram_size_delta = decltype(size){};
+
+	switch (our_buffer.x_ram_mode)
+	{
+		case x_ram_al_storage_automatic_enum:
+			if (!our_buffer.x_ram_is_dirty)
+			{
+				// Never used before.
+
+				if (device.x_ram_free_size >= size)
+				{
+					// Have enough X-RAM memory.
+
+					x_ram_is_allocated = true;
+					x_ram_size_delta = -size;
+				}
+			}
+			else
+			{
+				// Used at least once.
+				// From now on, use only system memory.
+
+				x_ram_is_allocated = false;
+
+				if (our_buffer.x_ram_is_allocated)
+				{
+					// First allocated was in X-RAM.
+					// Free that block.
+
+					x_ram_size_delta = size;
+				}
+			}
+
+			break;
+
+		case x_ram_al_storage_hardware_enum:
+			if (device.x_ram_free_size >= size)
+			{
+				// Have enough X-RAM memory.
+
+				x_ram_is_allocated = true;
+				x_ram_size_delta = our_buffer.size - size;
+			}
+			else
+			{
+				// No free X-RAM memory - no buffer.
+
+				static_cast<void>(al_al_symbols_->alGetInteger(AL_NONE));
+				throw AlApiException{"Out of memory."};
+			}
+			break;
+
+		case x_ram_al_storage_accessible_enum:
+			// Always use system memory.
+			x_ram_is_allocated = false;
+			break;
+
+		default:
+			static_cast<void>(al_al_symbols_->alGetInteger(AL_NONE));
+			throw AlApiException{"Unknown X-RAM buffer mode."};
+	}
+
+
+	// At-second, allocate the data.
+	//
+	static_cast<void>(al_al_symbols_->alGetError());
 	al_al_symbols_->alBufferData(buffer, format, data, size, freq);
+	const auto al_result = al_al_symbols_->alGetError();
+
+	if (al_result != AL_NO_ERROR)
+	{
+		al_al_symbols_->alBufferData(buffer, format, data, size, freq);
+		return;
+	}
+
+
+	// At-third, commit the changes.
+	//
+	our_buffer.size = size;
+	our_buffer.x_ram_is_allocated = x_ram_is_allocated;
+	our_buffer.x_ram_is_dirty = true;
+
+	device.x_ram_free_size += x_ram_size_delta;
+
+	assert(device.x_ram_free_size >= 0 && device.x_ram_free_size <= max_x_ram_size);
 }
 catch (const std::exception& ex)
 {
@@ -2955,6 +3392,49 @@ AlApiImpl::Device& AlApiImpl::get_device(
 	}
 
 	return *device;
+}
+
+AlApiImpl::Device& AlApiImpl::get_current_device()
+{
+	if (!current_context_)
+	{
+		throw AlApiException{"No current context."};
+	}
+
+	for (auto& device : devices_)
+	{
+		for (auto& context : device.contexts)
+		{
+			if (context.get() == current_context_)
+			{
+				return device;
+			}
+		}
+	}
+
+	throw AlApiException{"Unregistered device."};
+}
+
+AlApiImpl::Buffer& AlApiImpl::get_buffer(
+	Device& device,
+	::ALuint al_buffer_name)
+{
+	auto& buffers = device.buffers;
+	const auto buffer_it = buffers.find(al_buffer_name);
+
+	if (buffer_it == buffers.cend())
+	{
+		throw AlApiException{"Unregistered buffer."};
+	}
+
+	return buffer_it->second;
+}
+
+AlApiImpl::Buffer& AlApiImpl::get_current_buffer(
+	::ALuint al_buffer_name)
+{
+	auto& device = get_current_device();
+	return get_buffer(device, al_buffer_name);
 }
 
 AlApiContext& AlApiImpl::get_context()

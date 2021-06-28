@@ -65,6 +65,15 @@ public:
 	virtual MoveableMutexLock get_lock() = 0;
 
 	virtual AlApiContext& get_current_context() = 0;
+
+	virtual ::ALboolean AL_APIENTRY EAXSetBufferMode(
+		::ALsizei n,
+		const ::ALuint* buffers,
+		::ALint value) = 0;
+
+	virtual ::ALenum AL_APIENTRY EAXGetBufferMode(
+		::ALuint buffer,
+		::ALint* value) = 0;
 }; // AlApi
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

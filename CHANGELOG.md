@@ -4,6 +4,7 @@
 ## [1.0.6] - ????-??-??
 ### Added
 - 64-bit build.
+- Bypass X-RAM.
 
 ### Changed
 - Load AL symbols dynamically.
