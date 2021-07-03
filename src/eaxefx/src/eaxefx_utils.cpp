@@ -25,64 +25,85 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef EAXEFX_AL_API_UTILS_INCLUDED
-#define EAXEFX_AL_API_UTILS_INCLUDED
+#include "eaxefx_utils.h"
+
+#include <cassert>
+
+#include <exception>
+
+#include "eaxefx_common_strings.h"
 
 
-#include "AL/alc.h"
-
-#include "eaxefx_logger.h"
-#include "eaxefx_string.h"
+namespace eaxefx::utils
+{
 
 
-namespace eaxefx::al_api
+namespace
 {
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-struct Strings
+struct ErrorMessages
 {
-	static constexpr auto indent = "    ";
-	static constexpr auto indented_none = "    none";
-	static constexpr auto space_equals_space = " = ";
-	static constexpr auto three_question_marks = "???";
-	static constexpr auto equals_line_16 = "================";
-	static constexpr auto null = "<null>";
-
-	static constexpr auto major_version = "major version";
-	static constexpr auto minor_version = "minor version";
-	static constexpr auto mixer_frequency = "mixer frequency";
-	static constexpr auto refresh_interval = "refresh interval";
-	static constexpr auto is_synchronous = "is synchronous";
-	static constexpr auto mono_sources = "mono sources";
-	static constexpr auto stereo_sources = "stereo sources";
-	static constexpr auto max_auxiliary_sends = "max auxiliary sends";
-}; // Strings
+	static constexpr auto null_current_exception = "Null current exception.";
+	static constexpr auto generic_exception = "Generic exception.";
+}; // ErrorMessages
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+} // namespace
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-void log_context_attribute_list(
+void log_exception(
 	Logger* logger,
-	const ::ALCint* al_attributes);
+	const char* message) noexcept
+{
+	if (!logger)
+	{
+		assert(!"Null logger.");
+		return;
+	}
 
-void log_extensions(
-	Logger* logger,
-	const char* al_extensions);
+	const auto exception_ptr = std::current_exception();
 
-void log_string(
-	Logger* logger,
-	const char* title,
-	const char* string);
+	logger->error(common::Strings::_);
+	logger->error(common::Strings::less_than_signs_8);
+
+	if (message)
+	{
+		logger->error(message);
+	}
+
+	if (exception_ptr)
+	{
+		try
+		{
+			std::rethrow_exception(exception_ptr);
+		}
+		catch (const std::exception& ex)
+		{
+			const auto ex_message = ex.what();
+			logger->error(ex_message);
+		}
+		catch (...)
+		{
+			logger->error(ErrorMessages::generic_exception);
+		}
+	}
+	else
+	{
+		logger->error(ErrorMessages::null_current_exception);
+	}
+
+	logger->error(common::Strings::greater_than_signs_8);
+	logger->error(common::Strings::_);
+}
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-} // eaxefx::al_api
-
-
-#endif // !EAXEFX_AL_API_UTILS_INCLUDED
-
+} // eaxefx::utils

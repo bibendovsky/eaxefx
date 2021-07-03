@@ -72,14 +72,14 @@ public:
 		::ALuint property_id,
 		::ALuint property_al_name,
 		::ALvoid* property_buffer,
-		::ALuint property_size) noexcept = 0;
+		::ALuint property_size) = 0;
 
 	virtual ::ALenum EAXGet(
 		const ::GUID* property_set_guid,
 		::ALuint property_id,
 		::ALuint property_al_name,
 		::ALvoid* property_buffer,
-		::ALuint property_size) noexcept = 0;
+		::ALuint property_size) = 0;
 }; // Eaxx
 
 using EaxxUPtr = std::unique_ptr<Eaxx>;

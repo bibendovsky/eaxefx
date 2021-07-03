@@ -343,6 +343,30 @@ using AlEfxSymbolsUPtr = std::unique_ptr<AlEfxSymbols>;
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+// EAX symbol names
+struct AlEaxSymbolsNames
+{
+	static constexpr auto EAXSet = "EAXSet";
+	static constexpr auto EAXGet = "EAXGet";
+}; // AlEaxSymbolsNames
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+// X-RAM symbol names
+struct AlXRamSymbolsNames
+{
+	static constexpr auto EAXSetBufferMode = "EAXSetBufferMode";
+	static constexpr auto EAXGetBufferMode = "EAXGetBufferMode";
+}; // AlXRamSymbolsNames
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
 } // eaxefx
 
 

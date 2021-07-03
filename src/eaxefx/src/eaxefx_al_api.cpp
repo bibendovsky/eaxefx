@@ -52,6 +52,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_mutex.h"
 #include "eaxefx_shared_library.h"
 #include "eaxefx_string.h"
+#include "eaxefx_utils.h"
 
 #include "eaxefx_patch.h"
 #include "eaxefx_patch_collection.h"
@@ -90,14 +91,9 @@ try
 
 	return g_al_api.EAXSetBufferMode(n, buffers, value);
 }
-catch (const std::exception& ex)
-{
-	g_al_api.get_logger()->error(ex.what());
-	return AL_FALSE;
-}
 catch (...)
 {
-	g_al_api.get_logger()->error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(g_al_api.get_logger(), AlXRamSymbolsNames::EAXSetBufferMode);
 	return AL_FALSE;
 }
 
@@ -110,14 +106,9 @@ try
 
 	return g_al_api.EAXGetBufferMode(buffer, value);
 }
-catch (const std::exception& ex)
-{
-	g_al_api.get_logger()->error(ex.what());
-	return x_ram_al_storage_automatic_enum;
-}
 catch (...)
 {
-	g_al_api.get_logger()->error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(g_al_api.get_logger(), AlXRamSymbolsNames::EAXGetBufferMode);
 	return x_ram_al_storage_automatic_enum;
 }
 
@@ -935,14 +926,9 @@ try
 
 	return al_context;
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return nullptr;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcCreateContext);
 	return nullptr;
 }
 
@@ -980,14 +966,9 @@ try
 
 	return ALC_TRUE;
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return ALC_FALSE;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcMakeContextCurrent);
 	return ALC_FALSE;
 }
 
@@ -999,13 +980,9 @@ try
 
 	al_alc_symbols_->alcProcessContext(context);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcProcessContext);
 }
 
 void ALC_APIENTRY AlApiImpl::alcSuspendContext(
@@ -1016,13 +993,9 @@ try
 
 	al_alc_symbols_->alcSuspendContext(context);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcSuspendContext);
 }
 
 void ALC_APIENTRY AlApiImpl::alcDestroyContext(
@@ -1053,13 +1026,9 @@ try
 	our_context.alc_destroy();
 	remove_context(our_context);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcDestroyContext);
 }
 
 ::ALCcontext* ALC_APIENTRY AlApiImpl::alcGetCurrentContext() noexcept
@@ -1074,14 +1043,9 @@ try
 
 	return current_context_->get_al_context();
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return nullptr;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcGetCurrentContext);
 	return nullptr;
 }
 
@@ -1093,14 +1057,9 @@ try
 
 	return al_alc_symbols_->alcGetContextsDevice(context);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return nullptr;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcGetContextsDevice);
 	return nullptr;
 }
 
@@ -1149,14 +1108,9 @@ try
 
 	return al_device;
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return nullptr;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcOpenDevice);
 	return nullptr;
 }
 
@@ -1192,14 +1146,9 @@ try
 
 	return al_result;
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return ALC_FALSE;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcCloseDevice);
 	return ALC_FALSE;
 }
 
@@ -1213,14 +1162,9 @@ try
 
 	return alc_result;
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return ALC_INVALID_DEVICE;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcGetError);
 	return ALC_INVALID_DEVICE;
 }
 
@@ -1233,14 +1177,9 @@ try
 
 	return al_alc_symbols_->alcIsExtensionPresent(device, extname);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return AL_FALSE;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcIsExtensionPresent);
 	return AL_FALSE;
 }
 
@@ -1264,14 +1203,9 @@ try
 
 	return al_alc_symbols_->alcGetProcAddress(device, funcname);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return nullptr;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcGetProcAddress);
 	return nullptr;
 }
 
@@ -1284,14 +1218,9 @@ try
 
 	return al_alc_symbols_->alcGetEnumValue(device, enumname);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return AL_NONE;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcGetEnumValue);
 	return AL_NONE;
 }
 
@@ -1304,14 +1233,9 @@ try
 
 	return al_alc_symbols_->alcGetString(device, param);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return nullptr;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcGetString);
 	return nullptr;
 }
 
@@ -1326,13 +1250,9 @@ try
 
 	al_alc_symbols_->alcGetIntegerv(device, param, size, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcGetIntegerv);
 }
 
 ::ALCdevice* ALC_APIENTRY AlApiImpl::alcCaptureOpenDevice(
@@ -1346,14 +1266,9 @@ try
 
 	return al_alc_symbols_->alcCaptureOpenDevice(devicename, frequency, format, buffersize);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return nullptr;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcCaptureOpenDevice);
 	return nullptr;
 }
 
@@ -1365,14 +1280,9 @@ try
 
 	return al_alc_symbols_->alcCaptureCloseDevice(device);;
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return ALC_FALSE;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcCaptureCloseDevice);
 	return ALC_FALSE;
 }
 
@@ -1384,13 +1294,9 @@ try
 
 	al_alc_symbols_->alcCaptureStart(device);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcCaptureStart);
 }
 
 void ALC_APIENTRY AlApiImpl::alcCaptureStop(
@@ -1401,13 +1307,9 @@ try
 
 	al_alc_symbols_->alcCaptureStop(device);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcCaptureStop);
 }
 
 void ALC_APIENTRY AlApiImpl::alcCaptureSamples(
@@ -1420,13 +1322,9 @@ try
 
 	al_alc_symbols_->alcCaptureSamples(device, buffer, samples);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlcSymbolsNames::alcCaptureSamples);
 }
 
 // ALC v1.1
@@ -1443,13 +1341,9 @@ try
 
 	al_al_symbols_->alDopplerFactor(value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alDopplerFactor);
 }
 
 void AL_APIENTRY AlApiImpl::alDopplerVelocity(
@@ -1460,13 +1354,9 @@ try
 
 	al_al_symbols_->alDopplerVelocity(value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alDopplerVelocity);
 }
 
 void AL_APIENTRY AlApiImpl::alSpeedOfSound(
@@ -1477,13 +1367,9 @@ try
 
 	al_al_symbols_->alSpeedOfSound(value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSpeedOfSound);
 }
 
 void AL_APIENTRY AlApiImpl::alDistanceModel(
@@ -1494,13 +1380,9 @@ try
 
 	al_al_symbols_->alDistanceModel(distanceModel);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alDistanceModel);
 }
 
 void AL_APIENTRY AlApiImpl::alEnable(
@@ -1511,13 +1393,9 @@ try
 
 	al_al_symbols_->alEnable(capability);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alEnable);
 }
 
 void AL_APIENTRY AlApiImpl::alDisable(
@@ -1528,13 +1406,9 @@ try
 
 	al_al_symbols_->alDisable(capability);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alDisable);
 }
 
 ::ALboolean AL_APIENTRY AlApiImpl::alIsEnabled(
@@ -1545,14 +1419,9 @@ try
 
 	return al_al_symbols_->alIsEnabled(capability);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return AL_FALSE;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alIsEnabled);
 	return AL_FALSE;
 }
 
@@ -1574,14 +1443,9 @@ try
 
 	return al_al_symbols_->alGetString(param);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return nullptr;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetString);
 	return nullptr;
 }
 
@@ -1594,13 +1458,9 @@ try
 
 	al_al_symbols_->alGetBooleanv(param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetBooleanv);
 }
 
 void AL_APIENTRY AlApiImpl::alGetIntegerv(
@@ -1612,13 +1472,9 @@ try
 
 	al_al_symbols_->alGetIntegerv(param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetIntegerv);
 }
 
 void AL_APIENTRY AlApiImpl::alGetFloatv(
@@ -1630,13 +1486,9 @@ try
 
 	al_al_symbols_->alGetFloatv(param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetFloatv);
 }
 
 void AL_APIENTRY AlApiImpl::alGetDoublev(
@@ -1648,13 +1500,9 @@ try
 
 	al_al_symbols_->alGetDoublev(param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetDoublev);
 }
 
 ::ALboolean AL_APIENTRY AlApiImpl::alGetBoolean(
@@ -1665,14 +1513,9 @@ try
 
 	return al_al_symbols_->alGetBoolean(param);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return AL_FALSE;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetBoolean);
 	return AL_FALSE;
 }
 
@@ -1697,14 +1540,9 @@ try
 			return al_al_symbols_->alGetInteger(param);
 	}
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return 0;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetInteger);
 	return 0;
 }
 
@@ -1716,14 +1554,9 @@ try
 
 	return al_al_symbols_->alGetFloat(param);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return 0.0F;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetFloat);
 	return 0.0F;
 }
 
@@ -1735,14 +1568,9 @@ try
 
 	return al_al_symbols_->alGetDouble(param);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return 0.0;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetDouble);
 	return 0.0;
 }
 
@@ -1754,14 +1582,9 @@ try
 	const auto al_result = al_al_symbols_->alGetError();
 	return al_result;
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return AL_INVALID_OPERATION;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetError);
 	return AL_INVALID_OPERATION;
 }
 
@@ -1795,14 +1618,9 @@ try
 
 	return al_al_symbols_->alIsExtensionPresent(extname);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return AL_FALSE;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alIsExtensionPresent);
 	return AL_FALSE;
 }
 
@@ -1817,8 +1635,8 @@ try
 
 	const auto mt_lock = initialize();
 
-	constexpr auto x_ram_eax_set_buffer_mode_view = std::string_view{"EAXSetBufferMode"};
-	constexpr auto x_ram_eax_get_buffer_mode_view = std::string_view{"EAXGetBufferMode"};
+	constexpr auto x_ram_eax_set_buffer_mode_view = std::string_view{AlXRamSymbolsNames::EAXSetBufferMode};
+	constexpr auto x_ram_eax_get_buffer_mode_view = std::string_view{AlXRamSymbolsNames::EAXGetBufferMode};
 
 	const auto symbol_name = std::string_view{fname};
 
@@ -1853,14 +1671,9 @@ try
 
 	return al_al_symbols_->alGetProcAddress(fname);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return nullptr;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetProcAddress);
 	return nullptr;
 }
 
@@ -1911,14 +1724,9 @@ try
 		return al_al_symbols_->alGetEnumValue(ename);
 	}
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return 0;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetEnumValue);
 	return 0;
 }
 
@@ -1931,13 +1739,9 @@ try
 
 	al_al_symbols_->alListenerf(param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alListenerf);
 }
 
 void AL_APIENTRY AlApiImpl::alListener3f(
@@ -1951,13 +1755,9 @@ try
 
 	al_al_symbols_->alListener3f(param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alListener3f);
 }
 
 void AL_APIENTRY AlApiImpl::alListenerfv(
@@ -1969,13 +1769,9 @@ try
 
 	al_al_symbols_->alListenerfv(param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alListenerfv);
 }
 
 void AL_APIENTRY AlApiImpl::alListeneri(
@@ -1987,13 +1783,9 @@ try
 
 	al_al_symbols_->alListeneri(param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alListeneri);
 }
 
 void AL_APIENTRY AlApiImpl::alListener3i(
@@ -2007,13 +1799,9 @@ try
 
 	al_al_symbols_->alListener3i(param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alListener3i);
 }
 
 void AL_APIENTRY AlApiImpl::alListeneriv(
@@ -2025,13 +1813,9 @@ try
 
 	al_al_symbols_->alListeneriv(param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alListeneriv);
 }
 
 void AL_APIENTRY AlApiImpl::alGetListenerf(
@@ -2043,13 +1827,9 @@ try
 
 	al_al_symbols_->alGetListenerf(param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetListenerf);
 }
 
 void AL_APIENTRY AlApiImpl::alGetListener3f(
@@ -2063,13 +1843,9 @@ try
 
 	al_al_symbols_->alGetListener3f(param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetListener3f);
 }
 
 void AL_APIENTRY AlApiImpl::alGetListenerfv(
@@ -2081,13 +1857,9 @@ try
 
 	al_al_symbols_->alGetListenerfv(param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetListenerfv);
 }
 
 void AL_APIENTRY AlApiImpl::alGetListeneri(
@@ -2099,13 +1871,9 @@ try
 
 	al_al_symbols_->alGetListeneri(param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetListeneri);
 }
 
 void AL_APIENTRY AlApiImpl::alGetListener3i(
@@ -2119,13 +1887,9 @@ try
 
 	al_al_symbols_->alGetListener3i(param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetListener3i);
 }
 
 void AL_APIENTRY AlApiImpl::alGetListeneriv(
@@ -2137,13 +1901,9 @@ try
 
 	al_al_symbols_->alGetListeneriv(param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetListeneriv);
 }
 
 void AL_APIENTRY AlApiImpl::alGenSources(
@@ -2171,13 +1931,9 @@ try
 	auto& context = get_current_context();
 	context.al_gen_sources(n, sources);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGenSources);
 }
 
 void AL_APIENTRY AlApiImpl::alDeleteSources(
@@ -2205,13 +1961,9 @@ try
 	auto& context = get_current_context();
 	context.al_delete_sources(n, sources);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alDeleteSources);
 }
 
 ::ALboolean AL_APIENTRY AlApiImpl::alIsSource(
@@ -2222,14 +1974,9 @@ try
 
 	return al_al_symbols_->alIsSource(source);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return AL_FALSE;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alIsSource);
 	return AL_FALSE;
 }
 
@@ -2243,13 +1990,9 @@ try
 
 	al_al_symbols_->alSourcef(source, param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourcef);
 }
 
 void AL_APIENTRY AlApiImpl::alSource3f(
@@ -2264,13 +2007,9 @@ try
 
 	al_al_symbols_->alSource3f(source, param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSource3f);
 }
 
 void AL_APIENTRY AlApiImpl::alSourcefv(
@@ -2283,13 +2022,9 @@ try
 
 	al_al_symbols_->alSourcefv(source, param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourcefv);
 }
 
 void AL_APIENTRY AlApiImpl::alSourcei(
@@ -2302,13 +2037,9 @@ try
 
 	al_al_symbols_->alSourcei(source, param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourcei);
 }
 
 void AL_APIENTRY AlApiImpl::alSource3i(
@@ -2323,13 +2054,9 @@ try
 
 	al_al_symbols_->alSource3i(source, param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSource3i);
 }
 
 void AL_APIENTRY AlApiImpl::alSourceiv(
@@ -2342,13 +2069,9 @@ try
 
 	al_al_symbols_->alSourceiv(source, param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourceiv);
 }
 
 void AL_APIENTRY AlApiImpl::alGetSourcef(
@@ -2361,13 +2084,9 @@ try
 
 	al_al_symbols_->alGetSourcef(source, param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetSourcef);
 }
 
 void AL_APIENTRY AlApiImpl::alGetSource3f(
@@ -2382,13 +2101,9 @@ try
 
 	al_al_symbols_->alGetSource3f(source, param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetSource3f);
 }
 
 void AL_APIENTRY AlApiImpl::alGetSourcefv(
@@ -2401,13 +2116,9 @@ try
 
 	al_al_symbols_->alGetSourcefv(source, param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetSourcefv);
 }
 
 void AL_APIENTRY AlApiImpl::alGetSourcei(
@@ -2420,13 +2131,9 @@ try
 
 	al_al_symbols_->alGetSourcei(source, param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetSourcei);
 }
 
 void AL_APIENTRY AlApiImpl::alGetSource3i(
@@ -2441,13 +2148,9 @@ try
 
 	al_al_symbols_->alGetSource3i(source, param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetSource3i);
 }
 
 void AL_APIENTRY AlApiImpl::alGetSourceiv(
@@ -2460,13 +2163,9 @@ try
 
 	al_al_symbols_->alGetSourceiv(source, param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetSourceiv);
 }
 
 void AL_APIENTRY AlApiImpl::alSourcePlayv(
@@ -2478,13 +2177,9 @@ try
 
 	al_al_symbols_->alSourcePlayv(n, sources);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourcePlayv);
 }
 
 void AL_APIENTRY AlApiImpl::alSourceStopv(
@@ -2496,13 +2191,9 @@ try
 
 	al_al_symbols_->alSourceStopv(n, sources);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourceStopv);
 }
 
 void AL_APIENTRY AlApiImpl::alSourceRewindv(
@@ -2514,13 +2205,9 @@ try
 
 	al_al_symbols_->alSourceRewindv(n, sources);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourceRewindv);
 }
 
 void AL_APIENTRY AlApiImpl::alSourcePausev(
@@ -2532,13 +2219,9 @@ try
 
 	al_al_symbols_->alSourcePausev(n, sources);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourcePausev);
 }
 
 void AL_APIENTRY AlApiImpl::alSourcePlay(
@@ -2549,13 +2232,9 @@ try
 
 	al_al_symbols_->alSourcePlay(source);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourcePlay);
 }
 
 void AL_APIENTRY AlApiImpl::alSourceStop(
@@ -2566,13 +2245,9 @@ try
 
 	al_al_symbols_->alSourceStop(source);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourceStop);
 }
 
 void AL_APIENTRY AlApiImpl::alSourceRewind(
@@ -2583,13 +2258,9 @@ try
 
 	al_al_symbols_->alSourceRewind(source);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourceRewind);
 }
 
 void AL_APIENTRY AlApiImpl::alSourcePause(
@@ -2600,13 +2271,9 @@ try
 
 	al_al_symbols_->alSourcePause(source);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourcePause);
 }
 
 void AL_APIENTRY AlApiImpl::alSourceQueueBuffers(
@@ -2619,13 +2286,9 @@ try
 
 	al_al_symbols_->alSourceQueueBuffers(source, nb, buffers);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourceQueueBuffers);
 }
 
 void AL_APIENTRY AlApiImpl::alSourceUnqueueBuffers(
@@ -2638,13 +2301,9 @@ try
 
 	al_al_symbols_->alSourceUnqueueBuffers(source, nb, buffers);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alSourceUnqueueBuffers);
 }
 
 void AL_APIENTRY AlApiImpl::alGenBuffers(
@@ -2676,13 +2335,9 @@ try
 		our_buffers.emplace(buffer, our_buffer);
 	}
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGenBuffers);
 }
 
 void AL_APIENTRY AlApiImpl::alDeleteBuffers(
@@ -2732,13 +2387,9 @@ try
 		our_buffers.erase(buffer_it);
 	}
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alDeleteBuffers);
 }
 
 ::ALboolean AL_APIENTRY AlApiImpl::alIsBuffer(
@@ -2749,14 +2400,9 @@ try
 
 	return al_al_symbols_->alIsBuffer(buffer);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-	return AL_FALSE;
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alIsBuffer);
 	return AL_FALSE;
 }
 
@@ -2863,13 +2509,9 @@ try
 
 	assert(device.x_ram_free_size >= 0 && device.x_ram_free_size <= max_x_ram_size);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alBufferData);
 }
 
 void AL_APIENTRY AlApiImpl::alBufferf(
@@ -2882,13 +2524,9 @@ try
 
 	al_al_symbols_->alBufferf(buffer, param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alBufferf);
 }
 
 void AL_APIENTRY AlApiImpl::alBuffer3f(
@@ -2903,13 +2541,9 @@ try
 
 	al_al_symbols_->alBuffer3f(buffer, param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alBuffer3f);
 }
 
 void AL_APIENTRY AlApiImpl::alBufferfv(
@@ -2922,13 +2556,9 @@ try
 
 	al_al_symbols_->alBufferfv(buffer, param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alBufferfv);
 }
 
 void AL_APIENTRY AlApiImpl::alBufferi(
@@ -2941,13 +2571,9 @@ try
 
 	al_al_symbols_->alBufferi(buffer, param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alBufferi);
 }
 
 void AL_APIENTRY AlApiImpl::alBuffer3i(
@@ -2962,13 +2588,9 @@ try
 
 	al_al_symbols_->alBuffer3i(buffer, param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alBuffer3i);
 }
 
 void AL_APIENTRY AlApiImpl::alBufferiv(
@@ -2981,13 +2603,9 @@ try
 
 	al_al_symbols_->alBufferiv(buffer, param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alBufferiv);
 }
 
 void AL_APIENTRY AlApiImpl::alGetBufferf(
@@ -3000,13 +2618,9 @@ try
 
 	al_al_symbols_->alGetBufferf(buffer, param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetBufferf);
 }
 
 void AL_APIENTRY AlApiImpl::alGetBuffer3f(
@@ -3021,13 +2635,9 @@ try
 
 	al_al_symbols_->alGetBuffer3f(buffer, param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetBuffer3f);
 }
 
 void AL_APIENTRY AlApiImpl::alGetBufferfv(
@@ -3040,13 +2650,9 @@ try
 
 	al_al_symbols_->alGetBufferfv(buffer, param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetBufferfv);
 }
 
 void AL_APIENTRY AlApiImpl::alGetBufferi(
@@ -3059,13 +2665,9 @@ try
 
 	al_al_symbols_->alGetBufferi(buffer, param, value);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetBufferi);
 }
 
 void AL_APIENTRY AlApiImpl::alGetBuffer3i(
@@ -3080,13 +2682,9 @@ try
 
 	al_al_symbols_->alGetBuffer3i(buffer, param, value1, value2, value3);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetBuffer3i);
 }
 
 void AL_APIENTRY AlApiImpl::alGetBufferiv(
@@ -3099,13 +2697,9 @@ try
 
 	al_al_symbols_->alGetBufferiv(buffer, param, values);
 }
-catch (const std::exception& ex)
-{
-	logger_.error(ex.what());
-}
 catch (...)
 {
-	logger_.error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(&logger_, AlAlSymbolsNames::alGetBufferiv);
 }
 
 // AL v1.1
@@ -3114,6 +2708,9 @@ catch (...)
 void AlApiImpl::apply_patch_collection() noexcept
 try
 {
+	logger_.info("");
+	logger_.info("Apply patches.");
+
 	const auto patch_collection = make_patch_collection();
 
 	for (const auto& patch : patch_collection)
@@ -3146,10 +2743,9 @@ try
 		}
 	}
 }
-catch (const std::exception& ex)
+catch (...)
 {
-	logger_.error("Failed to patch.");
-	logger_.error(ex.what());
+	utils::log_exception(&logger_);
 }
 
 void AlApiImpl::initialize_al_driver()
@@ -3173,9 +2769,9 @@ void AlApiImpl::initialize_al_driver()
 
 			return;
 		}
-		catch (const std::exception& ex)
+		catch (...)
 		{
-			logger_.error(ex.what());
+			utils::log_exception(&logger_);
 		}
 	}
 

@@ -23,36 +23,3 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
 OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
-
-
-#include "eaxefx_main.h"
-
-#include <windows.h>
-
-#include "eaxefx_al_api.h"
-
-
-::BOOL WINAPI DllMain(
-	::HINSTANCE hinstDLL,
-	::DWORD fdwReason,
-	::LPVOID lpvReserved)
-{
-	static_cast<void>(hinstDLL);
-	static_cast<void>(lpvReserved);
-
-	switch (fdwReason)
-	{
-		case DLL_PROCESS_DETACH:
-			eaxefx::g_al_api.on_process_detach();
-			break;
-
-		case DLL_THREAD_DETACH:
-			eaxefx::g_al_api.on_thread_detach();
-			break;
-
-		default:
-			break;
-	}
-
-	return TRUE;
-}

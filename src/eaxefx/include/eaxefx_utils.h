@@ -25,34 +25,26 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "eaxefx_main.h"
-
-#include <windows.h>
-
-#include "eaxefx_al_api.h"
+#ifndef EAXEFX_UTILS_INCLUDED
+#define EAXEFX_UTILS_INCLUDED
 
 
-::BOOL WINAPI DllMain(
-	::HINSTANCE hinstDLL,
-	::DWORD fdwReason,
-	::LPVOID lpvReserved)
+#include "eaxefx_logger.h"
+
+
+namespace eaxefx::utils
 {
-	static_cast<void>(hinstDLL);
-	static_cast<void>(lpvReserved);
 
-	switch (fdwReason)
-	{
-		case DLL_PROCESS_DETACH:
-			eaxefx::g_al_api.on_process_detach();
-			break;
 
-		case DLL_THREAD_DETACH:
-			eaxefx::g_al_api.on_thread_detach();
-			break;
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-		default:
-			break;
-	}
+void log_exception(
+	Logger* logger,
+	const char* message = nullptr) noexcept;
 
-	return TRUE;
-}
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+} // eaxefx::utils
+
+#endif // !EAXEFX_UTILS_INCLUDED

@@ -47,6 +47,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_exception.h"
 #include "eaxefx_mutex.h"
 #include "eaxefx_string.h"
+#include "eaxefx_utils.h"
 
 #include "eaxefx_al_api.h"
 #include "eaxefx_al_api_utils.h"
@@ -94,14 +95,9 @@ try
 		property_size
 	);
 }
-catch (const std::exception& ex)
-{
-	g_al_api.get_logger()->error(ex.what());
-	return AL_INVALID_OPERATION;
-}
 catch (...)
 {
-	g_al_api.get_logger()->error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(g_al_api.get_logger(), AlEaxSymbolsNames::EAXSet);
 	return AL_INVALID_OPERATION;
 }
 
@@ -124,14 +120,9 @@ try
 		property_size
 	);
 }
-catch (const std::exception& ex)
-{
-	g_al_api.get_logger()->error(ex.what());
-	return AL_INVALID_OPERATION;
-}
 catch (...)
 {
-	g_al_api.get_logger()->error(al_api::ErrorMessages::generic_exception);
+	utils::log_exception(g_al_api.get_logger(), AlEaxSymbolsNames::EAXGet);
 	return AL_INVALID_OPERATION;
 }
 
@@ -287,14 +278,14 @@ public:
 		::ALuint property_id,
 		::ALuint property_al_name,
 		::ALvoid* property_buffer,
-		::ALuint property_size) noexcept override;
+		::ALuint property_size) override;
 
 	::ALenum EAXGet(
 		const ::GUID* property_set_guid,
 		::ALuint property_id,
 		::ALuint property_al_name,
 		::ALvoid* property_buffer,
-		::ALuint property_size) noexcept override;
+		::ALuint property_size) override;
 
 
 private:
@@ -378,8 +369,8 @@ EaxxImpl::EaxxImpl(
 void* EaxxImpl::alGetProcAddress(
 	std::string_view symbol_name)
 {
-	constexpr auto eax_get_view = std::string_view{"EAXGet"};
-	constexpr auto eax_set_view = std::string_view{"EAXSet"};
+	constexpr auto eax_get_view = std::string_view{AlEaxSymbolsNames::EAXGet};
+	constexpr auto eax_set_view = std::string_view{AlEaxSymbolsNames::EAXSet};
 
 	if (false)
 	{
@@ -417,8 +408,7 @@ void EaxxImpl::alDeleteSources(
 	::ALuint property_id,
 	::ALuint property_al_name,
 	::ALvoid* property_buffer,
-	::ALuint property_size) noexcept
-try
+	::ALuint property_size)
 {
 	const auto eax_call = make_eax_call(
 		false,
@@ -450,20 +440,13 @@ try
 
 	return AL_NO_ERROR;
 }
-catch (const std::exception& ex)
-{
-	logger_->error("EAXSet failed.");
-	logger_->error(ex.what());
-	return AL_INVALID_OPERATION;
-}
 
 ::ALenum EaxxImpl::EAXGet(
 	const ::GUID* property_set_guid,
 	::ALuint property_id,
 	::ALuint property_al_name,
 	::ALvoid* property_buffer,
-	::ALuint property_size) noexcept
-try
+	::ALuint property_size)
 {
 	const auto eax_call = make_eax_call(
 		true,
@@ -494,12 +477,6 @@ try
 	}
 
 	return AL_NO_ERROR;
-}
-catch (const std::exception& ex)
-{
-	logger_->error("EAXGet failed.");
-	logger_->error(ex.what());
-	return AL_INVALID_OPERATION;
 }
 
 void EaxxImpl::dispatch_context(

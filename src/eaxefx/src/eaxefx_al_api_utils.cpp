@@ -30,6 +30,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cassert>
 
 #include <algorithm>
+#include <exception>
 
 #include "AL/al.h"
 #include "AL/efx.h"

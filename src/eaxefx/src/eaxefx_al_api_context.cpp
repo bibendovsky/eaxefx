@@ -44,6 +44,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_eax_api.h"
 #include "eaxefx_exception.h"
 #include "eaxefx_string.h"
+#include "eaxefx_utils.h"
 
 
 namespace eaxefx
@@ -288,13 +289,9 @@ void AlApiContextImpl::alc_make_current()
 		get_efx_attributes();
 		log_context_info();
 	}
-	catch (const std::exception& ex)
-	{
-		logger_->error(ex.what());
-	}
 	catch (...)
 	{
-		logger_->error(al_api::ErrorMessages::generic_exception);
+		utils::log_exception(logger_);
 	}
 
 	try
@@ -304,26 +301,18 @@ void AlApiContextImpl::alc_make_current()
 
 		make_eaxx();
 	}
-	catch (const std::exception& ex)
-	{
-		logger_->error(ex.what());
-	}
 	catch (...)
 	{
-		logger_->error(al_api::ErrorMessages::generic_exception);
+		utils::log_exception(logger_);
 	}
 
 	try
 	{
 		make_extensions();
 	}
-	catch (const std::exception& ex)
-	{
-		logger_->error(ex.what());
-	}
 	catch (...)
 	{
-		logger_->error(al_api::ErrorMessages::generic_exception);
+		utils::log_exception(logger_);
 	}
 }
 

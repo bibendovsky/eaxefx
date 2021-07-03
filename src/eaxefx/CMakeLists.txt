@@ -226,6 +226,10 @@ target_sources (
 	PRIVATE
 		src/eaxefx_pch.h
 
+		include/eaxefx_common_strings.h
+		include/eaxefx_main.h
+		include/eaxefx_utils.h
+
 		include/eaxefx_al_api.h
 		include/eaxefx_al_api_context.h
 		include/eaxefx_al_api_utils.h
@@ -234,7 +238,9 @@ target_sources (
 		include/eaxefx_al_object.h
 		include/eaxefx_al_symbols.h
 		include/eaxefx_al_uresources.h
+
 		include/eaxefx_eax_api.h
+
 		include/eaxefx_eaxx.h
 		include/eaxefx_eaxx_context.h
 		include/eaxefx_eaxx_context_shared.h
@@ -268,6 +274,10 @@ target_sources (
 target_sources (
 	${PROJECT_NAME}
 	PRIVATE
+		src/eaxefx_common_strings.cpp
+		src/eaxefx_main.cpp
+		src/eaxefx_utils.cpp
+
 		src/eaxefx_al_api.cpp
 		src/eaxefx_al_api_context.cpp
 		src/eaxefx_al_api_utils.cpp
@@ -275,7 +285,9 @@ target_sources (
 		src/eaxefx_al_object.cpp
 		src/eaxefx_al_symbols.cpp
 		src/eaxefx_al_uresources.cpp
+
 		src/eaxefx_eax_api.cpp
+
 		src/eaxefx_eaxx.cpp
 		src/eaxefx_eaxx_eax_call.cpp
 		src/eaxefx_eaxx_context.cpp
@@ -284,7 +296,6 @@ target_sources (
 		src/eaxefx_eaxx_fx_slot_index.cpp
 		src/eaxefx_eaxx_fx_slots.cpp
 		src/eaxefx_eaxx_source.cpp
-		src/eaxefx_main.cpp
 
 		src/eaxefx_eaxx_effect.cpp
 		src/eaxefx_eaxx_null_effect.cpp
