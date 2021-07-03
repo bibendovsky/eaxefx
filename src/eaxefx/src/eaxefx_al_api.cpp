@@ -46,7 +46,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_al_symbols.h"
 #include "eaxefx_eax_api.h"
 #include "eaxefx_eaxx.h"
+#include "eaxefx_env.h"
 #include "eaxefx_exception.h"
+#include "eaxefx_fs.h"
+#include "eaxefx_fs_path.h"
 #include "eaxefx_logger.h"
 #include "eaxefx_moveable_mutex_lock.h"
 #include "eaxefx_mutex.h"
@@ -651,6 +654,9 @@ private:
 	void initialize_al_al_symbol_map() noexcept;
 
 	void initialize_al_wrapper_entries() noexcept;
+
+
+	void initialize_logger();
 
 
 	MoveableMutexLock initialize_invalid_state();
@@ -2748,6 +2754,44 @@ catch (...)
 	utils::log_exception(&logger_);
 }
 
+void AlApiImpl::initialize_logger()
+{
+	constexpr auto log_file_name = "eaxefx_log.txt";
+
+	auto logger_param = LoggerParam{};
+	logger_param.file_path = log_file_name;
+	logger_.make(logger_param);
+
+	if (!logger_.has_file())
+	{
+		try
+		{
+			auto log_path = env::get_special_folder(env::SpecialFolderType::app_data);
+
+			log_path /= "bibendovsky";
+			fs::create_directory(log_path.get_data());
+
+			log_path /= "eaxefx";
+			fs::create_directory(log_path.get_data());
+
+			log_path /= log_file_name;
+
+			logger_param.file_path = log_path.get_data();
+
+			logger_.make(logger_param);
+		}
+		catch (...)
+		{
+		}
+	}
+
+	logger_.info("");
+	logger_.info("<<<<<<<<<<<<<<<<<<<<<<<<");
+	logger_.info("EAXEFX v" EAXEFX_VERSION);
+	logger_.info("<<<<<<<<<<<<<<<<<<<<<<<<");
+	logger_.info("");
+}
+
 void AlApiImpl::initialize_al_driver()
 {
 	logger_.info("Load AL driver.");
@@ -2929,16 +2973,8 @@ try
 	assert(mutex_);
 	auto mt_lock = MoveableMutexLock{*mutex_};
 
-	auto logger_param = LoggerParam{};
-	logger_param.file_path = "eaxefx_log.txt";
-	logger_.make(logger_param);
 
-	logger_.info("");
-	logger_.info("<<<<<<<<<<<<<<<<<<<<<<<<");
-	logger_.info("EAXEFX v" EAXEFX_VERSION);
-	logger_.info("<<<<<<<<<<<<<<<<<<<<<<<<");
-	logger_.info("");
-
+	initialize_logger();
 	initialize_al_driver();
 	initialize_al_symbols();
 	initialize_al_wrapper_entries();

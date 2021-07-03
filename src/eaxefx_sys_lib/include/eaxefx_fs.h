@@ -25,38 +25,33 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#ifndef EAXEFX_PLATFORM_INCLUDED
-#define EAXEFX_PLATFORM_INCLUDED
+#ifndef EAXEFX_FS_INCLUDED
+#define EAXEFX_FS_INCLUDED
 
 
-#ifdef _WIN32
-
-#ifndef EAXEFX_WIN32
-#define EAXEFX_WIN32 1
-#endif // !EAXEFX_WIN32
-
-#else
-#error Unsupported platform
-#endif // _WIN32
+#include "eaxefx_fs_path.h"
 
 
-#ifndef EAXEFX_WIN32
-#define EAXEFX_WIN32 0
-#endif // EAXEFX_WIN32
-
-
-namespace eaxefx::platform
+namespace eaxefx::fs
 {
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-bool is_vista_or_higher() noexcept;
+Path get_working_directory();
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-} // eaxefx::platform
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+void create_directory(
+	const char* path);
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
-#endif // !EAXEFX_PLATFORM_INCLUDED
+} // eaxefx::fs
+
+
+#endif // !EAXEFX_FS_INCLUDED

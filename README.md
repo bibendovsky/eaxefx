@@ -14,10 +14,11 @@ Contents
    6.1 Bypassed
 7. Known issues
 8. Usage
-9. Compiling requirements
-10. FAQ
-11. Third party use
-12. Disclaimer
+9. Log file
+10. Compiling requirements
+11. FAQ
+12. Third party use
+13. Disclaimer
 
 
 1 - Overview
@@ -106,18 +107,29 @@ Steps:
 5. Enable appropriate EAX options in the application and restart it if necessary.
 
 
-9 - Compiling requirements
+9 - Log file
+============
+
+The wrapper creates a log file (`eaxefx_log.txt`) in the working directory, set by the application.
+Usually it's identical to the directory where the wrapper is placed.
+
+If the working directory or the log file itself is write-protected the logger tries to create the log in the default application data directory.
+
+On Windows it's `%APPDATA%\bibendovsky\eaxefx` (e.g., `C:\users\john\AppData\Roaming\bibendovsky\eaxefx`).
+
+
+10 - Compiling requirements
 ==========================
 
 Common:
-- Windows 32-bit build target.
+- Windows 32/64-bit build target.
 
 Minimum:
 - CMake v3.8.2
 - C++17 compatible compiler.
 
 
-10 - FAQ
+11 - FAQ
 ========
 
 Q: There is a subtle difference in audio when using the wrapper.
@@ -131,14 +143,14 @@ boost = 8
 ```
 
 
-11 - Third party use
+12 - Third party use
 ====================
 
 * [OpenAL Soft](http://openal-soft.org/)  
   See file `eaxefx_openal_soft_license.txt` for license information.  
 
 
-12 - Disclaimer
+13 - Disclaimer
 ===============
 
 Copyright (c) 2020-2021 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.

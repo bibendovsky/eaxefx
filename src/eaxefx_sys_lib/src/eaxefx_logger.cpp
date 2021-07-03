@@ -106,6 +106,9 @@ public:
 	~LoggerImpl() override;
 
 
+	bool has_file() const noexcept override;
+
+
 	void flush() noexcept override;
 
 	void set_immediate_mode() noexcept override;
@@ -135,7 +138,6 @@ private:
 	Messages messages_{};
 	Messages mt_messages_{};
 	MutexUPtr mutex_{};
-	MutexUPtr file_mutex_{};
 	ConditionVariable cv_{};
 	ConditionVariable cv_ack_{};
 	ThreadUPtr thread_{};
@@ -173,7 +175,6 @@ LoggerImpl::LoggerImpl(
 	timestamp_buffer_ = make_timestamp_buffer();
 	message_buffer_ = make_message_buffer();
 	mutex_ = make_mutex();
-	file_mutex_ = make_mutex();
 
 	try
 	{
@@ -195,6 +196,11 @@ LoggerImpl::LoggerImpl(
 LoggerImpl::~LoggerImpl()
 {
 	set_immediate_mode_internal();
+}
+
+bool LoggerImpl::has_file() const noexcept
+{
+	return file_ != nullptr;
 }
 
 void LoggerImpl::flush() noexcept
@@ -487,6 +493,16 @@ void NullableLogger::make(
 {
 	logger_ = nullptr;
 	logger_ = make_logger(param);
+}
+
+bool NullableLogger::has_file() const noexcept
+{
+	if (logger_)
+	{
+		return logger_->has_file();
+	}
+
+	return false;
 }
 
 void NullableLogger::flush() noexcept

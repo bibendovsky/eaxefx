@@ -5,6 +5,7 @@
 ### Added
 - 64-bit build.
 - Bypass X-RAM.
+- Application data folder as fallback location for log file.
 
 ### Changed
 - Load AL symbols dynamically.

@@ -197,8 +197,11 @@ target_sources (
 		include/eaxefx_condition_variable.h
 		include/eaxefx_console.h
 		include/eaxefx_encoding.h
+		include/eaxefx_env.h
 		include/eaxefx_exception.h
 		include/eaxefx_file.h
+		include/eaxefx_fs.h
+		include/eaxefx_fs_path.h
 		include/eaxefx_logger.h
 		include/eaxefx_moveable_mutex_lock.h
 		include/eaxefx_mutex.h
@@ -227,6 +230,8 @@ target_sources (
 		src/eaxefx_c_string.cpp
 		src/eaxefx_core_types.cpp
 		src/eaxefx_exception.cpp
+		src/eaxefx_fs.cpp
+		src/eaxefx_fs_path.cpp
 		src/eaxefx_logger.cpp
 		src/eaxefx_moveable_mutex_lock.cpp
 		src/eaxefx_string.cpp
@@ -235,6 +240,7 @@ target_sources (
 		src/eaxefx_win32_condition_variable.cpp
 		src/eaxefx_win32_console.cpp
 		src/eaxefx_win32_encoding.cpp
+		src/eaxefx_win32_env.cpp
 		src/eaxefx_win32_file.cpp
 		src/eaxefx_win32_mutex.cpp
 		src/eaxefx_win32_platform.cpp

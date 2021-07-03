@@ -68,6 +68,9 @@ public:
 	virtual ~Logger() = default;
 
 
+	virtual bool has_file() const noexcept = 0;
+
+
 	virtual void flush() noexcept = 0;
 
 	virtual void set_immediate_mode() noexcept = 0;
@@ -106,6 +109,9 @@ class NullableLogger final :
 public:
 	void make(
 		const LoggerParam& param);
+
+
+	bool has_file() const noexcept override;
 
 
 	void flush() noexcept override;
