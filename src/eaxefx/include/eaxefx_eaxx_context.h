@@ -148,6 +148,11 @@ private:
 	EaxxContextContextDirtyFlags context_dirty_flags_{};
 
 
+	[[noreturn]]
+	static void fail(
+		const char* message);
+
+
 	void ensure_compatibility();
 
 	bool has_softx_filter_gain_ex_extension();

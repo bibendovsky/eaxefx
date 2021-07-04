@@ -641,6 +641,10 @@ private:
 	String string_buffer_{};
 
 
+	[[noreturn]]
+	static void fail(
+		const char* message);
+
 
 	void apply_patch_collection() noexcept;
 
@@ -813,12 +817,12 @@ AlApiContext& AlApiImpl::get_current_context()
 {
 	if (n <= 0)
 	{
-		throw AlApiException{"Buffer count out of range."};
+		fail("Buffer count out of range.");
 	}
 
 	if (!buffers)
 	{
-		throw AlApiException{"Null buffers."};
+		fail("Null buffers.");
 	}
 
 	switch (value)
@@ -829,7 +833,7 @@ AlApiContext& AlApiImpl::get_current_context()
 			break;
 
 		default:
-			throw AlApiException{"Unknown X-RAM mode."};
+			fail("Unknown X-RAM mode.");
 	}
 
 	auto& device = get_current_device();
@@ -840,14 +844,14 @@ AlApiContext& AlApiImpl::get_current_context()
 
 		if (al_buffer_name == AL_NONE)
 		{
-			throw AlApiException{"Null AL buffer name."};
+			fail("Null AL buffer name.");
 		}
 
 		const auto& buffer = get_buffer(device, al_buffer_name);
 
 		if (buffer.x_ram_is_dirty)
 		{
-			throw AlApiException{"Non-empty buffer."};
+			fail("Non-empty buffer.");
 		}
 	}
 
@@ -867,12 +871,12 @@ AlApiContext& AlApiImpl::get_current_context()
 {
 	if (buffer == AL_NONE)
 	{
-		throw AlApiException{"Null AL buffer name."};
+		fail("Null AL buffer name.");
 	}
 
 	if (!value)
 	{
-		throw AlApiException{"Null X-RAM mode."};
+		fail("Null X-RAM mode.");
 	}
 
 	switch (*value)
@@ -883,7 +887,7 @@ AlApiContext& AlApiImpl::get_current_context()
 			break;
 
 		default:
-			throw AlApiException{"Unknown X-RAM mode."};
+			fail("Unknown X-RAM mode.");
 	}
 
 	const auto& our_buffer = get_current_buffer(buffer);
@@ -967,7 +971,7 @@ try
 
 		if (alc_result == ALC_FALSE)
 		{
-			throw AlApiException{"AL failed to unset current context."};
+			fail("AL failed to unset current context.");
 		}
 	}
 
@@ -1185,7 +1189,7 @@ try
 
 	if (al_result == ALC_FALSE)
 	{
-		throw AlApiException{"AL failed to close the device."};
+		fail("AL failed to close the device.");
 	}
 
 	return al_result;
@@ -1737,7 +1741,7 @@ try
 {
 	if (!ename || ename[0] == '\0')
 	{
-		throw AlApiException{"Null or empty enum name."};
+		fail("Null or empty enum name.");
 	}
 
 	constexpr auto x_ram_ram_size_view = std::string_view{"AL_EAX_RAM_SIZE"};
@@ -2427,7 +2431,7 @@ try
 
 		if (buffer_it == our_buffers.cend())
 		{
-			throw AlApiException{"Unregistered buffer."};
+			fail("Unregistered buffer.");
 		}
 
 		const auto& our_buffer = buffer_it->second;
@@ -2525,7 +2529,7 @@ try
 				// No free X-RAM memory - no buffer.
 
 				static_cast<void>(al_al_symbols_->alGetInteger(AL_NONE));
-				throw AlApiException{"Out of memory."};
+				fail("Out of memory.");
 			}
 			break;
 
@@ -2536,7 +2540,7 @@ try
 
 		default:
 			static_cast<void>(al_al_symbols_->alGetInteger(AL_NONE));
-			throw AlApiException{"Unknown X-RAM buffer mode."};
+			fail("Unknown X-RAM buffer mode.");
 	}
 
 
@@ -2759,6 +2763,13 @@ catch (...)
 // AL v1.1
 // =========================================================================
 
+[[noreturn]]
+void AlApiImpl::fail(
+	const char* message)
+{
+	throw AlApiException{message};
+}
+
 void AlApiImpl::apply_patch_collection() noexcept
 try
 {
@@ -2867,7 +2878,7 @@ void AlApiImpl::initialize_al_driver()
 		}
 	}
 
-	throw AlApiException{"Failed to load any suitable driver."};
+	fail("Failed to load any suitable driver.");
 }
 
 void AlApiImpl::initialize_al_symbols()
@@ -3001,12 +3012,12 @@ void AlApiImpl::initialize_al_wrapper_entries() noexcept
 
 MoveableMutexLock AlApiImpl::initialize_invalid_state()
 {
-	throw AlApiException{ErrorMessages::invalid_state};
+	fail(ErrorMessages::invalid_state);
 }
 
 MoveableMutexLock AlApiImpl::initialize_not_initialized()
 {
-	throw AlApiException{ErrorMessages::not_initialized};
+	fail(ErrorMessages::not_initialized);
 }
 
 MoveableMutexLock AlApiImpl::initialize_lock_mutex()
@@ -3068,7 +3079,7 @@ AlApiImpl::Device& AlApiImpl::get_device(
 
 	if (!device)
 	{
-		throw AlApiException{"Device not found."};
+		fail("Device not found.");
 	}
 
 	return *device;
@@ -3078,7 +3089,7 @@ AlApiImpl::Device& AlApiImpl::get_current_device()
 {
 	if (!current_context_)
 	{
-		throw AlApiException{"No current context."};
+		fail("No current context.");
 	}
 
 	for (auto& device : devices_)
@@ -3092,7 +3103,7 @@ AlApiImpl::Device& AlApiImpl::get_current_device()
 		}
 	}
 
-	throw AlApiException{"Unregistered device."};
+	fail("Unregistered device.");
 }
 
 AlApiImpl::Buffer& AlApiImpl::get_buffer(
@@ -3104,7 +3115,7 @@ AlApiImpl::Buffer& AlApiImpl::get_buffer(
 
 	if (buffer_it == buffers.cend())
 	{
-		throw AlApiException{"Unregistered buffer."};
+		fail("Unregistered buffer.");
 	}
 
 	return buffer_it->second;
@@ -3121,7 +3132,7 @@ AlApiContext& AlApiImpl::get_context()
 {
 	if (!current_context_)
 	{
-		throw AlApiException{"No current context."};
+		fail("No current context.");
 	}
 
 	return *current_context_;
@@ -3141,7 +3152,7 @@ AlApiContext& AlApiImpl::get_context(
 		}
 	}
 
-	throw AlApiException{"Unregistered context."};
+	fail("Unregistered context.");
 }
 
 void AlApiImpl::remove_context(
@@ -3174,7 +3185,7 @@ void AlApiImpl::remove_context(
 
 	if (!is_removed)
 	{
-		throw AlApiException{"Unregistered context."};
+		fail("Unregistered context.");
 	}
 }
 

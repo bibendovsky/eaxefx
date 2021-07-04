@@ -68,14 +68,14 @@ void EaxxFxSlot::initialize(
 {
 	if (index < 0 || index >= ::EAX_MAX_FXSLOTS)
 	{
-		throw EaxxFxSlotException{"Index out of range."};
+		fail("Index out of range.");
 	}
 
 	al_efx_symbols_ = al_efx_symbols;
 
 	if (!al_efx_symbols_)
 	{
-		throw EaxxFxSlotException{"Null EFX symbols."};
+		fail("Null EFX symbols.");
 	}
 
 	initialize_eax();
@@ -100,7 +100,7 @@ void EaxxFxSlot::validate_fx_slot_effect(
 	if (eax_effect_id != ::EAX_NULL_GUID &&
 		eax_effect_id != ::EAX_REVERB_EFFECT)
 	{
-		throw EaxxFxSlotException{"Unsupported EAX effect GUID."};
+		fail("Unsupported EAX effect GUID.");
 	}
 }
 
@@ -132,7 +132,7 @@ void EaxxFxSlot::validate_fx_slot_lock_state(
 {
 	if (eax_lock == ::EAXFXSLOT_LOCKED && eax_effect_id != eax_.fx_slot.guidLoadEffect)
 	{
-		throw EaxxFxSlotException{"Loading effect while slot is locked forbidden."};
+		fail("Loading effect while slot is locked forbidden.");
 	}
 }
 
@@ -305,11 +305,18 @@ void EaxxFxSlot::set_fx_slot_all(
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
+[[noreturn]]
+void EaxxFxSlot::fail(
+	const char* message)
+{
+	throw EaxxFxSlotException{message};
+}
+
 void EaxxFxSlot::fail_set_if_dedicated()
 {
 	if (index_ < dedicated_count)
 	{
-		throw EaxxFxSlotException{"Changing \"effect\" or \"lock\" on dedicated slot not supported."};
+		fail("Changing \"effect\" or \"lock\" on dedicated slot not supported.");
 	}
 }
 
@@ -376,7 +383,7 @@ void EaxxFxSlot::set_dedicated_defaults()
 			break;
 
 		default:
-			throw EaxxFxSlotException{"FX slot index out of range."};
+			fail("FX slot index out of range.");
 	}
 }
 
@@ -410,7 +417,7 @@ void EaxxFxSlot::get_fx_slot_all(
 			break;
 
 		default:
-			throw EaxxFxSlotException{"Unsupported EAX version."};
+			fail("Unsupported EAX version.");
 	}
 }
 
@@ -450,7 +457,7 @@ void EaxxFxSlot::get_fx_slot(
 			break;
 
 		default:
-			throw EaxxFxSlotException{"Unsupported FX slot property id."};
+			fail("Unsupported FX slot property id.");
 	}
 }
 
@@ -470,7 +477,7 @@ void EaxxFxSlot::get(
 			break;
 
 		default:
-			throw EaxxFxSlotException{"Unsupported property id."};
+			fail("Unsupported property id.");
 	}
 }
 
@@ -557,7 +564,7 @@ void EaxxFxSlot::set_fx_slot_effect()
 	}
 	else
 	{
-		throw EaxxFxSlotException{"Unsupported effect."};
+		fail("Unsupported effect.");
 	}
 }
 
@@ -683,7 +690,7 @@ void EaxxFxSlot::set_fx_slot_flags(
 			}
 
 		default:
-			throw EaxxFxSlotException{"Unsupported EAX version."};
+			fail("Unsupported EAX version.");
 	}
 }
 
@@ -727,7 +734,7 @@ bool EaxxFxSlot::set_fx_slot(
 
 
 		default:
-			throw EaxxFxSlotException{"Unsupported FX slot property id."};
+			fail("Unsupported FX slot property id.");
 	}
 }
 
@@ -746,7 +753,7 @@ bool EaxxFxSlot::set_fx_slot(
 			return false;
 
 		default:
-			throw EaxxFxSlotException{"Unsupported property id."};
+			fail("Unsupported property id.");
 	}
 }
 

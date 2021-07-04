@@ -150,6 +150,11 @@ private:
 	::ALuint property_size_;
 
 
+	[[noreturn]]
+	static void fail(
+		const char* message);
+
+
 	static ::ALuint convert_eax_2_listener_property_id(
 		::ALuint property_id);
 

@@ -178,12 +178,12 @@ void EaxxSource::on_initialize_context(
 {
 	if (al_filter == 0)
 	{
-		throw EaxxSourceException{"Null AL filter."};
+		fail("Null AL filter.");
 	}
 
 	if (al_.filter != 0 && al_.filter != al_filter)
 	{
-		throw EaxxSourceException{"AL filter already set."};
+		fail("AL filter already set.");
 	}
 
 	al_.filter = al_filter;
@@ -235,22 +235,29 @@ void EaxxSource::update(
 	}
 }
 
+[[noreturn]]
+void EaxxSource::fail(
+	const char* message)
+{
+	throw EaxxSourceException{message};
+}
+
 void EaxxSource::validate_init_param(
 	const EaxxSourceInitParam& param)
 {
 	if (param.al_source == 0)
 	{
-		throw EaxxSourceException{"Null AL source."};
+		fail("Null AL source.");
 	}
 
 	if (!param.context_shared)
 	{
-		throw EaxxSourceException{"Null context shared."};
+		fail("Null context shared.");
 	}
 
 	if (!param.al_efx_symbols)
 	{
-		throw EaxxSourceException{"Null EFX symbols."};
+		fail("Null EFX symbols.");
 	}
 }
 
@@ -492,7 +499,7 @@ void EaxxSource::initialize(
 
 	if (!al_.al_symbols)
 	{
-		throw EaxxSourceException{"Null AL symbols."};
+		fail("Null AL symbols.");
 	}
 
 	validate_init_param(param);
@@ -2161,7 +2168,7 @@ void EaxxSource::set(
 			break;
 
 		default:
-			throw EaxxSourceException{"Unsupported property id."};
+			fail("Unsupported property id.");
 	}
 
 	if (!eax_call.is_deferred())
@@ -2192,7 +2199,7 @@ const ::GUID& EaxxSource::get_send_fx_slot_guid(
 					return ::EAXPROPERTYID_EAX40_FXSlot3;
 
 				default:
-					throw EaxxSourceException{"FX slot index out of range."};
+					fail("FX slot index out of range.");
 			}
 
 		case 5:
@@ -2211,11 +2218,11 @@ const ::GUID& EaxxSource::get_send_fx_slot_guid(
 					return ::EAXPROPERTYID_EAX50_FXSlot3;
 
 				default:
-					throw EaxxSourceException{"FX slot index out of range."};
+					fail("FX slot index out of range.");
 			}
 
 		default:
-			throw EaxxSourceException{"Unsupported EAX version."};
+			fail("Unsupported EAX version.");
 	}
 }
 
@@ -2304,7 +2311,7 @@ void EaxxSource::api_get_source_all(
 			break;
 
 		default:
-			throw EaxxSourceException{"Unsupported EAX version."};
+			fail("Unsupported EAX version.");
 	}
 }
 
@@ -2373,7 +2380,7 @@ void EaxxSource::api_get_source_active_fx_slot_id(
 			break;
 
 		default:
-			throw EaxxSourceException{"Unsupported EAX version."};
+			fail("Unsupported EAX version.");
 	}
 }
 
@@ -2529,7 +2536,7 @@ void EaxxSource::get(
 			break;
 
 		default:
-			throw EaxxSourceException{"Unsupported property id."};
+			fail("Unsupported property id.");
 	}
 }
 

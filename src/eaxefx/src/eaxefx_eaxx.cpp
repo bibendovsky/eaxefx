@@ -322,6 +322,11 @@ private:
 	EaxxContextUPtr eaxx_context_{};
 
 
+	[[noreturn]]
+	static void fail(
+		const char* message);
+
+
 	void dispatch_context(
 		const EaxxEaxCall& eax_call);
 
@@ -344,21 +349,21 @@ EaxxImpl::EaxxImpl(
 
 	if (!logger_)
 	{
-		throw EaxxImplException{"Null logger."};
+		fail("Null logger.");
 	}
 
 	al_efx_symbols_ = param.al_efx_symbols;
 
 	if (!al_efx_symbols_)
 	{
-		throw EaxxImplException{"Null EFX symbols."};
+		fail("Null EFX symbols.");
 	}
 
 	auto al_alc_symbols = g_al_api.get_al_alc_symbols();
 
 	if (!al_alc_symbols)
 	{
-		throw EaxxImplException{"Null ALC symbols."};
+		fail("Null ALC symbols.");
 	}
 
 	auto eaxx_create_param = EaxxContextCreateParam{};
@@ -435,7 +440,7 @@ void EaxxImpl::alDeleteSources(
 			break;
 
 		default:
-			throw EaxxImplException{"Unsupported property set id."};
+			fail("Unsupported property set id.");
 	}
 
 	return AL_NO_ERROR;
@@ -473,10 +478,17 @@ void EaxxImpl::alDeleteSources(
 			break;
 
 		default:
-			throw EaxxImplException{"Unsupported property set id."};
+			fail("Unsupported property set id.");
 	}
 
 	return AL_NO_ERROR;
+}
+
+[[noreturn]]
+void EaxxImpl::fail(
+	const char* message)
+{
+	throw EaxxImplException{message};
 }
 
 void EaxxImpl::dispatch_context(
@@ -503,7 +515,7 @@ void EaxxImpl::dispatch_source(
 
 	if (!source)
 	{
-		throw EaxxImplException{"Source not found."};
+		fail("Source not found.");
 	}
 
 	source->dispatch(eax_call);

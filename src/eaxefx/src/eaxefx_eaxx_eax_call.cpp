@@ -64,7 +64,7 @@ EaxxEaxCall::EaxxEaxCall(
 {
 	if (!property_set_guid)
 	{
-		throw EaxxEaxCallException{"Null property set GUID."};
+		fail("Null property set GUID.");
 	}
 
 	is_get_ = is_get;
@@ -179,19 +179,19 @@ EaxxEaxCall::EaxxEaxCall(
 	}
 	else
 	{
-		throw EaxxEaxCallException{"Unsupported property set GUID."};
+		fail("Unsupported property set GUID.");
 	}
 
 	if (version_ < 2 || version_ > 5)
 	{
-		throw EaxxEaxCallException{"EAX version out of range."};
+		fail("EAX version out of range.");
 	}
 
 	if (is_deferred_)
 	{
 		if (is_get_)
 		{
-			throw EaxxEaxCallException{"Deferred properties not supported for GET."};
+			fail("Deferred properties not supported for EAXGet.");
 		}
 	}
 	else
@@ -201,12 +201,12 @@ EaxxEaxCall::EaxxEaxCall(
 		{
 			if (!property_buffer)
 			{
-				throw EaxxEaxCallException{"Null property buffer."};
+				fail("Null property buffer.");
 			}
 
 			if (property_size <= 0)
 			{
-				throw EaxxEaxCallException{"Empty property."};
+				fail("Empty property.");
 			}
 		}
 	}
@@ -214,7 +214,7 @@ EaxxEaxCall::EaxxEaxCall(
 	if (property_set_id_ == EaxxEaxCallPropertySetId::source &&
 		property_al_name_ == 0)
 	{
-		throw EaxxEaxCallException{"Null AL object name."};
+		fail("Null AL object name.");
 	}
 
 	if (property_set_id_ == EaxxEaxCallPropertySetId::fx_slot)
@@ -259,6 +259,13 @@ EaxxEaxCallPropertySetId EaxxEaxCall::get_property_set_id() const noexcept
 EaxxFxSlotIndex EaxxEaxCall::get_fx_slot_index() const noexcept
 {
 	return fx_slot_index_;
+}
+
+[[noreturn]]
+void EaxxEaxCall::fail(
+	const char* message)
+{
+	throw EaxxEaxCallException{message};
 }
 
 ::ALuint EaxxEaxCall::convert_eax_2_listener_property_id(
@@ -315,7 +322,7 @@ EaxxFxSlotIndex EaxxEaxCall::get_fx_slot_index() const noexcept
 			return ::EAXREVERB_FLAGS;
 
 		default:
-			throw EaxxEaxCallException{"Unsupported EAX 2.0 listener property id."};
+			fail("Unsupported EAX 2.0 listener property id.");
 	}
 }
 
@@ -370,7 +377,7 @@ EaxxFxSlotIndex EaxxEaxCall::get_fx_slot_index() const noexcept
 			return ::EAXSOURCE_FLAGS;
 
 		default:
-			throw EaxxEaxCallException{"Unsupported EAX 2.0 buffer property id."};
+			fail("Unsupported EAX 2.0 buffer property id.");
 	}
 }
 

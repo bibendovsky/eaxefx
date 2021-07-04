@@ -56,6 +56,25 @@ public:
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
+namespace
+{
+
+
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+[[noreturn]]
+void al_object_fail(
+	const char* message)
+{
+	throw AlObjectException{message};
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+} // namespace
+
+
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EfxEffectSlotObjectDeleter::EfxEffectSlotObjectDeleter(
@@ -63,7 +82,7 @@ EfxEffectSlotObjectDeleter::EfxEffectSlotObjectDeleter(
 {
 	if (!al_efx_symbols)
 	{
-		throw AlObjectException{"Null EFX symbols."};
+		al_object_fail("Null EFX symbols.");
 	}
 
 	al_efx_symbols_ = al_efx_symbols;
@@ -100,7 +119,7 @@ EfxEffectSlotObject make_efx_effect_slot_object(
 {
 	if (!al_efx_symbols)
 	{
-		throw AlObjectException{"Null EFX symbols."};
+		al_object_fail("Null EFX symbols.");
 	}
 
 	auto al_effect_slot_name = ::ALuint{};
@@ -108,7 +127,7 @@ EfxEffectSlotObject make_efx_effect_slot_object(
 
 	if (al_effect_slot_name == 0)
 	{
-		throw AlObjectException{"Failed to create EFX effect slot."};
+		al_object_fail("Failed to create EFX effect slot.");
 	}
 
 	return EfxEffectSlotObject{al_effect_slot_name, EfxEffectSlotObjectDeleter{al_efx_symbols}};
@@ -124,7 +143,7 @@ EfxEffectObjectDeleter::EfxEffectObjectDeleter(
 {
 	if (!al_efx_symbols)
 	{
-		throw AlObjectException{"Null EFX symbols."};
+		al_object_fail("Null EFX symbols.");
 	}
 
 	al_efx_symbols_ = al_efx_symbols;
@@ -178,12 +197,12 @@ EfxEffectObject make_efx_effect_object(
 			break;
 
 		default:
-			throw AlObjectException{"Unsupported AL effect type."};
+			al_object_fail("Unsupported AL effect type.");
 	}
 
 	if (!al_efx_symbols)
 	{
-		throw AlObjectException{"Null EFX symbols."};
+		al_object_fail("Null EFX symbols.");
 	}
 
 	auto al_effect = ::ALuint{};
@@ -191,7 +210,7 @@ EfxEffectObject make_efx_effect_object(
 
 	if (al_effect == AL_NONE)
 	{
-		throw AlObjectException{"Failed to create AL effect object."};
+		al_object_fail("Failed to create AL effect object.");
 	}
 
 	auto efx_effect_object = EfxEffectObject{al_effect, EfxEffectObjectDeleter{al_efx_symbols}};
@@ -203,7 +222,7 @@ EfxEffectObject make_efx_effect_object(
 
 	if (new_al_effect_type != al_effect_type)
 	{
-		throw AlObjectException{"Failed to set AL effect type."};
+		al_object_fail("Failed to set AL effect type.");
 	}
 
 	return efx_effect_object;
@@ -219,7 +238,7 @@ EfxFilterObjectDeleter::EfxFilterObjectDeleter(
 {
 	if (!al_efx_symbols)
 	{
-		throw AlObjectException{"Null EFX symbols."};
+		al_object_fail("Null EFX symbols.");
 	}
 
 	al_efx_symbols_ = al_efx_symbols;
@@ -256,7 +275,7 @@ EfxFilterObject make_efx_filter_object(
 {
 	if (!al_efx_symbols)
 	{
-		throw AlObjectException{"Null EFX symbols."};
+		al_object_fail("Null EFX symbols.");
 	}
 
 	auto al_filter_name = ::ALuint{};
@@ -264,7 +283,7 @@ EfxFilterObject make_efx_filter_object(
 
 	if (al_filter_name == AL_NONE)
 	{
-		throw AlObjectException{"Failed to create EFX filter."};
+		al_object_fail("Failed to create EFX filter.");
 	}
 
 	return EfxFilterObject{al_filter_name, EfxFilterObjectDeleter{al_efx_symbols}};

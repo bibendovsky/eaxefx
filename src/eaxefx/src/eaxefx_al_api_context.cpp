@@ -145,6 +145,11 @@ private:
 	EaxxUPtr eaxx_{};
 
 
+	[[noreturn]]
+	static void fail(
+		const char* message);
+
+
 	static void validate_init_param(
 		const AlApiContextInitParam& param);
 
@@ -194,7 +199,7 @@ AlApiContextImpl::AlApiContextImpl()
 
 	if (!logger_)
 	{
-		throw AlApiContextException{"Null logger."};
+		fail("Null logger.");
 	}
 
 	//
@@ -202,7 +207,7 @@ AlApiContextImpl::AlApiContextImpl()
 
 	if (!al_alc_symbols_)
 	{
-		throw AlApiContextException{"Null ALC symbols."};
+		fail("Null ALC symbols.");
 	}
 
 	//
@@ -210,7 +215,7 @@ AlApiContextImpl::AlApiContextImpl()
 
 	if (!al_al_symbols_)
 	{
-		throw AlApiContextException{"Null AL symbols."};
+		fail("Null AL symbols.");
 	}
 }
 
@@ -257,7 +262,7 @@ void AlApiContextImpl::alc_create_context(
 
 	if (!al_context_)
 	{
-		throw AlApiContextException{"AL failed to create a context."};
+		fail("AL failed to create a context.");
 	}
 
 	logger_->info("");
@@ -273,7 +278,7 @@ void AlApiContextImpl::alc_make_current()
 
 	if (!al_is_made_current)
 	{
-		throw AlApiContextException{"AL failed to make a context current."};
+		fail("AL failed to make a context current.");
 	}
 
 	if (is_made_current_)
@@ -358,7 +363,7 @@ void AlApiContextImpl::alc_destroy()
 	//
 	if (alc_error != ALC_NO_ERROR)
 	{
-		throw AlApiContextException{"AL failed to destroy the context."};
+		fail("AL failed to destroy the context.");
 	}
 }
 
@@ -440,10 +445,17 @@ Eaxx& AlApiContextImpl::get_eaxx()
 {
 	if (!eaxx_)
 	{
-		throw AlApiContextException{"Null EAXX."};
+		fail("Null EAXX.");
 	}
 
 	return *eaxx_;
+}
+
+[[noreturn]]
+void AlApiContextImpl::fail(
+	const char* message)
+{
+	throw AlApiContextException{message};
 }
 
 void AlApiContextImpl::validate_init_param(
@@ -451,7 +463,7 @@ void AlApiContextImpl::validate_init_param(
 {
 	if (!param.al_device)
 	{
-		throw AlApiContextException{"Null AL device."};
+		fail("Null AL device.");
 	}
 }
 
@@ -709,7 +721,7 @@ void AlApiContextImpl::make_efx_symbols()
 
 	if (!al_loader)
 	{
-		throw AlApiContextException{"Null AL loader."};
+		fail("Null AL loader.");
 	}
 
 	al_efx_symbols_ = al_loader->load_efx();

@@ -87,35 +87,35 @@ EaxxContext::EaxxContext(
 
 	if (!al_.efx_symbols)
 	{
-		throw EaxxContextException{"Null EFX symbols."};
+		fail("Null EFX symbols.");
 	}
 
 	al_.alc_symbols = g_al_api.get_al_alc_symbols();
 
 	if (!al_.alc_symbols)
 	{
-		throw EaxxContextException{"Null ALC symbols."};
+		fail("Null ALC symbols.");
 	}
 
 	al_.al_symbols = g_al_api.get_al_al_symbols();
 
 	if (!al_.al_symbols)
 	{
-		throw EaxxContextException{"Null AL symbols."};
+		fail("Null AL symbols.");
 	}
 
 	al_.context = al_.alc_symbols->alcGetCurrentContext();
 
 	if (!al_.context)
 	{
-		throw EaxxContextException{"Null AL context."};
+		fail("Null AL context.");
 	}
 
 	al_.device = al_.alc_symbols->alcGetContextsDevice(al_.context);
 
 	if (!al_.device)
 	{
-		throw EaxxContextException{"Null AL device."};
+		fail("Null AL device.");
 	}
 
 	ensure_compatibility();
@@ -204,13 +204,20 @@ void EaxxContext::update_filters()
 	}
 }
 
+[[noreturn]]
+void EaxxContext::fail(
+	const char* message)
+{
+	throw EaxxContextException{message};
+}
+
 void EaxxContext::ensure_compatibility()
 {
 	const auto has_efx_extension = al_.alc_symbols->alcIsExtensionPresent(al_.device, ALC_EXT_EFX_NAME);
 
 	if (!has_efx_extension)
 	{
-		throw EaxxContextException{"EFX extension not found."};
+		fail("EFX extension not found.");
 	}
 
 	auto aux_send_count = ::ALint{};
@@ -224,7 +231,7 @@ void EaxxContext::ensure_compatibility()
 			to_string(::EAX_MAX_FXSLOTS) +
 			" EFX auxiliary effect slots.";
 
-		throw EaxxContextException{message.c_str()};
+		fail(message.c_str());
 	}
 
 	const auto low_pass_efx_object = make_efx_filter_object(al_.efx_symbols);
@@ -235,7 +242,7 @@ void EaxxContext::ensure_compatibility()
 
 	if (efx_filter_type != AL_FILTER_LOWPASS)
 	{
-		throw EaxxContextException{"EFX low-pass filter not supported."};
+		fail("EFX low-pass filter not supported.");
 	}
 
 	try
@@ -244,7 +251,7 @@ void EaxxContext::ensure_compatibility()
 	}
 	catch (...)
 	{
-		throw EaxxContextException{"EFX EAX-reverb not supported."};
+		fail("EFX EAX-reverb not supported.");
 	}
 }
 
@@ -314,7 +321,7 @@ void EaxxContext::initialize_filter()
 
 	if (al_filter_type != AL_FILTER_LOWPASS)
 	{
-		throw EaxxContextException{"Failed to set EFX filter type to low-pass."};
+		fail("Failed to set EFX filter type to low-pass.");
 	}
 }
 
@@ -380,7 +387,7 @@ void EaxxContext::get_context_all(
 			break;
 
 		default:
-			throw EaxxContextException{"Unsupported EAX version."};
+			fail("Unsupported EAX version.");
 	}
 }
 
@@ -429,7 +436,7 @@ void EaxxContext::get(
 			break;
 
 		default:
-			throw EaxxContextException{"Unsupported property id."};
+			fail("Unsupported property id.");
 	}
 }
 
@@ -495,7 +502,7 @@ void EaxxContext::validate_primary_fx_slot_id(
 		primary_fx_slot_id != ::EAXPROPERTYID_EAX40_FXSlot3 &&
 		primary_fx_slot_id != ::EAXPROPERTYID_EAX50_FXSlot3)
 	{
-		throw EaxxContextException{"Unsupported primary FX slot id."};
+		fail("Unsupported primary FX slot id.");
 	}
 }
 
@@ -546,7 +553,7 @@ void EaxxContext::validate_speaker_config(
 			break;
 
 		default:
-			throw EaxxContextException{"Unsupported speaker configuration."};
+			fail("Unsupported speaker configuration.");
 	}
 }
 
@@ -560,7 +567,7 @@ void EaxxContext::validate_eax_session_eax_version(
 			break;
 
 		default:
-			throw EaxxContextException{"Unsupported session EAX version."};
+			fail("Unsupported session EAX version.");
 	}
 }
 
@@ -696,7 +703,7 @@ void EaxxContext::defer_context_all(
 			break;
 
 		default:
-			throw EaxxContextException{"Unsupported EAX version."};
+			fail("Unsupported EAX version.");
 	}
 }
 
@@ -801,7 +808,7 @@ void EaxxContext::set(
 			break;
 
 		case ::EAXCONTEXT_LASTERROR:
-			throw EaxxContextException{"Setting last error not supported."};
+			fail("Setting last error not supported.");
 
 		case ::EAXCONTEXT_SPEAKERCONFIG:
 			set_speaker_config(eax_call);
@@ -816,7 +823,7 @@ void EaxxContext::set(
 			break;
 
 		default:
-			throw EaxxContextException{"Unsupported property id."};
+			fail("Unsupported property id.");
 	}
 
 	if (!eax_call.is_deferred())

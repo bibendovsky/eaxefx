@@ -98,6 +98,11 @@ private:
 	EaxxEffectUPtr vocal_morpher_effect_;
 
 
+	[[noreturn]]
+	static void fail(
+		const char* message);
+
+
 	void fail_set_if_dedicated();
 
 

@@ -224,6 +224,11 @@ private:
 	EaxxSourceSourceDirtyMiscFlags source_dirty_misc_flags_{};
 
 
+	[[noreturn]]
+	static void fail(
+		const char* message);
+
+
 	static void validate_init_param(
 		const EaxxSourceInitParam& param);
 
