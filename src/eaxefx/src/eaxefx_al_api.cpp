@@ -611,6 +611,7 @@ private:
 		::ALCdevice* al_device{};
 		::ALsizei x_ram_free_size{};
 
+		String special_name{};
 		BufferMap buffers{};
 		Contexts contexts{};
 	}; // Device
@@ -1091,7 +1092,43 @@ try
 		logger_.info(string_buffer_.c_str());
 	}
 
-	const auto al_device = al_alc_symbols_->alcOpenDevice(devicename);
+	auto special_device_name = String{};
+
+	auto al_device = al_alc_symbols_->alcOpenDevice(devicename);
+
+	if (!al_device && devicename)
+	{
+		constexpr auto generic_hardware_sv = std::string_view{"Generic Hardware"};
+		constexpr auto generic_software_sv = std::string_view{"Generic Software"};
+		constexpr auto direct_sound_3d_sv = std::string_view{"DirectSound3D"};
+
+		const auto device_name_sv = std::string_view{devicename};
+
+		auto is_special_name = false;
+
+		if (false)
+		{
+		}
+		else if (device_name_sv == generic_hardware_sv)
+		{
+			is_special_name = true;
+		}
+		else if (device_name_sv == generic_software_sv)
+		{
+			is_special_name = true;
+		}
+		else if (device_name_sv == direct_sound_3d_sv)
+		{
+			is_special_name = true;
+		}
+
+		if (is_special_name)
+		{
+			special_device_name.assign(device_name_sv.data(), device_name_sv.size());
+		}
+
+		al_device = al_alc_symbols_->alcOpenDevice(nullptr);
+	}
 
 	if (!al_device)
 	{
@@ -1109,6 +1146,7 @@ try
 	devices_.emplace_back(Device{});
 	auto& device = devices_.back();
 
+	device.special_name = special_device_name;
 	device.al_device = al_device;
 	device.x_ram_free_size = max_x_ram_size;
 
@@ -1236,6 +1274,16 @@ const ::ALCchar* ALC_APIENTRY AlApiImpl::alcGetString(
 try
 {
 	const auto mt_lock = initialize();
+
+	if (device && param == ALC_DEVICE_SPECIFIER)
+	{
+		const auto& our_device = get_device(device);
+
+		if (!our_device.special_name.empty())
+		{
+			return our_device.special_name.c_str();
+		}
+	}
 
 	return al_alc_symbols_->alcGetString(device, param);
 }

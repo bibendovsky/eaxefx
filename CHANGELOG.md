@@ -11,6 +11,7 @@
 - Load AL symbols dynamically.
 - Export EFX and EAX symbols inside context only.
 - Prohibit modifying of "effect" and "lock" properties on dedicated FX slots.
+- Allow special device names (`Generic Hardware`, `Generic Software`, `DirectSound3D`) in `alcOpenDevice`.
 
 ### Fixed
 - Crash in Windows XP for some applications (for example, `ALCapsViewer32.exe`).
