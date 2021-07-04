@@ -180,6 +180,9 @@ private:
 	void get_hf_reference(
 		const EaxxEaxCall& eax_call);
 
+	void get_last_error(
+		const EaxxEaxCall& eax_call);
+
 	void get_speaker_config(
 		const EaxxEaxCall& eax_call);
 
@@ -283,9 +286,6 @@ private:
 		const EaxxEaxCall& eax_call);
 
 	void defer_hf_reference(
-		const EaxxEaxCall& eax_call);
-
-	void set_last_error(
 		const EaxxEaxCall& eax_call);
 
 	void set_speaker_config(

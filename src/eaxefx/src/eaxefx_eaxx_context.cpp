@@ -342,6 +342,12 @@ void EaxxContext::get_hf_reference(
 	eax_call.set_value<EaxxContextException>(eax_.context.flHFReference);
 }
 
+void EaxxContext::get_last_error(
+	const EaxxEaxCall& eax_call)
+{
+	eax_call.set_value<EaxxContextException>(eax_last_error_);
+}
+
 void EaxxContext::get_speaker_config(
 	const EaxxEaxCall& eax_call)
 {
@@ -407,7 +413,7 @@ void EaxxContext::get(
 			break;
 
 		case ::EAXCONTEXT_LASTERROR:
-			set_last_error(eax_call);
+			get_last_error(eax_call);
 			break;
 
 		case ::EAXCONTEXT_SPEAKERCONFIG:
@@ -734,12 +740,6 @@ void EaxxContext::defer_hf_reference(
 	defer_hf_reference(hf_reference);
 }
 
-void EaxxContext::set_last_error(
-	const EaxxEaxCall& eax_call)
-{
-	eax_last_error_ = eax_call.get_value<EaxxContextException, const long>();
-}
-
 void EaxxContext::set_speaker_config(
 	const EaxxEaxCall& eax_call)
 {
@@ -801,8 +801,7 @@ void EaxxContext::set(
 			break;
 
 		case ::EAXCONTEXT_LASTERROR:
-			set_last_error(eax_call);
-			break;
+			throw EaxxContextException{"Setting last error not supported."};
 
 		case ::EAXCONTEXT_SPEAKERCONFIG:
 			set_speaker_config(eax_call);

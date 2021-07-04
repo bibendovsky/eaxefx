@@ -6,16 +6,17 @@
 - 64-bit build.
 - Bypass X-RAM.
 - Application data folder as fallback location for log file.
+- Allow special device names (`Generic Hardware`, `Generic Software`, `DirectSound3D`) in `alcOpenDevice`.
 
 ### Changed
 - Load AL symbols dynamically.
 - Export EFX and EAX symbols inside context only.
-- Prohibit modifying of "effect" and "lock" properties on dedicated FX slots.
-- Allow special device names (`Generic Hardware`, `Generic Software`, `DirectSound3D`) in `alcOpenDevice`.
 
 ### Fixed
 - Crash in Windows XP for some applications (for example, `ALCapsViewer32.exe`).
 - Getting active FX slots for source.
+- Prohibit modifying of "effect" and "lock" properties on dedicated FX slots.
+- Prohibit `EAXCONTEXT_LASTERROR` for `EAXSet`.
 
 
 ## [1.0.5] - 2021-05-13
