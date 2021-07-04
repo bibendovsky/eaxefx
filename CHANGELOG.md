@@ -6,7 +6,7 @@
 - 64-bit build.
 - Bypass X-RAM.
 - Application data folder as fallback location for log file.
-- Allow special device names (`Generic Hardware`, `Generic Software`, `DirectSound3D`) in `alcOpenDevice`.
+- Special device names (`Generic Hardware`, `Generic Software`, `DirectSound3D`) in `alcOpenDevice`.
 
 ### Changed
 - Load AL symbols dynamically.
@@ -17,6 +17,7 @@
 - Getting active FX slots for source.
 - Prohibit modifying of "effect" and "lock" properties on dedicated FX slots.
 - Prohibit `EAXCONTEXT_LASTERROR` for `EAXSet`.
+- Handle EAX errors properly - do not return always EAX_OK.
 
 
 ## [1.0.5] - 2021-05-13

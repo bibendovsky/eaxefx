@@ -55,6 +55,9 @@ public:
 	virtual ~Eaxx() = default;
 
 
+	virtual void set_last_error() noexcept = 0;
+
+
 	virtual void* alGetProcAddress(
 		std::string_view symbol_name) = 0;
 

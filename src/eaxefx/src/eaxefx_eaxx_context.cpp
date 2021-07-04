@@ -204,6 +204,11 @@ void EaxxContext::update_filters()
 	}
 }
 
+void EaxxContext::set_last_error() noexcept
+{
+	eax_last_error_ = ::EAXERR_INVALID_OPERATION;
+}
+
 [[noreturn]]
 void EaxxContext::fail(
 	const char* message)
@@ -352,7 +357,9 @@ void EaxxContext::get_hf_reference(
 void EaxxContext::get_last_error(
 	const EaxxEaxCall& eax_call)
 {
-	eax_call.set_value<EaxxContextException>(eax_last_error_);
+	const auto eax_last_error = eax_last_error_;
+	eax_last_error_ = ::EAX_OK;
+	eax_call.set_value<EaxxContextException>(eax_last_error);
 }
 
 void EaxxContext::get_speaker_config(

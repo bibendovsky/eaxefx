@@ -75,7 +75,6 @@ namespace
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-
 ::ALenum AL_APIENTRY EAXSet(
 	const ::GUID* property_set_guid,
 	::ALuint property_id,
@@ -84,16 +83,25 @@ namespace
 	::ALuint property_size)
 try
 {
+	const auto mutex_lock = g_al_api.get_lock();
 	auto& al_api_context = g_al_api.get_current_context();
 	auto& eaxx = al_api_context.get_eaxx();
 
-	return eaxx.EAXSet(
-		property_set_guid,
-		property_id,
-		property_al_name,
-		property_buffer,
-		property_size
-	);
+	try
+	{
+		return eaxx.EAXSet(
+			property_set_guid,
+			property_id,
+			property_al_name,
+			property_buffer,
+			property_size
+		);
+	}
+	catch (...)
+	{
+		eaxx.set_last_error();
+		throw;
+	}
 }
 catch (...)
 {
@@ -109,16 +117,25 @@ catch (...)
 	::ALuint property_size)
 try
 {
+	const auto mutex_lock = g_al_api.get_lock();
 	auto& al_api_context = g_al_api.get_current_context();
 	auto& eaxx = al_api_context.get_eaxx();
 
-	return eaxx.EAXGet(
-		property_set_guid,
-		property_id,
-		property_al_name,
-		property_buffer,
-		property_size
-	);
+	try
+	{
+		return eaxx.EAXGet(
+			property_set_guid,
+			property_id,
+			property_al_name,
+			property_buffer,
+			property_size
+		);
+	}
+	catch (...)
+	{
+		eaxx.set_last_error();
+		throw;
+	}
 }
 catch (...)
 {
@@ -261,6 +278,9 @@ public:
 		const EaxxCreateParam& param);
 
 
+	void set_last_error() noexcept override;
+
+
 	void* alGetProcAddress(
 		std::string_view symbol_name) override;
 
@@ -369,6 +389,14 @@ EaxxImpl::EaxxImpl(
 	auto eaxx_create_param = EaxxContextCreateParam{};
 	eaxx_create_param.al_efx_symbols = al_efx_symbols_;
 	eaxx_context_ = std::make_unique<EaxxContext>(eaxx_create_param);
+}
+
+void EaxxImpl::set_last_error() noexcept
+{
+	if (eaxx_context_)
+	{
+		eaxx_context_->set_last_error();
+	}
 }
 
 void* EaxxImpl::alGetProcAddress(

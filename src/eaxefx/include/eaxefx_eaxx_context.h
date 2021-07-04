@@ -115,6 +115,9 @@ public:
 	void update_filters();
 
 
+	void set_last_error() noexcept;
+
+
 private:
 	struct Al
 	{
