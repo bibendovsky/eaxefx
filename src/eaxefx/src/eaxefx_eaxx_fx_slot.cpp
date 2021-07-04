@@ -63,8 +63,14 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void EaxxFxSlot::initialize(
+	int index,
 	const AlEfxSymbols* al_efx_symbols)
 {
+	if (index < 0 || index >= ::EAX_MAX_FXSLOTS)
+	{
+		throw EaxxFxSlotException{"Index out of range."};
+	}
+
 	al_efx_symbols_ = al_efx_symbols;
 
 	if (!al_efx_symbols_)
@@ -75,6 +81,7 @@ void EaxxFxSlot::initialize(
 	initialize_eax();
 	initialize_efx();
 	initialize_effects();
+	set_dedicated_defaults();
 }
 
 ::ALuint EaxxFxSlot::get_efx_effect_slot() const noexcept
@@ -279,29 +286,6 @@ void EaxxFxSlot::set_fx_slot_all(
 	return is_occlusion_modified || is_occlusion_lf_ratio_modified;
 }
 
-void EaxxFxSlot::set_fx_slot_default_effect(
-	int slot_index)
-{
-	switch (slot_index)
-	{
-		case 0:
-			set_fx_slot_effect(::EAX_REVERB_EFFECT);
-			set_reverb_effect_default_room();
-			break;
-
-		case 1:
-			set_fx_slot_effect(::EAX_CHORUS_EFFECT);
-			break;
-
-		case 2:
-		case 3:
-			break;
-
-		default:
-			throw EaxxFxSlotException{"FX slot index out of range."};
-	}
-}
-
 [[nodiscard]] bool EaxxFxSlot::dispatch(
 	const EaxxEaxCall& eax_call)
 {
@@ -320,6 +304,14 @@ void EaxxFxSlot::set_fx_slot_default_effect(
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+void EaxxFxSlot::fail_set_if_dedicated()
+{
+	if (index_ < dedicated_count)
+	{
+		throw EaxxFxSlotException{"Changing \"effect\" or \"lock\" on dedicated slot not supported."};
+	}
+}
 
 void EaxxFxSlot::set_eax_fx_slot_defaults()
 {
@@ -364,6 +356,28 @@ EaxxEffectUPtr EaxxFxSlot::create_effect(
 void EaxxFxSlot::initialize_effects()
 {
 	set_fx_slot_effect();
+}
+
+void EaxxFxSlot::set_dedicated_defaults()
+{
+	switch (index_)
+	{
+		case 0:
+			set_fx_slot_effect(::EAX_REVERB_EFFECT);
+			set_reverb_effect_default_room();
+			break;
+
+		case 1:
+			set_fx_slot_effect(::EAX_CHORUS_EFFECT);
+			break;
+
+		case 2:
+		case 3:
+			break;
+
+		default:
+			throw EaxxFxSlotException{"FX slot index out of range."};
+	}
 }
 
 void EaxxFxSlot::set_reverb_effect_default_room()
@@ -467,7 +481,7 @@ void EaxxFxSlot::set_fx_slot_effect(
 	effect_->load();
 }
 
-void EaxxFxSlot::set_fx_slot_effect_lazy(
+void EaxxFxSlot::set_fx_slot_effect(
 	EaxxEffectType effect_type,
 	EaxxEffectUPtr& effect)
 {
@@ -491,55 +505,55 @@ void EaxxFxSlot::set_fx_slot_effect()
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_NULL_GUID)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::null, null_effect_);
+		set_fx_slot_effect(EaxxEffectType::null, null_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_AUTOWAH_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::auto_wah, auto_wah_effect_);
+		set_fx_slot_effect(EaxxEffectType::auto_wah, auto_wah_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_CHORUS_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::chorus, chorus_effect_);
+		set_fx_slot_effect(EaxxEffectType::chorus, chorus_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_AGCCOMPRESSOR_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::compressor, compressor_effect_);
+		set_fx_slot_effect(EaxxEffectType::compressor, compressor_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_DISTORTION_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::distortion, distortion_effect_);
+		set_fx_slot_effect(EaxxEffectType::distortion, distortion_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_REVERB_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::eax_reverb, eax_reverb_effect_);
+		set_fx_slot_effect(EaxxEffectType::eax_reverb, eax_reverb_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_ECHO_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::echo, echo_effect_);
+		set_fx_slot_effect(EaxxEffectType::echo, echo_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_EQUALIZER_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::equalizer, equalizer_effect_);
+		set_fx_slot_effect(EaxxEffectType::equalizer, equalizer_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_FLANGER_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::flanger, flanger_effect_);
+		set_fx_slot_effect(EaxxEffectType::flanger, flanger_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_FREQUENCYSHIFTER_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::frequency_shifter, frequency_shifter_effect_);
+		set_fx_slot_effect(EaxxEffectType::frequency_shifter, frequency_shifter_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_PITCHSHIFTER_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::pitch_shifter, pitch_shifter_effect_);
+		set_fx_slot_effect(EaxxEffectType::pitch_shifter, pitch_shifter_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_RINGMODULATOR_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::ring_modulator, ring_modulator_effect_);
+		set_fx_slot_effect(EaxxEffectType::ring_modulator, ring_modulator_effect_);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == ::EAX_VOCALMORPHER_EFFECT)
 	{
-		set_fx_slot_effect_lazy(EaxxEffectType::vocal_morpher, vocal_morpher_effect_);
+		set_fx_slot_effect(EaxxEffectType::vocal_morpher, vocal_morpher_effect_);
 	}
 	else
 	{
@@ -684,9 +698,11 @@ bool EaxxFxSlot::set_fx_slot(
 			return false;
 
 		case ::EAXFXSLOT_ALLPARAMETERS:
+			fail_set_if_dedicated();
 			return set_fx_slot_all(eax_call);
 
 		case ::EAXFXSLOT_LOADEFFECT:
+			fail_set_if_dedicated();
 			set_fx_slot_effect(eax_call);
 			return false;
 
@@ -695,6 +711,7 @@ bool EaxxFxSlot::set_fx_slot(
 			return false;
 
 		case ::EAXFXSLOT_LOCK:
+			fail_set_if_dedicated();
 			set_fx_slot_lock(eax_call);
 			return false;
 

@@ -10,6 +10,7 @@
 ### Changed
 - Load AL symbols dynamically.
 - Export EFX and EAX symbols inside context only.
+- Prohibit modifying of "effect" and "lock" properties on dedicated FX slots.
 
 ### Fixed
 - Crash in Windows XP for some applications (for example, `ALCapsViewer32.exe`).

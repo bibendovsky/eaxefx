@@ -63,8 +63,6 @@ private:
 
 	void initialize_fx_slots(
 		const AlEfxSymbols* al_efx_symbols);
-
-	void initialize_default_slot();
 }; // EaxxFxSlots
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

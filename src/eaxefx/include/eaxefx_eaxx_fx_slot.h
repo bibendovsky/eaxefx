@@ -47,6 +47,7 @@ class EaxxFxSlot
 {
 public:
 	void initialize(
+		int index,
 		const AlEfxSymbols* al_efx_symbols);
 
 
@@ -55,15 +56,14 @@ public:
 	const EAX50FXSLOTPROPERTIES& get_eax_fx_slot() const noexcept;
 
 
-	void set_fx_slot_default_effect(
-		int fxslotinde);
-
-
 	[[nodiscard]] bool dispatch(
 		const EaxxEaxCall& eax_call);
 
 
 private:
+	static constexpr auto dedicated_count = 2;
+
+
 	struct Eax
 	{
 		EAX50FXSLOTPROPERTIES fx_slot{};
@@ -75,6 +75,7 @@ private:
 	}; // Efx
 
 
+	int index_{};
 	const AlEfxSymbols* al_efx_symbols_{};
 
 	Eax eax_{};
@@ -97,6 +98,9 @@ private:
 	EaxxEffectUPtr vocal_morpher_effect_;
 
 
+	void fail_set_if_dedicated();
+
+
 	void set_eax_fx_slot_defaults();
 
 	void initialize_eax();
@@ -113,6 +117,8 @@ private:
 		EaxxEffectType effect_type);
 
 	void initialize_effects();
+
+	void set_dedicated_defaults();
 
 
 	void set_reverb_effect_default_room();
@@ -131,7 +137,7 @@ private:
 	void set_fx_slot_effect(
 		EaxxEffectUPtr& effect);
 
-	void set_fx_slot_effect_lazy(
+	void set_fx_slot_effect(
 		EaxxEffectType effect_type,
 		EaxxEffectUPtr& effect);
 

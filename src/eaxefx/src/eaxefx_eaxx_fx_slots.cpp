@@ -66,7 +66,6 @@ void EaxxFxSlots::initialize(
 	}
 
 	initialize_fx_slots(al_efx_symbols);
-	initialize_default_slot();
 }
 
 EaxxFxSlot& EaxxFxSlots::get(
@@ -88,19 +87,12 @@ EaxxFxSlot& EaxxFxSlots::get(
 void EaxxFxSlots::initialize_fx_slots(
 	const AlEfxSymbols* al_efx_symbols)
 {
-	for (auto& fx_slot : fx_slots_)
-	{
-		fx_slot.initialize(al_efx_symbols);
-	}
-}
-
-void EaxxFxSlots::initialize_default_slot()
-{
 	auto fx_slot_index = 0;
 
 	for (auto& fx_slot : fx_slots_)
 	{
-		fx_slot.set_fx_slot_default_effect(fx_slot_index++);
+		fx_slot.initialize(fx_slot_index, al_efx_symbols);
+		fx_slot_index += 1;
 	}
 }
 
