@@ -18,6 +18,7 @@
 - Prohibit modifying of "effect" and "lock" properties on dedicated FX slots.
 - Prohibit `EAXCONTEXT_LASTERROR` for `EAXSet`.
 - Handle EAX errors properly - do not return always EAX_OK.
+- Activate dedicated reverb effect (FX Slot 0) on first call of EAXGet / EAXSet.
 
 
 ## [1.0.5] - 2021-05-13

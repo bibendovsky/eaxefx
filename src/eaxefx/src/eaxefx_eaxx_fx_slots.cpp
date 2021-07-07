@@ -79,6 +79,11 @@ EaxxFxSlot& EaxxFxSlots::get(
 	return fx_slots_[index.get()];
 }
 
+void EaxxFxSlots::activate_dedicated_reverb_effect()
+{
+	fx_slots_[0].activate_dedicated_reverb_effect();
+}
+
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 

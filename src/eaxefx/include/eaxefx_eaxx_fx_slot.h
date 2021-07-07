@@ -51,6 +51,9 @@ public:
 		const AlEfxSymbols* al_efx_symbols);
 
 
+	void activate_dedicated_reverb_effect();
+
+
 	::ALuint get_efx_effect_slot() const noexcept;
 
 	const EAX50FXSLOTPROPERTIES& get_eax_fx_slot() const noexcept;
@@ -123,10 +126,15 @@ private:
 
 	void initialize_effects();
 
+
+	void set_dedicated_0_defaults();
+
+	void set_dedicated_1_defaults();
+
 	void set_dedicated_defaults();
 
 
-	void set_reverb_effect_default_room();
+	void deactivate_dedicated_reverb_effect();
 
 
 	void get_fx_slot_all(
