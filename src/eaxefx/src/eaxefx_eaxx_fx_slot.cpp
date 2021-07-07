@@ -78,10 +78,17 @@ void EaxxFxSlot::initialize(
 		fail("Null EFX symbols.");
 	}
 
+	index_ = index;
+
 	initialize_eax();
 	initialize_efx();
 	initialize_effects();
 	set_dedicated_defaults();
+}
+
+void EaxxFxSlot::activate_dedicated_reverb_effect()
+{
+	set_fx_slot_effect(EaxxEffectType::eax_reverb, eax_reverb_effect_);
 }
 
 ::ALuint EaxxFxSlot::get_efx_effect_slot() const noexcept
@@ -365,17 +372,27 @@ void EaxxFxSlot::initialize_effects()
 	set_fx_slot_effect();
 }
 
+void EaxxFxSlot::set_dedicated_0_defaults()
+{
+	set_fx_slot_effect(::EAX_REVERB_EFFECT);
+	deactivate_dedicated_reverb_effect();
+}
+
+void EaxxFxSlot::set_dedicated_1_defaults()
+{
+	set_fx_slot_effect(::EAX_CHORUS_EFFECT);
+}
+
 void EaxxFxSlot::set_dedicated_defaults()
 {
 	switch (index_)
 	{
 		case 0:
-			set_fx_slot_effect(::EAX_REVERB_EFFECT);
-			set_reverb_effect_default_room();
+			set_dedicated_0_defaults();
 			break;
 
 		case 1:
-			set_fx_slot_effect(::EAX_CHORUS_EFFECT);
+			set_dedicated_1_defaults();
 			break;
 
 		case 2:
@@ -387,20 +404,9 @@ void EaxxFxSlot::set_dedicated_defaults()
 	}
 }
 
-void EaxxFxSlot::set_reverb_effect_default_room()
+void EaxxFxSlot::deactivate_dedicated_reverb_effect()
 {
-	auto eax_reverb_room = ::EAXREVERB_MINROOM;
-
-	const auto eax_call = make_eax_call(
-		false,
-		&::EAXPROPERTYID_EAX40_FXSlot0,
-		::EAXREVERB_ROOM,
-		0,
-		&eax_reverb_room,
-		4
-	);
-
-	effect_->dispatch(eax_call);
+	set_fx_slot_effect(EaxxEffectType::null, null_effect_);
 }
 
 void EaxxFxSlot::get_fx_slot_all(

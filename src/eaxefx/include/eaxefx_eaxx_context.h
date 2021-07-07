@@ -92,6 +92,9 @@ public:
 		const EaxxContextCreateParam& param);
 
 
+	void activate_dedicated_reverb_effect();
+
+
 	EaxxFxSlot& get_slot(
 		EaxxFxSlotIndex fx_slot_index);
 
@@ -157,6 +160,7 @@ private:
 
 
 	void ensure_compatibility();
+
 
 	bool has_softx_filter_gain_ex_extension();
 

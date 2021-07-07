@@ -54,6 +54,9 @@ public:
 		EaxxFxSlotIndex index);
 
 
+	void activate_dedicated_reverb_effect();
+
+
 private:
 	using Items = std::array<EaxxFxSlot, ::EAX_MAX_FXSLOTS>;
 

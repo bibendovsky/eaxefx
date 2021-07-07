@@ -340,11 +340,15 @@ private:
 	Logger* logger_{};
 	const AlEfxSymbols* al_efx_symbols_{};
 	EaxxContextUPtr eaxx_context_{};
+	bool is_dedicated_reverb_effect_activated_{};
 
 
 	[[noreturn]]
 	static void fail(
 		const char* message);
+
+
+	void activate_dedicated_reverb_effect();
 
 
 	void dispatch_context(
@@ -443,6 +447,8 @@ void EaxxImpl::alDeleteSources(
 	::ALvoid* property_buffer,
 	::ALuint property_size)
 {
+	activate_dedicated_reverb_effect();
+
 	const auto eax_call = make_eax_call(
 		false,
 		property_set_guid,
@@ -481,6 +487,8 @@ void EaxxImpl::alDeleteSources(
 	::ALvoid* property_buffer,
 	::ALuint property_size)
 {
+	activate_dedicated_reverb_effect();
+
 	const auto eax_call = make_eax_call(
 		true,
 		property_set_guid,
@@ -517,6 +525,18 @@ void EaxxImpl::fail(
 	const char* message)
 {
 	throw EaxxImplException{message};
+}
+
+void EaxxImpl::activate_dedicated_reverb_effect()
+{
+	if (is_dedicated_reverb_effect_activated_)
+	{
+		return;
+	}
+
+	is_dedicated_reverb_effect_activated_ = true;
+
+	eaxx_context_->activate_dedicated_reverb_effect();
 }
 
 void EaxxImpl::dispatch_context(
