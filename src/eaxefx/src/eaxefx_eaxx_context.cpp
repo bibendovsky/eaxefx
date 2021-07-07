@@ -126,6 +126,11 @@ EaxxContext::EaxxContext(
 	initialize_fx_slots();
 }
 
+void EaxxContext::activate_dedicated_reverb_effect()
+{
+	shared_.fx_slots.activate_dedicated_reverb_effect();
+}
+
 EaxxFxSlot& EaxxContext::get_slot(
 	EaxxFxSlotIndex fx_slot_index)
 {
