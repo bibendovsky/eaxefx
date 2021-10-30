@@ -44,7 +44,7 @@ Several runtime patches are embeded into the wrapper to fix EAX issues.
 Separate application `eaxefx_app_patcher.exe` is available for offline patching.
 
 Resolved issues:
-- Doom 3 (2004) [visual twitch bug](http://www.pcgamingwiki.com/wiki/Doom_3#Visual_twitch_bug_with_OpenAL.2FEAX).
+- Doom 3 (2004) [visual twitch bug](https://www.pcgamingwiki.com/wiki/Doom_3#Visual_twitch_bug_with_OpenAL.2FEAX).
 - Quake 4 (2005) source occlusion out of range.
 - Prey (2006) source occlusion out of range.  
   Only runtime patching is supported for Steam version.
@@ -53,7 +53,7 @@ Resolved issues:
 4 - Supported drivers
 =====================
 
-- [OpenAL Soft](http://openal-soft.org)
+- [OpenAL Soft](https://openal-soft.org)
 
 Notes:
 - Driver is not included into release package.
@@ -135,7 +135,7 @@ Minimum:
 Q: There is a subtle difference in audio when using the wrapper.
 
 A: Search driver's documentation about amplifying EAX properties.  
-In case of OpenAL Soft it's [`boost` option in `reverb` section](http://github.com/kcat/openal-soft/blob/master/alsoftrc.sample).  
+In case of OpenAL Soft it's [`boost` option in `reverb` section](https://github.com/kcat/openal-soft/blob/master/alsoftrc.sample).  
 Example of `alsoft.ini`:
 ```
 [reverb]
@@ -146,7 +146,7 @@ boost = 8
 12 - Third party use
 ====================
 
-* [OpenAL Soft](http://openal-soft.org/)  
+* [OpenAL Soft](https://openal-soft.org/)  
   See file `eaxefx_openal_soft_license.txt` for license information.  
 
 
