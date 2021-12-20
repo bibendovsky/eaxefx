@@ -1,7 +1,7 @@
 # EAXEFX changelog
 
 
-## [1.0.6] - ????-??-??
+## [1.0.6] - 2021-12-20
 ### Added
 - 64-bit build.
 - Bypass X-RAM.
