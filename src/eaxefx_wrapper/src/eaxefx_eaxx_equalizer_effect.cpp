@@ -635,52 +635,52 @@ void EaxxEqualizerEffect::apply_deferred()
 
 	eax_ = eax_d_;
 
-	if (eax_.lLowGain)
+	if (eax_dirty_flags_.lLowGain)
 	{
 		set_efx_low_gain();
 	}
 
-	if (eax_.flLowCutOff)
+	if (eax_dirty_flags_.flLowCutOff)
 	{
 		set_efx_low_cutoff();
 	}
 
-	if (eax_.lMid1Gain)
+	if (eax_dirty_flags_.lMid1Gain)
 	{
 		set_efx_mid1_gain();
 	}
 
-	if (eax_.flMid1Center)
+	if (eax_dirty_flags_.flMid1Center)
 	{
 		set_efx_mid1_center();
 	}
 
-	if (eax_.flMid1Width)
+	if (eax_dirty_flags_.flMid1Width)
 	{
 		set_efx_mid1_width();
 	}
 
-	if (eax_.lMid2Gain)
+	if (eax_dirty_flags_.lMid2Gain)
 	{
 		set_efx_mid2_gain();
 	}
 
-	if (eax_.flMid2Center)
+	if (eax_dirty_flags_.flMid2Center)
 	{
 		set_efx_mid2_center();
 	}
 
-	if (eax_.flMid2Width)
+	if (eax_dirty_flags_.flMid2Width)
 	{
 		set_efx_mid2_width();
 	}
 
-	if (eax_.lHighGain)
+	if (eax_dirty_flags_.lHighGain)
 	{
 		set_efx_high_gain();
 	}
 
-	if (eax_.flHighCutOff)
+	if (eax_dirty_flags_.flHighCutOff)
 	{
 		set_efx_high_cutoff();
 	}

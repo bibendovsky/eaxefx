@@ -4,6 +4,7 @@
 ## [1.0.7] - ????-??-??
 ### Fixed
 - Setting flags on FX slot.
+- Applying settings on equalizer effect.
 
 
 ## [1.0.6] - 2021-12-20
