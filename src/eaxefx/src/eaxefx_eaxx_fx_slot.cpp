@@ -279,7 +279,7 @@ void EaxxFxSlot::set_fx_slot_all(
 	set_fx_slot_effect(eax_fx_slot.guidLoadEffect);
 	set_fx_slot_volume(eax_fx_slot.lVolume);
 	set_fx_slot_lock(eax_fx_slot.lLock);
-	set_fx_slot_flags(eax_fx_slot.lLock);
+	set_fx_slot_flags(eax_fx_slot.ulFlags);
 }
 
 [[nodiscard]] bool EaxxFxSlot::set_fx_slot_all(
