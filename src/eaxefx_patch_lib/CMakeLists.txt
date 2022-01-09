@@ -75,8 +75,8 @@ message (STATUS "[${PROJECT_NAME}] v${EAXEFX_PATCH_LIB_VERSION}")
 
 # Static linking.
 #
-option (EAXEFX_USE_STATIC_LINKING "Use static linking." ON)
-message (STATUS "[${PROJECT_NAME}] Static linking: ${EAXEFX_USE_STATIC_LINKING}")
+option (EAXEFX_STATIC_LINKING "Use static linking." ON)
+message (STATUS "[${PROJECT_NAME}] Static linking: ${EAXEFX_STATIC_LINKING}")
 
 
 #
@@ -139,7 +139,7 @@ target_compile_options (
 		$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
 )
 
-if (EAXEFX_USE_STATIC_LINKING)
+if (EAXEFX_STATIC_LINKING)
 	if (MSVC)
 		target_compile_options (
 			${PROJECT_NAME}
@@ -159,7 +159,7 @@ endif ()
 #
 # Dependencies.
 #
-if (EAXEFX_USE_STATIC_LINKING)
+if (EAXEFX_STATIC_LINKING)
 	if (NOT MSVC)
 		target_link_libraries (
 			${PROJECT_NAME}

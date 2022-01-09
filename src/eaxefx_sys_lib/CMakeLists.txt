@@ -75,13 +75,13 @@ message (STATUS "[${PROJECT_NAME}] v${EAXEFX_SYS_LIB_VERSION}")
 
 # Precompiled headers.
 #
-option (EAXEFX_USE_PCH "Use precompiled headers if available." ON)
-message (STATUS "[${PROJECT_NAME}] Precompiled headers: ${EAXEFX_USE_PCH}")
+option (EAXEFX_PCH "Use precompiled headers if available." ON)
+message (STATUS "[${PROJECT_NAME}] Precompiled headers: ${EAXEFX_PCH}")
 
 # Static linking.
 #
-option (EAXEFX_USE_STATIC_LINKING "Use static linking." ON)
-message (STATUS "[${PROJECT_NAME}] Static linking: ${EAXEFX_USE_STATIC_LINKING}")
+option (EAXEFX_STATIC_LINKING "Use static linking." ON)
+message (STATUS "[${PROJECT_NAME}] Static linking: ${EAXEFX_STATIC_LINKING}")
 
 
 #
@@ -146,7 +146,7 @@ target_compile_options (
 		$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
 )
 
-if (EAXEFX_USE_STATIC_LINKING)
+if (EAXEFX_STATIC_LINKING)
 	if (MSVC)
 		target_compile_options (
 			${PROJECT_NAME}
@@ -161,7 +161,7 @@ endif ()
 #
 # Precompile headers.
 #
-if (EAXEFX_USE_PCH AND NOT (${CMAKE_VERSION} VERSION_LESS "3.16"))
+if (EAXEFX_PCH AND NOT (${CMAKE_VERSION} VERSION_LESS "3.16"))
 	target_precompile_headers(
 		${PROJECT_NAME}
 		PRIVATE
@@ -173,7 +173,7 @@ endif ()
 #
 # Dependencies.
 #
-if (EAXEFX_USE_STATIC_LINKING)
+if (EAXEFX_STATIC_LINKING)
 	if (NOT MSVC)
 		target_link_libraries (
 			${PROJECT_NAME}
