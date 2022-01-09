@@ -26,7 +26,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 cmake_minimum_required (VERSION 3.8.2 FATAL_ERROR)
-project (eaxefx VERSION 1.0.7 LANGUAGES CXX)
+project (eaxefx_wrapper VERSION 1.0.7 LANGUAGES CXX)
 
 
 #
@@ -157,7 +157,7 @@ target_compile_options (
 	PRIVATE
 		$<$<CXX_COMPILER_ID:MSVC>:-W4 -MP ${EAXEFX_COMPILER_ARCH_OPTION} -GR->
 		$<$<CXX_COMPILER_ID:MSVC>:$<$<NOT:$<CONFIG:DEBUG>>:-Oy -GS->>
-		$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
+		$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-W4 -Wextra -pedantic>
 )
 
 if (EAXEFX_USE_STATIC_LINKING)
