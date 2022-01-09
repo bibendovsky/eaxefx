@@ -36,19 +36,6 @@ if (NOT WIN32)
 	message (FATAL_ERROR "Unsupported platform.")
 endif ()
 
-message (STATUS "[${PROJECT_NAME}] Size of a void pointer: ${CMAKE_SIZEOF_VOID_P}")
-
-set (EAXEFX_COMPILER_ARCH_OPTION "")
-
-if (CMAKE_SIZEOF_VOID_P EQUAL 4)
-	if (MSVC)
-		set (EAXEFX_COMPILER_ARCH_OPTION "-arch:IA32")
-	endif ()
-elseif (CMAKE_SIZEOF_VOID_P EQUAL 8)
-else ()
-	message (FATAL_ERROR "[${PROJECT_NAME}] Unsupported CPU bit count.")
-endif ()
-
 
 #
 # Module path.
@@ -85,8 +72,9 @@ message (STATUS "[${PROJECT_NAME}] Static linking: ${EAXEFX_STATIC_LINKING}")
 
 
 #
-# Packages.
+# Size of a void pointer.
 #
+message (STATUS "[${PROJECT_NAME}] Size of a void pointer: ${CMAKE_SIZEOF_VOID_P}")
 
 
 #
@@ -141,8 +129,11 @@ target_compile_definitions (
 target_compile_options (
 	${PROJECT_NAME}
 	PRIVATE
-		$<$<CXX_COMPILER_ID:MSVC>:-W4 -MP ${EAXEFX_COMPILER_ARCH_OPTION} -GR->
+		$<$<CXX_COMPILER_ID:MSVC>:$<$<EQUAL:${CMAKE_SIZEOF_VOID_P},4>:-arch:IA32>>
+		$<$<CXX_COMPILER_ID:MSVC>:-W4 -MP -GR->
 		$<$<CXX_COMPILER_ID:MSVC>:$<$<NOT:$<CONFIG:DEBUG>>:-Oy -GS->>
+	PRIVATE
+		$<$<CXX_COMPILER_ID:GNU>:$<$<EQUAL:${CMAKE_SIZEOF_VOID_P},4>:-march=i686>>
 		$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
 )
 
