@@ -1703,11 +1703,11 @@ try
 	}
 	else if (symbol_name == x_ram_eax_set_buffer_mode_view)
 	{
-		return eaxefx::EAXSetBufferMode;
+		return reinterpret_cast<void*>(eaxefx::EAXSetBufferMode);
 	}
 	else if (symbol_name == x_ram_eax_get_buffer_mode_view)
 	{
-		return eaxefx::EAXGetBufferMode;
+		return reinterpret_cast<void*>(eaxefx::EAXGetBufferMode);
 	}
 
 	const auto al_symbol_it = al_al_symbol_map_.find(symbol_name);
