@@ -71,6 +71,11 @@ message (STATUS "[${PROJECT_NAME}] Precompiled headers: ${EAXEFX_PCH}")
 option (EAXEFX_STATIC_LINKING "Use static linking." ON)
 message (STATUS "[${PROJECT_NAME}] Static linking: ${EAXEFX_STATIC_LINKING}")
 
+# All warnings.
+#
+option (EAXEFX_ALL_WARNINGS "Report all warnings." OFF)
+message (STATUS "[${PROJECT_NAME}] Report all warnings: ${EAXEFX_ALL_WARNINGS}")
+
 
 #
 # Size of a void pointer.
@@ -144,11 +149,13 @@ target_compile_options (
 	${PROJECT_NAME}
 	PRIVATE
 		$<$<CXX_COMPILER_ID:MSVC>:$<$<EQUAL:${CMAKE_SIZEOF_VOID_P},4>:-arch:IA32>>
-		$<$<CXX_COMPILER_ID:MSVC>:-W4 -MP -GR->
+		$<$<CXX_COMPILER_ID:MSVC>:$<IF:$<BOOL:${EAXEFX_ALL_WARNINGS}>,-Wall,-W4>>
+		$<$<CXX_COMPILER_ID:MSVC>:-MP -GR->
 		$<$<CXX_COMPILER_ID:MSVC>:$<$<NOT:$<CONFIG:DEBUG>>:-Oy -GS->>
 	PRIVATE
 		$<$<CXX_COMPILER_ID:GNU>:$<$<EQUAL:${CMAKE_SIZEOF_VOID_P},4>:-march=i686>>
-		$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic>
+		$<$<CXX_COMPILER_ID:GNU>:-Wpedantic>
+		$<$<CXX_COMPILER_ID:GNU>:$<$<BOOL:${EAXEFX_ALL_WARNINGS}>:-Wall -Wextra>>
 )
 
 if (EAXEFX_STATIC_LINKING)
