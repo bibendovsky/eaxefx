@@ -56,7 +56,7 @@ public:
 		EaxxFxSlotIndexValue index);
 
 	void operator=(
-		const ::GUID& guid);
+		const GUID& guid);
 
 	void operator=(
 		const EaxxFxSlotIndex& rhs) noexcept;
@@ -72,7 +72,7 @@ public:
 		EaxxFxSlotIndexValue index);
 
 	void set(
-		const ::GUID& guid);
+		const GUID& guid);
 
 	operator EaxxFxSlotIndexValue() const;
 

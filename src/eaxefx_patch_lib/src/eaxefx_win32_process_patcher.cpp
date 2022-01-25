@@ -65,8 +65,8 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 Win32ProcessPatcherImpl::Win32VirtualProtector::Win32VirtualProtector(
-	::LPVOID address,
-	::SIZE_T size,
+	LPVOID address,
+	SIZE_T size,
 	Win32VirtualProtectorFlushType flush_type)
 {
 	if (!address)
@@ -94,9 +94,9 @@ Win32ProcessPatcherImpl::Win32VirtualProtector::Win32VirtualProtector(
 			throw Win32ProcessPatcherVirtualProtectorException{"Unsupported flush type."};
 	}
 
-	auto old_protection_mode = ::DWORD{};
+	auto old_protection_mode = DWORD{};
 
-	const auto virtual_protect_result = ::VirtualProtect(
+	const auto virtual_protect_result = VirtualProtect(
 		address,
 		size,
 		PAGE_READWRITE,
@@ -116,9 +116,9 @@ Win32ProcessPatcherImpl::Win32VirtualProtector::Win32VirtualProtector(
 
 Win32ProcessPatcherImpl::Win32VirtualProtector::~Win32VirtualProtector()
 {
-	auto old_protection_mode = ::DWORD{};
+	auto old_protection_mode = DWORD{};
 
-	const auto virtual_protect_result = ::VirtualProtect(
+	const auto virtual_protect_result = VirtualProtect(
 		address_,
 		size_,
 		old_protection_mode_,
@@ -133,9 +133,9 @@ Win32ProcessPatcherImpl::Win32VirtualProtector::~Win32VirtualProtector()
 
 	if (is_flush_)
 	{
-		const auto process_handle = ::GetCurrentProcess();
+		const auto process_handle = GetCurrentProcess();
 
-		const auto flush_instruction_cache_result = ::FlushInstructionCache(
+		const auto flush_instruction_cache_result = FlushInstructionCache(
 			process_handle,
 			address_,
 			size_
@@ -178,7 +178,7 @@ Win32ProcessPatcherImpl::Win32ProcessPatcherImpl(
 {
 	PatchValidator::validate_patch(patch_);
 
-	image_base_ = reinterpret_cast<::BYTE*>(process::get_module_address(patch.file_name));
+	image_base_ = reinterpret_cast<BYTE*>(process::get_module_address(patch.file_name));
 
 	if (!image_base_)
 	{

@@ -32,10 +32,10 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_al_api.h"
 
 
-::BOOL WINAPI DllMain(
-	::HINSTANCE hinstDLL,
-	::DWORD fdwReason,
-	::LPVOID lpvReserved)
+BOOL WINAPI DllMain(
+	HINSTANCE hinstDLL,
+	DWORD fdwReason,
+	LPVOID lpvReserved)
 {
 	static_cast<void>(hinstDLL);
 	static_cast<void>(lpvReserved);

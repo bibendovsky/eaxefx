@@ -82,7 +82,7 @@ bool SysWin32ConditionVariable::sleep(
 	SysWin32CriticalSection& critical_section,
 	std::chrono::milliseconds timeout)
 {
-	::DWORD timeout_ms;
+	DWORD timeout_ms;
 
 	if (timeout.count() >= INFINITE)
 	{
@@ -90,7 +90,7 @@ bool SysWin32ConditionVariable::sleep(
 	}
 	else
 	{
-		timeout_ms = static_cast<::DWORD>(timeout.count());
+		timeout_ms = static_cast<DWORD>(timeout.count());
 	}
 
 	const auto win32_result = sleep_condition_variable_cs_func_(

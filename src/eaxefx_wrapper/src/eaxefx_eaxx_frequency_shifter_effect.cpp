@@ -75,7 +75,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxFrequencyShifterEffect::EaxxFrequencyShifterEffect(
-	::ALuint al_effect_slot,
+	ALuint al_effect_slot,
 	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
@@ -91,7 +91,7 @@ void EaxxFrequencyShifterEffect::load()
 	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<::ALint>(efx_effect_object_.get())
+		static_cast<ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -110,9 +110,9 @@ void EaxxFrequencyShifterEffect::dispatch(
 
 void EaxxFrequencyShifterEffect::set_eax_defaults()
 {
-	eax_.flFrequency = ::EAXFREQUENCYSHIFTER_DEFAULTFREQUENCY;
-	eax_.ulLeftDirection = ::EAXFREQUENCYSHIFTER_DEFAULTLEFTDIRECTION;
-	eax_.ulRightDirection = ::EAXFREQUENCYSHIFTER_DEFAULTRIGHTDIRECTION;
+	eax_.flFrequency = EAXFREQUENCYSHIFTER_DEFAULTFREQUENCY;
+	eax_.ulLeftDirection = EAXFREQUENCYSHIFTER_DEFAULTLEFTDIRECTION;
+	eax_.ulRightDirection = EAXFREQUENCYSHIFTER_DEFAULTRIGHTDIRECTION;
 
 	eax_d_ = eax_;
 }
@@ -131,7 +131,7 @@ void EaxxFrequencyShifterEffect::set_efx_frequency()
 void EaxxFrequencyShifterEffect::set_efx_left_direction()
 {
 	const auto left_direction = std::clamp(
-		static_cast<::ALint>(eax_.ulLeftDirection),
+		static_cast<ALint>(eax_.ulLeftDirection),
 		AL_FREQUENCY_SHIFTER_MIN_LEFT_DIRECTION,
 		AL_FREQUENCY_SHIFTER_MAX_LEFT_DIRECTION
 	);
@@ -142,7 +142,7 @@ void EaxxFrequencyShifterEffect::set_efx_left_direction()
 void EaxxFrequencyShifterEffect::set_efx_right_direction()
 {
 	const auto right_direction = std::clamp(
-		static_cast<::ALint>(eax_.ulRightDirection),
+		static_cast<ALint>(eax_.ulRightDirection),
 		AL_FREQUENCY_SHIFTER_MIN_RIGHT_DIRECTION,
 		AL_FREQUENCY_SHIFTER_MAX_RIGHT_DIRECTION
 	);
@@ -162,22 +162,22 @@ void EaxxFrequencyShifterEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXFREQUENCYSHIFTER_NONE:
+		case EAXFREQUENCYSHIFTER_NONE:
 			break;
 
-		case ::EAXFREQUENCYSHIFTER_ALLPARAMETERS:
+		case EAXFREQUENCYSHIFTER_ALLPARAMETERS:
 			eax_call.set_value<EaxxFrequencyShifterEffectException>(eax_);
 			break;
 
-		case ::EAXFREQUENCYSHIFTER_FREQUENCY:
+		case EAXFREQUENCYSHIFTER_FREQUENCY:
 			eax_call.set_value<EaxxFrequencyShifterEffectException>(eax_.flFrequency);
 			break;
 
-		case ::EAXFREQUENCYSHIFTER_LEFTDIRECTION:
+		case EAXFREQUENCYSHIFTER_LEFTDIRECTION:
 			eax_call.set_value<EaxxFrequencyShifterEffectException>(eax_.ulLeftDirection);
 			break;
 
-		case ::EAXFREQUENCYSHIFTER_RIGHTDIRECTION:
+		case EAXFREQUENCYSHIFTER_RIGHTDIRECTION:
 			eax_call.set_value<EaxxFrequencyShifterEffectException>(eax_.ulRightDirection);
 			break;
 
@@ -192,8 +192,8 @@ void EaxxFrequencyShifterEffect::validate_frequency(
 	eaxx_validate_range<EaxxFrequencyShifterEffectException>(
 		"Frequency",
 		flFrequency,
-		::EAXFREQUENCYSHIFTER_MINFREQUENCY,
-		::EAXFREQUENCYSHIFTER_MAXFREQUENCY
+		EAXFREQUENCYSHIFTER_MINFREQUENCY,
+		EAXFREQUENCYSHIFTER_MAXFREQUENCY
 	);
 }
 
@@ -203,8 +203,8 @@ void EaxxFrequencyShifterEffect::validate_left_direction(
 	eaxx_validate_range<EaxxFrequencyShifterEffectException>(
 		"Left Direction",
 		ulLeftDirection,
-		::EAXFREQUENCYSHIFTER_MINLEFTDIRECTION,
-		::EAXFREQUENCYSHIFTER_MAXLEFTDIRECTION
+		EAXFREQUENCYSHIFTER_MINLEFTDIRECTION,
+		EAXFREQUENCYSHIFTER_MAXLEFTDIRECTION
 	);
 }
 
@@ -214,13 +214,13 @@ void EaxxFrequencyShifterEffect::validate_right_direction(
 	eaxx_validate_range<EaxxFrequencyShifterEffectException>(
 		"Right Direction",
 		ulRightDirection,
-		::EAXFREQUENCYSHIFTER_MINRIGHTDIRECTION,
-		::EAXFREQUENCYSHIFTER_MAXRIGHTDIRECTION
+		EAXFREQUENCYSHIFTER_MINRIGHTDIRECTION,
+		EAXFREQUENCYSHIFTER_MAXRIGHTDIRECTION
 	);
 }
 
 void EaxxFrequencyShifterEffect::validate_all(
-	const ::EAXFREQUENCYSHIFTERPROPERTIES& all)
+	const EAXFREQUENCYSHIFTERPROPERTIES& all)
 {
 	validate_frequency(all.flFrequency);
 	validate_left_direction(all.ulLeftDirection);
@@ -249,7 +249,7 @@ void EaxxFrequencyShifterEffect::defer_right_direction(
 }
 
 void EaxxFrequencyShifterEffect::defer_all(
-	const ::EAXFREQUENCYSHIFTERPROPERTIES& all)
+	const EAXFREQUENCYSHIFTERPROPERTIES& all)
 {
 	defer_frequency(all.flFrequency);
 	defer_left_direction(all.ulLeftDirection);
@@ -294,7 +294,7 @@ void EaxxFrequencyShifterEffect::defer_all(
 {
 	const auto& all =
 		eax_call.get_value<
-			EaxxFrequencyShifterEffectException, const ::EAXFREQUENCYSHIFTERPROPERTIES>();
+			EaxxFrequencyShifterEffectException, const EAXFREQUENCYSHIFTERPROPERTIES>();
 
 	validate_all(all);
 	defer_all(all);
@@ -334,22 +334,22 @@ void EaxxFrequencyShifterEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXFREQUENCYSHIFTER_NONE:
+		case EAXFREQUENCYSHIFTER_NONE:
 			break;
 
-		case ::EAXFREQUENCYSHIFTER_ALLPARAMETERS:
+		case EAXFREQUENCYSHIFTER_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case ::EAXFREQUENCYSHIFTER_FREQUENCY:
+		case EAXFREQUENCYSHIFTER_FREQUENCY:
 			defer_frequency(eax_call);
 			break;
 
-		case ::EAXFREQUENCYSHIFTER_LEFTDIRECTION:
+		case EAXFREQUENCYSHIFTER_LEFTDIRECTION:
 			defer_left_direction(eax_call);
 			break;
 
-		case ::EAXFREQUENCYSHIFTER_RIGHTDIRECTION:
+		case EAXFREQUENCYSHIFTER_RIGHTDIRECTION:
 			defer_right_direction(eax_call);
 			break;
 

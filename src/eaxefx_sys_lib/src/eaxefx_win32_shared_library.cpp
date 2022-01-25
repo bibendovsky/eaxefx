@@ -73,7 +73,7 @@ public:
 
 
 private:
-	::HMODULE win32_module_;
+	HMODULE win32_module_;
 }; // Win32SharedLibrary
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -87,7 +87,7 @@ Win32SharedLibrary::Win32SharedLibrary(
 	win32_module_{}
 {
 	const auto u16_path = encoding::to_utf16(path);
-	win32_module_ = ::LoadLibraryW(reinterpret_cast<::LPCWSTR>(u16_path.c_str()));
+	win32_module_ = LoadLibraryW(reinterpret_cast<LPCWSTR>(u16_path.c_str()));
 
 	if (!win32_module_)
 	{

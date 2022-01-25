@@ -49,9 +49,9 @@ void set_name(
 
 	auto shared_library = make_shared_library("kernel32.dll");
 
-	using SetThreadDescriptionFunc = ::HRESULT (WINAPI*)(
-		::HANDLE hThread,
-		::PCWSTR lpThreadDescription
+	using SetThreadDescriptionFunc = HRESULT (WINAPI*)(
+		HANDLE hThread,
+		PCWSTR lpThreadDescription
 	);
 
 	const auto set_thread_description_func =
@@ -62,13 +62,13 @@ void set_name(
 		return;
 	}
 
-	const auto thread_handle = ::GetCurrentThread();
+	const auto thread_handle = GetCurrentThread();
 
 	const auto& utf16_name = encoding::to_utf16(utf8_name);
 
 	set_thread_description_func(
 		thread_handle,
-		reinterpret_cast<::LPCWSTR>(utf16_name.c_str())
+		reinterpret_cast<LPCWSTR>(utf16_name.c_str())
 	);
 }
 
@@ -118,7 +118,7 @@ public:
 
 
 private:
-	::HANDLE handle_;
+	HANDLE handle_;
 	ThreadFunction thread_function_{};
 	void* thread_argument_{};
 
@@ -148,7 +148,7 @@ ThreadImpl::ThreadImpl(
 
 	constexpr auto stack_size = 1U << 20;
 
-	handle_ = reinterpret_cast<::HANDLE>(::_beginthreadex(
+	handle_ = reinterpret_cast<HANDLE>(::_beginthreadex(
 		nullptr,
 		stack_size,
 		proxy_thread_function,
@@ -162,8 +162,8 @@ ThreadImpl::ThreadImpl(
 		throw ThreadException{"Failed to create a thread."};
 	}
 
-	const auto resume_result = ::ResumeThread(handle_);
-	constexpr auto invalid_resume_result = ::DWORD{} - ::DWORD{1};
+	const auto resume_result = ResumeThread(handle_);
+	constexpr auto invalid_resume_result = DWORD{} - DWORD{1};
 
 	if (resume_result == invalid_resume_result)
 	{
@@ -177,8 +177,8 @@ ThreadImpl::~ThreadImpl()
 	{
 		constexpr auto timeout_ms = 10;
 
-		::WaitForSingleObject(handle_, timeout_ms);
-		::CloseHandle(handle_);
+		WaitForSingleObject(handle_, timeout_ms);
+		CloseHandle(handle_);
 	}
 }
 
@@ -195,7 +195,7 @@ unsigned int __stdcall ThreadImpl::proxy_thread_function(
 	{
 	}
 
-	::_endthreadex(0);
+	_endthreadex(0);
 
 	return 0;
 }

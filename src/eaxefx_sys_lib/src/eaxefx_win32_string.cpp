@@ -107,7 +107,7 @@ inline void to_string_generic(
 	const auto data = string.data();
 	char* data_end = nullptr;
 
-	const auto win32_result = ::StringCbPrintfExA(
+	const auto win32_result = StringCbPrintfExA(
 		data,
 		max_length + 1,
 		&data_end,

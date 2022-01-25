@@ -62,27 +62,27 @@ public:
 		std::string_view symbol_name) = 0;
 
 	virtual void al_gen_sources(
-		::ALsizei n,
-		::ALuint* sources) = 0;
+		ALsizei n,
+		ALuint* sources) = 0;
 
 	virtual void al_delete_sources(
-		::ALsizei n,
-		const ::ALuint* sources) = 0;
+		ALsizei n,
+		const ALuint* sources) = 0;
 
 
-	virtual ::ALenum eax_set(
-		const ::GUID* property_set_guid,
-		::ALuint property_id,
-		::ALuint property_al_name,
-		::ALvoid* property_buffer,
-		::ALuint property_size) = 0;
+	virtual ALenum eax_set(
+		const GUID* property_set_guid,
+		ALuint property_id,
+		ALuint property_al_name,
+		ALvoid* property_buffer,
+		ALuint property_size) = 0;
 
-	virtual ::ALenum eax_get(
-		const ::GUID* property_set_guid,
-		::ALuint property_id,
-		::ALuint property_al_name,
-		::ALvoid* property_buffer,
-		::ALuint property_size) = 0;
+	virtual ALenum eax_get(
+		const GUID* property_set_guid,
+		ALuint property_id,
+		ALuint property_al_name,
+		ALvoid* property_buffer,
+		ALuint property_size) = 0;
 }; // Eaxx
 
 using EaxxUPtr = std::unique_ptr<Eaxx>;

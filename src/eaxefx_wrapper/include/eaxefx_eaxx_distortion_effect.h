@@ -72,7 +72,7 @@ class EaxxDistortionEffect final :
 {
 public:
 	EaxxDistortionEffect(
-		::ALuint al_effect_slot,
+		ALuint al_effect_slot,
 		const AlEfxSymbols* al_efx_symbols);
 
 
@@ -83,12 +83,12 @@ public:
 
 
 private:
-	const ::ALuint al_effect_slot_;
+	const ALuint al_effect_slot_;
 	const AlEfxSymbols* al_efx_symbols_;
 	EfxEffectObject efx_effect_object_;
 
-	::EAXDISTORTIONPROPERTIES eax_;
-	::EAXDISTORTIONPROPERTIES eax_d_;
+	EAXDISTORTIONPROPERTIES eax_;
+	EAXDISTORTIONPROPERTIES eax_d_;
 	EaxxDistortionEffectEaxDirtyFlags eax_dirty_flags_{};
 
 
@@ -128,7 +128,7 @@ private:
 		float flEQBandwidth);
 
 	void validate_all(
-		const ::EAXDISTORTIONPROPERTIES& eax_all);
+		const EAXDISTORTIONPROPERTIES& eax_all);
 
 
 	void defer_edge(
@@ -147,7 +147,7 @@ private:
 		float flEQBandwidth);
 
 	void defer_all(
-		const ::EAXDISTORTIONPROPERTIES& eax_all);
+		const EAXDISTORTIONPROPERTIES& eax_all);
 
 
 	void defer_edge(

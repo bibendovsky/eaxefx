@@ -71,7 +71,7 @@ class EaxxAutoWahEffect final :
 {
 public:
 	EaxxAutoWahEffect(
-		::ALuint al_effect_slot,
+		ALuint al_effect_slot,
 		const AlEfxSymbols* al_efx_symbols);
 
 
@@ -82,12 +82,12 @@ public:
 
 
 private:
-	const ::ALuint al_effect_slot_;
+	const ALuint al_effect_slot_;
 	const AlEfxSymbols* al_efx_symbols_;
 	EfxEffectObject efx_effect_object_;
 
-	::EAXAUTOWAHPROPERTIES eax_;
-	::EAXAUTOWAHPROPERTIES eax_d_;
+	EAXAUTOWAHPROPERTIES eax_;
+	EAXAUTOWAHPROPERTIES eax_d_;
 	EaxxAutoWahEffectEaxDirtyFlags eax_dirty_flags_{};
 
 
@@ -122,7 +122,7 @@ private:
 		std::int32_t lPeakLevel);
 
 	void validate_all(
-		const ::EAXAUTOWAHPROPERTIES& eax_all);
+		const EAXAUTOWAHPROPERTIES& eax_all);
 
 
 	void defer_attack_time(
@@ -138,7 +138,7 @@ private:
 		std::int32_t lPeakLevel);
 
 	void defer_all(
-		const ::EAXAUTOWAHPROPERTIES& eax_all);
+		const EAXAUTOWAHPROPERTIES& eax_all);
 
 
 	void defer_attack_time(

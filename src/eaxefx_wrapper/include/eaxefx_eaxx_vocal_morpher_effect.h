@@ -73,7 +73,7 @@ class EaxxVocalMorpherEffect final :
 {
 public:
 	EaxxVocalMorpherEffect(
-		::ALuint al_effect_slot,
+		ALuint al_effect_slot,
 		const AlEfxSymbols* al_efx_symbols);
 
 
@@ -84,12 +84,12 @@ public:
 
 
 private:
-	const ::ALuint al_effect_slot_;
+	const ALuint al_effect_slot_;
 	const AlEfxSymbols* al_efx_symbols_;
 	EfxEffectObject efx_effect_object_;
 
-	::EAXVOCALMORPHERPROPERTIES eax_;
-	::EAXVOCALMORPHERPROPERTIES eax_d_;
+	EAXVOCALMORPHERPROPERTIES eax_;
+	EAXVOCALMORPHERPROPERTIES eax_d_;
 	EaxxVocalMorpherEffectEaxDirtyFlags eax_dirty_flags_{};
 
 
@@ -134,7 +134,7 @@ private:
 		float flRate);
 
 	void validate_all(
-		const ::EAXVOCALMORPHERPROPERTIES& all);
+		const EAXVOCALMORPHERPROPERTIES& all);
 
 
 	void defer_phoneme_a(
@@ -156,7 +156,7 @@ private:
 		float flRate);
 
 	void defer_all(
-		const ::EAXVOCALMORPHERPROPERTIES& all);
+		const EAXVOCALMORPHERPROPERTIES& all);
 
 
 	void defer_phoneme_a(

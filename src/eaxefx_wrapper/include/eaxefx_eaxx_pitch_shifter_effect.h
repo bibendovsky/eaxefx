@@ -69,7 +69,7 @@ class EaxxPitchShifterEffect final :
 {
 public:
 	EaxxPitchShifterEffect(
-		::ALuint al_effect_slot,
+		ALuint al_effect_slot,
 		const AlEfxSymbols* al_efx_symbols);
 
 
@@ -80,12 +80,12 @@ public:
 
 
 private:
-	const ::ALuint al_effect_slot_;
+	const ALuint al_effect_slot_;
 	const AlEfxSymbols* al_efx_symbols_;
 	EfxEffectObject efx_effect_object_;
 
-	::EAXPITCHSHIFTERPROPERTIES eax_;
-	::EAXPITCHSHIFTERPROPERTIES eax_d_;
+	EAXPITCHSHIFTERPROPERTIES eax_;
+	EAXPITCHSHIFTERPROPERTIES eax_d_;
 	EaxxPitchShifterEffectEaxDirtyFlags eax_dirty_flags_{};
 
 
@@ -110,7 +110,7 @@ private:
 		std::int32_t lFineTune);
 
 	void validate_all(
-		const ::EAXPITCHSHIFTERPROPERTIES& all);
+		const EAXPITCHSHIFTERPROPERTIES& all);
 
 
 	void defer_coarse_tune(
@@ -120,7 +120,7 @@ private:
 		std::int32_t lFineTune);
 
 	void defer_all(
-		const ::EAXPITCHSHIFTERPROPERTIES& all);
+		const EAXPITCHSHIFTERPROPERTIES& all);
 
 
 	void defer_coarse_tune(

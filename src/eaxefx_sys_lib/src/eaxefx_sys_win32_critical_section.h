@@ -57,11 +57,11 @@ public:
 	void unlock();
 
 
-	::CRITICAL_SECTION& get() noexcept;
+	CRITICAL_SECTION& get() noexcept;
 
 
 private:
-	::CRITICAL_SECTION critical_section_;
+	CRITICAL_SECTION critical_section_;
 }; // SysWin32CriticalSection
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

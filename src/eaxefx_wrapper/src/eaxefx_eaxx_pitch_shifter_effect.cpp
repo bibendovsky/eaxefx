@@ -75,7 +75,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxPitchShifterEffect::EaxxPitchShifterEffect(
-	::ALuint al_effect_slot,
+	ALuint al_effect_slot,
 	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
@@ -91,7 +91,7 @@ void EaxxPitchShifterEffect::load()
 	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<::ALint>(efx_effect_object_.get())
+		static_cast<ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -110,8 +110,8 @@ void EaxxPitchShifterEffect::dispatch(
 
 void EaxxPitchShifterEffect::set_eax_defaults()
 {
-	eax_.lCoarseTune = ::EAXPITCHSHIFTER_DEFAULTCOARSETUNE;
-	eax_.lFineTune = ::EAXPITCHSHIFTER_DEFAULTFINETUNE;
+	eax_.lCoarseTune = EAXPITCHSHIFTER_DEFAULTCOARSETUNE;
+	eax_.lFineTune = EAXPITCHSHIFTER_DEFAULTFINETUNE;
 
 	eax_d_ = eax_;
 }
@@ -120,8 +120,8 @@ void EaxxPitchShifterEffect::set_efx_coarse_tune()
 {
 	const auto coarse_tune = std::clamp(
 		eax_.lCoarseTune,
-		::EAXPITCHSHIFTER_MINCOARSETUNE,
-		::EAXPITCHSHIFTER_MAXCOARSETUNE
+		EAXPITCHSHIFTER_MINCOARSETUNE,
+		EAXPITCHSHIFTER_MAXCOARSETUNE
 	);
 
 	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_PITCH_SHIFTER_COARSE_TUNE, coarse_tune);
@@ -131,8 +131,8 @@ void EaxxPitchShifterEffect::set_efx_fine_tune()
 {
 	const auto fine_tune = std::clamp(
 		eax_.lFineTune,
-		::EAXPITCHSHIFTER_MINFINETUNE,
-		::EAXPITCHSHIFTER_MAXFINETUNE
+		EAXPITCHSHIFTER_MINFINETUNE,
+		EAXPITCHSHIFTER_MAXFINETUNE
 	);
 
 	al_efx_symbols_->alEffecti(efx_effect_object_.get(), AL_PITCH_SHIFTER_FINE_TUNE, fine_tune);
@@ -149,18 +149,18 @@ void EaxxPitchShifterEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXPITCHSHIFTER_NONE:
+		case EAXPITCHSHIFTER_NONE:
 			break;
 
-		case ::EAXPITCHSHIFTER_ALLPARAMETERS:
+		case EAXPITCHSHIFTER_ALLPARAMETERS:
 			eax_call.set_value<EaxxPitchShifterEffectException>(eax_);
 			break;
 
-		case ::EAXPITCHSHIFTER_COARSETUNE:
+		case EAXPITCHSHIFTER_COARSETUNE:
 			eax_call.set_value<EaxxPitchShifterEffectException>(eax_.lCoarseTune);
 			break;
 
-		case ::EAXPITCHSHIFTER_FINETUNE:
+		case EAXPITCHSHIFTER_FINETUNE:
 			eax_call.set_value<EaxxPitchShifterEffectException>(eax_.lFineTune);
 			break;
 
@@ -175,8 +175,8 @@ void EaxxPitchShifterEffect::validate_coarse_tune(
 	eaxx_validate_range<EaxxPitchShifterEffectException>(
 		"Coarse Tune",
 		lCoarseTune,
-		::EAXPITCHSHIFTER_MINCOARSETUNE,
-		::EAXPITCHSHIFTER_MAXCOARSETUNE
+		EAXPITCHSHIFTER_MINCOARSETUNE,
+		EAXPITCHSHIFTER_MAXCOARSETUNE
 	);
 }
 
@@ -186,13 +186,13 @@ void EaxxPitchShifterEffect::validate_fine_tune(
 	eaxx_validate_range<EaxxPitchShifterEffectException>(
 		"Fine Tune",
 		lFineTune,
-		::EAXPITCHSHIFTER_MINFINETUNE,
-		::EAXPITCHSHIFTER_MAXFINETUNE
+		EAXPITCHSHIFTER_MINFINETUNE,
+		EAXPITCHSHIFTER_MAXFINETUNE
 	);
 }
 
 void EaxxPitchShifterEffect::validate_all(
-	const ::EAXPITCHSHIFTERPROPERTIES& all)
+	const EAXPITCHSHIFTERPROPERTIES& all)
 {
 	validate_coarse_tune(all.lCoarseTune);
 	validate_fine_tune(all.lFineTune);
@@ -213,7 +213,7 @@ void EaxxPitchShifterEffect::defer_fine_tune(
 }
 
 void EaxxPitchShifterEffect::defer_all(
-	const ::EAXPITCHSHIFTERPROPERTIES& all)
+	const EAXPITCHSHIFTERPROPERTIES& all)
 {
 	defer_coarse_tune(all.lCoarseTune);
 	defer_fine_tune(all.lFineTune);
@@ -243,7 +243,7 @@ void EaxxPitchShifterEffect::defer_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& all =
-		eax_call.get_value<EaxxPitchShifterEffectException, const ::EAXPITCHSHIFTERPROPERTIES>();
+		eax_call.get_value<EaxxPitchShifterEffectException, const EAXPITCHSHIFTERPROPERTIES>();
 
 	validate_all(all);
 	defer_all(all);
@@ -278,18 +278,18 @@ void EaxxPitchShifterEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXPITCHSHIFTER_NONE:
+		case EAXPITCHSHIFTER_NONE:
 			break;
 
-		case ::EAXPITCHSHIFTER_ALLPARAMETERS:
+		case EAXPITCHSHIFTER_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case ::EAXPITCHSHIFTER_COARSETUNE:
+		case EAXPITCHSHIFTER_COARSETUNE:
 			defer_coarse_tune(eax_call);
 			break;
 
-		case ::EAXPITCHSHIFTER_FINETUNE:
+		case EAXPITCHSHIFTER_FINETUNE:
 			defer_fine_tune(eax_call);
 			break;
 

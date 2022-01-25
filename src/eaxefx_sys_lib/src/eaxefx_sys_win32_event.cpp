@@ -61,21 +61,21 @@ SysWin32Event::SysWin32Event()
 
 SysWin32Event::~SysWin32Event()
 {
-	::CloseHandle(handle_);
+	CloseHandle(handle_);
 }
 
 void SysWin32Event::set(
 	bool value)
 {
-	::BOOL win32_result;
+	BOOL win32_result;
 
 	if (value)
 	{
-		win32_result = ::SetEvent(handle_);
+		win32_result = SetEvent(handle_);
 	}
 	else
 	{
-		win32_result = ::ResetEvent(handle_);
+		win32_result = ResetEvent(handle_);
 	}
 
 	if (!win32_result)
@@ -92,7 +92,7 @@ void SysWin32Event::wait()
 bool SysWin32Event::wait_for(
 	std::chrono::milliseconds timeout_ms)
 {
-	::DWORD win32_timeout_ms;
+	DWORD win32_timeout_ms;
 
 	if (timeout_ms.count() >= INFINITE)
 	{
@@ -100,15 +100,15 @@ bool SysWin32Event::wait_for(
 	}
 	else
 	{
-		win32_timeout_ms = static_cast<::DWORD>(timeout_ms.count());
+		win32_timeout_ms = static_cast<DWORD>(timeout_ms.count());
 	}
 
 	return wait_for_ms_internal(win32_timeout_ms);
 }
 
-::HANDLE SysWin32Event::make_win32_event()
+HANDLE SysWin32Event::make_win32_event()
 {
-	const auto handle = ::CreateEventW(nullptr, TRUE, FALSE, nullptr);
+	const auto handle = CreateEventW(nullptr, TRUE, FALSE, nullptr);
 
 	if (!handle)
 	{
@@ -119,9 +119,9 @@ bool SysWin32Event::wait_for(
 }
 
 bool SysWin32Event::wait_for_ms_internal(
-	::DWORD timeout_ms)
+	DWORD timeout_ms)
 {
-	const auto win32_result = ::WaitForSingleObject(handle_, static_cast<::DWORD>(timeout_ms));
+	const auto win32_result = WaitForSingleObject(handle_, static_cast<DWORD>(timeout_ms));
 
 	switch (win32_result)
 	{

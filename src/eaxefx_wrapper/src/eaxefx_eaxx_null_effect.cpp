@@ -57,7 +57,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxNullEffect::EaxxNullEffect(
-	::ALuint al_effect_slot,
+	ALuint al_effect_slot,
 	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
@@ -71,7 +71,7 @@ void EaxxNullEffect::load()
 	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<::ALint>(efx_effect_object_.get())
+		static_cast<ALint>(efx_effect_object_.get())
 	);
 }
 

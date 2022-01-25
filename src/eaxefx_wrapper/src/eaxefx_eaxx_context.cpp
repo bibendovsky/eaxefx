@@ -138,8 +138,8 @@ EaxxFxSlot& EaxxContext::get_slot(
 }
 
 void EaxxContext::initialize_sources(
-	::ALsizei count,
-	::ALuint* al_names)
+	ALsizei count,
+	ALuint* al_names)
 {
 	if (count <= 0 || !al_names || al_names[0] == AL_NONE)
 	{
@@ -159,8 +159,8 @@ void EaxxContext::initialize_sources(
 }
 
 void EaxxContext::uninitialize_sources(
-	::ALsizei count,
-	const ::ALuint* al_names)
+	ALsizei count,
+	const ALuint* al_names)
 {
 	if (count <= 0 || !al_names || al_names[0] == AL_NONE)
 	{
@@ -189,7 +189,7 @@ void EaxxContext::dispatch(
 }
 
 EaxxSource* EaxxContext::find_source(
-	::ALuint al_source_name)
+	ALuint al_source_name)
 {
 	const auto map_it = source_map_.find(al_source_name);
 
@@ -211,7 +211,7 @@ void EaxxContext::update_filters()
 
 void EaxxContext::set_last_error() noexcept
 {
-	eax_last_error_ = ::EAXERR_INVALID_OPERATION;
+	eax_last_error_ = EAXERR_INVALID_OPERATION;
 }
 
 [[noreturn]]
@@ -230,11 +230,11 @@ void EaxxContext::ensure_compatibility()
 		fail("EFX extension not found.");
 	}
 
-	auto aux_send_count = ::ALint{};
+	auto aux_send_count = ALint{};
 
 	al_.alc_symbols->alcGetIntegerv(al_.device, ALC_MAX_AUXILIARY_SENDS, 1, &aux_send_count);
 
-	if (aux_send_count < ::EAX_MAX_FXSLOTS)
+	if (aux_send_count < EAX_MAX_FXSLOTS)
 	{
 		const auto message =
 			"Expected at least " +
@@ -246,7 +246,7 @@ void EaxxContext::ensure_compatibility()
 
 	const auto low_pass_efx_object = make_efx_filter_object(al_.efx_symbols);
 	const auto low_pass_al_name = low_pass_efx_object.get();
-	auto efx_filter_type = ::ALint{};
+	auto efx_filter_type = ALint{};
 	al_.efx_symbols->alFilteri(low_pass_al_name, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
 	al_.efx_symbols->alGetFilteri(low_pass_al_name, AL_FILTER_TYPE, &efx_filter_type);
 
@@ -288,26 +288,26 @@ void EaxxContext::initialize_extended_filter_gain()
 
 void EaxxContext::set_eax_last_error_defaults() noexcept
 {
-	eax_last_error_ = ::EAX_OK;
+	eax_last_error_ = EAX_OK;
 }
 
 void EaxxContext::set_eax_speaker_config_defaults() noexcept
 {
-	eax_speaker_config_ = ::HEADPHONES;
+	eax_speaker_config_ = HEADPHONES;
 }
 
 void EaxxContext::set_eax_session_defaults() noexcept
 {
-	eax_session_.ulEAXVersion = ::EAXCONTEXT_MINEAXSESSION;
-	eax_session_.ulMaxActiveSends = ::EAXCONTEXT_DEFAULTMAXACTIVESENDS;
+	eax_session_.ulEAXVersion = EAXCONTEXT_MINEAXSESSION;
+	eax_session_.ulMaxActiveSends = EAXCONTEXT_DEFAULTMAXACTIVESENDS;
 }
 
 void EaxxContext::set_eax_context_defaults() noexcept
 {
-	eax_.context.guidPrimaryFXSlotID = ::EAXCONTEXT_DEFAULTPRIMARYFXSLOTID;
-	eax_.context.flDistanceFactor = ::EAXCONTEXT_DEFAULTDISTANCEFACTOR;
-	eax_.context.flAirAbsorptionHF = ::EAXCONTEXT_DEFAULTAIRABSORPTIONHF;
-	eax_.context.flHFReference = ::EAXCONTEXT_DEFAULTHFREFERENCE;
+	eax_.context.guidPrimaryFXSlotID = EAXCONTEXT_DEFAULTPRIMARYFXSLOTID;
+	eax_.context.flDistanceFactor = EAXCONTEXT_DEFAULTDISTANCEFACTOR;
+	eax_.context.flAirAbsorptionHF = EAXCONTEXT_DEFAULTAIRABSORPTIONHF;
+	eax_.context.flHFReference = EAXCONTEXT_DEFAULTHFREFERENCE;
 }
 
 void EaxxContext::set_eax_defaults() noexcept
@@ -326,7 +326,7 @@ void EaxxContext::initialize_filter()
 	const auto al_filter = al_.filter;
 
 	al_.efx_symbols->alFilteri(al_filter, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
-	auto al_filter_type = ::ALint{};
+	auto al_filter_type = ALint{};
 	al_.efx_symbols->alGetFilteri(al_filter, AL_FILTER_TYPE, &al_filter_type);
 
 	if (al_filter_type != AL_FILTER_LOWPASS)
@@ -363,7 +363,7 @@ void EaxxContext::get_last_error(
 	const EaxxEaxCall& eax_call)
 {
 	const auto eax_last_error = eax_last_error_;
-	eax_last_error_ = ::EAX_OK;
+	eax_last_error_ = EAX_OK;
 	eax_call.set_value<EaxxContextException>(eax_last_error);
 }
 
@@ -391,7 +391,7 @@ void EaxxContext::get_context_all(
 	switch (eax_call.get_version())
 	{
 		case 4:
-			eax_call.set_value<EaxxContextException>(static_cast<const ::EAX40CONTEXTPROPERTIES&>(eax_.context));
+			eax_call.set_value<EaxxContextException>(static_cast<const EAX40CONTEXTPROPERTIES&>(eax_.context));
 			break;
 
 		case 5:
@@ -408,42 +408,42 @@ void EaxxContext::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXCONTEXT_NONE:
+		case EAXCONTEXT_NONE:
 			break;
 
-		case ::EAXCONTEXT_ALLPARAMETERS:
+		case EAXCONTEXT_ALLPARAMETERS:
 			get_context_all(eax_call);
 			break;
 
-		case ::EAXCONTEXT_PRIMARYFXSLOTID:
+		case EAXCONTEXT_PRIMARYFXSLOTID:
 			get_primary_fx_slot_id(eax_call);
 			break;
 
-		case ::EAXCONTEXT_DISTANCEFACTOR:
+		case EAXCONTEXT_DISTANCEFACTOR:
 			get_distance_factor(eax_call);
 			break;
 
-		case ::EAXCONTEXT_AIRABSORPTIONHF:
+		case EAXCONTEXT_AIRABSORPTIONHF:
 			get_air_absorption_hf(eax_call);
 			break;
 
-		case ::EAXCONTEXT_HFREFERENCE:
+		case EAXCONTEXT_HFREFERENCE:
 			get_hf_reference(eax_call);
 			break;
 
-		case ::EAXCONTEXT_LASTERROR:
+		case EAXCONTEXT_LASTERROR:
 			get_last_error(eax_call);
 			break;
 
-		case ::EAXCONTEXT_SPEAKERCONFIG:
+		case EAXCONTEXT_SPEAKERCONFIG:
 			get_speaker_config(eax_call);
 			break;
 
-		case ::EAXCONTEXT_EAXSESSION:
+		case EAXCONTEXT_EAXSESSION:
 			get_eax_session(eax_call);
 			break;
 
-		case ::EAXCONTEXT_MACROFXFACTOR:
+		case EAXCONTEXT_MACROFXFACTOR:
 			get_macro_fx_factor(eax_call);
 			break;
 
@@ -465,7 +465,7 @@ void EaxxContext::set_distance_factor()
 
 void EaxxContext::set_air_absorbtion_hf()
 {
-	shared_.air_absorption_factor = eax_.context.flAirAbsorptionHF / ::EAXCONTEXT_DEFAULTAIRABSORPTIONHF;
+	shared_.air_absorption_factor = eax_.context.flAirAbsorptionHF / EAXCONTEXT_DEFAULTAIRABSORPTIONHF;
 }
 
 void EaxxContext::set_hf_reference()
@@ -502,17 +502,17 @@ void EaxxContext::update_sources()
 }
 
 void EaxxContext::validate_primary_fx_slot_id(
-	const ::GUID& primary_fx_slot_id)
+	const GUID& primary_fx_slot_id)
 {
-	if (primary_fx_slot_id != ::EAX_NULL_GUID &&
-		primary_fx_slot_id != ::EAXPROPERTYID_EAX40_FXSlot0 &&
-		primary_fx_slot_id != ::EAXPROPERTYID_EAX50_FXSlot0 &&
-		primary_fx_slot_id != ::EAXPROPERTYID_EAX40_FXSlot1 &&
-		primary_fx_slot_id != ::EAXPROPERTYID_EAX50_FXSlot1 &&
-		primary_fx_slot_id != ::EAXPROPERTYID_EAX40_FXSlot2 &&
-		primary_fx_slot_id != ::EAXPROPERTYID_EAX50_FXSlot2 &&
-		primary_fx_slot_id != ::EAXPROPERTYID_EAX40_FXSlot3 &&
-		primary_fx_slot_id != ::EAXPROPERTYID_EAX50_FXSlot3)
+	if (primary_fx_slot_id != EAX_NULL_GUID &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX40_FXSlot0 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX50_FXSlot0 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX40_FXSlot1 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX50_FXSlot1 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX40_FXSlot2 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX50_FXSlot2 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX40_FXSlot3 &&
+		primary_fx_slot_id != EAXPROPERTYID_EAX50_FXSlot3)
 	{
 		fail("Unsupported primary FX slot id.");
 	}
@@ -524,8 +524,8 @@ void EaxxContext::validate_distance_factor(
 	eaxx_validate_range<EaxxContextException>(
 		"Distance Factor",
 		distance_factor,
-		::EAXCONTEXT_MINDISTANCEFACTOR,
-		::EAXCONTEXT_MAXDISTANCEFACTOR
+		EAXCONTEXT_MINDISTANCEFACTOR,
+		EAXCONTEXT_MAXDISTANCEFACTOR
 	);
 }
 
@@ -535,8 +535,8 @@ void EaxxContext::validate_air_absorption_hf(
 	eaxx_validate_range<EaxxContextException>(
 		"Air Absorption HF",
 		air_absorption_hf,
-		::EAXCONTEXT_MINAIRABSORPTIONHF,
-		::EAXCONTEXT_MAXAIRABSORPTIONHF
+		EAXCONTEXT_MINAIRABSORPTIONHF,
+		EAXCONTEXT_MAXAIRABSORPTIONHF
 	);
 }
 
@@ -546,8 +546,8 @@ void EaxxContext::validate_hf_reference(
 	eaxx_validate_range<EaxxContextException>(
 		"HF Reference",
 		hf_reference,
-		::EAXCONTEXT_MINHFREFERENCE,
-		::EAXCONTEXT_MAXHFREFERENCE
+		EAXCONTEXT_MINHFREFERENCE,
+		EAXCONTEXT_MAXHFREFERENCE
 	);
 }
 
@@ -556,12 +556,12 @@ void EaxxContext::validate_speaker_config(
 {
 	switch (speaker_config)
 	{
-		case ::HEADPHONES:
-		case ::SPEAKERS_2:
-		case ::SPEAKERS_4:
-		case ::SPEAKERS_5:
-		case ::SPEAKERS_6:
-		case ::SPEAKERS_7:
+		case HEADPHONES:
+		case SPEAKERS_2:
+		case SPEAKERS_4:
+		case SPEAKERS_5:
+		case SPEAKERS_6:
+		case SPEAKERS_7:
 			break;
 
 		default:
@@ -574,8 +574,8 @@ void EaxxContext::validate_eax_session_eax_version(
 {
 	switch (eax_version)
 	{
-		case ::EAX_40:
-		case ::EAX_50:
+		case EAX_40:
+		case EAX_50:
 			break;
 
 		default:
@@ -589,13 +589,13 @@ void EaxxContext::validate_eax_session_max_active_sends(
 	eaxx_validate_range<EaxxContextException>(
 		"Max Active Sends",
 		max_active_sends,
-		::EAXCONTEXT_MINMAXACTIVESENDS,
-		::EAXCONTEXT_MAXMAXACTIVESENDS
+		EAXCONTEXT_MINMAXACTIVESENDS,
+		EAXCONTEXT_MAXMAXACTIVESENDS
 	);
 }
 
 void EaxxContext::validate_eax_session(
-	const ::EAXSESSIONPROPERTIES& eax_session)
+	const EAXSESSIONPROPERTIES& eax_session)
 {
 	validate_eax_session_eax_version(eax_session.ulEAXVersion);
 	validate_eax_session_max_active_sends(eax_session.ulMaxActiveSends);
@@ -607,13 +607,13 @@ void EaxxContext::validate_macro_fx_factor(
 	eaxx_validate_range<EaxxContextException>(
 		"Macro FX Factor",
 		macro_fx_factor,
-		::EAXCONTEXT_MINMACROFXFACTOR,
-		::EAXCONTEXT_MAXMACROFXFACTOR
+		EAXCONTEXT_MINMACROFXFACTOR,
+		EAXCONTEXT_MAXMACROFXFACTOR
 	);
 }
 
 void EaxxContext::validate_context_all(
-	const ::EAX40CONTEXTPROPERTIES& context_all)
+	const EAX40CONTEXTPROPERTIES& context_all)
 {
 	validate_primary_fx_slot_id(context_all.guidPrimaryFXSlotID);
 	validate_distance_factor(context_all.flDistanceFactor);
@@ -624,12 +624,12 @@ void EaxxContext::validate_context_all(
 void EaxxContext::validate_context_all(
 	const EAX50CONTEXTPROPERTIES& context_all)
 {
-	validate_context_all(static_cast<const ::EAX40CONTEXTPROPERTIES>(context_all));
+	validate_context_all(static_cast<const EAX40CONTEXTPROPERTIES>(context_all));
 	validate_macro_fx_factor(context_all.flMacroFXFactor);
 }
 
 void EaxxContext::defer_primary_fx_slot_id(
-	const ::GUID& primary_fx_slot_id)
+	const GUID& primary_fx_slot_id)
 {
 	eax_d_.context.guidPrimaryFXSlotID = primary_fx_slot_id;
 
@@ -674,7 +674,7 @@ void EaxxContext::defer_macro_fx_factor(
 }
 
 void EaxxContext::defer_context_all(
-	const ::EAX40CONTEXTPROPERTIES& context_all)
+	const EAX40CONTEXTPROPERTIES& context_all)
 {
 	defer_primary_fx_slot_id(context_all.guidPrimaryFXSlotID);
 	defer_distance_factor(context_all.flDistanceFactor);
@@ -685,7 +685,7 @@ void EaxxContext::defer_context_all(
 void EaxxContext::defer_context_all(
 	const EAX50CONTEXTPROPERTIES& context_all)
 {
-	defer_context_all(static_cast<const ::EAX40CONTEXTPROPERTIES&>(context_all));
+	defer_context_all(static_cast<const EAX40CONTEXTPROPERTIES&>(context_all));
 	defer_macro_fx_factor(context_all.flMacroFXFactor);
 }
 
@@ -697,7 +697,7 @@ void EaxxContext::defer_context_all(
 		case 4:
 			{
 				const auto& context_all =
-					eax_call.get_value<EaxxContextException, ::EAX40CONTEXTPROPERTIES>();
+					eax_call.get_value<EaxxContextException, EAX40CONTEXTPROPERTIES>();
 
 				validate_context_all(context_all);
 			}
@@ -774,7 +774,7 @@ void EaxxContext::set_eax_session(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& eax_session =
-		eax_call.get_value<EaxxContextException, const ::EAXSESSIONPROPERTIES>();
+		eax_call.get_value<EaxxContextException, const EAXSESSIONPROPERTIES>();
 
 	validate_eax_session(eax_session);
 
@@ -796,41 +796,41 @@ void EaxxContext::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXCONTEXT_NONE:
+		case EAXCONTEXT_NONE:
 			break;
 
-		case ::EAXCONTEXT_ALLPARAMETERS:
+		case EAXCONTEXT_ALLPARAMETERS:
 			defer_context_all(eax_call);
 			break;
 
-		case ::EAXCONTEXT_PRIMARYFXSLOTID:
+		case EAXCONTEXT_PRIMARYFXSLOTID:
 			defer_primary_fx_slot_id(eax_call);
 			break;
 
-		case ::EAXCONTEXT_DISTANCEFACTOR:
+		case EAXCONTEXT_DISTANCEFACTOR:
 			defer_distance_factor(eax_call);
 			break;
 
-		case ::EAXCONTEXT_AIRABSORPTIONHF:
+		case EAXCONTEXT_AIRABSORPTIONHF:
 			defer_air_absorption_hf(eax_call);
 			break;
 
-		case ::EAXCONTEXT_HFREFERENCE:
+		case EAXCONTEXT_HFREFERENCE:
 			defer_hf_reference(eax_call);
 			break;
 
-		case ::EAXCONTEXT_LASTERROR:
+		case EAXCONTEXT_LASTERROR:
 			fail("Setting last error not supported.");
 
-		case ::EAXCONTEXT_SPEAKERCONFIG:
+		case EAXCONTEXT_SPEAKERCONFIG:
 			set_speaker_config(eax_call);
 			break;
 
-		case ::EAXCONTEXT_EAXSESSION:
+		case EAXCONTEXT_EAXSESSION:
 			set_eax_session(eax_call);
 			break;
 
-		case ::EAXCONTEXT_MACROFXFACTOR:
+		case EAXCONTEXT_MACROFXFACTOR:
 			defer_macro_fx_factor(eax_call);
 			break;
 

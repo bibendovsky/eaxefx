@@ -49,7 +49,7 @@ template<
 class AlObject
 {
 public:
-	using Value = ::ALuint;
+	using Value = ALuint;
 	using Deleter = TDeleter;
 
 
@@ -166,7 +166,7 @@ public:
 
 
 	void operator()(
-		::ALuint al_name) const noexcept;
+		ALuint al_name) const noexcept;
 
 
 private:
@@ -199,7 +199,7 @@ public:
 
 
 	void operator()(
-		::ALuint al_name) const noexcept;
+		ALuint al_name) const noexcept;
 
 
 private:
@@ -209,7 +209,7 @@ private:
 using EfxEffectObject = AlObject<EfxEffectObjectDeleter>;
 
 EfxEffectObject make_efx_effect_object(
-	::ALint al_effect_type,
+	ALint al_effect_type,
 	const AlEfxSymbols* al_efx_symbols);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -233,7 +233,7 @@ public:
 
 
 	void operator()(
-		::ALuint al_name) const noexcept;
+		ALuint al_name) const noexcept;
 
 
 private:

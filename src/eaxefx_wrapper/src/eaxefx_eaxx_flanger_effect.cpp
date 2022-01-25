@@ -75,7 +75,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxFlangerEffect::EaxxFlangerEffect(
-	::ALuint al_effect_slot,
+	ALuint al_effect_slot,
 	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
@@ -91,7 +91,7 @@ void EaxxFlangerEffect::load()
 	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<::ALint>(efx_effect_object_.get())
+		static_cast<ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -110,12 +110,12 @@ void EaxxFlangerEffect::dispatch(
 
 void EaxxFlangerEffect::set_eax_defaults()
 {
-	eax_.ulWaveform = ::EAXFLANGER_DEFAULTWAVEFORM;
-	eax_.lPhase = ::EAXFLANGER_DEFAULTPHASE;
-	eax_.flRate = ::EAXFLANGER_DEFAULTRATE;
-	eax_.flDepth = ::EAXFLANGER_DEFAULTDEPTH;
-	eax_.flFeedback = ::EAXFLANGER_DEFAULTFEEDBACK;
-	eax_.flDelay = ::EAXFLANGER_DEFAULTDELAY;
+	eax_.ulWaveform = EAXFLANGER_DEFAULTWAVEFORM;
+	eax_.lPhase = EAXFLANGER_DEFAULTPHASE;
+	eax_.flRate = EAXFLANGER_DEFAULTRATE;
+	eax_.flDepth = EAXFLANGER_DEFAULTDEPTH;
+	eax_.flFeedback = EAXFLANGER_DEFAULTFEEDBACK;
+	eax_.flDelay = EAXFLANGER_DEFAULTDELAY;
 
 	eax_d_ = eax_;
 }
@@ -123,7 +123,7 @@ void EaxxFlangerEffect::set_eax_defaults()
 void EaxxFlangerEffect::set_efx_waveform()
 {
 	const auto waveform = std::clamp(
-		static_cast<::ALint>(eax_.ulWaveform),
+		static_cast<ALint>(eax_.ulWaveform),
 		AL_FLANGER_MIN_WAVEFORM,
 		AL_FLANGER_MAX_WAVEFORM
 	);
@@ -134,7 +134,7 @@ void EaxxFlangerEffect::set_efx_waveform()
 void EaxxFlangerEffect::set_efx_phase()
 {
 	const auto phase = std::clamp(
-		static_cast<::ALint>(eax_.lPhase),
+		static_cast<ALint>(eax_.lPhase),
 		AL_FLANGER_MIN_PHASE,
 		AL_FLANGER_MAX_PHASE
 	);
@@ -201,34 +201,34 @@ void EaxxFlangerEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXFLANGER_NONE:
+		case EAXFLANGER_NONE:
 			break;
 
-		case ::EAXFLANGER_ALLPARAMETERS:
+		case EAXFLANGER_ALLPARAMETERS:
 			eax_call.set_value<EaxxFlangerEffectException>(eax_);
 			break;
 
-		case ::EAXFLANGER_WAVEFORM:
+		case EAXFLANGER_WAVEFORM:
 			eax_call.set_value<EaxxFlangerEffectException>(eax_.ulWaveform);
 			break;
 
-		case ::EAXFLANGER_PHASE:
+		case EAXFLANGER_PHASE:
 			eax_call.set_value<EaxxFlangerEffectException>(eax_.lPhase);
 			break;
 
-		case ::EAXFLANGER_RATE:
+		case EAXFLANGER_RATE:
 			eax_call.set_value<EaxxFlangerEffectException>(eax_.flRate);
 			break;
 
-		case ::EAXFLANGER_DEPTH:
+		case EAXFLANGER_DEPTH:
 			eax_call.set_value<EaxxFlangerEffectException>(eax_.flDepth);
 			break;
 
-		case ::EAXFLANGER_FEEDBACK:
+		case EAXFLANGER_FEEDBACK:
 			eax_call.set_value<EaxxFlangerEffectException>(eax_.flFeedback);
 			break;
 
-		case ::EAXFLANGER_DELAY:
+		case EAXFLANGER_DELAY:
 			eax_call.set_value<EaxxFlangerEffectException>(eax_.flDelay);
 			break;
 
@@ -243,8 +243,8 @@ void EaxxFlangerEffect::validate_waveform(
 	eaxx_validate_range<EaxxFlangerEffectException>(
 		"Waveform",
 		ulWaveform,
-		::EAXFLANGER_MINWAVEFORM,
-		::EAXFLANGER_MAXWAVEFORM
+		EAXFLANGER_MINWAVEFORM,
+		EAXFLANGER_MAXWAVEFORM
 	);
 }
 
@@ -254,8 +254,8 @@ void EaxxFlangerEffect::validate_phase(
 	eaxx_validate_range<EaxxFlangerEffectException>(
 		"Phase",
 		lPhase,
-		::EAXFLANGER_MINPHASE,
-		::EAXFLANGER_MAXPHASE
+		EAXFLANGER_MINPHASE,
+		EAXFLANGER_MAXPHASE
 	);
 }
 
@@ -265,8 +265,8 @@ void EaxxFlangerEffect::validate_rate(
 	eaxx_validate_range<EaxxFlangerEffectException>(
 		"Rate",
 		flRate,
-		::EAXFLANGER_MINRATE,
-		::EAXFLANGER_MAXRATE
+		EAXFLANGER_MINRATE,
+		EAXFLANGER_MAXRATE
 	);
 }
 
@@ -276,8 +276,8 @@ void EaxxFlangerEffect::validate_depth(
 	eaxx_validate_range<EaxxFlangerEffectException>(
 		"Depth",
 		flDepth,
-		::EAXFLANGER_MINDEPTH,
-		::EAXFLANGER_MAXDEPTH
+		EAXFLANGER_MINDEPTH,
+		EAXFLANGER_MAXDEPTH
 	);
 }
 
@@ -287,8 +287,8 @@ void EaxxFlangerEffect::validate_feedback(
 	eaxx_validate_range<EaxxFlangerEffectException>(
 		"Feedback",
 		flFeedback,
-		::EAXFLANGER_MINFEEDBACK,
-		::EAXFLANGER_MAXFEEDBACK
+		EAXFLANGER_MINFEEDBACK,
+		EAXFLANGER_MAXFEEDBACK
 	);
 }
 
@@ -298,13 +298,13 @@ void EaxxFlangerEffect::validate_delay(
 	eaxx_validate_range<EaxxFlangerEffectException>(
 		"Delay",
 		flDelay,
-		::EAXFLANGER_MINDELAY,
-		::EAXFLANGER_MAXDELAY
+		EAXFLANGER_MINDELAY,
+		EAXFLANGER_MAXDELAY
 	);
 }
 
 void EaxxFlangerEffect::validate_all(
-	const ::EAXFLANGERPROPERTIES& all)
+	const EAXFLANGERPROPERTIES& all)
 {
 	validate_waveform(all.ulWaveform);
 	validate_phase(all.lPhase);
@@ -357,7 +357,7 @@ void EaxxFlangerEffect::defer_delay(
 }
 
 void EaxxFlangerEffect::defer_all(
-	const ::EAXFLANGERPROPERTIES& all)
+	const EAXFLANGERPROPERTIES& all)
 {
 	defer_waveform(all.ulWaveform);
 	defer_phase(all.lPhase);
@@ -431,7 +431,7 @@ void EaxxFlangerEffect::defer_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& all =
-		eax_call.get_value<EaxxFlangerEffectException, const ::EAXFLANGERPROPERTIES>();
+		eax_call.get_value<EaxxFlangerEffectException, const EAXFLANGERPROPERTIES>();
 
 	validate_all(all);
 	defer_all(all);
@@ -486,34 +486,34 @@ void EaxxFlangerEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXFLANGER_NONE:
+		case EAXFLANGER_NONE:
 			break;
 
-		case ::EAXFLANGER_ALLPARAMETERS:
+		case EAXFLANGER_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case ::EAXFLANGER_WAVEFORM:
+		case EAXFLANGER_WAVEFORM:
 			defer_waveform(eax_call);
 			break;
 
-		case ::EAXFLANGER_PHASE:
+		case EAXFLANGER_PHASE:
 			defer_phase(eax_call);
 			break;
 
-		case ::EAXFLANGER_RATE:
+		case EAXFLANGER_RATE:
 			defer_rate(eax_call);
 			break;
 
-		case ::EAXFLANGER_DEPTH:
+		case EAXFLANGER_DEPTH:
 			defer_depth(eax_call);
 			break;
 
-		case ::EAXFLANGER_FEEDBACK:
+		case EAXFLANGER_FEEDBACK:
 			defer_feedback(eax_call);
 			break;
 
-		case ::EAXFLANGER_DELAY:
+		case EAXFLANGER_DELAY:
 			defer_delay(eax_call);
 			break;
 

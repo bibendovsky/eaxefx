@@ -75,7 +75,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxRingModulatorEffect::EaxxRingModulatorEffect(
-	::ALuint al_effect_slot,
+	ALuint al_effect_slot,
 	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
@@ -91,7 +91,7 @@ void EaxxRingModulatorEffect::load()
 	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<::ALint>(efx_effect_object_.get())
+		static_cast<ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -110,9 +110,9 @@ void EaxxRingModulatorEffect::dispatch(
 
 void EaxxRingModulatorEffect::set_eax_defaults()
 {
-	eax_.flFrequency = ::EAXRINGMODULATOR_DEFAULTFREQUENCY;
-	eax_.flHighPassCutOff = ::EAXRINGMODULATOR_DEFAULTHIGHPASSCUTOFF;
-	eax_.ulWaveform = ::EAXRINGMODULATOR_DEFAULTWAVEFORM;
+	eax_.flFrequency = EAXRINGMODULATOR_DEFAULTFREQUENCY;
+	eax_.flHighPassCutOff = EAXRINGMODULATOR_DEFAULTHIGHPASSCUTOFF;
+	eax_.ulWaveform = EAXRINGMODULATOR_DEFAULTWAVEFORM;
 
 	eax_d_ = eax_;
 }
@@ -142,7 +142,7 @@ void EaxxRingModulatorEffect::set_efx_high_pass_cutoff()
 void EaxxRingModulatorEffect::set_efx_waveform()
 {
 	const auto waveform = std::clamp(
-		static_cast<::ALint>(eax_.ulWaveform),
+		static_cast<ALint>(eax_.ulWaveform),
 		AL_RING_MODULATOR_MIN_WAVEFORM,
 		AL_RING_MODULATOR_MAX_WAVEFORM
 	);
@@ -162,22 +162,22 @@ void EaxxRingModulatorEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXRINGMODULATOR_NONE:
+		case EAXRINGMODULATOR_NONE:
 			break;
 
-		case ::EAXRINGMODULATOR_ALLPARAMETERS:
+		case EAXRINGMODULATOR_ALLPARAMETERS:
 			eax_call.set_value<EaxxRingModulatorEffectException>(eax_);
 			break;
 
-		case ::EAXRINGMODULATOR_FREQUENCY:
+		case EAXRINGMODULATOR_FREQUENCY:
 			eax_call.set_value<EaxxRingModulatorEffectException>(eax_.flFrequency);
 			break;
 
-		case ::EAXRINGMODULATOR_HIGHPASSCUTOFF:
+		case EAXRINGMODULATOR_HIGHPASSCUTOFF:
 			eax_call.set_value<EaxxRingModulatorEffectException>(eax_.flHighPassCutOff);
 			break;
 
-		case ::EAXRINGMODULATOR_WAVEFORM:
+		case EAXRINGMODULATOR_WAVEFORM:
 			eax_call.set_value<EaxxRingModulatorEffectException>(eax_.ulWaveform);
 			break;
 
@@ -192,8 +192,8 @@ void EaxxRingModulatorEffect::validate_frequency(
 	eaxx_validate_range<EaxxRingModulatorEffectException>(
 		"Frequency",
 		flFrequency,
-		::EAXRINGMODULATOR_MINFREQUENCY,
-		::EAXRINGMODULATOR_MAXFREQUENCY
+		EAXRINGMODULATOR_MINFREQUENCY,
+		EAXRINGMODULATOR_MAXFREQUENCY
 	);
 }
 
@@ -203,8 +203,8 @@ void EaxxRingModulatorEffect::validate_high_pass_cutoff(
 	eaxx_validate_range<EaxxRingModulatorEffectException>(
 		"High-Pass Cutoff",
 		flHighPassCutOff,
-		::EAXRINGMODULATOR_MINHIGHPASSCUTOFF,
-		::EAXRINGMODULATOR_MAXHIGHPASSCUTOFF
+		EAXRINGMODULATOR_MINHIGHPASSCUTOFF,
+		EAXRINGMODULATOR_MAXHIGHPASSCUTOFF
 	);
 }
 
@@ -214,13 +214,13 @@ void EaxxRingModulatorEffect::validate_waveform(
 	eaxx_validate_range<EaxxRingModulatorEffectException>(
 		"Waveform",
 		ulWaveform,
-		::EAXRINGMODULATOR_MINWAVEFORM,
-		::EAXRINGMODULATOR_MAXWAVEFORM
+		EAXRINGMODULATOR_MINWAVEFORM,
+		EAXRINGMODULATOR_MAXWAVEFORM
 	);
 }
 
 void EaxxRingModulatorEffect::validate_all(
-	const ::EAXRINGMODULATORPROPERTIES& all)
+	const EAXRINGMODULATORPROPERTIES& all)
 {
 	validate_frequency(all.flFrequency);
 	validate_high_pass_cutoff(all.flHighPassCutOff);
@@ -249,7 +249,7 @@ void EaxxRingModulatorEffect::defer_waveform(
 }
 
 void EaxxRingModulatorEffect::defer_all(
-	const ::EAXRINGMODULATORPROPERTIES& all)
+	const EAXRINGMODULATORPROPERTIES& all)
 {
 	defer_frequency(all.flFrequency);
 	defer_high_pass_cutoff(all.flHighPassCutOff);
@@ -293,7 +293,7 @@ void EaxxRingModulatorEffect::defer_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& all =
-		eax_call.get_value<EaxxRingModulatorEffectException, const ::EAXRINGMODULATORPROPERTIES>();
+		eax_call.get_value<EaxxRingModulatorEffectException, const EAXRINGMODULATORPROPERTIES>();
 
 	validate_all(all);
 	defer_all(all);
@@ -333,22 +333,22 @@ void EaxxRingModulatorEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXRINGMODULATOR_NONE:
+		case EAXRINGMODULATOR_NONE:
 			break;
 
-		case ::EAXRINGMODULATOR_ALLPARAMETERS:
+		case EAXRINGMODULATOR_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case ::EAXRINGMODULATOR_FREQUENCY:
+		case EAXRINGMODULATOR_FREQUENCY:
 			defer_frequency(eax_call);
 			break;
 
-		case ::EAXRINGMODULATOR_HIGHPASSCUTOFF:
+		case EAXRINGMODULATOR_HIGHPASSCUTOFF:
 			defer_high_pass_cutoff(eax_call);
 			break;
 
-		case ::EAXRINGMODULATOR_WAVEFORM:
+		case EAXRINGMODULATOR_WAVEFORM:
 			defer_waveform(eax_call);
 			break;
 

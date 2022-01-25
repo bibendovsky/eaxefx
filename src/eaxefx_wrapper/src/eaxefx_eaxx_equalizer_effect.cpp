@@ -76,7 +76,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxEqualizerEffect::EaxxEqualizerEffect(
-	::ALuint al_effect_slot,
+	ALuint al_effect_slot,
 	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
@@ -92,7 +92,7 @@ void EaxxEqualizerEffect::load()
 	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<::ALint>(efx_effect_object_.get())
+		static_cast<ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -111,16 +111,16 @@ void EaxxEqualizerEffect::dispatch(
 
 void EaxxEqualizerEffect::set_eax_defaults()
 {
-	eax_.lLowGain = ::EAXEQUALIZER_DEFAULTLOWGAIN;
-	eax_.flLowCutOff = ::EAXEQUALIZER_DEFAULTLOWCUTOFF;
-	eax_.lMid1Gain = ::EAXEQUALIZER_DEFAULTMID1GAIN;
-	eax_.flMid1Center = ::EAXEQUALIZER_DEFAULTMID1CENTER;
-	eax_.flMid1Width = ::EAXEQUALIZER_DEFAULTMID1WIDTH;
-	eax_.lMid2Gain = ::EAXEQUALIZER_DEFAULTMID2GAIN;
-	eax_.flMid2Center = ::EAXEQUALIZER_DEFAULTMID2CENTER;
-	eax_.flMid2Width = ::EAXEQUALIZER_DEFAULTMID2WIDTH;
-	eax_.lHighGain = ::EAXEQUALIZER_DEFAULTHIGHGAIN;
-	eax_.flHighCutOff = ::EAXEQUALIZER_DEFAULTHIGHCUTOFF;
+	eax_.lLowGain = EAXEQUALIZER_DEFAULTLOWGAIN;
+	eax_.flLowCutOff = EAXEQUALIZER_DEFAULTLOWCUTOFF;
+	eax_.lMid1Gain = EAXEQUALIZER_DEFAULTMID1GAIN;
+	eax_.flMid1Center = EAXEQUALIZER_DEFAULTMID1CENTER;
+	eax_.flMid1Width = EAXEQUALIZER_DEFAULTMID1WIDTH;
+	eax_.lMid2Gain = EAXEQUALIZER_DEFAULTMID2GAIN;
+	eax_.flMid2Center = EAXEQUALIZER_DEFAULTMID2CENTER;
+	eax_.flMid2Width = EAXEQUALIZER_DEFAULTMID2WIDTH;
+	eax_.lHighGain = EAXEQUALIZER_DEFAULTHIGHGAIN;
+	eax_.flHighCutOff = EAXEQUALIZER_DEFAULTHIGHCUTOFF;
 
 	eax_d_ = eax_;
 }
@@ -254,50 +254,50 @@ void EaxxEqualizerEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXEQUALIZER_NONE:
+		case EAXEQUALIZER_NONE:
 			break;
 
-		case ::EAXEQUALIZER_ALLPARAMETERS:
+		case EAXEQUALIZER_ALLPARAMETERS:
 			eax_call.set_value<EaxxEqualizerEffectException>(eax_);
 			break;
 
-		case ::EAXEQUALIZER_LOWGAIN:
+		case EAXEQUALIZER_LOWGAIN:
 			eax_call.set_value<EaxxEqualizerEffectException>(eax_.lLowGain);
 			break;
 
-		case ::EAXEQUALIZER_LOWCUTOFF:
+		case EAXEQUALIZER_LOWCUTOFF:
 			eax_call.set_value<EaxxEqualizerEffectException>(eax_.flLowCutOff);
 			break;
 
-		case ::EAXEQUALIZER_MID1GAIN:
+		case EAXEQUALIZER_MID1GAIN:
 			eax_call.set_value<EaxxEqualizerEffectException>(eax_.lMid1Gain);
 			break;
 
-		case ::EAXEQUALIZER_MID1CENTER:
+		case EAXEQUALIZER_MID1CENTER:
 			eax_call.set_value<EaxxEqualizerEffectException>(eax_.flMid1Center);
 			break;
 
-		case ::EAXEQUALIZER_MID1WIDTH:
+		case EAXEQUALIZER_MID1WIDTH:
 			eax_call.set_value<EaxxEqualizerEffectException>(eax_.flMid1Width);
 			break;
 
-		case ::EAXEQUALIZER_MID2GAIN:
+		case EAXEQUALIZER_MID2GAIN:
 			eax_call.set_value<EaxxEqualizerEffectException>(eax_.lMid2Gain);
 			break;
 
-		case ::EAXEQUALIZER_MID2CENTER:
+		case EAXEQUALIZER_MID2CENTER:
 			eax_call.set_value<EaxxEqualizerEffectException>(eax_.flMid2Center);
 			break;
 
-		case ::EAXEQUALIZER_MID2WIDTH:
+		case EAXEQUALIZER_MID2WIDTH:
 			eax_call.set_value<EaxxEqualizerEffectException>(eax_.flMid2Width);
 			break;
 
-		case ::EAXEQUALIZER_HIGHGAIN:
+		case EAXEQUALIZER_HIGHGAIN:
 			eax_call.set_value<EaxxEqualizerEffectException>(eax_.lHighGain);
 			break;
 
-		case ::EAXEQUALIZER_HIGHCUTOFF:
+		case EAXEQUALIZER_HIGHCUTOFF:
 			eax_call.set_value<EaxxEqualizerEffectException>(eax_.flHighCutOff);
 			break;
 
@@ -312,8 +312,8 @@ void EaxxEqualizerEffect::validate_low_gain(
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"Low Gain",
 		lLowGain,
-		::EAXEQUALIZER_MINLOWGAIN,
-		::EAXEQUALIZER_MAXLOWGAIN
+		EAXEQUALIZER_MINLOWGAIN,
+		EAXEQUALIZER_MAXLOWGAIN
 	);
 }
 
@@ -323,8 +323,8 @@ void EaxxEqualizerEffect::validate_low_cutoff(
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"Low Cutoff",
 		flLowCutOff,
-		::EAXEQUALIZER_MINLOWCUTOFF,
-		::EAXEQUALIZER_MAXLOWCUTOFF
+		EAXEQUALIZER_MINLOWCUTOFF,
+		EAXEQUALIZER_MAXLOWCUTOFF
 	);
 }
 
@@ -334,8 +334,8 @@ void EaxxEqualizerEffect::validate_mid1_gain(
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"Mid1 Gain",
 		lMid1Gain,
-		::EAXEQUALIZER_MINMID1GAIN,
-		::EAXEQUALIZER_MAXMID1GAIN
+		EAXEQUALIZER_MINMID1GAIN,
+		EAXEQUALIZER_MAXMID1GAIN
 	);
 }
 
@@ -345,8 +345,8 @@ void EaxxEqualizerEffect::validate_mid1_center(
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"Mid1 Center",
 		flMid1Center,
-		::EAXEQUALIZER_MINMID1CENTER,
-		::EAXEQUALIZER_MAXMID1CENTER
+		EAXEQUALIZER_MINMID1CENTER,
+		EAXEQUALIZER_MAXMID1CENTER
 	);
 }
 
@@ -356,8 +356,8 @@ void EaxxEqualizerEffect::validate_mid1_width(
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"Mid1 Width",
 		flMid1Width,
-		::EAXEQUALIZER_MINMID1WIDTH,
-		::EAXEQUALIZER_MAXMID1WIDTH
+		EAXEQUALIZER_MINMID1WIDTH,
+		EAXEQUALIZER_MAXMID1WIDTH
 	);
 }
 
@@ -367,8 +367,8 @@ void EaxxEqualizerEffect::validate_mid2_gain(
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"Mid2 Gain",
 		lMid2Gain,
-		::EAXEQUALIZER_MINMID2GAIN,
-		::EAXEQUALIZER_MAXMID2GAIN
+		EAXEQUALIZER_MINMID2GAIN,
+		EAXEQUALIZER_MAXMID2GAIN
 	);
 }
 
@@ -378,8 +378,8 @@ void EaxxEqualizerEffect::validate_mid2_center(
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"Mid2 Center",
 		flMid2Center,
-		::EAXEQUALIZER_MINMID2CENTER,
-		::EAXEQUALIZER_MAXMID2CENTER
+		EAXEQUALIZER_MINMID2CENTER,
+		EAXEQUALIZER_MAXMID2CENTER
 	);
 }
 
@@ -389,8 +389,8 @@ void EaxxEqualizerEffect::validate_mid2_width(
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"Mid2 Width",
 		flMid2Width,
-		::EAXEQUALIZER_MINMID2WIDTH,
-		::EAXEQUALIZER_MAXMID2WIDTH
+		EAXEQUALIZER_MINMID2WIDTH,
+		EAXEQUALIZER_MAXMID2WIDTH
 	);
 }
 
@@ -400,8 +400,8 @@ void EaxxEqualizerEffect::validate_high_gain(
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"High Gain",
 		lHighGain,
-		::EAXEQUALIZER_MINHIGHGAIN,
-		::EAXEQUALIZER_MAXHIGHGAIN
+		EAXEQUALIZER_MINHIGHGAIN,
+		EAXEQUALIZER_MAXHIGHGAIN
 	);
 }
 
@@ -411,13 +411,13 @@ void EaxxEqualizerEffect::validate_high_cutoff(
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"High Cutoff",
 		flHighCutOff,
-		::EAXEQUALIZER_MINHIGHCUTOFF,
-		::EAXEQUALIZER_MAXHIGHCUTOFF
+		EAXEQUALIZER_MINHIGHCUTOFF,
+		EAXEQUALIZER_MAXHIGHCUTOFF
 	);
 }
 
 void EaxxEqualizerEffect::validate_all(
-	const ::EAXEQUALIZERPROPERTIES& all)
+	const EAXEQUALIZERPROPERTIES& all)
 {
 	validate_low_gain(all.lLowGain);
 	validate_low_cutoff(all.flLowCutOff);
@@ -502,7 +502,7 @@ void EaxxEqualizerEffect::defer_high_cutoff(
 }
 
 void EaxxEqualizerEffect::defer_all(
-	const ::EAXEQUALIZERPROPERTIES& all)
+	const EAXEQUALIZERPROPERTIES& all)
 {
 	defer_low_gain(all.lLowGain);
 	defer_low_cutoff(all.flLowCutOff);
@@ -620,7 +620,7 @@ void EaxxEqualizerEffect::defer_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto& all =
-		eax_call.get_value<EaxxEqualizerEffectException, const ::EAXEQUALIZERPROPERTIES>();
+		eax_call.get_value<EaxxEqualizerEffectException, const EAXEQUALIZERPROPERTIES>();
 
 	validate_all(all);
 	defer_all(all);
@@ -695,50 +695,50 @@ void EaxxEqualizerEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXEQUALIZER_NONE:
+		case EAXEQUALIZER_NONE:
 			break;
 
-		case ::EAXEQUALIZER_ALLPARAMETERS:
+		case EAXEQUALIZER_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case ::EAXEQUALIZER_LOWGAIN:
+		case EAXEQUALIZER_LOWGAIN:
 			defer_low_gain(eax_call);
 			break;
 
-		case ::EAXEQUALIZER_LOWCUTOFF:
+		case EAXEQUALIZER_LOWCUTOFF:
 			defer_low_cutoff(eax_call);
 			break;
 
-		case ::EAXEQUALIZER_MID1GAIN:
+		case EAXEQUALIZER_MID1GAIN:
 			defer_mid1_gain(eax_call);
 			break;
 
-		case ::EAXEQUALIZER_MID1CENTER:
+		case EAXEQUALIZER_MID1CENTER:
 			defer_mid1_center(eax_call);
 			break;
 
-		case ::EAXEQUALIZER_MID1WIDTH:
+		case EAXEQUALIZER_MID1WIDTH:
 			defer_mid1_width(eax_call);
 			break;
 
-		case ::EAXEQUALIZER_MID2GAIN:
+		case EAXEQUALIZER_MID2GAIN:
 			defer_mid2_gain(eax_call);
 			break;
 
-		case ::EAXEQUALIZER_MID2CENTER:
+		case EAXEQUALIZER_MID2CENTER:
 			defer_mid2_center(eax_call);
 			break;
 
-		case ::EAXEQUALIZER_MID2WIDTH:
+		case EAXEQUALIZER_MID2WIDTH:
 			defer_mid2_width(eax_call);
 			break;
 
-		case ::EAXEQUALIZER_HIGHGAIN:
+		case EAXEQUALIZER_HIGHGAIN:
 			defer_high_gain(eax_call);
 			break;
 
-		case ::EAXEQUALIZER_HIGHCUTOFF:
+		case EAXEQUALIZER_HIGHCUTOFF:
 			defer_high_cutoff(eax_call);
 			break;
 

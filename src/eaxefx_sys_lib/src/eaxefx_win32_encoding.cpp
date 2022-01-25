@@ -91,7 +91,7 @@ U16String to_utf16_internal(
 		return U16String{};
 	}
 
-	const auto u16_size = ::MultiByteToWideChar(
+	const auto u16_size = MultiByteToWideChar(
 		CP_UTF8,
 		0,
 		utf8_string,
@@ -108,12 +108,12 @@ U16String to_utf16_internal(
 	auto u16_string = U16String{};
 	u16_string.resize(u16_size);
 
-	const auto u16_result = ::MultiByteToWideChar(
+	const auto u16_result = MultiByteToWideChar(
 		CP_UTF8,
 		0,
 		utf8_string,
 		utf8_length,
-		reinterpret_cast<::LPWSTR>(u16_string.data()),
+		reinterpret_cast<LPWSTR>(u16_string.data()),
 		u16_size
 	);
 
@@ -161,10 +161,10 @@ String to_utf8_internal(
 		return String{};
 	}
 
-	const auto u8_size = ::WideCharToMultiByte(
+	const auto u8_size = WideCharToMultiByte(
 		CP_UTF8,
 		0,
-		reinterpret_cast<::LPCWSTR>(utf16_string),
+		reinterpret_cast<LPCWSTR>(utf16_string),
 		utf16_length,
 		nullptr,
 		0,
@@ -180,10 +180,10 @@ String to_utf8_internal(
 	auto u8_string = String{};
 	u8_string.resize(u8_size);
 
-	const auto u8_result = ::WideCharToMultiByte(
+	const auto u8_result = WideCharToMultiByte(
 		CP_UTF8,
 		0,
-		reinterpret_cast<::LPCWSTR>(utf16_string),
+		reinterpret_cast<LPCWSTR>(utf16_string),
 		utf16_length,
 		u8_string.data(),
 		u8_size,

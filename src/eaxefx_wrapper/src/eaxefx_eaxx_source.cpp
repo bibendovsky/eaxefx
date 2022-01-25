@@ -174,7 +174,7 @@ EaxxSource::EaxxSource(
 }
 
 void EaxxSource::on_initialize_context(
-	::ALuint al_filter)
+	ALuint al_filter)
 {
 	if (al_filter == 0)
 	{
@@ -272,43 +272,43 @@ void EaxxSource::copy_init_param(
 
 void EaxxSource::set_eax_source_defaults()
 {
-	eax_.source.lDirect = ::EAXSOURCE_DEFAULTDIRECT;
-	eax_.source.lDirectHF = ::EAXSOURCE_DEFAULTDIRECTHF;
-	eax_.source.lRoom = ::EAXSOURCE_DEFAULTROOM;
-	eax_.source.lRoomHF = ::EAXSOURCE_DEFAULTROOMHF;
-	eax_.source.lObstruction = ::EAXSOURCE_DEFAULTOBSTRUCTION;
-	eax_.source.flObstructionLFRatio = ::EAXSOURCE_DEFAULTOBSTRUCTIONLFRATIO;
-	eax_.source.lOcclusion = ::EAXSOURCE_DEFAULTOCCLUSION;
-	eax_.source.flOcclusionLFRatio = ::EAXSOURCE_DEFAULTOCCLUSIONLFRATIO;
-	eax_.source.flOcclusionRoomRatio = ::EAXSOURCE_DEFAULTOCCLUSIONROOMRATIO;
-	eax_.source.flOcclusionDirectRatio = ::EAXSOURCE_DEFAULTOCCLUSIONDIRECTRATIO;
-	eax_.source.lExclusion = ::EAXSOURCE_DEFAULTEXCLUSION;
-	eax_.source.flExclusionLFRatio = ::EAXSOURCE_DEFAULTEXCLUSIONLFRATIO;
-	eax_.source.lOutsideVolumeHF = ::EAXSOURCE_DEFAULTOUTSIDEVOLUMEHF;
-	eax_.source.flDopplerFactor = ::EAXSOURCE_DEFAULTDOPPLERFACTOR;
-	eax_.source.flRolloffFactor = ::EAXSOURCE_DEFAULTROLLOFFFACTOR;
-	eax_.source.flRoomRolloffFactor = ::EAXSOURCE_DEFAULTROOMROLLOFFFACTOR;
-	eax_.source.flAirAbsorptionFactor = ::EAXSOURCE_DEFAULTAIRABSORPTIONFACTOR;
-	eax_.source.ulFlags = ::EAXSOURCE_DEFAULTFLAGS;
+	eax_.source.lDirect = EAXSOURCE_DEFAULTDIRECT;
+	eax_.source.lDirectHF = EAXSOURCE_DEFAULTDIRECTHF;
+	eax_.source.lRoom = EAXSOURCE_DEFAULTROOM;
+	eax_.source.lRoomHF = EAXSOURCE_DEFAULTROOMHF;
+	eax_.source.lObstruction = EAXSOURCE_DEFAULTOBSTRUCTION;
+	eax_.source.flObstructionLFRatio = EAXSOURCE_DEFAULTOBSTRUCTIONLFRATIO;
+	eax_.source.lOcclusion = EAXSOURCE_DEFAULTOCCLUSION;
+	eax_.source.flOcclusionLFRatio = EAXSOURCE_DEFAULTOCCLUSIONLFRATIO;
+	eax_.source.flOcclusionRoomRatio = EAXSOURCE_DEFAULTOCCLUSIONROOMRATIO;
+	eax_.source.flOcclusionDirectRatio = EAXSOURCE_DEFAULTOCCLUSIONDIRECTRATIO;
+	eax_.source.lExclusion = EAXSOURCE_DEFAULTEXCLUSION;
+	eax_.source.flExclusionLFRatio = EAXSOURCE_DEFAULTEXCLUSIONLFRATIO;
+	eax_.source.lOutsideVolumeHF = EAXSOURCE_DEFAULTOUTSIDEVOLUMEHF;
+	eax_.source.flDopplerFactor = EAXSOURCE_DEFAULTDOPPLERFACTOR;
+	eax_.source.flRolloffFactor = EAXSOURCE_DEFAULTROLLOFFFACTOR;
+	eax_.source.flRoomRolloffFactor = EAXSOURCE_DEFAULTROOMROLLOFFFACTOR;
+	eax_.source.flAirAbsorptionFactor = EAXSOURCE_DEFAULTAIRABSORPTIONFACTOR;
+	eax_.source.ulFlags = EAXSOURCE_DEFAULTFLAGS;
 }
 
 void EaxxSource::set_eax_active_fx_slots_defaults()
 {
-	eax_.active_fx_slots = ::EAX50SOURCE_3DDEFAULTACTIVEFXSLOTID;
+	eax_.active_fx_slots = EAX50SOURCE_3DDEFAULTACTIVEFXSLOTID;
 }
 
 void EaxxSource::set_eax_send_defaults(
-	::EAXSOURCEALLSENDPROPERTIES& eax_send)
+	EAXSOURCEALLSENDPROPERTIES& eax_send)
 {
-	eax_send.guidReceivingFXSlotID = ::EAX_NULL_GUID;
-	eax_send.lSend = ::EAXSOURCE_DEFAULTSEND;
-	eax_send.lSendHF = ::EAXSOURCE_DEFAULTSENDHF;
-	eax_send.lOcclusion = ::EAXSOURCE_DEFAULTOCCLUSION;
-	eax_send.flOcclusionLFRatio = ::EAXSOURCE_DEFAULTOCCLUSIONLFRATIO;
-	eax_send.flOcclusionRoomRatio = ::EAXSOURCE_DEFAULTOCCLUSIONROOMRATIO;
-	eax_send.flOcclusionDirectRatio = ::EAXSOURCE_DEFAULTOCCLUSIONDIRECTRATIO;
-	eax_send.lExclusion = ::EAXSOURCE_DEFAULTEXCLUSION;
-	eax_send.flExclusionLFRatio = ::EAXSOURCE_DEFAULTEXCLUSIONLFRATIO;
+	eax_send.guidReceivingFXSlotID = EAX_NULL_GUID;
+	eax_send.lSend = EAXSOURCE_DEFAULTSEND;
+	eax_send.lSendHF = EAXSOURCE_DEFAULTSENDHF;
+	eax_send.lOcclusion = EAXSOURCE_DEFAULTOCCLUSION;
+	eax_send.flOcclusionLFRatio = EAXSOURCE_DEFAULTOCCLUSIONLFRATIO;
+	eax_send.flOcclusionRoomRatio = EAXSOURCE_DEFAULTOCCLUSIONROOMRATIO;
+	eax_send.flOcclusionDirectRatio = EAXSOURCE_DEFAULTOCCLUSIONDIRECTRATIO;
+	eax_send.lExclusion = EAXSOURCE_DEFAULTEXCLUSION;
+	eax_send.flExclusionLFRatio = EAXSOURCE_DEFAULTEXCLUSIONLFRATIO;
 }
 
 void EaxxSource::set_eax_sends_defaults()
@@ -321,7 +321,7 @@ void EaxxSource::set_eax_sends_defaults()
 
 void EaxxSource::set_eax_speaker_levels_defaults()
 {
-	std::fill(eax_.speaker_levels.begin(), eax_.speaker_levels.end(), ::EAXSOURCE_DEFAULTSPEAKERLEVEL);
+	std::fill(eax_.speaker_levels.begin(), eax_.speaker_levels.end(), EAXSOURCE_DEFAULTSPEAKERLEVEL);
 }
 
 void EaxxSource::set_eax_defaults()
@@ -367,7 +367,7 @@ AlLowPassParam EaxxSource::make_direct_filter() const noexcept
 		(eax_.source.lOcclusion * eax_.source.flOcclusionDirectRatio)
 	;
 
-	for (auto i = 0; i < ::EAX_MAX_FXSLOTS; ++i)
+	for (auto i = 0; i < EAX_MAX_FXSLOTS; ++i)
 	{
 		if (active_fx_slots_[i])
 		{
@@ -394,7 +394,7 @@ AlLowPassParam EaxxSource::make_direct_filter() const noexcept
 
 AlLowPassParam EaxxSource::make_room_filter(
 	const EaxxFxSlot& fx_slot,
-	const ::EAXSOURCEALLSENDPROPERTIES& send) const noexcept
+	const EAXSOURCEALLSENDPROPERTIES& send) const noexcept
 {
 	const auto& fx_slot_eax = fx_slot.get_eax_fx_slot();
 
@@ -454,13 +454,13 @@ void EaxxSource::set_fx_slots()
 	uses_primary_id_ = false;
 	has_active_fx_slots_ = false;
 
-	for (auto i = 0; i < ::EAX_MAX_FXSLOTS; ++i)
+	for (auto i = 0; i < EAX_MAX_FXSLOTS; ++i)
 	{
 		const auto& eax_active_fx_slot_id = eax_.active_fx_slots.guidActiveFXSlots[i];
 
 		auto fx_slot_index = EaxxFxSlotIndex{};
 
-		if (eax_active_fx_slot_id == ::EAX_PrimaryFXSlotID)
+		if (eax_active_fx_slot_id == EAX_PrimaryFXSlotID)
 		{
 			uses_primary_id_ = true;
 			fx_slot_index = context_shared_->primary_fx_slot_index;
@@ -477,7 +477,7 @@ void EaxxSource::set_fx_slots()
 		}
 	}
 
-	for (auto i = 0; i < ::EAX_MAX_FXSLOTS; ++i)
+	for (auto i = 0; i < EAX_MAX_FXSLOTS; ++i)
 	{
 		if (!active_fx_slots_[i])
 		{
@@ -528,7 +528,7 @@ void EaxxSource::update_room_filters_internal()
 		return;
 	}
 
-	for (auto i = 0; i < ::EAX_MAX_FXSLOTS; ++i)
+	for (auto i = 0; i < EAX_MAX_FXSLOTS; ++i)
 	{
 		if (active_fx_slots_[i])
 		{
@@ -592,11 +592,11 @@ void EaxxSource::defer_active_fx_slots(
 	const EaxxEaxCall& eax_call)
 {
 	const auto active_fx_slots_span =
-		eax_call.get_values<EaxxSourceActiveFxSlotsException, const ::GUID>();
+		eax_call.get_values<EaxxSourceActiveFxSlotsException, const GUID>();
 
 	const auto fx_slot_count = active_fx_slots_span.size;
 
-	if (fx_slot_count <= 0 || fx_slot_count > ::EAX_MAX_FXSLOTS)
+	if (fx_slot_count <= 0 || fx_slot_count > EAX_MAX_FXSLOTS)
 	{
 		throw EaxxSourceActiveFxSlotsException{"Count out of range."};
 	}
@@ -605,16 +605,16 @@ void EaxxSource::defer_active_fx_slots(
 	{
 		const auto& fx_slot_guid = active_fx_slots_span.values[i];
 
-		if (fx_slot_guid != ::EAX_NULL_GUID &&
-			fx_slot_guid != ::EAX_PrimaryFXSlotID &&
-			fx_slot_guid != ::EAXPROPERTYID_EAX40_FXSlot0 &&
-			fx_slot_guid != ::EAXPROPERTYID_EAX50_FXSlot0 &&
-			fx_slot_guid != ::EAXPROPERTYID_EAX40_FXSlot1 &&
-			fx_slot_guid != ::EAXPROPERTYID_EAX50_FXSlot1 &&
-			fx_slot_guid != ::EAXPROPERTYID_EAX40_FXSlot2 &&
-			fx_slot_guid != ::EAXPROPERTYID_EAX50_FXSlot2 &&
-			fx_slot_guid != ::EAXPROPERTYID_EAX40_FXSlot3 &&
-			fx_slot_guid != ::EAXPROPERTYID_EAX50_FXSlot3)
+		if (fx_slot_guid != EAX_NULL_GUID &&
+			fx_slot_guid != EAX_PrimaryFXSlotID &&
+			fx_slot_guid != EAXPROPERTYID_EAX40_FXSlot0 &&
+			fx_slot_guid != EAXPROPERTYID_EAX50_FXSlot0 &&
+			fx_slot_guid != EAXPROPERTYID_EAX40_FXSlot1 &&
+			fx_slot_guid != EAXPROPERTYID_EAX50_FXSlot1 &&
+			fx_slot_guid != EAXPROPERTYID_EAX40_FXSlot2 &&
+			fx_slot_guid != EAXPROPERTYID_EAX50_FXSlot2 &&
+			fx_slot_guid != EAXPROPERTYID_EAX40_FXSlot3 &&
+			fx_slot_guid != EAXPROPERTYID_EAX50_FXSlot3)
 		{
 			throw EaxxSourceActiveFxSlotsException{"Unsupported GUID."};
 		}
@@ -625,9 +625,9 @@ void EaxxSource::defer_active_fx_slots(
 		eax_d_.active_fx_slots.guidActiveFXSlots[i] = active_fx_slots_span.values[i];
 	}
 
-	for (auto i = fx_slot_count; i < ::EAX_MAX_FXSLOTS; ++i)
+	for (auto i = fx_slot_count; i < EAX_MAX_FXSLOTS; ++i)
 	{
-		eax_d_.active_fx_slots.guidActiveFXSlots[i] = ::EAX_NULL_GUID;
+		eax_d_.active_fx_slots.guidActiveFXSlots[i] = EAX_NULL_GUID;
 	}
 
 	are_active_fx_slots_dirty_ = (eax_d_.active_fx_slots != eax_.active_fx_slots);
@@ -674,16 +674,16 @@ const char* EaxxSource::get_occlusion_room_ratio_name() noexcept
 // Send
 
 void EaxxSource::validate_send_receiving_fx_slot_guid(
-	const ::GUID& guidReceivingFXSlotID)
+	const GUID& guidReceivingFXSlotID)
 {
-	if (guidReceivingFXSlotID != ::EAXPROPERTYID_EAX40_FXSlot0 &&
-		guidReceivingFXSlotID != ::EAXPROPERTYID_EAX50_FXSlot0 &&
-		guidReceivingFXSlotID != ::EAXPROPERTYID_EAX40_FXSlot1 &&
-		guidReceivingFXSlotID != ::EAXPROPERTYID_EAX50_FXSlot1 &&
-		guidReceivingFXSlotID != ::EAXPROPERTYID_EAX40_FXSlot2 &&
-		guidReceivingFXSlotID != ::EAXPROPERTYID_EAX50_FXSlot2 &&
-		guidReceivingFXSlotID != ::EAXPROPERTYID_EAX40_FXSlot3 &&
-		guidReceivingFXSlotID != ::EAXPROPERTYID_EAX50_FXSlot3)
+	if (guidReceivingFXSlotID != EAXPROPERTYID_EAX40_FXSlot0 &&
+		guidReceivingFXSlotID != EAXPROPERTYID_EAX50_FXSlot0 &&
+		guidReceivingFXSlotID != EAXPROPERTYID_EAX40_FXSlot1 &&
+		guidReceivingFXSlotID != EAXPROPERTYID_EAX50_FXSlot1 &&
+		guidReceivingFXSlotID != EAXPROPERTYID_EAX40_FXSlot2 &&
+		guidReceivingFXSlotID != EAXPROPERTYID_EAX50_FXSlot2 &&
+		guidReceivingFXSlotID != EAXPROPERTYID_EAX40_FXSlot3 &&
+		guidReceivingFXSlotID != EAXPROPERTYID_EAX50_FXSlot3)
 	{
 		throw EaxxSourceSendException{"Unsupported receiving FX slot GUID."};
 	}
@@ -695,8 +695,8 @@ void EaxxSource::validate_send_send(
 	eaxx_validate_range<EaxxSourceSendException>(
 		"Send",
 		lSend,
-		::EAXSOURCE_MINSEND,
-		::EAXSOURCE_MAXSEND
+		EAXSOURCE_MINSEND,
+		EAXSOURCE_MAXSEND
 	);
 }
 
@@ -706,8 +706,8 @@ void EaxxSource::validate_send_send_hf(
 	eaxx_validate_range<EaxxSourceSendException>(
 		"Send HF",
 		lSendHF,
-		::EAXSOURCE_MINSENDHF,
-		::EAXSOURCE_MAXSENDHF
+		EAXSOURCE_MINSENDHF,
+		EAXSOURCE_MAXSENDHF
 	);
 }
 
@@ -717,8 +717,8 @@ void EaxxSource::validate_send_occlusion(
 	eaxx_validate_range<EaxxSourceSendException>(
 		get_occlusion_name(),
 		lOcclusion,
-		::EAXSOURCE_MINOCCLUSION,
-		::EAXSOURCE_MAXOCCLUSION
+		EAXSOURCE_MINOCCLUSION,
+		EAXSOURCE_MAXOCCLUSION
 	);
 }
 
@@ -728,8 +728,8 @@ void EaxxSource::validate_send_occlusion_lf_ratio(
 	eaxx_validate_range<EaxxSourceSendException>(
 		get_occlusion_lf_ratio_name(),
 		flOcclusionLFRatio,
-		::EAXSOURCE_MINOCCLUSIONLFRATIO,
-		::EAXSOURCE_MAXOCCLUSIONLFRATIO
+		EAXSOURCE_MINOCCLUSIONLFRATIO,
+		EAXSOURCE_MAXOCCLUSIONLFRATIO
 	);
 }
 
@@ -739,8 +739,8 @@ void EaxxSource::validate_send_occlusion_room_ratio(
 	eaxx_validate_range<EaxxSourceSendException>(
 		get_occlusion_room_ratio_name(),
 		flOcclusionRoomRatio,
-		::EAXSOURCE_MINOCCLUSIONROOMRATIO,
-		::EAXSOURCE_MAXOCCLUSIONROOMRATIO
+		EAXSOURCE_MINOCCLUSIONROOMRATIO,
+		EAXSOURCE_MAXOCCLUSIONROOMRATIO
 	);
 }
 
@@ -750,8 +750,8 @@ void EaxxSource::validate_send_occlusion_direct_ratio(
 	eaxx_validate_range<EaxxSourceSendException>(
 		get_occlusion_direct_ratio_name(),
 		flOcclusionDirectRatio,
-		::EAXSOURCE_MINOCCLUSIONDIRECTRATIO,
-		::EAXSOURCE_MAXOCCLUSIONDIRECTRATIO
+		EAXSOURCE_MINOCCLUSIONDIRECTRATIO,
+		EAXSOURCE_MAXOCCLUSIONDIRECTRATIO
 	);
 }
 
@@ -761,8 +761,8 @@ void EaxxSource::validate_send_exclusion(
 	eaxx_validate_range<EaxxSourceSendException>(
 		get_exclusion_name(),
 		lExclusion,
-		::EAXSOURCE_MINEXCLUSION,
-		::EAXSOURCE_MAXEXCLUSION
+		EAXSOURCE_MINEXCLUSION,
+		EAXSOURCE_MAXEXCLUSION
 	);
 }
 
@@ -772,13 +772,13 @@ void EaxxSource::validate_send_exclusion_lf_ratio(
 	eaxx_validate_range<EaxxSourceSendException>(
 		get_exclusion_lf_ratio_name(),
 		flExclusionLFRatio,
-		::EAXSOURCE_MINEXCLUSIONLFRATIO,
-		::EAXSOURCE_MAXEXCLUSIONLFRATIO
+		EAXSOURCE_MINEXCLUSIONLFRATIO,
+		EAXSOURCE_MAXEXCLUSIONLFRATIO
 	);
 }
 
 void EaxxSource::validate_send(
-	const ::EAXSOURCESENDPROPERTIES& all)
+	const EAXSOURCESENDPROPERTIES& all)
 {
 	validate_send_receiving_fx_slot_guid(all.guidReceivingFXSlotID);
 	validate_send_send(all.lSend);
@@ -786,7 +786,7 @@ void EaxxSource::validate_send(
 }
 
 void EaxxSource::validate_send_exclusion_all(
-	const ::EAXSOURCEEXCLUSIONSENDPROPERTIES& all)
+	const EAXSOURCEEXCLUSIONSENDPROPERTIES& all)
 {
 	validate_send_receiving_fx_slot_guid(all.guidReceivingFXSlotID);
 	validate_send_exclusion(all.lExclusion);
@@ -794,7 +794,7 @@ void EaxxSource::validate_send_exclusion_all(
 }
 
 void EaxxSource::validate_send_occlusion_all(
-	const ::EAXSOURCEOCCLUSIONSENDPROPERTIES& all)
+	const EAXSOURCEOCCLUSIONSENDPROPERTIES& all)
 {
 	validate_send_receiving_fx_slot_guid(all.guidReceivingFXSlotID);
 	validate_send_occlusion(all.lOcclusion);
@@ -804,7 +804,7 @@ void EaxxSource::validate_send_occlusion_all(
 }
 
 void EaxxSource::validate_send_all(
-	const ::EAXSOURCEALLSENDPROPERTIES& all)
+	const EAXSOURCEALLSENDPROPERTIES& all)
 {
 	validate_send_receiving_fx_slot_guid(all.guidReceivingFXSlotID);
 	validate_send_send(all.lSend);
@@ -818,24 +818,24 @@ void EaxxSource::validate_send_all(
 }
 
 int EaxxSource::get_send_index(
-	const ::GUID& send_guid)
+	const GUID& send_guid)
 {
 	if (false)
 	{
 	}
-	else if (send_guid == ::EAXPROPERTYID_EAX40_FXSlot0 || send_guid == ::EAXPROPERTYID_EAX50_FXSlot0)
+	else if (send_guid == EAXPROPERTYID_EAX40_FXSlot0 || send_guid == EAXPROPERTYID_EAX50_FXSlot0)
 	{
 		return 0;
 	}
-	else if (send_guid == ::EAXPROPERTYID_EAX40_FXSlot1 || send_guid == ::EAXPROPERTYID_EAX50_FXSlot1)
+	else if (send_guid == EAXPROPERTYID_EAX40_FXSlot1 || send_guid == EAXPROPERTYID_EAX50_FXSlot1)
 	{
 		return 1;
 	}
-	else if (send_guid == ::EAXPROPERTYID_EAX40_FXSlot2 || send_guid == ::EAXPROPERTYID_EAX50_FXSlot2)
+	else if (send_guid == EAXPROPERTYID_EAX40_FXSlot2 || send_guid == EAXPROPERTYID_EAX50_FXSlot2)
 	{
 		return 2;
 	}
-	else if (send_guid == ::EAXPROPERTYID_EAX40_FXSlot3 || send_guid == ::EAXPROPERTYID_EAX50_FXSlot3)
+	else if (send_guid == EAXPROPERTYID_EAX40_FXSlot3 || send_guid == EAXPROPERTYID_EAX50_FXSlot3)
 	{
 		return 3;
 	}
@@ -926,7 +926,7 @@ void EaxxSource::defer_send_exclusion_lf_ratio(
 }
 
 void EaxxSource::defer_send(
-	const ::EAXSOURCESENDPROPERTIES& all,
+	const EAXSOURCESENDPROPERTIES& all,
 	int index)
 {
 	defer_send_send(all.lSend, index);
@@ -934,7 +934,7 @@ void EaxxSource::defer_send(
 }
 
 void EaxxSource::defer_send_exclusion_all(
-	const ::EAXSOURCEEXCLUSIONSENDPROPERTIES& all,
+	const EAXSOURCEEXCLUSIONSENDPROPERTIES& all,
 	int index)
 {
 	defer_send_exclusion(all.lExclusion, index);
@@ -942,7 +942,7 @@ void EaxxSource::defer_send_exclusion_all(
 }
 
 void EaxxSource::defer_send_occlusion_all(
-	const ::EAXSOURCEOCCLUSIONSENDPROPERTIES& all,
+	const EAXSOURCEOCCLUSIONSENDPROPERTIES& all,
 	int index)
 {
 	defer_send_occlusion(all.lOcclusion, index);
@@ -952,7 +952,7 @@ void EaxxSource::defer_send_occlusion_all(
 }
 
 void EaxxSource::defer_send_all(
-	const ::EAXSOURCEALLSENDPROPERTIES& all,
+	const EAXSOURCEALLSENDPROPERTIES& all,
 	int index)
 {
 	defer_send_send(all.lSend, index);
@@ -969,11 +969,11 @@ void EaxxSource::defer_send(
 	const EaxxEaxCall& eax_call)
 {
 	const auto eax_all_span =
-		eax_call.get_values<EaxxSourceException, const ::EAXSOURCESENDPROPERTIES>();
+		eax_call.get_values<EaxxSourceException, const EAXSOURCESENDPROPERTIES>();
 
 	const auto count = eax_all_span.size;
 
-	if (count <= 0 || count > ::EAX_MAX_FXSLOTS)
+	if (count <= 0 || count > EAX_MAX_FXSLOTS)
 	{
 		throw EaxxSourceSendException{"Send count out of range."};
 	}
@@ -996,11 +996,11 @@ void EaxxSource::defer_send_exclusion_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto eax_all_span =
-		eax_call.get_values<EaxxSourceException, const ::EAXSOURCEEXCLUSIONSENDPROPERTIES>();
+		eax_call.get_values<EaxxSourceException, const EAXSOURCEEXCLUSIONSENDPROPERTIES>();
 
 	const auto count = eax_all_span.size;
 
-	if (count <= 0 || count > ::EAX_MAX_FXSLOTS)
+	if (count <= 0 || count > EAX_MAX_FXSLOTS)
 	{
 		throw EaxxSourceSendException{"Send exclusion all count out of range."};
 	}
@@ -1023,11 +1023,11 @@ void EaxxSource::defer_send_occlusion_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto eax_all_span =
-		eax_call.get_values<EaxxSourceException, const ::EAXSOURCEOCCLUSIONSENDPROPERTIES>();
+		eax_call.get_values<EaxxSourceException, const EAXSOURCEOCCLUSIONSENDPROPERTIES>();
 
 	const auto count = eax_all_span.size;
 
-	if (count <= 0 || count > ::EAX_MAX_FXSLOTS)
+	if (count <= 0 || count > EAX_MAX_FXSLOTS)
 	{
 		throw EaxxSourceSendException{"Send occlusion all count out of range."};
 	}
@@ -1050,11 +1050,11 @@ void EaxxSource::defer_send_all(
 	const EaxxEaxCall& eax_call)
 {
 	const auto eax_all_span =
-		eax_call.get_values<EaxxSourceException, const ::EAXSOURCEALLSENDPROPERTIES>();
+		eax_call.get_values<EaxxSourceException, const EAXSOURCEALLSENDPROPERTIES>();
 
 	const auto count = eax_all_span.size;
 
-	if (count <= 0 || count > ::EAX_MAX_FXSLOTS)
+	if (count <= 0 || count > EAX_MAX_FXSLOTS)
 	{
 		throw EaxxSourceSendException{"Send all count out of range."};
 	}
@@ -1082,8 +1082,8 @@ void EaxxSource::validate_source_direct(
 	eaxx_validate_range<EaxxSourceException>(
 		"Direct",
 		direct,
-		::EAXSOURCE_MINDIRECT,
-		::EAXSOURCE_MAXDIRECT
+		EAXSOURCE_MINDIRECT,
+		EAXSOURCE_MAXDIRECT
 	);
 }
 
@@ -1093,8 +1093,8 @@ void EaxxSource::validate_source_direct_hf(
 	eaxx_validate_range<EaxxSourceException>(
 		"Direct HF",
 		direct_hf,
-		::EAXSOURCE_MINDIRECTHF,
-		::EAXSOURCE_MAXDIRECTHF
+		EAXSOURCE_MINDIRECTHF,
+		EAXSOURCE_MAXDIRECTHF
 	);
 }
 
@@ -1104,8 +1104,8 @@ void EaxxSource::validate_source_room(
 	eaxx_validate_range<EaxxSourceException>(
 		"Room",
 		room,
-		::EAXSOURCE_MINROOM,
-		::EAXSOURCE_MAXROOM
+		EAXSOURCE_MINROOM,
+		EAXSOURCE_MAXROOM
 	);
 }
 
@@ -1115,8 +1115,8 @@ void EaxxSource::validate_source_room_hf(
 	eaxx_validate_range<EaxxSourceException>(
 		"Room HF",
 		room_hf,
-		::EAXSOURCE_MINROOMHF,
-		::EAXSOURCE_MAXROOMHF
+		EAXSOURCE_MINROOMHF,
+		EAXSOURCE_MAXROOMHF
 	);
 }
 
@@ -1126,8 +1126,8 @@ void EaxxSource::validate_source_obstruction(
 	eaxx_validate_range<EaxxSourceException>(
 		"Obstruction",
 		obstruction,
-		::EAXSOURCE_MINOBSTRUCTION,
-		::EAXSOURCE_MAXOBSTRUCTION
+		EAXSOURCE_MINOBSTRUCTION,
+		EAXSOURCE_MAXOBSTRUCTION
 	);
 }
 
@@ -1137,8 +1137,8 @@ void EaxxSource::validate_source_obstruction_lf_ratio(
 	eaxx_validate_range<EaxxSourceException>(
 		"Obstruction LF Ratio",
 		obstruction_lf_ratio,
-		::EAXSOURCE_MINOBSTRUCTIONLFRATIO,
-		::EAXSOURCE_MAXOBSTRUCTIONLFRATIO
+		EAXSOURCE_MINOBSTRUCTIONLFRATIO,
+		EAXSOURCE_MAXOBSTRUCTIONLFRATIO
 	);
 }
 
@@ -1148,8 +1148,8 @@ void EaxxSource::validate_source_occlusion(
 	eaxx_validate_range<EaxxSourceException>(
 		get_occlusion_name(),
 		occlusion,
-		::EAXSOURCE_MINOCCLUSION,
-		::EAXSOURCE_MAXOCCLUSION
+		EAXSOURCE_MINOCCLUSION,
+		EAXSOURCE_MAXOCCLUSION
 	);
 }
 
@@ -1159,8 +1159,8 @@ void EaxxSource::validate_source_occlusion_lf_ratio(
 	eaxx_validate_range<EaxxSourceException>(
 		get_occlusion_lf_ratio_name(),
 		occlusion_lf_ratio,
-		::EAXSOURCE_MINOCCLUSIONLFRATIO,
-		::EAXSOURCE_MAXOCCLUSIONLFRATIO
+		EAXSOURCE_MINOCCLUSIONLFRATIO,
+		EAXSOURCE_MAXOCCLUSIONLFRATIO
 	);
 }
 
@@ -1170,8 +1170,8 @@ void EaxxSource::validate_source_occlusion_room_ratio(
 	eaxx_validate_range<EaxxSourceException>(
 		get_occlusion_room_ratio_name(),
 		occlusion_room_ratio,
-		::EAXSOURCE_MINOCCLUSIONROOMRATIO,
-		::EAXSOURCE_MAXOCCLUSIONROOMRATIO
+		EAXSOURCE_MINOCCLUSIONROOMRATIO,
+		EAXSOURCE_MAXOCCLUSIONROOMRATIO
 	);
 }
 
@@ -1181,8 +1181,8 @@ void EaxxSource::validate_source_occlusion_direct_ratio(
 	eaxx_validate_range<EaxxSourceException>(
 		get_occlusion_direct_ratio_name(),
 		occlusion_direct_ratio,
-		::EAXSOURCE_MINOCCLUSIONDIRECTRATIO,
-		::EAXSOURCE_MAXOCCLUSIONDIRECTRATIO
+		EAXSOURCE_MINOCCLUSIONDIRECTRATIO,
+		EAXSOURCE_MAXOCCLUSIONDIRECTRATIO
 	);
 }
 
@@ -1192,8 +1192,8 @@ void EaxxSource::validate_source_exclusion(
 	eaxx_validate_range<EaxxSourceException>(
 		get_exclusion_name(),
 		exclusion,
-		::EAXSOURCE_MINEXCLUSION,
-		::EAXSOURCE_MAXEXCLUSION
+		EAXSOURCE_MINEXCLUSION,
+		EAXSOURCE_MAXEXCLUSION
 	);
 }
 
@@ -1203,8 +1203,8 @@ void EaxxSource::validate_source_exclusion_lf_ratio(
 	eaxx_validate_range<EaxxSourceException>(
 		get_exclusion_lf_ratio_name(),
 		exclusion_lf_ratio,
-		::EAXSOURCE_MINEXCLUSIONLFRATIO,
-		::EAXSOURCE_MAXEXCLUSIONLFRATIO
+		EAXSOURCE_MINEXCLUSIONLFRATIO,
+		EAXSOURCE_MAXEXCLUSIONLFRATIO
 	);
 }
 
@@ -1214,8 +1214,8 @@ void EaxxSource::validate_source_outside_volume_hf(
 	eaxx_validate_range<EaxxSourceException>(
 		"Outside Volume HF",
 		outside_volume_hf,
-		::EAXSOURCE_MINOUTSIDEVOLUMEHF,
-		::EAXSOURCE_MAXOUTSIDEVOLUMEHF
+		EAXSOURCE_MINOUTSIDEVOLUMEHF,
+		EAXSOURCE_MAXOUTSIDEVOLUMEHF
 	);
 }
 
@@ -1225,8 +1225,8 @@ void EaxxSource::validate_source_doppler_factor(
 	eaxx_validate_range<EaxxSourceException>(
 		"Doppler Factor",
 		doppler_factor,
-		::EAXSOURCE_MINDOPPLERFACTOR,
-		::EAXSOURCE_MAXDOPPLERFACTOR
+		EAXSOURCE_MINDOPPLERFACTOR,
+		EAXSOURCE_MAXDOPPLERFACTOR
 	);
 }
 
@@ -1236,8 +1236,8 @@ void EaxxSource::validate_source_rolloff_factor(
 	eaxx_validate_range<EaxxSourceException>(
 		"Rolloff Factor",
 		rolloff_factor,
-		::EAXSOURCE_MINROLLOFFFACTOR,
-		::EAXSOURCE_MAXROLLOFFFACTOR
+		EAXSOURCE_MINROLLOFFFACTOR,
+		EAXSOURCE_MAXROLLOFFFACTOR
 	);
 }
 
@@ -1247,8 +1247,8 @@ void EaxxSource::validate_source_room_rolloff_factor(
 	eaxx_validate_range<EaxxSourceException>(
 		"Room Rolloff Factor",
 		room_rolloff_factor,
-		::EAXSOURCE_MINROOMROLLOFFFACTOR,
-		::EAXSOURCE_MAXROOMROLLOFFFACTOR
+		EAXSOURCE_MINROOMROLLOFFFACTOR,
+		EAXSOURCE_MAXROOMROLLOFFFACTOR
 	);
 }
 
@@ -1258,8 +1258,8 @@ void EaxxSource::validate_source_air_absorption_factor(
 	eaxx_validate_range<EaxxSourceException>(
 		"Air Absorption Factor",
 		air_absorption_factor,
-		::EAXSOURCE_MINAIRABSORPTIONFACTOR,
-		::EAXSOURCE_MAXAIRABSORPTIONFACTOR
+		EAXSOURCE_MINAIRABSORPTIONFACTOR,
+		EAXSOURCE_MAXAIRABSORPTIONFACTOR
 	);
 }
 
@@ -1271,7 +1271,7 @@ void EaxxSource::validate_source_flags(
 		"Flags",
 		flags,
 		0U,
-		~((eax_version == 5) ? ::EAX50SOURCEFLAGS_RESERVED : ::EAX20SOURCEFLAGS_RESERVED)
+		~((eax_version == 5) ? EAX50SOURCEFLAGS_RESERVED : EAX20SOURCEFLAGS_RESERVED)
 	);
 }
 
@@ -1281,13 +1281,13 @@ void EaxxSource::validate_source_macro_fx_factor(
 	eaxx_validate_range<EaxxSourceException>(
 		"Macro FX Factor",
 		macro_fx_factor,
-		::EAXSOURCE_MINMACROFXFACTOR,
-		::EAXSOURCE_MAXMACROFXFACTOR
+		EAXSOURCE_MINMACROFXFACTOR,
+		EAXSOURCE_MAXMACROFXFACTOR
 	);
 }
 
 void EaxxSource::validate_source_2d_all(
-	const ::EAXSOURCE2DPROPERTIES& all,
+	const EAXSOURCE2DPROPERTIES& all,
 	int eax_version)
 {
 	validate_source_direct(all.lDirect);
@@ -1298,21 +1298,21 @@ void EaxxSource::validate_source_2d_all(
 }
 
 void EaxxSource::validate_source_obstruction_all(
-	const ::EAXOBSTRUCTIONPROPERTIES& all)
+	const EAXOBSTRUCTIONPROPERTIES& all)
 {
 	validate_source_obstruction(all.lObstruction);
 	validate_source_obstruction_lf_ratio(all.flObstructionLFRatio);
 }
 
 void EaxxSource::validate_source_exclusion_all(
-	const ::EAXEXCLUSIONPROPERTIES& all)
+	const EAXEXCLUSIONPROPERTIES& all)
 {
 	validate_source_exclusion(all.lExclusion);
 	validate_source_exclusion_lf_ratio(all.flExclusionLFRatio);
 }
 
 void EaxxSource::validate_source_occlusion_all(
-	const ::EAXOCCLUSIONPROPERTIES& all)
+	const EAXOCCLUSIONPROPERTIES& all)
 {
 	validate_source_occlusion(all.lOcclusion);
 	validate_source_occlusion_lf_ratio(all.flOcclusionLFRatio);
@@ -1321,7 +1321,7 @@ void EaxxSource::validate_source_occlusion_all(
 }
 
 void EaxxSource::validate_source_all(
-	const ::EAX20BUFFERPROPERTIES& all,
+	const EAX20BUFFERPROPERTIES& all,
 	int eax_version)
 {
 	validate_source_direct(all.lDirect);
@@ -1340,7 +1340,7 @@ void EaxxSource::validate_source_all(
 }
 
 void EaxxSource::validate_source_all(
-	const ::EAX30SOURCEPROPERTIES& all,
+	const EAX30SOURCEPROPERTIES& all,
 	int eax_version)
 {
 	validate_source_direct(all.lDirect);
@@ -1364,10 +1364,10 @@ void EaxxSource::validate_source_all(
 }
 
 void EaxxSource::validate_source_all(
-	const ::EAX50SOURCEPROPERTIES& all,
+	const EAX50SOURCEPROPERTIES& all,
 	int eax_version)
 {
-	validate_source_all(static_cast<::EAX30SOURCEPROPERTIES>(all), eax_version);
+	validate_source_all(static_cast<EAX30SOURCEPROPERTIES>(all), eax_version);
 	validate_source_macro_fx_factor(all.flMacroFXFactor);
 }
 
@@ -1388,13 +1388,13 @@ void EaxxSource::validate_source_speaker_level(
 	eaxx_validate_range<EaxxSourceException>(
 		"Speaker Level",
 		speaker_level,
-		::EAXSOURCE_MINSPEAKERLEVEL,
-		::EAXSOURCE_MAXSPEAKERLEVEL
+		EAXSOURCE_MINSPEAKERLEVEL,
+		EAXSOURCE_MAXSPEAKERLEVEL
 	);
 }
 
 void EaxxSource::validate_source_speaker_level_all(
-	const ::EAXSPEAKERLEVELPROPERTIES& all)
+	const EAXSPEAKERLEVELPROPERTIES& all)
 {
 	validate_source_speaker_id(all.lSpeakerID);
 	validate_source_speaker_level(all.lLevel);
@@ -1534,7 +1534,7 @@ void EaxxSource::defer_source_macro_fx_factor(
 }
 
 void EaxxSource::defer_source_2d_all(
-	const ::EAXSOURCE2DPROPERTIES& all)
+	const EAXSOURCE2DPROPERTIES& all)
 {
 	defer_source_direct(all.lDirect);
 	defer_source_direct_hf(all.lDirectHF);
@@ -1544,21 +1544,21 @@ void EaxxSource::defer_source_2d_all(
 }
 
 void EaxxSource::defer_source_obstruction_all(
-	const ::EAXOBSTRUCTIONPROPERTIES& all)
+	const EAXOBSTRUCTIONPROPERTIES& all)
 {
 	defer_source_obstruction(all.lObstruction);
 	defer_source_obstruction_lf_ratio(all.flObstructionLFRatio);
 }
 
 void EaxxSource::defer_source_exclusion_all(
-	const ::EAXEXCLUSIONPROPERTIES& all)
+	const EAXEXCLUSIONPROPERTIES& all)
 {
 	defer_source_exclusion(all.lExclusion);
 	defer_source_exclusion_lf_ratio(all.flExclusionLFRatio);
 }
 
 void EaxxSource::defer_source_occlusion_all(
-	const ::EAXOCCLUSIONPROPERTIES& all)
+	const EAXOCCLUSIONPROPERTIES& all)
 {
 	defer_source_occlusion(all.lOcclusion);
 	defer_source_occlusion_lf_ratio(all.flOcclusionLFRatio);
@@ -1567,7 +1567,7 @@ void EaxxSource::defer_source_occlusion_all(
 }
 
 void EaxxSource::defer_source_all(
-	const ::EAX20BUFFERPROPERTIES& all)
+	const EAX20BUFFERPROPERTIES& all)
 {
 	defer_source_direct(all.lDirect);
 	defer_source_direct_hf(all.lDirectHF);
@@ -1585,7 +1585,7 @@ void EaxxSource::defer_source_all(
 }
 
 void EaxxSource::defer_source_all(
-	const ::EAX30SOURCEPROPERTIES& all)
+	const EAX30SOURCEPROPERTIES& all)
 {
 	defer_source_direct(all.lDirect);
 	defer_source_direct_hf(all.lDirectHF);
@@ -1608,14 +1608,14 @@ void EaxxSource::defer_source_all(
 }
 
 void EaxxSource::defer_source_all(
-	const ::EAX50SOURCEPROPERTIES& all)
+	const EAX50SOURCEPROPERTIES& all)
 {
-	defer_source_all(static_cast<const ::EAX30SOURCEPROPERTIES&>(all));
+	defer_source_all(static_cast<const EAX30SOURCEPROPERTIES&>(all));
 	defer_source_macro_fx_factor(all.flMacroFXFactor);
 }
 
 void EaxxSource::defer_source_speaker_level_all(
-	const ::EAXSPEAKERLEVELPROPERTIES& all)
+	const EAXSPEAKERLEVELPROPERTIES& all)
 {
 	const auto speaker_index = all.lSpeakerID - 1;
 	auto& speaker_level_d = eax_d_.speaker_levels[speaker_index];
@@ -1816,7 +1816,7 @@ void EaxxSource::defer_source_macro_fx_factor(
 void EaxxSource::defer_source_2d_all(
 	const EaxxEaxCall& eax_call)
 {
-	const auto all = eax_call.get_value<EaxxSourceException, const ::EAXSOURCE2DPROPERTIES>();
+	const auto all = eax_call.get_value<EaxxSourceException, const EAXSOURCE2DPROPERTIES>();
 
 	validate_source_2d_all(all, eax_call.get_version());
 	defer_source_2d_all(all);
@@ -1825,7 +1825,7 @@ void EaxxSource::defer_source_2d_all(
 void EaxxSource::defer_source_obstruction_all(
 	const EaxxEaxCall& eax_call)
 {
-	const auto all = eax_call.get_value<EaxxSourceException, const ::EAXOBSTRUCTIONPROPERTIES>();
+	const auto all = eax_call.get_value<EaxxSourceException, const EAXOBSTRUCTIONPROPERTIES>();
 
 	validate_source_obstruction_all(all);
 	defer_source_obstruction_all(all);
@@ -1834,7 +1834,7 @@ void EaxxSource::defer_source_obstruction_all(
 void EaxxSource::defer_source_exclusion_all(
 	const EaxxEaxCall& eax_call)
 {
-	const auto all = eax_call.get_value<EaxxSourceException, const ::EAXEXCLUSIONPROPERTIES>();
+	const auto all = eax_call.get_value<EaxxSourceException, const EAXEXCLUSIONPROPERTIES>();
 
 	validate_source_exclusion_all(all);
 	defer_source_exclusion_all(all);
@@ -1843,7 +1843,7 @@ void EaxxSource::defer_source_exclusion_all(
 void EaxxSource::defer_source_occlusion_all(
 	const EaxxEaxCall& eax_call)
 {
-	const auto all = eax_call.get_value<EaxxSourceException, const ::EAXOCCLUSIONPROPERTIES>();
+	const auto all = eax_call.get_value<EaxxSourceException, const EAXOCCLUSIONPROPERTIES>();
 
 	validate_source_occlusion_all(all);
 	defer_source_occlusion_all(all);
@@ -1856,21 +1856,21 @@ void EaxxSource::defer_source_all(
 
 	if (eax_version == 2)
 	{
-		const auto all = eax_call.get_value<EaxxSourceException, const ::EAX20BUFFERPROPERTIES>();
+		const auto all = eax_call.get_value<EaxxSourceException, const EAX20BUFFERPROPERTIES>();
 
 		validate_source_all(all, eax_version);
 		defer_source_all(all);
 	}
 	else if (eax_version < 5)
 	{
-		const auto all = eax_call.get_value<EaxxSourceException, const ::EAX30SOURCEPROPERTIES>();
+		const auto all = eax_call.get_value<EaxxSourceException, const EAX30SOURCEPROPERTIES>();
 
 		validate_source_all(all, eax_version);
 		defer_source_all(all);
 	}
 	else
 	{
-		const auto all = eax_call.get_value<EaxxSourceException, const ::EAX50SOURCEPROPERTIES>();
+		const auto all = eax_call.get_value<EaxxSourceException, const EAX50SOURCEPROPERTIES>();
 
 		validate_source_all(all, eax_version);
 		defer_source_all(all);
@@ -1880,7 +1880,7 @@ void EaxxSource::defer_source_all(
 void EaxxSource::defer_source_speaker_level_all(
 	const EaxxEaxCall& eax_call)
 {
-	const auto speaker_level_properties = eax_call.get_value<EaxxSourceException, const ::EAXSPEAKERLEVELPROPERTIES>();
+	const auto speaker_level_properties = eax_call.get_value<EaxxSourceException, const EAXSPEAKERLEVELPROPERTIES>();
 
 	validate_source_speaker_level_all(speaker_level_properties);
 	defer_source_speaker_level_all(speaker_level_properties);
@@ -1920,19 +1920,19 @@ void EaxxSource::set_air_absorption_factor()
 
 void EaxxSource::set_direct_hf_auto_flag()
 {
-	const auto is_enable = (eax_.source.ulFlags & ::EAXSOURCEFLAGS_DIRECTHFAUTO) != 0;
+	const auto is_enable = (eax_.source.ulFlags & EAXSOURCEFLAGS_DIRECTHFAUTO) != 0;
 	al_.al_symbols->alSourcei(al_.source, AL_DIRECT_FILTER_GAINHF_AUTO, is_enable);
 }
 
 void EaxxSource::set_room_auto_flag()
 {
-	const auto is_enable = (eax_.source.ulFlags & ::EAXSOURCEFLAGS_ROOMAUTO) != 0;
+	const auto is_enable = (eax_.source.ulFlags & EAXSOURCEFLAGS_ROOMAUTO) != 0;
 	al_.al_symbols->alSourcei(al_.source, AL_AUXILIARY_SEND_FILTER_GAIN_AUTO, is_enable);
 }
 
 void EaxxSource::set_room_hf_auto_flag()
 {
-	const auto is_enable = (eax_.source.ulFlags & ::EAXSOURCEFLAGS_ROOMHFAUTO) != 0;
+	const auto is_enable = (eax_.source.ulFlags & EAXSOURCEFLAGS_ROOMHFAUTO) != 0;
 	al_.al_symbols->alSourcei(al_.source, AL_AUXILIARY_SEND_FILTER_GAINHF_AUTO, is_enable);
 }
 
@@ -1981,7 +1981,7 @@ void EaxxSource::apply_deferred()
 		}
 		else if (sends_dirty_flags_ != EaxxSourceSendsDirtyFlags{})
 		{
-			for (auto i = 0; i < ::EAX_MAX_FXSLOTS; ++i)
+			for (auto i = 0; i < EAX_MAX_FXSLOTS; ++i)
 			{
 				if (active_fx_slots_[i])
 				{
@@ -2044,126 +2044,126 @@ void EaxxSource::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXSOURCE_NONE:
+		case EAXSOURCE_NONE:
 			break;
 
-		case ::EAXSOURCE_ALLPARAMETERS:
+		case EAXSOURCE_ALLPARAMETERS:
 			defer_source_all(eax_call);
 			break;
 
-		case ::EAXSOURCE_OBSTRUCTIONPARAMETERS:
+		case EAXSOURCE_OBSTRUCTIONPARAMETERS:
 			defer_source_obstruction_all(eax_call);
 			break;
 
-		case ::EAXSOURCE_OCCLUSIONPARAMETERS:
+		case EAXSOURCE_OCCLUSIONPARAMETERS:
 			defer_source_occlusion_all(eax_call);
 			break;
 
-		case ::EAXSOURCE_EXCLUSIONPARAMETERS:
+		case EAXSOURCE_EXCLUSIONPARAMETERS:
 			defer_source_exclusion_all(eax_call);
 			break;
 
-		case ::EAXSOURCE_DIRECT:
+		case EAXSOURCE_DIRECT:
 			defer_source_direct(eax_call);
 			break;
 
-		case ::EAXSOURCE_DIRECTHF:
+		case EAXSOURCE_DIRECTHF:
 			defer_source_direct_hf(eax_call);
 			break;
 
-		case ::EAXSOURCE_ROOM:
+		case EAXSOURCE_ROOM:
 			defer_source_room(eax_call);
 			break;
 
-		case ::EAXSOURCE_ROOMHF:
+		case EAXSOURCE_ROOMHF:
 			defer_source_room_hf(eax_call);
 			break;
 
-		case ::EAXSOURCE_OBSTRUCTION:
+		case EAXSOURCE_OBSTRUCTION:
 			defer_source_obstruction(eax_call);
 			break;
 
-		case ::EAXSOURCE_OBSTRUCTIONLFRATIO:
+		case EAXSOURCE_OBSTRUCTIONLFRATIO:
 			defer_source_obstruction_lf_ratio(eax_call);
 			break;
 
-		case ::EAXSOURCE_OCCLUSION:
+		case EAXSOURCE_OCCLUSION:
 			defer_source_occlusion(eax_call);
 			break;
 
-		case ::EAXSOURCE_OCCLUSIONLFRATIO:
+		case EAXSOURCE_OCCLUSIONLFRATIO:
 			defer_source_occlusion_lf_ratio(eax_call);
 			break;
 
-		case ::EAXSOURCE_OCCLUSIONROOMRATIO:
+		case EAXSOURCE_OCCLUSIONROOMRATIO:
 			defer_source_occlusion_room_ratio(eax_call);
 			break;
 
-		case ::EAXSOURCE_OCCLUSIONDIRECTRATIO:
+		case EAXSOURCE_OCCLUSIONDIRECTRATIO:
 			defer_source_occlusion_direct_ratio(eax_call);
 			break;
 
-		case ::EAXSOURCE_EXCLUSION:
+		case EAXSOURCE_EXCLUSION:
 			defer_source_exclusion(eax_call);
 			break;
 
-		case ::EAXSOURCE_EXCLUSIONLFRATIO:
+		case EAXSOURCE_EXCLUSIONLFRATIO:
 			defer_source_exclusion_lf_ratio(eax_call);
 			break;
 
-		case ::EAXSOURCE_OUTSIDEVOLUMEHF:
+		case EAXSOURCE_OUTSIDEVOLUMEHF:
 			defer_source_outside_volume_hf(eax_call);
 			break;
 
-		case ::EAXSOURCE_DOPPLERFACTOR:
+		case EAXSOURCE_DOPPLERFACTOR:
 			defer_source_doppler_factor(eax_call);
 			break;
 
-		case ::EAXSOURCE_ROLLOFFFACTOR:
+		case EAXSOURCE_ROLLOFFFACTOR:
 			defer_source_rolloff_factor(eax_call);
 			break;
 
-		case ::EAXSOURCE_ROOMROLLOFFFACTOR:
+		case EAXSOURCE_ROOMROLLOFFFACTOR:
 			defer_source_room_rolloff_factor(eax_call);
 			break;
 
-		case ::EAXSOURCE_AIRABSORPTIONFACTOR:
+		case EAXSOURCE_AIRABSORPTIONFACTOR:
 			defer_source_air_absorption_factor(eax_call);
 			break;
 
-		case ::EAXSOURCE_FLAGS:
+		case EAXSOURCE_FLAGS:
 			defer_source_flags(eax_call);
 			break;
 
-		case ::EAXSOURCE_SENDPARAMETERS:
+		case EAXSOURCE_SENDPARAMETERS:
 			defer_send(eax_call);
 			break;
 
-		case ::EAXSOURCE_ALLSENDPARAMETERS:
+		case EAXSOURCE_ALLSENDPARAMETERS:
 			defer_send_all(eax_call);
 			break;
 
-		case ::EAXSOURCE_OCCLUSIONSENDPARAMETERS:
+		case EAXSOURCE_OCCLUSIONSENDPARAMETERS:
 			defer_send_occlusion_all(eax_call);
 			break;
 
-		case ::EAXSOURCE_EXCLUSIONSENDPARAMETERS:
+		case EAXSOURCE_EXCLUSIONSENDPARAMETERS:
 			defer_send_exclusion_all(eax_call);
 			break;
 
-		case ::EAXSOURCE_ACTIVEFXSLOTID:
+		case EAXSOURCE_ACTIVEFXSLOTID:
 			defer_active_fx_slots(eax_call);
 			break;
 
-		case ::EAXSOURCE_MACROFXFACTOR:
+		case EAXSOURCE_MACROFXFACTOR:
 			defer_source_macro_fx_factor(eax_call);
 			break;
 
-		case ::EAXSOURCE_SPEAKERLEVELS:
+		case EAXSOURCE_SPEAKERLEVELS:
 			defer_source_speaker_level_all(eax_call);
 			break;
 
-		case ::EAXSOURCE_ALL2DPARAMETERS:
+		case EAXSOURCE_ALL2DPARAMETERS:
 			defer_source_2d_all(eax_call);
 			break;
 
@@ -2177,7 +2177,7 @@ void EaxxSource::set(
 	}
 }
 
-const ::GUID& EaxxSource::get_send_fx_slot_guid(
+const GUID& EaxxSource::get_send_fx_slot_guid(
 	int eax_version,
 	int fx_slot_index)
 {
@@ -2187,16 +2187,16 @@ const ::GUID& EaxxSource::get_send_fx_slot_guid(
 			switch (fx_slot_index)
 			{
 				case 0:
-					return ::EAXPROPERTYID_EAX40_FXSlot0;
+					return EAXPROPERTYID_EAX40_FXSlot0;
 
 				case 1:
-					return ::EAXPROPERTYID_EAX40_FXSlot1;
+					return EAXPROPERTYID_EAX40_FXSlot1;
 
 				case 2:
-					return ::EAXPROPERTYID_EAX40_FXSlot2;
+					return EAXPROPERTYID_EAX40_FXSlot2;
 
 				case 3:
-					return ::EAXPROPERTYID_EAX40_FXSlot3;
+					return EAXPROPERTYID_EAX40_FXSlot3;
 
 				default:
 					fail("FX slot index out of range.");
@@ -2206,16 +2206,16 @@ const ::GUID& EaxxSource::get_send_fx_slot_guid(
 			switch (fx_slot_index)
 			{
 				case 0:
-					return ::EAXPROPERTYID_EAX50_FXSlot0;
+					return EAXPROPERTYID_EAX50_FXSlot0;
 
 				case 1:
-					return ::EAXPROPERTYID_EAX50_FXSlot1;
+					return EAXPROPERTYID_EAX50_FXSlot1;
 
 				case 2:
-					return ::EAXPROPERTYID_EAX50_FXSlot2;
+					return EAXPROPERTYID_EAX50_FXSlot2;
 
 				case 3:
-					return ::EAXPROPERTYID_EAX50_FXSlot3;
+					return EAXPROPERTYID_EAX50_FXSlot3;
 
 				default:
 					fail("FX slot index out of range.");
@@ -2227,23 +2227,23 @@ const ::GUID& EaxxSource::get_send_fx_slot_guid(
 }
 
 void EaxxSource::copy_send(
-	const ::EAXSOURCEALLSENDPROPERTIES& src_send,
-	::EAXSOURCESENDPROPERTIES& dst_send)
+	const EAXSOURCEALLSENDPROPERTIES& src_send,
+	EAXSOURCESENDPROPERTIES& dst_send)
 {
 	dst_send.lSend = src_send.lSend;
 	dst_send.lSendHF = src_send.lSendHF;
 }
 
 void EaxxSource::copy_send(
-	const ::EAXSOURCEALLSENDPROPERTIES& src_send,
-	::EAXSOURCEALLSENDPROPERTIES& dst_send)
+	const EAXSOURCEALLSENDPROPERTIES& src_send,
+	EAXSOURCEALLSENDPROPERTIES& dst_send)
 {
 	dst_send = src_send;
 }
 
 void EaxxSource::copy_send(
-	const ::EAXSOURCEALLSENDPROPERTIES& src_send,
-	::EAXSOURCEOCCLUSIONSENDPROPERTIES& dst_send)
+	const EAXSOURCEALLSENDPROPERTIES& src_send,
+	EAXSOURCEOCCLUSIONSENDPROPERTIES& dst_send)
 {
 	dst_send.lOcclusion = src_send.lOcclusion;
 	dst_send.flOcclusionLFRatio = src_send.flOcclusionLFRatio;
@@ -2252,8 +2252,8 @@ void EaxxSource::copy_send(
 }
 
 void EaxxSource::copy_send(
-	const ::EAXSOURCEALLSENDPROPERTIES& src_send,
-	::EAXSOURCEEXCLUSIONSENDPROPERTIES& dst_send)
+	const EAXSOURCEALLSENDPROPERTIES& src_send,
+	EAXSOURCEEXCLUSIONSENDPROPERTIES& dst_send)
 {
 	dst_send.lExclusion = src_send.lExclusion;
 	dst_send.flExclusionLFRatio = src_send.flExclusionLFRatio;
@@ -2262,7 +2262,7 @@ void EaxxSource::copy_send(
 void EaxxSource::api_get_source_all_2(
 	const EaxxEaxCall& eax_call)
 {
-	auto eax_2_all = ::EAX20BUFFERPROPERTIES{};
+	auto eax_2_all = EAX20BUFFERPROPERTIES{};
 	eax_2_all.lDirect = eax_.source.lDirect;
 	eax_2_all.lDirectHF = eax_.source.lDirectHF;
 	eax_2_all.lRoom = eax_.source.lRoom;
@@ -2283,7 +2283,7 @@ void EaxxSource::api_get_source_all_2(
 void EaxxSource::api_get_source_all_3(
 	const EaxxEaxCall& eax_call)
 {
-	eax_call.set_value<EaxxSourceException>(static_cast<const ::EAX30SOURCEPROPERTIES&>(eax_.source));
+	eax_call.set_value<EaxxSourceException>(static_cast<const EAX30SOURCEPROPERTIES&>(eax_.source));
 }
 
 void EaxxSource::api_get_source_all_5(
@@ -2323,7 +2323,7 @@ void EaxxSource::api_get_source_all_obstruction(
 			offsetof(::EAX30SOURCEPROPERTIES, flObstructionLFRatio) - offsetof(::EAX30SOURCEPROPERTIES, lObstruction)
 	);
 
-	const auto eax_obstruction_all = *reinterpret_cast<const ::EAXOBSTRUCTIONPROPERTIES*>(&eax_.source.lObstruction);
+	const auto eax_obstruction_all = *reinterpret_cast<const EAXOBSTRUCTIONPROPERTIES*>(&eax_.source.lObstruction);
 
 	eax_call.set_value<EaxxSourceException>(eax_obstruction_all);
 }
@@ -2342,7 +2342,7 @@ void EaxxSource::api_get_source_all_occlusion(
 			offsetof(::EAX30SOURCEPROPERTIES, flOcclusionDirectRatio) - offsetof(::EAX30SOURCEPROPERTIES, lOcclusion)
 	);
 
-	const auto eax_occlusion_all = *reinterpret_cast<const ::EAXOCCLUSIONPROPERTIES*>(&eax_.source.lOcclusion);
+	const auto eax_occlusion_all = *reinterpret_cast<const EAXOCCLUSIONPROPERTIES*>(&eax_.source.lOcclusion);
 
 	eax_call.set_value<EaxxSourceException>(eax_occlusion_all);
 }
@@ -2355,7 +2355,7 @@ void EaxxSource::api_get_source_all_exclusion(
 			offsetof(::EAX30SOURCEPROPERTIES, flExclusionLFRatio) - offsetof(::EAX30SOURCEPROPERTIES, lExclusion)
 	);
 
-	const auto eax_exclusion_all = *reinterpret_cast<const ::EAXEXCLUSIONPROPERTIES*>(&eax_.source.lExclusion);
+	const auto eax_exclusion_all = *reinterpret_cast<const EAXEXCLUSIONPROPERTIES*>(&eax_.source.lExclusion);
 
 	eax_call.set_value<EaxxSourceException>(eax_exclusion_all);
 }
@@ -2367,14 +2367,14 @@ void EaxxSource::api_get_source_active_fx_slot_id(
 	{
 		case 4:
 			{
-				const auto& active_fx_slots = reinterpret_cast<const ::EAX40ACTIVEFXSLOTS&>(eax_.active_fx_slots);
+				const auto& active_fx_slots = reinterpret_cast<const EAX40ACTIVEFXSLOTS&>(eax_.active_fx_slots);
 				eax_call.set_value<EaxxSourceException>(active_fx_slots);
 			}
 			break;
 
 		case 5:
 			{
-				const auto& active_fx_slots = reinterpret_cast<const ::EAX50ACTIVEFXSLOTS&>(eax_.active_fx_slots);
+				const auto& active_fx_slots = reinterpret_cast<const EAX50ACTIVEFXSLOTS&>(eax_.active_fx_slots);
 				eax_call.set_value<EaxxSourceException>(active_fx_slots);
 			}
 			break;
@@ -2387,7 +2387,7 @@ void EaxxSource::api_get_source_active_fx_slot_id(
 void EaxxSource::api_get_source_all_2d(
 	const EaxxEaxCall& eax_call)
 {
-	auto eax_2d_all = ::EAXSOURCE2DPROPERTIES{};
+	auto eax_2d_all = EAXSOURCE2DPROPERTIES{};
 	eax_2d_all.lDirect = eax_.source.lDirect;
 	eax_2d_all.lDirectHF = eax_.source.lDirectHF;
 	eax_2d_all.lRoom = eax_.source.lRoom;
@@ -2400,7 +2400,7 @@ void EaxxSource::api_get_source_all_2d(
 void EaxxSource::api_get_source_speaker_level_all(
 	const EaxxEaxCall& eax_call)
 {
-	auto& all = eax_call.get_value<EaxxSourceException, ::EAXSPEAKERLEVELPROPERTIES>();
+	auto& all = eax_call.get_value<EaxxSourceException, EAXSPEAKERLEVELPROPERTIES>();
 
 	validate_source_speaker_id(all.lSpeakerID);
 	const auto speaker_index = all.lSpeakerID - 1;
@@ -2412,126 +2412,126 @@ void EaxxSource::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXSOURCE_NONE:
+		case EAXSOURCE_NONE:
 			break;
 
-		case ::EAXSOURCE_ALLPARAMETERS:
+		case EAXSOURCE_ALLPARAMETERS:
 			api_get_source_all(eax_call);
 			break;
 
-		case ::EAXSOURCE_OBSTRUCTIONPARAMETERS:
+		case EAXSOURCE_OBSTRUCTIONPARAMETERS:
 			api_get_source_all_obstruction(eax_call);
 			break;
 
-		case ::EAXSOURCE_OCCLUSIONPARAMETERS:
+		case EAXSOURCE_OCCLUSIONPARAMETERS:
 			api_get_source_all_occlusion(eax_call);
 			break;
 
-		case ::EAXSOURCE_EXCLUSIONPARAMETERS:
+		case EAXSOURCE_EXCLUSIONPARAMETERS:
 			api_get_source_all_exclusion(eax_call);
 			break;
 
-		case ::EAXSOURCE_DIRECT:
+		case EAXSOURCE_DIRECT:
 			eax_call.set_value<EaxxSourceException>(eax_.source.lDirect);
 			break;
 
-		case ::EAXSOURCE_DIRECTHF:
+		case EAXSOURCE_DIRECTHF:
 			eax_call.set_value<EaxxSourceException>(eax_.source.lDirectHF);
 			break;
 
-		case ::EAXSOURCE_ROOM:
+		case EAXSOURCE_ROOM:
 			eax_call.set_value<EaxxSourceException>(eax_.source.lRoom);
 			break;
 
-		case ::EAXSOURCE_ROOMHF:
+		case EAXSOURCE_ROOMHF:
 			eax_call.set_value<EaxxSourceException>(eax_.source.lRoomHF);
 			break;
 
-		case ::EAXSOURCE_OBSTRUCTION:
+		case EAXSOURCE_OBSTRUCTION:
 			eax_call.set_value<EaxxSourceException>(eax_.source.lObstruction);
 			break;
 
-		case ::EAXSOURCE_OBSTRUCTIONLFRATIO:
+		case EAXSOURCE_OBSTRUCTIONLFRATIO:
 			eax_call.set_value<EaxxSourceException>(eax_.source.flObstructionLFRatio);
 			break;
 
-		case ::EAXSOURCE_OCCLUSION:
+		case EAXSOURCE_OCCLUSION:
 			eax_call.set_value<EaxxSourceException>(eax_.source.lOcclusion);
 			break;
 
-		case ::EAXSOURCE_OCCLUSIONLFRATIO:
+		case EAXSOURCE_OCCLUSIONLFRATIO:
 			eax_call.set_value<EaxxSourceException>(eax_.source.flOcclusionLFRatio);
 			break;
 
-		case ::EAXSOURCE_OCCLUSIONROOMRATIO:
+		case EAXSOURCE_OCCLUSIONROOMRATIO:
 			eax_call.set_value<EaxxSourceException>(eax_.source.flOcclusionRoomRatio);
 			break;
 
-		case ::EAXSOURCE_OCCLUSIONDIRECTRATIO:
+		case EAXSOURCE_OCCLUSIONDIRECTRATIO:
 			eax_call.set_value<EaxxSourceException>(eax_.source.flOcclusionDirectRatio);
 			break;
 
-		case ::EAXSOURCE_EXCLUSION:
+		case EAXSOURCE_EXCLUSION:
 			eax_call.set_value<EaxxSourceException>(eax_.source.lExclusion);
 			break;
 
-		case ::EAXSOURCE_EXCLUSIONLFRATIO:
+		case EAXSOURCE_EXCLUSIONLFRATIO:
 			eax_call.set_value<EaxxSourceException>(eax_.source.flExclusionLFRatio);
 			break;
 
-		case ::EAXSOURCE_OUTSIDEVOLUMEHF:
+		case EAXSOURCE_OUTSIDEVOLUMEHF:
 			eax_call.set_value<EaxxSourceException>(eax_.source.lOutsideVolumeHF);
 			break;
 
-		case ::EAXSOURCE_DOPPLERFACTOR:
+		case EAXSOURCE_DOPPLERFACTOR:
 			eax_call.set_value<EaxxSourceException>(eax_.source.flDopplerFactor);
 			break;
 
-		case ::EAXSOURCE_ROLLOFFFACTOR:
+		case EAXSOURCE_ROLLOFFFACTOR:
 			eax_call.set_value<EaxxSourceException>(eax_.source.flRolloffFactor);
 			break;
 
-		case ::EAXSOURCE_ROOMROLLOFFFACTOR:
+		case EAXSOURCE_ROOMROLLOFFFACTOR:
 			eax_call.set_value<EaxxSourceException>(eax_.source.flRoomRolloffFactor);
 			break;
 
-		case ::EAXSOURCE_AIRABSORPTIONFACTOR:
+		case EAXSOURCE_AIRABSORPTIONFACTOR:
 			eax_call.set_value<EaxxSourceException>(eax_.source.flAirAbsorptionFactor);
 			break;
 
-		case ::EAXSOURCE_FLAGS:
+		case EAXSOURCE_FLAGS:
 			eax_call.set_value<EaxxSourceException>(eax_.source.ulFlags);
 			break;
 
-		case ::EAXSOURCE_SENDPARAMETERS:
-			api_get_send_properties<EaxxSourceException, ::EAXSOURCESENDPROPERTIES>(eax_call);
+		case EAXSOURCE_SENDPARAMETERS:
+			api_get_send_properties<EaxxSourceException, EAXSOURCESENDPROPERTIES>(eax_call);
 			break;
 
-		case ::EAXSOURCE_ALLSENDPARAMETERS:
-			api_get_send_properties<EaxxSourceException, ::EAXSOURCEALLSENDPROPERTIES>(eax_call);
+		case EAXSOURCE_ALLSENDPARAMETERS:
+			api_get_send_properties<EaxxSourceException, EAXSOURCEALLSENDPROPERTIES>(eax_call);
 			break;
 
-		case ::EAXSOURCE_OCCLUSIONSENDPARAMETERS:
-			api_get_send_properties<EaxxSourceException, ::EAXSOURCEOCCLUSIONSENDPROPERTIES>(eax_call);
+		case EAXSOURCE_OCCLUSIONSENDPARAMETERS:
+			api_get_send_properties<EaxxSourceException, EAXSOURCEOCCLUSIONSENDPROPERTIES>(eax_call);
 			break;
 
-		case ::EAXSOURCE_EXCLUSIONSENDPARAMETERS:
-			api_get_send_properties<EaxxSourceException, ::EAXSOURCEEXCLUSIONSENDPROPERTIES>(eax_call);
+		case EAXSOURCE_EXCLUSIONSENDPARAMETERS:
+			api_get_send_properties<EaxxSourceException, EAXSOURCEEXCLUSIONSENDPROPERTIES>(eax_call);
 			break;
 
-		case ::EAXSOURCE_ACTIVEFXSLOTID:
+		case EAXSOURCE_ACTIVEFXSLOTID:
 			api_get_source_active_fx_slot_id(eax_call);
 			break;
 
-		case ::EAXSOURCE_MACROFXFACTOR:
+		case EAXSOURCE_MACROFXFACTOR:
 			eax_call.set_value<EaxxSourceException>(eax_.source.flMacroFXFactor);
 			break;
 
-		case ::EAXSOURCE_SPEAKERLEVELS:
+		case EAXSOURCE_SPEAKERLEVELS:
 			api_get_source_speaker_level_all(eax_call);
 			break;
 
-		case ::EAXSOURCE_ALL2DPARAMETERS:
+		case EAXSOURCE_ALL2DPARAMETERS:
 			api_get_source_all_2d(eax_call);
 			break;
 

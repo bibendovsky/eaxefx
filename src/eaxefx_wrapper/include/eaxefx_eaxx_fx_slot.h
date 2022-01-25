@@ -54,7 +54,7 @@ public:
 	void activate_dedicated_reverb_effect();
 
 
-	::ALuint get_efx_effect_slot() const noexcept;
+	ALuint get_efx_effect_slot() const noexcept;
 
 	const EAX50FXSLOTPROPERTIES& get_eax_fx_slot() const noexcept;
 
@@ -74,7 +74,7 @@ private:
 
 	struct Efx
 	{
-		::ALuint effect_slot{};
+		ALuint effect_slot{};
 	}; // Efx
 
 
@@ -168,7 +168,7 @@ private:
 
 
 	void validate_fx_slot_effect(
-		const ::GUID& eax_effect_id);
+		const GUID& eax_effect_id);
 
 	void validate_fx_slot_volume(
 		std::int32_t eax_volume);
@@ -178,7 +178,7 @@ private:
 
 	void validate_fx_slot_lock_state(
 		std::int32_t eax_lock,
-		const ::GUID& eax_effect_id);
+		const GUID& eax_effect_id);
 
 	void validate_fx_slot_flags(
 		std::uint32_t eax_flags,
@@ -200,7 +200,7 @@ private:
 
 
 	void set_fx_slot_effect(
-		const ::GUID& eax_effect_id);
+		const GUID& eax_effect_id);
 
 	void set_fx_slot_volume(
 		std::int32_t eax_volume);

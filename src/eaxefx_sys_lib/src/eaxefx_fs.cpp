@@ -101,17 +101,17 @@ Path get_working_directory()
 {
 #if EAXEFX_WIN32
 	// With trailing "nul".
-	const auto max_utf16_size = ::GetCurrentDirectoryW(0, nullptr);
+	const auto max_utf16_size = GetCurrentDirectoryW(0, nullptr);
 
 	if (max_utf16_size == 0)
 	{
 		throw FileSystemException{ErrorMessages::get_working_dir};
 	}
 
-	auto utf16_buffer = std::make_unique<::WCHAR[]>(max_utf16_size);
+	auto utf16_buffer = std::make_unique<WCHAR[]>(max_utf16_size);
 
 	// Without trailing "nul".
-	const auto win32_utf16_size = ::GetCurrentDirectoryW(max_utf16_size, utf16_buffer.get());
+	const auto win32_utf16_size = GetCurrentDirectoryW(max_utf16_size, utf16_buffer.get());
 
 	if (win32_utf16_size != (max_utf16_size - 1))
 	{
@@ -135,11 +135,11 @@ void create_directory(
 #if EAXEFX_WIN32
 	const auto u16_path = encoding::to_utf16(path);
 
-	const auto win32_result = ::CreateDirectoryW(reinterpret_cast<::LPCWSTR>(u16_path.c_str()), nullptr);
+	const auto win32_result = CreateDirectoryW(reinterpret_cast<LPCWSTR>(u16_path.c_str()), nullptr);
 
 	if (win32_result == 0)
 	{
-		const auto last_error = ::GetLastError();
+		const auto last_error = GetLastError();
 
 		if (last_error != ERROR_ALREADY_EXISTS)
 		{

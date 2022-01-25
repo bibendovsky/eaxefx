@@ -67,7 +67,7 @@ struct Strings
 
 void log_context_attribute_list(
 	Logger* logger,
-	const ::ALCint* al_attributes);
+	const ALCint* al_attributes);
 
 void log_extensions(
 	Logger* logger,

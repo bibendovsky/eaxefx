@@ -44,7 +44,7 @@ namespace eaxefx::al_api
 
 void log_context_attribute_list(
 	Logger* logger,
-	const ::ALCint* al_attributes)
+	const ALCint* al_attributes)
 {
 	assert(logger);
 

@@ -73,23 +73,23 @@ namespace
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-constexpr auto x_ram_max_size = static_cast<::ALsizei>(64 * 1'024 * 1'024);
+constexpr auto x_ram_max_size = static_cast<ALsizei>(64 * 1'024 * 1'024);
 
-constexpr auto x_ram_ram_size_enum = static_cast<::ALenum>(0x20001);
-constexpr auto x_ram_ram_free_enum = static_cast<::ALenum>(0x20002);
-constexpr auto x_ram_al_storage_automatic_enum = static_cast<::ALenum>(0x20003);
-constexpr auto x_ram_al_storage_hardware_enum = static_cast<::ALenum>(0x20004);
-constexpr auto x_ram_al_storage_accessible_enum = static_cast<::ALenum>(0x20005);
+constexpr auto x_ram_ram_size_enum = static_cast<ALenum>(0x20001);
+constexpr auto x_ram_ram_free_enum = static_cast<ALenum>(0x20002);
+constexpr auto x_ram_al_storage_automatic_enum = static_cast<ALenum>(0x20003);
+constexpr auto x_ram_al_storage_hardware_enum = static_cast<ALenum>(0x20004);
+constexpr auto x_ram_al_storage_accessible_enum = static_cast<ALenum>(0x20005);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-::ALboolean AL_APIENTRY EAXSetBufferMode(
-	::ALsizei n,
-	const ::ALuint* buffers,
-	::ALint value)
+ALboolean AL_APIENTRY EAXSetBufferMode(
+	ALsizei n,
+	const ALuint* buffers,
+	ALint value)
 try
 {
 	const auto mutex_lock = g_al_api.get_lock();
@@ -102,9 +102,9 @@ catch (...)
 	return AL_FALSE;
 }
 
-::ALenum AL_APIENTRY EAXGetBufferMode(
-	::ALuint buffer,
-	::ALint* pReserved)
+ALenum AL_APIENTRY EAXGetBufferMode(
+	ALuint buffer,
+	ALint* pReserved)
 try
 {
 	const auto mutex_lock = g_al_api.get_lock();
@@ -167,14 +167,14 @@ public:
 
 	AlApiContext& get_current_context() override;
 
-	::ALboolean AL_APIENTRY eax_set_buffer_mode(
-		::ALsizei n,
-		const ::ALuint* buffers,
-		::ALint value);
+	ALboolean AL_APIENTRY eax_set_buffer_mode(
+		ALsizei n,
+		const ALuint* buffers,
+		ALint value);
 
-	::ALenum AL_APIENTRY eax_get_buffer_mode(
-		::ALuint buffer,
-		::ALint* pReserved);
+	ALenum AL_APIENTRY eax_get_buffer_mode(
+		ALuint buffer,
+		ALint* pReserved);
 
 	Eaxx* get_eaxx() const noexcept;
 
@@ -182,77 +182,77 @@ public:
 	// =========================================================================
 	// ALC v1.1
 
-	::ALCcontext* ALC_APIENTRY alcCreateContext(
-		::ALCdevice* device,
-		const ::ALCint* attrlist) noexcept;
+	ALCcontext* ALC_APIENTRY alcCreateContext(
+		ALCdevice* device,
+		const ALCint* attrlist) noexcept;
 
-	::ALCboolean ALC_APIENTRY alcMakeContextCurrent(
-		::ALCcontext* context) noexcept;
+	ALCboolean ALC_APIENTRY alcMakeContextCurrent(
+		ALCcontext* context) noexcept;
 
 	void ALC_APIENTRY alcProcessContext(
-		::ALCcontext* context) noexcept;
+		ALCcontext* context) noexcept;
 
 	void ALC_APIENTRY alcSuspendContext(
-		::ALCcontext* context) noexcept;
+		ALCcontext* context) noexcept;
 
 	void ALC_APIENTRY alcDestroyContext(
-		::ALCcontext* context) noexcept;
+		ALCcontext* context) noexcept;
 
-	::ALCcontext* ALC_APIENTRY alcGetCurrentContext() noexcept;
+	ALCcontext* ALC_APIENTRY alcGetCurrentContext() noexcept;
 
-	::ALCdevice* ALC_APIENTRY alcGetContextsDevice(
-		::ALCcontext* context) noexcept;
+	ALCdevice* ALC_APIENTRY alcGetContextsDevice(
+		ALCcontext* context) noexcept;
 
-	::ALCdevice* ALC_APIENTRY alcOpenDevice(
-		const ::ALCchar* devicename) noexcept;
+	ALCdevice* ALC_APIENTRY alcOpenDevice(
+		const ALCchar* devicename) noexcept;
 
-	::ALCboolean ALC_APIENTRY alcCloseDevice(
-		::ALCdevice* device) noexcept;
+	ALCboolean ALC_APIENTRY alcCloseDevice(
+		ALCdevice* device) noexcept;
 
-	::ALCenum ALC_APIENTRY alcGetError(
-		::ALCdevice* device) noexcept;
+	ALCenum ALC_APIENTRY alcGetError(
+		ALCdevice* device) noexcept;
 
-	::ALCboolean ALC_APIENTRY alcIsExtensionPresent(
-		::ALCdevice* device,
-		const ::ALCchar* extname) noexcept;
+	ALCboolean ALC_APIENTRY alcIsExtensionPresent(
+		ALCdevice* device,
+		const ALCchar* extname) noexcept;
 
 	void* ALC_APIENTRY alcGetProcAddress(
-		::ALCdevice* device,
-		const ::ALCchar* funcname) noexcept;
+		ALCdevice* device,
+		const ALCchar* funcname) noexcept;
 
-	::ALCenum ALC_APIENTRY alcGetEnumValue(
-		::ALCdevice* device,
-		const ::ALCchar* enumname) noexcept;
+	ALCenum ALC_APIENTRY alcGetEnumValue(
+		ALCdevice* device,
+		const ALCchar* enumname) noexcept;
 
-	const ::ALCchar* ALC_APIENTRY alcGetString(
-		::ALCdevice* device,
-		::ALCenum param) noexcept;
+	const ALCchar* ALC_APIENTRY alcGetString(
+		ALCdevice* device,
+		ALCenum param) noexcept;
 
 	void ALC_APIENTRY alcGetIntegerv(
-		::ALCdevice* device,
-		::ALCenum param,
-		::ALCsizei size,
-		::ALCint* values) noexcept;
+		ALCdevice* device,
+		ALCenum param,
+		ALCsizei size,
+		ALCint* values) noexcept;
 
-	::ALCdevice* ALC_APIENTRY alcCaptureOpenDevice(
-		const ::ALCchar* devicename,
-		::ALCuint frequency,
-		::ALCenum format,
-		::ALCsizei buffersize) noexcept;
+	ALCdevice* ALC_APIENTRY alcCaptureOpenDevice(
+		const ALCchar* devicename,
+		ALCuint frequency,
+		ALCenum format,
+		ALCsizei buffersize) noexcept;
 
-	::ALCboolean ALC_APIENTRY alcCaptureCloseDevice(
-		::ALCdevice* device) noexcept;
+	ALCboolean ALC_APIENTRY alcCaptureCloseDevice(
+		ALCdevice* device) noexcept;
 
 	void ALC_APIENTRY alcCaptureStart(
-		::ALCdevice* device) noexcept;
+		ALCdevice* device) noexcept;
 
 	void ALC_APIENTRY alcCaptureStop(
-		::ALCdevice* device) noexcept;
+		ALCdevice* device) noexcept;
 
 	void ALC_APIENTRY alcCaptureSamples(
-		::ALCdevice* device,
-		::ALCvoid* buffer,
-		::ALCsizei samples) noexcept;
+		ALCdevice* device,
+		ALCvoid* buffer,
+		ALCsizei samples) noexcept;
 
 	// ALC v1.1
 	// =========================================================================
@@ -262,326 +262,326 @@ public:
 	// AL v1.1
 
 	void AL_APIENTRY alDopplerFactor(
-		::ALfloat value) noexcept;
+		ALfloat value) noexcept;
 
 	void AL_APIENTRY alDopplerVelocity(
-		::ALfloat value) noexcept;
+		ALfloat value) noexcept;
 
 	void AL_APIENTRY alSpeedOfSound(
-		::ALfloat value) noexcept;
+		ALfloat value) noexcept;
 
 	void AL_APIENTRY alDistanceModel(
-		::ALenum distanceModel) noexcept;
+		ALenum distanceModel) noexcept;
 
 	void AL_APIENTRY alEnable(
-		::ALenum capability) noexcept;
+		ALenum capability) noexcept;
 
 	void AL_APIENTRY alDisable(
-		::ALenum capability) noexcept;
+		ALenum capability) noexcept;
 
-	::ALboolean AL_APIENTRY alIsEnabled(
-		::ALenum capability) noexcept;
+	ALboolean AL_APIENTRY alIsEnabled(
+		ALenum capability) noexcept;
 
-	const ::ALchar* AL_APIENTRY alGetString(
-		::ALenum param) noexcept;
+	const ALchar* AL_APIENTRY alGetString(
+		ALenum param) noexcept;
 
 	void AL_APIENTRY alGetBooleanv(
-		::ALenum param,
-		::ALboolean* values) noexcept;
+		ALenum param,
+		ALboolean* values) noexcept;
 
 	void AL_APIENTRY alGetIntegerv(
-		::ALenum param,
-		::ALint* values) noexcept;
+		ALenum param,
+		ALint* values) noexcept;
 
 	void AL_APIENTRY alGetFloatv(
-		::ALenum param,
-		::ALfloat* values) noexcept;
+		ALenum param,
+		ALfloat* values) noexcept;
 
 	void AL_APIENTRY alGetDoublev(
-		::ALenum param,
-		::ALdouble* values) noexcept;
+		ALenum param,
+		ALdouble* values) noexcept;
 
-	::ALboolean AL_APIENTRY alGetBoolean(
-		::ALenum param) noexcept;
+	ALboolean AL_APIENTRY alGetBoolean(
+		ALenum param) noexcept;
 
-	::ALint AL_APIENTRY alGetInteger(
-		::ALenum param) noexcept;
+	ALint AL_APIENTRY alGetInteger(
+		ALenum param) noexcept;
 
-	::ALfloat AL_APIENTRY alGetFloat(
-		::ALenum param) noexcept;
+	ALfloat AL_APIENTRY alGetFloat(
+		ALenum param) noexcept;
 
-	::ALdouble AL_APIENTRY alGetDouble(
-		::ALenum param) noexcept;
+	ALdouble AL_APIENTRY alGetDouble(
+		ALenum param) noexcept;
 
-	::ALenum AL_APIENTRY alGetError() noexcept;
+	ALenum AL_APIENTRY alGetError() noexcept;
 
-	::ALboolean AL_APIENTRY alIsExtensionPresent(
-		const ::ALchar* extname) noexcept;
+	ALboolean AL_APIENTRY alIsExtensionPresent(
+		const ALchar* extname) noexcept;
 
 	void* AL_APIENTRY alGetProcAddress(
-		const ::ALchar* fname) noexcept;
+		const ALchar* fname) noexcept;
 
-	::ALenum AL_APIENTRY alGetEnumValue(
-		const ::ALchar* ename) noexcept;
+	ALenum AL_APIENTRY alGetEnumValue(
+		const ALchar* ename) noexcept;
 
 	void AL_APIENTRY alListenerf(
-		::ALenum param,
-		::ALfloat value) noexcept;
+		ALenum param,
+		ALfloat value) noexcept;
 
 	void AL_APIENTRY alListener3f(
-		::ALenum param,
-		::ALfloat value1,
-		::ALfloat value2,
-		::ALfloat value3) noexcept;
+		ALenum param,
+		ALfloat value1,
+		ALfloat value2,
+		ALfloat value3) noexcept;
 
 	void AL_APIENTRY alListenerfv(
-		::ALenum param,
-		const ::ALfloat* values) noexcept;
+		ALenum param,
+		const ALfloat* values) noexcept;
 
 	void AL_APIENTRY alListeneri(
-		::ALenum param,
-		::ALint value) noexcept;
+		ALenum param,
+		ALint value) noexcept;
 
 	void AL_APIENTRY alListener3i(
-		::ALenum param,
-		::ALint value1,
-		::ALint value2,
-		::ALint value3) noexcept;
+		ALenum param,
+		ALint value1,
+		ALint value2,
+		ALint value3) noexcept;
 
 	void AL_APIENTRY alListeneriv(
-		::ALenum param,
-		const ::ALint* values) noexcept;
+		ALenum param,
+		const ALint* values) noexcept;
 
 	void AL_APIENTRY alGetListenerf(
-		::ALenum param,
-		::ALfloat* value) noexcept;
+		ALenum param,
+		ALfloat* value) noexcept;
 
 	void AL_APIENTRY alGetListener3f(
-		::ALenum param,
-		::ALfloat* value1,
-		::ALfloat* value2,
-		::ALfloat* value3) noexcept;
+		ALenum param,
+		ALfloat* value1,
+		ALfloat* value2,
+		ALfloat* value3) noexcept;
 
 	void AL_APIENTRY alGetListenerfv(
-		::ALenum param,
-		::ALfloat* values) noexcept;
+		ALenum param,
+		ALfloat* values) noexcept;
 
 	void AL_APIENTRY alGetListeneri(
-		::ALenum param,
-		::ALint* value) noexcept;
+		ALenum param,
+		ALint* value) noexcept;
 
 	void AL_APIENTRY alGetListener3i(
-		::ALenum param,
-		::ALint* value1,
-		::ALint* value2,
-		::ALint* value3) noexcept;
+		ALenum param,
+		ALint* value1,
+		ALint* value2,
+		ALint* value3) noexcept;
 
 	void AL_APIENTRY alGetListeneriv(
-		::ALenum param,
-		::ALint* values) noexcept;
+		ALenum param,
+		ALint* values) noexcept;
 
 	void AL_APIENTRY alGenSources(
-		::ALsizei n,
-		::ALuint* sources) noexcept;
+		ALsizei n,
+		ALuint* sources) noexcept;
 
 	void AL_APIENTRY alDeleteSources(
-		::ALsizei n,
-		const ::ALuint* sources) noexcept;
+		ALsizei n,
+		const ALuint* sources) noexcept;
 
-	::ALboolean AL_APIENTRY alIsSource(
-		::ALuint source) noexcept;
+	ALboolean AL_APIENTRY alIsSource(
+		ALuint source) noexcept;
 
 	void AL_APIENTRY alSourcef(
-		::ALuint source,
-		::ALenum param,
-		::ALfloat value) noexcept;
+		ALuint source,
+		ALenum param,
+		ALfloat value) noexcept;
 
 	void AL_APIENTRY alSource3f(
-		::ALuint source,
-		::ALenum param,
-		::ALfloat value1,
-		::ALfloat value2,
-		::ALfloat value3) noexcept;
+		ALuint source,
+		ALenum param,
+		ALfloat value1,
+		ALfloat value2,
+		ALfloat value3) noexcept;
 
 	void AL_APIENTRY alSourcefv(
-		::ALuint source,
-		::ALenum param,
-		const ::ALfloat* values) noexcept;
+		ALuint source,
+		ALenum param,
+		const ALfloat* values) noexcept;
 
 	void AL_APIENTRY alSourcei(
-		::ALuint source,
-		::ALenum param,
-		::ALint value) noexcept;
+		ALuint source,
+		ALenum param,
+		ALint value) noexcept;
 
 	void AL_APIENTRY alSource3i(
-		::ALuint source,
-		::ALenum param,
-		::ALint value1,
-		::ALint value2,
-		::ALint value3) noexcept;
+		ALuint source,
+		ALenum param,
+		ALint value1,
+		ALint value2,
+		ALint value3) noexcept;
 
 	void AL_APIENTRY alSourceiv(
-		::ALuint source,
-		::ALenum param,
-		const ::ALint* values) noexcept;
+		ALuint source,
+		ALenum param,
+		const ALint* values) noexcept;
 
 	void AL_APIENTRY alGetSourcef(
-		::ALuint source,
-		::ALenum param,
-		::ALfloat* value) noexcept;
+		ALuint source,
+		ALenum param,
+		ALfloat* value) noexcept;
 
 	void AL_APIENTRY alGetSource3f(
-		::ALuint source,
-		::ALenum param,
-		::ALfloat* value1,
-		::ALfloat* value2,
-		::ALfloat* value3) noexcept;
+		ALuint source,
+		ALenum param,
+		ALfloat* value1,
+		ALfloat* value2,
+		ALfloat* value3) noexcept;
 
 	void AL_APIENTRY alGetSourcefv(
-		::ALuint source,
-		::ALenum param,
-		::ALfloat* values) noexcept;
+		ALuint source,
+		ALenum param,
+		ALfloat* values) noexcept;
 
 	void AL_APIENTRY alGetSourcei(
-		::ALuint source,
-		::ALenum param,
-		::ALint* value) noexcept;
+		ALuint source,
+		ALenum param,
+		ALint* value) noexcept;
 
 	void AL_APIENTRY alGetSource3i(
-		::ALuint source,
-		::ALenum param,
-		::ALint* value1,
-		::ALint* value2,
-		::ALint* value3) noexcept;
+		ALuint source,
+		ALenum param,
+		ALint* value1,
+		ALint* value2,
+		ALint* value3) noexcept;
 
 	void AL_APIENTRY alGetSourceiv(
-		::ALuint source,
-		::ALenum param,
-		::ALint* values) noexcept;
+		ALuint source,
+		ALenum param,
+		ALint* values) noexcept;
 
 	void AL_APIENTRY alSourcePlayv(
-		::ALsizei n,
-		const ::ALuint* sources) noexcept;
+		ALsizei n,
+		const ALuint* sources) noexcept;
 
 	void AL_APIENTRY alSourceStopv(
-		::ALsizei n,
-		const ::ALuint* sources) noexcept;
+		ALsizei n,
+		const ALuint* sources) noexcept;
 
 	void AL_APIENTRY alSourceRewindv(
-		::ALsizei n,
-		const ::ALuint* sources) noexcept;
+		ALsizei n,
+		const ALuint* sources) noexcept;
 
 	void AL_APIENTRY alSourcePausev(
-		::ALsizei n,
-		const ::ALuint* sources) noexcept;
+		ALsizei n,
+		const ALuint* sources) noexcept;
 
 	void AL_APIENTRY alSourcePlay(
-		::ALuint source) noexcept;
+		ALuint source) noexcept;
 
 	void AL_APIENTRY alSourceStop(
-		::ALuint source) noexcept;
+		ALuint source) noexcept;
 
 	void AL_APIENTRY alSourceRewind(
-		::ALuint source) noexcept;
+		ALuint source) noexcept;
 
 	void AL_APIENTRY alSourcePause(
-		::ALuint source) noexcept;
+		ALuint source) noexcept;
 
 	void AL_APIENTRY alSourceQueueBuffers(
-		::ALuint source,
-		::ALsizei nb,
-		const ::ALuint* buffers) noexcept;
+		ALuint source,
+		ALsizei nb,
+		const ALuint* buffers) noexcept;
 
 	void AL_APIENTRY alSourceUnqueueBuffers(
-		::ALuint source,
-		::ALsizei nb,
-		::ALuint* buffers) noexcept;
+		ALuint source,
+		ALsizei nb,
+		ALuint* buffers) noexcept;
 
 	void AL_APIENTRY alGenBuffers(
-		::ALsizei n,
-		::ALuint* buffers) noexcept;
+		ALsizei n,
+		ALuint* buffers) noexcept;
 
 	void AL_APIENTRY alDeleteBuffers(
-		::ALsizei n,
-		const ::ALuint* buffers) noexcept;
+		ALsizei n,
+		const ALuint* buffers) noexcept;
 
-	::ALboolean AL_APIENTRY alIsBuffer(
-		::ALuint buffer) noexcept;
+	ALboolean AL_APIENTRY alIsBuffer(
+		ALuint buffer) noexcept;
 
 	void AL_APIENTRY alBufferData(
-		::ALuint buffer,
-		::ALenum format,
-		const ::ALvoid* data,
-		::ALsizei size,
-		::ALsizei freq) noexcept;
+		ALuint buffer,
+		ALenum format,
+		const ALvoid* data,
+		ALsizei size,
+		ALsizei freq) noexcept;
 
 	void AL_APIENTRY alBufferf(
-		::ALuint buffer,
-		::ALenum param,
-		::ALfloat value) noexcept;
+		ALuint buffer,
+		ALenum param,
+		ALfloat value) noexcept;
 
 	void AL_APIENTRY alBuffer3f(
-		::ALuint buffer,
-		::ALenum param,
-		::ALfloat value1,
-		::ALfloat value2,
-		::ALfloat value3) noexcept;
+		ALuint buffer,
+		ALenum param,
+		ALfloat value1,
+		ALfloat value2,
+		ALfloat value3) noexcept;
 
 	void AL_APIENTRY alBufferfv(
-		::ALuint buffer,
-		::ALenum param,
-		const ::ALfloat* values) noexcept;
+		ALuint buffer,
+		ALenum param,
+		const ALfloat* values) noexcept;
 
 	void AL_APIENTRY alBufferi(
-		::ALuint buffer,
-		::ALenum param,
-		::ALint value) noexcept;
+		ALuint buffer,
+		ALenum param,
+		ALint value) noexcept;
 
 	void AL_APIENTRY alBuffer3i(
-		::ALuint buffer,
-		::ALenum param,
-		::ALint value1,
-		::ALint value2,
-		::ALint value3) noexcept;
+		ALuint buffer,
+		ALenum param,
+		ALint value1,
+		ALint value2,
+		ALint value3) noexcept;
 
 	void AL_APIENTRY alBufferiv(
-		::ALuint buffer,
-		::ALenum param,
-		const ::ALint* values) noexcept;
+		ALuint buffer,
+		ALenum param,
+		const ALint* values) noexcept;
 
 	void AL_APIENTRY alGetBufferf(
-		::ALuint buffer,
-		::ALenum param,
-		::ALfloat* value) noexcept;
+		ALuint buffer,
+		ALenum param,
+		ALfloat* value) noexcept;
 
 	void AL_APIENTRY alGetBuffer3f(
-		::ALuint buffer,
-		::ALenum param,
-		::ALfloat* value1,
-		::ALfloat* value2,
-		::ALfloat* value3) noexcept;
+		ALuint buffer,
+		ALenum param,
+		ALfloat* value1,
+		ALfloat* value2,
+		ALfloat* value3) noexcept;
 
 	void AL_APIENTRY alGetBufferfv(
-		::ALuint buffer,
-		::ALenum param,
-		::ALfloat* values) noexcept;
+		ALuint buffer,
+		ALenum param,
+		ALfloat* values) noexcept;
 
 	void AL_APIENTRY alGetBufferi(
-		::ALuint buffer,
-		::ALenum param,
-		::ALint* value) noexcept;
+		ALuint buffer,
+		ALenum param,
+		ALint* value) noexcept;
 
 	void AL_APIENTRY alGetBuffer3i(
-		::ALuint buffer,
-		::ALenum param,
-		::ALint* value1,
-		::ALint* value2,
-		::ALint* value3) noexcept;
+		ALuint buffer,
+		ALenum param,
+		ALint* value1,
+		ALint* value2,
+		ALint* value3) noexcept;
 
 	void AL_APIENTRY alGetBufferiv(
-		::ALuint buffer,
-		::ALenum param,
-		::ALint* values) noexcept;
+		ALuint buffer,
+		ALenum param,
+		ALint* values) noexcept;
 
 	// AL v1.1
 	// =========================================================================
@@ -597,21 +597,21 @@ private:
 
 	struct Buffer
 	{
-		::ALsizei size{};
-		::ALenum x_ram_mode{};
+		ALsizei size{};
+		ALenum x_ram_mode{};
 		bool x_ram_is_hardware{};
 		bool x_ram_is_dirty{};
 	}; // Buffer
 
-	using BufferMap = std::unordered_map<::ALuint, Buffer>;
+	using BufferMap = std::unordered_map<ALuint, Buffer>;
 
 	using Contexts = std::list<AlApiContextUPtr>;
 
 
 	struct Device
 	{
-		::ALCdevice* al_device{};
-		::ALsizei x_ram_free_size{};
+		ALCdevice* al_device{};
+		ALsizei x_ram_free_size{};
 
 		String special_name{};
 		BufferMap buffers{};
@@ -678,32 +678,32 @@ private:
 
 
 	Device* find_device(
-		::ALCdevice* al_device) noexcept;
+		ALCdevice* al_device) noexcept;
 
 	Device& get_device(
-		::ALCdevice* al_device);
+		ALCdevice* al_device);
 
 	Device& get_current_device();
 
 	Buffer& get_buffer(
 		Device& device,
-		::ALuint al_buffer_name);
+		ALuint al_buffer_name);
 
 	Buffer& get_current_buffer(
-		::ALuint al_buffer_name);
+		ALuint al_buffer_name);
 
 
 	AlApiContext& get_context();
 
 	AlApiContext& get_context(
-		::ALCcontext* al_context);
+		ALCcontext* al_context);
 
 	void remove_context(
 		const AlApiContext& context);
 
 
 	void log_devices_info(
-		::ALCenum alc_token);
+		ALCenum alc_token);
 
 	void log_playback_devices();
 
@@ -713,14 +713,14 @@ private:
 
 
 	void log_device_extensions(
-		::ALCdevice* al_device);
+		ALCdevice* al_device);
 
 	void log_device_info(
-		::ALCdevice* al_device);
+		ALCdevice* al_device);
 
 
 	void log_desired_context_attribute_list(
-		const ::ALCint* al_attributes);
+		const ALCint* al_attributes);
 }; // AlApiImpl
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -812,10 +812,10 @@ AlApiContext& AlApiImpl::get_current_context()
 	return get_context();
 }
 
-::ALboolean AL_APIENTRY AlApiImpl::eax_set_buffer_mode(
-	::ALsizei n,
-	const ::ALuint* buffers,
-	::ALint value)
+ALboolean AL_APIENTRY AlApiImpl::eax_set_buffer_mode(
+	ALsizei n,
+	const ALuint* buffers,
+	ALint value)
 {
 	if (n == 0)
 	{
@@ -878,7 +878,7 @@ AlApiContext& AlApiImpl::get_current_context()
 	return AL_TRUE;
 }
 
-::ALenum AL_APIENTRY AlApiImpl::eax_get_buffer_mode(
+ALenum AL_APIENTRY AlApiImpl::eax_get_buffer_mode(
 	ALuint buffer,
     ALint* pReserved)
 {
@@ -905,9 +905,9 @@ Eaxx* AlApiImpl::get_eaxx() const noexcept
 // ==========================================================================
 // ALC v1.1
 
-::ALCcontext* ALC_APIENTRY AlApiImpl::alcCreateContext(
-	::ALCdevice* device,
-	const ::ALCint* attrlist) noexcept
+ALCcontext* ALC_APIENTRY AlApiImpl::alcCreateContext(
+	ALCdevice* device,
+	const ALCint* attrlist) noexcept
 try
 {
 	logger_.info("");
@@ -945,8 +945,8 @@ catch (...)
 	return nullptr;
 }
 
-::ALCboolean ALC_APIENTRY AlApiImpl::alcMakeContextCurrent(
-	::ALCcontext* context) noexcept
+ALCboolean ALC_APIENTRY AlApiImpl::alcMakeContextCurrent(
+	ALCcontext* context) noexcept
 try
 {
 	logger_.info("");
@@ -986,7 +986,7 @@ catch (...)
 }
 
 void ALC_APIENTRY AlApiImpl::alcProcessContext(
-	::ALCcontext* context) noexcept
+	ALCcontext* context) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -999,7 +999,7 @@ catch (...)
 }
 
 void ALC_APIENTRY AlApiImpl::alcSuspendContext(
-	::ALCcontext* context) noexcept
+	ALCcontext* context) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1012,7 +1012,7 @@ catch (...)
 }
 
 void ALC_APIENTRY AlApiImpl::alcDestroyContext(
-	::ALCcontext* context) noexcept
+	ALCcontext* context) noexcept
 try
 {
 	logger_.info("");
@@ -1044,7 +1044,7 @@ catch (...)
 	utils::log_exception(&logger_, AlAlcSymbolsNames::alcDestroyContext);
 }
 
-::ALCcontext* ALC_APIENTRY AlApiImpl::alcGetCurrentContext() noexcept
+ALCcontext* ALC_APIENTRY AlApiImpl::alcGetCurrentContext() noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1062,8 +1062,8 @@ catch (...)
 	return nullptr;
 }
 
-::ALCdevice* ALC_APIENTRY AlApiImpl::alcGetContextsDevice(
-	::ALCcontext* context) noexcept
+ALCdevice* ALC_APIENTRY AlApiImpl::alcGetContextsDevice(
+	ALCcontext* context) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1076,8 +1076,8 @@ catch (...)
 	return nullptr;
 }
 
-::ALCdevice* ALC_APIENTRY AlApiImpl::alcOpenDevice(
-	const ::ALCchar* devicename) noexcept
+ALCdevice* ALC_APIENTRY AlApiImpl::alcOpenDevice(
+	const ALCchar* devicename) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1164,8 +1164,8 @@ catch (...)
 	return nullptr;
 }
 
-::ALCboolean ALC_APIENTRY AlApiImpl::alcCloseDevice(
-	::ALCdevice* device) noexcept
+ALCboolean ALC_APIENTRY AlApiImpl::alcCloseDevice(
+	ALCdevice* device) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1202,8 +1202,8 @@ catch (...)
 	return ALC_FALSE;
 }
 
-::ALCenum ALC_APIENTRY AlApiImpl::alcGetError(
-	::ALCdevice* device) noexcept
+ALCenum ALC_APIENTRY AlApiImpl::alcGetError(
+	ALCdevice* device) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1218,9 +1218,9 @@ catch (...)
 	return ALC_INVALID_DEVICE;
 }
 
-::ALCboolean ALC_APIENTRY AlApiImpl::alcIsExtensionPresent(
-	::ALCdevice* device,
-	const ::ALCchar* extname) noexcept
+ALCboolean ALC_APIENTRY AlApiImpl::alcIsExtensionPresent(
+	ALCdevice* device,
+	const ALCchar* extname) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1234,8 +1234,8 @@ catch (...)
 }
 
 void* ALC_APIENTRY AlApiImpl::alcGetProcAddress(
-	::ALCdevice* device,
-	const ::ALCchar* funcname) noexcept
+	ALCdevice* device,
+	const ALCchar* funcname) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1259,9 +1259,9 @@ catch (...)
 	return nullptr;
 }
 
-::ALCenum ALC_APIENTRY AlApiImpl::alcGetEnumValue(
-	::ALCdevice* device,
-	const ::ALCchar* enumname) noexcept
+ALCenum ALC_APIENTRY AlApiImpl::alcGetEnumValue(
+	ALCdevice* device,
+	const ALCchar* enumname) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1274,9 +1274,9 @@ catch (...)
 	return AL_NONE;
 }
 
-const ::ALCchar* ALC_APIENTRY AlApiImpl::alcGetString(
-	::ALCdevice* device,
-	::ALCenum param) noexcept
+const ALCchar* ALC_APIENTRY AlApiImpl::alcGetString(
+	ALCdevice* device,
+	ALCenum param) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1300,10 +1300,10 @@ catch (...)
 }
 
 void ALC_APIENTRY AlApiImpl::alcGetIntegerv(
-	::ALCdevice* device,
-	::ALCenum param,
-	::ALCsizei size,
-	::ALCint* values) noexcept
+	ALCdevice* device,
+	ALCenum param,
+	ALCsizei size,
+	ALCint* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1315,11 +1315,11 @@ catch (...)
 	utils::log_exception(&logger_, AlAlcSymbolsNames::alcGetIntegerv);
 }
 
-::ALCdevice* ALC_APIENTRY AlApiImpl::alcCaptureOpenDevice(
-	const ::ALCchar* devicename,
-	::ALCuint frequency,
-	::ALCenum format,
-	::ALCsizei buffersize) noexcept
+ALCdevice* ALC_APIENTRY AlApiImpl::alcCaptureOpenDevice(
+	const ALCchar* devicename,
+	ALCuint frequency,
+	ALCenum format,
+	ALCsizei buffersize) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1332,8 +1332,8 @@ catch (...)
 	return nullptr;
 }
 
-::ALCboolean ALC_APIENTRY AlApiImpl::alcCaptureCloseDevice(
-	::ALCdevice* device) noexcept
+ALCboolean ALC_APIENTRY AlApiImpl::alcCaptureCloseDevice(
+	ALCdevice* device) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1347,7 +1347,7 @@ catch (...)
 }
 
 void ALC_APIENTRY AlApiImpl::alcCaptureStart(
-	::ALCdevice* device) noexcept
+	ALCdevice* device) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1360,7 +1360,7 @@ catch (...)
 }
 
 void ALC_APIENTRY AlApiImpl::alcCaptureStop(
-	::ALCdevice* device) noexcept
+	ALCdevice* device) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1373,9 +1373,9 @@ catch (...)
 }
 
 void ALC_APIENTRY AlApiImpl::alcCaptureSamples(
-	::ALCdevice* device,
-	::ALCvoid* buffer,
-	::ALCsizei samples) noexcept
+	ALCdevice* device,
+	ALCvoid* buffer,
+	ALCsizei samples) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1394,7 +1394,7 @@ catch (...)
 // AL v1.1
 
 void AL_APIENTRY AlApiImpl::alDopplerFactor(
-	::ALfloat value) noexcept
+	ALfloat value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1407,7 +1407,7 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alDopplerVelocity(
-	::ALfloat value) noexcept
+	ALfloat value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1420,7 +1420,7 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSpeedOfSound(
-	::ALfloat value) noexcept
+	ALfloat value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1433,7 +1433,7 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alDistanceModel(
-	::ALenum distanceModel) noexcept
+	ALenum distanceModel) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1446,7 +1446,7 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alEnable(
-	::ALenum capability) noexcept
+	ALenum capability) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1459,7 +1459,7 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alDisable(
-	::ALenum capability) noexcept
+	ALenum capability) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1471,8 +1471,8 @@ catch (...)
 	utils::log_exception(&logger_, AlAlSymbolsNames::alDisable);
 }
 
-::ALboolean AL_APIENTRY AlApiImpl::alIsEnabled(
-	::ALenum capability) noexcept
+ALboolean AL_APIENTRY AlApiImpl::alIsEnabled(
+	ALenum capability) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1485,8 +1485,8 @@ catch (...)
 	return AL_FALSE;
 }
 
-const ::ALchar* AL_APIENTRY AlApiImpl::alGetString(
-	::ALenum param) noexcept
+const ALchar* AL_APIENTRY AlApiImpl::alGetString(
+	ALenum param) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1510,8 +1510,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetBooleanv(
-	::ALenum param,
-	::ALboolean* values) noexcept
+	ALenum param,
+	ALboolean* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1524,8 +1524,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetIntegerv(
-	::ALenum param,
-	::ALint* values) noexcept
+	ALenum param,
+	ALint* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1538,8 +1538,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetFloatv(
-	::ALenum param,
-	::ALfloat* values) noexcept
+	ALenum param,
+	ALfloat* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1552,8 +1552,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetDoublev(
-	::ALenum param,
-	::ALdouble* values) noexcept
+	ALenum param,
+	ALdouble* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1565,8 +1565,8 @@ catch (...)
 	utils::log_exception(&logger_, AlAlSymbolsNames::alGetDoublev);
 }
 
-::ALboolean AL_APIENTRY AlApiImpl::alGetBoolean(
-	::ALenum param) noexcept
+ALboolean AL_APIENTRY AlApiImpl::alGetBoolean(
+	ALenum param) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1579,8 +1579,8 @@ catch (...)
 	return AL_FALSE;
 }
 
-::ALint AL_APIENTRY AlApiImpl::alGetInteger(
-	::ALenum param) noexcept
+ALint AL_APIENTRY AlApiImpl::alGetInteger(
+	ALenum param) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1606,8 +1606,8 @@ catch (...)
 	return 0;
 }
 
-::ALfloat AL_APIENTRY AlApiImpl::alGetFloat(
-	::ALenum param) noexcept
+ALfloat AL_APIENTRY AlApiImpl::alGetFloat(
+	ALenum param) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1620,8 +1620,8 @@ catch (...)
 	return 0.0F;
 }
 
-::ALdouble AL_APIENTRY AlApiImpl::alGetDouble(
-	::ALenum param) noexcept
+ALdouble AL_APIENTRY AlApiImpl::alGetDouble(
+	ALenum param) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1634,7 +1634,7 @@ catch (...)
 	return 0.0;
 }
 
-::ALenum AL_APIENTRY AlApiImpl::alGetError() noexcept
+ALenum AL_APIENTRY AlApiImpl::alGetError() noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1648,8 +1648,8 @@ catch (...)
 	return AL_INVALID_OPERATION;
 }
 
-::ALboolean AL_APIENTRY AlApiImpl::alIsExtensionPresent(
-	const ::ALchar* extname) noexcept
+ALboolean AL_APIENTRY AlApiImpl::alIsExtensionPresent(
+	const ALchar* extname) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1685,7 +1685,7 @@ catch (...)
 }
 
 void* AL_APIENTRY AlApiImpl::alGetProcAddress(
-	const ::ALchar* fname) noexcept
+	const ALchar* fname) noexcept
 try
 {
 	if (!fname || (*fname) == '\0')
@@ -1737,8 +1737,8 @@ catch (...)
 	return nullptr;
 }
 
-::ALenum AL_APIENTRY AlApiImpl::alGetEnumValue(
-	const ::ALchar* ename) noexcept
+ALenum AL_APIENTRY AlApiImpl::alGetEnumValue(
+	const ALchar* ename) noexcept
 try
 {
 	if (!ename || ename[0] == '\0')
@@ -1791,8 +1791,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alListenerf(
-	::ALenum param,
-	::ALfloat value) noexcept
+	ALenum param,
+	ALfloat value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1805,10 +1805,10 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alListener3f(
-	::ALenum param,
-	::ALfloat value1,
-	::ALfloat value2,
-	::ALfloat value3) noexcept
+	ALenum param,
+	ALfloat value1,
+	ALfloat value2,
+	ALfloat value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1821,8 +1821,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alListenerfv(
-	::ALenum param,
-	const ::ALfloat* values) noexcept
+	ALenum param,
+	const ALfloat* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1835,8 +1835,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alListeneri(
-	::ALenum param,
-	::ALint value) noexcept
+	ALenum param,
+	ALint value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1849,10 +1849,10 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alListener3i(
-	::ALenum param,
-	::ALint value1,
-	::ALint value2,
-	::ALint value3) noexcept
+	ALenum param,
+	ALint value1,
+	ALint value2,
+	ALint value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1865,8 +1865,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alListeneriv(
-	::ALenum param,
-	const ::ALint* values) noexcept
+	ALenum param,
+	const ALint* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1879,8 +1879,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetListenerf(
-	::ALenum param,
-	::ALfloat* value) noexcept
+	ALenum param,
+	ALfloat* value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1893,10 +1893,10 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetListener3f(
-	::ALenum param,
-	::ALfloat* value1,
-	::ALfloat* value2,
-	::ALfloat* value3) noexcept
+	ALenum param,
+	ALfloat* value1,
+	ALfloat* value2,
+	ALfloat* value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1909,8 +1909,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetListenerfv(
-	::ALenum param,
-	::ALfloat* values) noexcept
+	ALenum param,
+	ALfloat* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1923,8 +1923,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetListeneri(
-	::ALenum param,
-	::ALint* value) noexcept
+	ALenum param,
+	ALint* value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1937,10 +1937,10 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetListener3i(
-	::ALenum param,
-	::ALint* value1,
-	::ALint* value2,
-	::ALint* value3) noexcept
+	ALenum param,
+	ALint* value1,
+	ALint* value2,
+	ALint* value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1953,8 +1953,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetListeneriv(
-	::ALenum param,
-	::ALint* values) noexcept
+	ALenum param,
+	ALint* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1967,8 +1967,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGenSources(
-	::ALsizei n,
-	::ALuint* sources) noexcept
+	ALsizei n,
+	ALuint* sources) noexcept
 try
 {
 	if (n == 0)
@@ -1997,8 +1997,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alDeleteSources(
-	::ALsizei n,
-	const ::ALuint* sources) noexcept
+	ALsizei n,
+	const ALuint* sources) noexcept
 try
 {
 	if (n == 0)
@@ -2026,8 +2026,8 @@ catch (...)
 	utils::log_exception(&logger_, AlAlSymbolsNames::alDeleteSources);
 }
 
-::ALboolean AL_APIENTRY AlApiImpl::alIsSource(
-	::ALuint source) noexcept
+ALboolean AL_APIENTRY AlApiImpl::alIsSource(
+	ALuint source) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2041,9 +2041,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourcef(
-	::ALuint source,
-	::ALenum param,
-	::ALfloat value) noexcept
+	ALuint source,
+	ALenum param,
+	ALfloat value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2056,11 +2056,11 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSource3f(
-	::ALuint source,
-	::ALenum param,
-	::ALfloat value1,
-	::ALfloat value2,
-	::ALfloat value3) noexcept
+	ALuint source,
+	ALenum param,
+	ALfloat value1,
+	ALfloat value2,
+	ALfloat value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2073,9 +2073,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourcefv(
-	::ALuint source,
-	::ALenum param,
-	const ::ALfloat* values) noexcept
+	ALuint source,
+	ALenum param,
+	const ALfloat* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2088,9 +2088,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourcei(
-	::ALuint source,
-	::ALenum param,
-	::ALint value) noexcept
+	ALuint source,
+	ALenum param,
+	ALint value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2103,11 +2103,11 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSource3i(
-	::ALuint source,
-	::ALenum param,
-	::ALint value1,
-	::ALint value2,
-	::ALint value3) noexcept
+	ALuint source,
+	ALenum param,
+	ALint value1,
+	ALint value2,
+	ALint value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2120,9 +2120,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourceiv(
-	::ALuint source,
-	::ALenum param,
-	const ::ALint* values) noexcept
+	ALuint source,
+	ALenum param,
+	const ALint* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2135,9 +2135,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetSourcef(
-	::ALuint source,
-	::ALenum param,
-	::ALfloat* value) noexcept
+	ALuint source,
+	ALenum param,
+	ALfloat* value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2150,11 +2150,11 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetSource3f(
-	::ALuint source,
-	::ALenum param,
-	::ALfloat* value1,
-	::ALfloat* value2,
-	::ALfloat* value3) noexcept
+	ALuint source,
+	ALenum param,
+	ALfloat* value1,
+	ALfloat* value2,
+	ALfloat* value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2167,9 +2167,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetSourcefv(
-	::ALuint source,
-	::ALenum param,
-	::ALfloat* values) noexcept
+	ALuint source,
+	ALenum param,
+	ALfloat* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2182,9 +2182,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetSourcei(
-	::ALuint source,
-	::ALenum param,
-	::ALint* value) noexcept
+	ALuint source,
+	ALenum param,
+	ALint* value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2197,11 +2197,11 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetSource3i(
-	::ALuint source,
-	::ALenum param,
-	::ALint* value1,
-	::ALint* value2,
-	::ALint* value3) noexcept
+	ALuint source,
+	ALenum param,
+	ALint* value1,
+	ALint* value2,
+	ALint* value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2214,9 +2214,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetSourceiv(
-	::ALuint source,
-	::ALenum param,
-	::ALint* values) noexcept
+	ALuint source,
+	ALenum param,
+	ALint* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2229,8 +2229,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourcePlayv(
-	::ALsizei n,
-	const ::ALuint* sources) noexcept
+	ALsizei n,
+	const ALuint* sources) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2243,8 +2243,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourceStopv(
-	::ALsizei n,
-	const ::ALuint* sources) noexcept
+	ALsizei n,
+	const ALuint* sources) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2257,8 +2257,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourceRewindv(
-	::ALsizei n,
-	const ::ALuint* sources) noexcept
+	ALsizei n,
+	const ALuint* sources) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2271,8 +2271,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourcePausev(
-	::ALsizei n,
-	const ::ALuint* sources) noexcept
+	ALsizei n,
+	const ALuint* sources) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2285,7 +2285,7 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourcePlay(
-	::ALuint source) noexcept
+	ALuint source) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2298,7 +2298,7 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourceStop(
-	::ALuint source) noexcept
+	ALuint source) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2311,7 +2311,7 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourceRewind(
-	::ALuint source) noexcept
+	ALuint source) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2324,7 +2324,7 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourcePause(
-	::ALuint source) noexcept
+	ALuint source) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2337,9 +2337,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourceQueueBuffers(
-	::ALuint source,
-	::ALsizei nb,
-	const ::ALuint* buffers) noexcept
+	ALuint source,
+	ALsizei nb,
+	const ALuint* buffers) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2352,9 +2352,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alSourceUnqueueBuffers(
-	::ALuint source,
-	::ALsizei nb,
-	::ALuint* buffers) noexcept
+	ALuint source,
+	ALsizei nb,
+	ALuint* buffers) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2367,8 +2367,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGenBuffers(
-	::ALsizei n,
-	::ALuint* buffers) noexcept
+	ALsizei n,
+	ALuint* buffers) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2401,8 +2401,8 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alDeleteBuffers(
-	::ALsizei n,
-	const ::ALuint* buffers) noexcept
+	ALsizei n,
+	const ALuint* buffers) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2452,8 +2452,8 @@ catch (...)
 	utils::log_exception(&logger_, AlAlSymbolsNames::alDeleteBuffers);
 }
 
-::ALboolean AL_APIENTRY AlApiImpl::alIsBuffer(
-	::ALuint buffer) noexcept
+ALboolean AL_APIENTRY AlApiImpl::alIsBuffer(
+	ALuint buffer) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2467,11 +2467,11 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alBufferData(
-	::ALuint buffer,
-	::ALenum format,
-	const ::ALvoid* data,
-	::ALsizei size,
-	::ALsizei freq) noexcept
+	ALuint buffer,
+	ALenum format,
+	const ALvoid* data,
+	ALsizei size,
+	ALsizei freq) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2575,9 +2575,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alBufferf(
-	::ALuint buffer,
-	::ALenum param,
-	::ALfloat value) noexcept
+	ALuint buffer,
+	ALenum param,
+	ALfloat value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2590,11 +2590,11 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alBuffer3f(
-	::ALuint buffer,
-	::ALenum param,
-	::ALfloat value1,
-	::ALfloat value2,
-	::ALfloat value3) noexcept
+	ALuint buffer,
+	ALenum param,
+	ALfloat value1,
+	ALfloat value2,
+	ALfloat value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2607,9 +2607,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alBufferfv(
-	::ALuint buffer,
-	::ALenum param,
-	const ::ALfloat* values) noexcept
+	ALuint buffer,
+	ALenum param,
+	const ALfloat* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2622,9 +2622,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alBufferi(
-	::ALuint buffer,
-	::ALenum param,
-	::ALint value) noexcept
+	ALuint buffer,
+	ALenum param,
+	ALint value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2637,11 +2637,11 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alBuffer3i(
-	::ALuint buffer,
-	::ALenum param,
-	::ALint value1,
-	::ALint value2,
-	::ALint value3) noexcept
+	ALuint buffer,
+	ALenum param,
+	ALint value1,
+	ALint value2,
+	ALint value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2654,9 +2654,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alBufferiv(
-	::ALuint buffer,
-	::ALenum param,
-	const ::ALint* values) noexcept
+	ALuint buffer,
+	ALenum param,
+	const ALint* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2669,9 +2669,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetBufferf(
-	::ALuint buffer,
-	::ALenum param,
-	::ALfloat* value) noexcept
+	ALuint buffer,
+	ALenum param,
+	ALfloat* value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2684,11 +2684,11 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetBuffer3f(
-	::ALuint buffer,
-	::ALenum param,
-	::ALfloat* value1,
-	::ALfloat* value2,
-	::ALfloat* value3) noexcept
+	ALuint buffer,
+	ALenum param,
+	ALfloat* value1,
+	ALfloat* value2,
+	ALfloat* value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2701,9 +2701,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetBufferfv(
-	::ALuint buffer,
-	::ALenum param,
-	::ALfloat* values) noexcept
+	ALuint buffer,
+	ALenum param,
+	ALfloat* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2716,9 +2716,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetBufferi(
-	::ALuint buffer,
-	::ALenum param,
-	::ALint* value) noexcept
+	ALuint buffer,
+	ALenum param,
+	ALint* value) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2731,11 +2731,11 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetBuffer3i(
-	::ALuint buffer,
-	::ALenum param,
-	::ALint* value1,
-	::ALint* value2,
-	::ALint* value3) noexcept
+	ALuint buffer,
+	ALenum param,
+	ALint* value1,
+	ALint* value2,
+	ALint* value3) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -2748,9 +2748,9 @@ catch (...)
 }
 
 void AL_APIENTRY AlApiImpl::alGetBufferiv(
-	::ALuint buffer,
-	::ALenum param,
-	::ALint* values) noexcept
+	ALuint buffer,
+	ALenum param,
+	ALint* values) noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -3061,7 +3061,7 @@ MoveableMutexLock AlApiImpl::initialize()
 }
 
 AlApiImpl::Device* AlApiImpl::find_device(
-	::ALCdevice* al_device) noexcept
+	ALCdevice* al_device) noexcept
 {
 	for (auto& device : devices_)
 	{
@@ -3075,7 +3075,7 @@ AlApiImpl::Device* AlApiImpl::find_device(
 }
 
 AlApiImpl::Device& AlApiImpl::get_device(
-	::ALCdevice* al_device)
+	ALCdevice* al_device)
 {
 	auto device = find_device(al_device);
 
@@ -3110,7 +3110,7 @@ AlApiImpl::Device& AlApiImpl::get_current_device()
 
 AlApiImpl::Buffer& AlApiImpl::get_buffer(
 	Device& device,
-	::ALuint al_buffer_name)
+	ALuint al_buffer_name)
 {
 	auto& buffers = device.buffers;
 	const auto buffer_it = buffers.find(al_buffer_name);
@@ -3124,7 +3124,7 @@ AlApiImpl::Buffer& AlApiImpl::get_buffer(
 }
 
 AlApiImpl::Buffer& AlApiImpl::get_current_buffer(
-	::ALuint al_buffer_name)
+	ALuint al_buffer_name)
 {
 	auto& device = get_current_device();
 	return get_buffer(device, al_buffer_name);
@@ -3141,7 +3141,7 @@ AlApiContext& AlApiImpl::get_context()
 }
 
 AlApiContext& AlApiImpl::get_context(
-	::ALCcontext* al_context)
+	ALCcontext* al_context)
 {
 	for (auto& device : devices_)
 	{
@@ -3192,7 +3192,7 @@ void AlApiImpl::remove_context(
 }
 
 void AlApiImpl::log_devices_info(
-	::ALCenum alc_token)
+	ALCenum alc_token)
 {
 	const auto alc_devices_names = al_alc_symbols_->alcGetString(nullptr, alc_token);
 
@@ -3243,7 +3243,7 @@ void AlApiImpl::log_devices_info()
 }
 
 void AlApiImpl::log_device_extensions(
-	::ALCdevice* al_device)
+	ALCdevice* al_device)
 {
 	const auto al_device_extensions = al_alc_symbols_->alcGetString(al_device, ALC_EXTENSIONS);
 
@@ -3253,13 +3253,13 @@ void AlApiImpl::log_device_extensions(
 }
 
 void AlApiImpl::log_device_info(
-	::ALCdevice* al_device)
+	ALCdevice* al_device)
 {
 	log_device_extensions(al_device);
 }
 
 void AlApiImpl::log_desired_context_attribute_list(
-	const ::ALCint* al_attributes)
+	const ALCint* al_attributes)
 {
 	logger_.info("");
 	logger_.info("Input attributes:");
@@ -3304,133 +3304,133 @@ extern "C"
 // ==========================================================================
 // ALC v1.1
 
-ALC_API ::ALCcontext* ALC_APIENTRY alcCreateContext(
-	::ALCdevice* device,
-	const ::ALCint* attrlist)
+ALC_API ALCcontext* ALC_APIENTRY alcCreateContext(
+	ALCdevice* device,
+	const ALCint* attrlist)
 {
 	return eaxefx::g_al_api_impl.alcCreateContext(device, attrlist);
 }
 
-ALC_API ::ALCboolean ALC_APIENTRY alcMakeContextCurrent(
-	::ALCcontext* context)
+ALC_API ALCboolean ALC_APIENTRY alcMakeContextCurrent(
+	ALCcontext* context)
 {
 	return eaxefx::g_al_api_impl.alcMakeContextCurrent(context);
 }
 
 ALC_API void ALC_APIENTRY alcProcessContext(
-	::ALCcontext* context)
+	ALCcontext* context)
 {
 	eaxefx::g_al_api_impl.alcProcessContext(context);
 }
 
 ALC_API void ALC_APIENTRY alcSuspendContext(
-	::ALCcontext* context)
+	ALCcontext* context)
 {
 	eaxefx::g_al_api_impl.alcSuspendContext(context);
 }
 
 ALC_API void ALC_APIENTRY alcDestroyContext(
-	::ALCcontext* context)
+	ALCcontext* context)
 {
 	eaxefx::g_al_api_impl.alcDestroyContext(context);
 }
 
-ALC_API ::ALCcontext* ALC_APIENTRY alcGetCurrentContext()
+ALC_API ALCcontext* ALC_APIENTRY alcGetCurrentContext()
 {
 	return eaxefx::g_al_api_impl.alcGetCurrentContext();
 }
 
-ALC_API ::ALCdevice* ALC_APIENTRY alcGetContextsDevice(
-	::ALCcontext* context)
+ALC_API ALCdevice* ALC_APIENTRY alcGetContextsDevice(
+	ALCcontext* context)
 {
 	return eaxefx::g_al_api_impl.alcGetContextsDevice(context);
 }
 
-ALC_API ::ALCdevice* ALC_APIENTRY alcOpenDevice(
-	const ::ALCchar* devicename)
+ALC_API ALCdevice* ALC_APIENTRY alcOpenDevice(
+	const ALCchar* devicename)
 {
 	return eaxefx::g_al_api_impl.alcOpenDevice(devicename);
 }
 
-ALC_API ::ALCboolean ALC_APIENTRY alcCloseDevice(
-	::ALCdevice* device)
+ALC_API ALCboolean ALC_APIENTRY alcCloseDevice(
+	ALCdevice* device)
 {
 	return eaxefx::g_al_api_impl.alcCloseDevice(device);
 }
 
-ALC_API ::ALCenum ALC_APIENTRY alcGetError(
-	::ALCdevice* device)
+ALC_API ALCenum ALC_APIENTRY alcGetError(
+	ALCdevice* device)
 {
 	return eaxefx::g_al_api_impl.alcGetError(device);
 }
 
-ALC_API ::ALCboolean ALC_APIENTRY alcIsExtensionPresent(
-	::ALCdevice* device,
-	const ::ALCchar* extname)
+ALC_API ALCboolean ALC_APIENTRY alcIsExtensionPresent(
+	ALCdevice* device,
+	const ALCchar* extname)
 {
 	return eaxefx::g_al_api_impl.alcIsExtensionPresent(device, extname);
 }
 
 ALC_API void* ALC_APIENTRY alcGetProcAddress(
-	::ALCdevice* device,
-	const ::ALCchar* funcname)
+	ALCdevice* device,
+	const ALCchar* funcname)
 {
 	return eaxefx::g_al_api_impl.alcGetProcAddress(device, funcname);
 }
 
-ALC_API ::ALCenum ALC_APIENTRY alcGetEnumValue(
-	::ALCdevice* device,
-	const ::ALCchar* enumname)
+ALC_API ALCenum ALC_APIENTRY alcGetEnumValue(
+	ALCdevice* device,
+	const ALCchar* enumname)
 {
 	return eaxefx::g_al_api_impl.alcGetEnumValue(device, enumname);
 }
 
-ALC_API const ::ALCchar* ALC_APIENTRY alcGetString(
-	::ALCdevice* device,
-	::ALCenum param)
+ALC_API const ALCchar* ALC_APIENTRY alcGetString(
+	ALCdevice* device,
+	ALCenum param)
 {
 	return eaxefx::g_al_api_impl.alcGetString(device, param);
 }
 
 ALC_API void ALC_APIENTRY alcGetIntegerv(
-	::ALCdevice* device,
-	::ALCenum param,
-	::ALCsizei size,
-	::ALCint* values)
+	ALCdevice* device,
+	ALCenum param,
+	ALCsizei size,
+	ALCint* values)
 {
 	eaxefx::g_al_api_impl.alcGetIntegerv(device, param, size, values);
 }
 
-ALC_API ::ALCdevice* ALC_APIENTRY alcCaptureOpenDevice(
-	const ::ALCchar* devicename,
-	::ALCuint frequency,
-	::ALCenum format,
-	::ALCsizei buffersize)
+ALC_API ALCdevice* ALC_APIENTRY alcCaptureOpenDevice(
+	const ALCchar* devicename,
+	ALCuint frequency,
+	ALCenum format,
+	ALCsizei buffersize)
 {
 	return eaxefx::g_al_api_impl.alcCaptureOpenDevice(devicename, frequency, format, buffersize);
 }
 
-ALC_API ::ALCboolean ALC_APIENTRY alcCaptureCloseDevice(
-	::ALCdevice* device)
+ALC_API ALCboolean ALC_APIENTRY alcCaptureCloseDevice(
+	ALCdevice* device)
 {
 	return eaxefx::g_al_api_impl.alcCaptureCloseDevice(device);
 }
 
 ALC_API void ALC_APIENTRY alcCaptureStart(
-	::ALCdevice* device)
+	ALCdevice* device)
 {
 	eaxefx::g_al_api_impl.alcCaptureStart(device);
 }
 
-ALC_API void ALC_APIENTRY alcCaptureStop(::ALCdevice* device)
+ALC_API void ALC_APIENTRY alcCaptureStop(ALCdevice* device)
 {
 	eaxefx::g_al_api_impl.alcCaptureStop(device);
 }
 
 ALC_API void ALC_APIENTRY alcCaptureSamples(
-	::ALCdevice* device,
-	::ALCvoid* buffer,
-	::ALCsizei samples)
+	ALCdevice* device,
+	ALCvoid* buffer,
+	ALCsizei samples)
 {
 	eaxefx::g_al_api_impl.alcCaptureSamples(device, buffer, samples);
 }
@@ -3443,542 +3443,542 @@ ALC_API void ALC_APIENTRY alcCaptureSamples(
 // AL v1.1
 
 AL_API void AL_APIENTRY alDopplerFactor(
-	::ALfloat value)
+	ALfloat value)
 {
 	eaxefx::g_al_api_impl.alDopplerFactor(value);
 }
 
 AL_API void AL_APIENTRY alDopplerVelocity(
-	::ALfloat value)
+	ALfloat value)
 {
 	eaxefx::g_al_api_impl.alDopplerVelocity(value);
 }
 
 AL_API void AL_APIENTRY alSpeedOfSound(
-	::ALfloat value)
+	ALfloat value)
 {
 	eaxefx::g_al_api_impl.alSpeedOfSound(value);
 }
 
 AL_API void AL_APIENTRY alDistanceModel(
-	::ALenum distanceModel)
+	ALenum distanceModel)
 {
 	eaxefx::g_al_api_impl.alDistanceModel(distanceModel);
 }
 
 AL_API void AL_APIENTRY alEnable(
-	::ALenum capability)
+	ALenum capability)
 {
 	eaxefx::g_al_api_impl.alEnable(capability);
 }
 
 AL_API void AL_APIENTRY alDisable(
-	::ALenum capability)
+	ALenum capability)
 {
 	eaxefx::g_al_api_impl.alDisable(capability);
 }
 
-AL_API ::ALboolean AL_APIENTRY alIsEnabled(
-	::ALenum capability)
+AL_API ALboolean AL_APIENTRY alIsEnabled(
+	ALenum capability)
 {
 	return eaxefx::g_al_api_impl.alIsEnabled(capability);
 }
 
-AL_API const ::ALchar* AL_APIENTRY alGetString(
-	::ALenum param)
+AL_API const ALchar* AL_APIENTRY alGetString(
+	ALenum param)
 {
 	return eaxefx::g_al_api_impl.alGetString(param);
 }
 
 AL_API void AL_APIENTRY alGetBooleanv(
-	::ALenum param,
-	::ALboolean* values)
+	ALenum param,
+	ALboolean* values)
 {
 	eaxefx::g_al_api_impl.alGetBooleanv(param, values);
 }
 
 AL_API void AL_APIENTRY alGetIntegerv(
-	::ALenum param,
-	::ALint* values)
+	ALenum param,
+	ALint* values)
 {
 	eaxefx::g_al_api_impl.alGetIntegerv(param, values);
 }
 
 AL_API void AL_APIENTRY alGetFloatv(
-	::ALenum param,
-	::ALfloat* values)
+	ALenum param,
+	ALfloat* values)
 {
 	eaxefx::g_al_api_impl.alGetFloatv(param, values);
 }
 
 AL_API void AL_APIENTRY alGetDoublev(
-	::ALenum param,
-	::ALdouble* values)
+	ALenum param,
+	ALdouble* values)
 {
 	eaxefx::g_al_api_impl.alGetDoublev(param, values);
 }
 
-AL_API ::ALboolean AL_APIENTRY alGetBoolean(
-	::ALenum param)
+AL_API ALboolean AL_APIENTRY alGetBoolean(
+	ALenum param)
 {
 	return eaxefx::g_al_api_impl.alGetBoolean(param);
 }
 
-AL_API ::ALint AL_APIENTRY alGetInteger(
-	::ALenum param)
+AL_API ALint AL_APIENTRY alGetInteger(
+	ALenum param)
 {
 	return eaxefx::g_al_api_impl.alGetInteger(param);
 }
 
-AL_API ::ALfloat AL_APIENTRY alGetFloat(
-	::ALenum param)
+AL_API ALfloat AL_APIENTRY alGetFloat(
+	ALenum param)
 {
 	return eaxefx::g_al_api_impl.alGetFloat(param);
 }
 
-AL_API ::ALdouble AL_APIENTRY alGetDouble(
-	::ALenum param)
+AL_API ALdouble AL_APIENTRY alGetDouble(
+	ALenum param)
 {
 	return eaxefx::g_al_api_impl.alGetDouble(param);
 }
 
-AL_API ::ALenum AL_APIENTRY alGetError()
+AL_API ALenum AL_APIENTRY alGetError()
 {
 	return eaxefx::g_al_api_impl.alGetError();
 }
 
-AL_API ::ALboolean AL_APIENTRY alIsExtensionPresent(
-	const ::ALchar* extname)
+AL_API ALboolean AL_APIENTRY alIsExtensionPresent(
+	const ALchar* extname)
 {
 	return eaxefx::g_al_api_impl.alIsExtensionPresent(extname);
 }
 
 AL_API void* AL_APIENTRY alGetProcAddress(
-	const ::ALchar* fname)
+	const ALchar* fname)
 {
 	return eaxefx::g_al_api_impl.alGetProcAddress(fname);
 }
 
-AL_API ::ALenum AL_APIENTRY alGetEnumValue(
-	const ::ALchar* ename)
+AL_API ALenum AL_APIENTRY alGetEnumValue(
+	const ALchar* ename)
 {
 	return eaxefx::g_al_api_impl.alGetEnumValue(ename);
 }
 
 AL_API void AL_APIENTRY alListenerf(
-	::ALenum param,
-	::ALfloat value)
+	ALenum param,
+	ALfloat value)
 {
 	eaxefx::g_al_api_impl.alListenerf(param, value);
 }
 
 AL_API void AL_APIENTRY alListener3f(
-	::ALenum param,
-	::ALfloat value1,
-	::ALfloat value2,
-	::ALfloat value3)
+	ALenum param,
+	ALfloat value1,
+	ALfloat value2,
+	ALfloat value3)
 {
 	eaxefx::g_al_api_impl.alListener3f(param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alListenerfv(
-	::ALenum param,
-	const ::ALfloat* values)
+	ALenum param,
+	const ALfloat* values)
 {
 	eaxefx::g_al_api_impl.alListenerfv(param, values);
 }
 
 AL_API void AL_APIENTRY alListeneri(
-	::ALenum param,
-	::ALint value)
+	ALenum param,
+	ALint value)
 {
 	eaxefx::g_al_api_impl.alListeneri(param, value);
 }
 
 AL_API void AL_APIENTRY alListener3i(
-	::ALenum param,
-	::ALint value1,
-	::ALint value2,
-	::ALint value3)
+	ALenum param,
+	ALint value1,
+	ALint value2,
+	ALint value3)
 {
 	eaxefx::g_al_api_impl.alListener3i(param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alListeneriv(
-	::ALenum param,
-	const ::ALint* values)
+	ALenum param,
+	const ALint* values)
 {
 	eaxefx::g_al_api_impl.alListeneriv(param, values);
 }
 
 AL_API void AL_APIENTRY alGetListenerf(
-	::ALenum param,
-	::ALfloat* value)
+	ALenum param,
+	ALfloat* value)
 {
 	eaxefx::g_al_api_impl.alGetListenerf(param, value);
 }
 
 AL_API void AL_APIENTRY alGetListener3f(
-	::ALenum param,
-	::ALfloat* value1,
-	::ALfloat* value2,
-	::ALfloat* value3)
+	ALenum param,
+	ALfloat* value1,
+	ALfloat* value2,
+	ALfloat* value3)
 {
 	eaxefx::g_al_api_impl.alGetListener3f(param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alGetListenerfv(
-	::ALenum param,
-	::ALfloat* values)
+	ALenum param,
+	ALfloat* values)
 {
 	eaxefx::g_al_api_impl.alGetListenerfv(param, values);
 }
 
 AL_API void AL_APIENTRY alGetListeneri(
-	::ALenum param,
-	::ALint* value)
+	ALenum param,
+	ALint* value)
 {
 	eaxefx::g_al_api_impl.alGetListeneri(param, value);
 }
 
 AL_API void AL_APIENTRY alGetListener3i(
-	::ALenum param,
-	::ALint* value1,
-	::ALint* value2,
-	::ALint* value3)
+	ALenum param,
+	ALint* value1,
+	ALint* value2,
+	ALint* value3)
 {
 	eaxefx::g_al_api_impl.alGetListener3i(param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alGetListeneriv(
-	::ALenum param,
-	::ALint* values)
+	ALenum param,
+	ALint* values)
 {
 	eaxefx::g_al_api_impl.alGetListeneriv(param, values);
 }
 
 AL_API void AL_APIENTRY alGenSources(
-	::ALsizei n,
-	::ALuint* sources)
+	ALsizei n,
+	ALuint* sources)
 {
 	eaxefx::g_al_api_impl.alGenSources(n, sources);
 }
 
 AL_API void AL_APIENTRY alDeleteSources(
-	::ALsizei n,
-	const ::ALuint* sources)
+	ALsizei n,
+	const ALuint* sources)
 {
 	eaxefx::g_al_api_impl.alDeleteSources(n, sources);
 }
 
-AL_API ::ALboolean AL_APIENTRY alIsSource(
-	::ALuint source)
+AL_API ALboolean AL_APIENTRY alIsSource(
+	ALuint source)
 {
 	return eaxefx::g_al_api_impl.alIsSource(source);
 }
 
 AL_API void AL_APIENTRY alSourcef(
-	::ALuint source,
-	::ALenum param,
-	::ALfloat value)
+	ALuint source,
+	ALenum param,
+	ALfloat value)
 {
 	eaxefx::g_al_api_impl.alSourcef(source, param, value);
 }
 
 AL_API void AL_APIENTRY alSource3f(
-	::ALuint source,
-	::ALenum param,
-	::ALfloat value1,
-	::ALfloat value2,
-	::ALfloat value3)
+	ALuint source,
+	ALenum param,
+	ALfloat value1,
+	ALfloat value2,
+	ALfloat value3)
 {
 	eaxefx::g_al_api_impl.alSource3f(source, param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alSourcefv(
-	::ALuint source,
-	::ALenum param,
-	const ::ALfloat* values)
+	ALuint source,
+	ALenum param,
+	const ALfloat* values)
 {
 	eaxefx::g_al_api_impl.alSourcefv(source, param, values);
 }
 
 AL_API void AL_APIENTRY alSourcei(
-	::ALuint source,
-	::ALenum param,
-	::ALint value)
+	ALuint source,
+	ALenum param,
+	ALint value)
 {
 	eaxefx::g_al_api_impl.alSourcei(source, param, value);
 }
 
 AL_API void AL_APIENTRY alSource3i(
-	::ALuint source,
-	::ALenum param,
-	::ALint value1,
-	::ALint value2,
-	::ALint value3)
+	ALuint source,
+	ALenum param,
+	ALint value1,
+	ALint value2,
+	ALint value3)
 {
 	eaxefx::g_al_api_impl.alSource3i(source, param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alSourceiv(
-	::ALuint source,
-	::ALenum param,
-	const ::ALint* values)
+	ALuint source,
+	ALenum param,
+	const ALint* values)
 {
 	eaxefx::g_al_api_impl.alSourceiv(source, param, values);
 }
 
 AL_API void AL_APIENTRY alGetSourcef(
-	::ALuint source,
-	::ALenum param,
-	::ALfloat* value)
+	ALuint source,
+	ALenum param,
+	ALfloat* value)
 {
 	eaxefx::g_al_api_impl.alGetSourcef(source, param, value);
 }
 
 AL_API void AL_APIENTRY alGetSource3f(
-	::ALuint source,
-	::ALenum param,
-	::ALfloat* value1,
-	::ALfloat* value2,
-	::ALfloat* value3)
+	ALuint source,
+	ALenum param,
+	ALfloat* value1,
+	ALfloat* value2,
+	ALfloat* value3)
 {
 	eaxefx::g_al_api_impl.alGetSource3f(source, param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alGetSourcefv(
-	::ALuint source,
-	::ALenum param,
-	::ALfloat* values)
+	ALuint source,
+	ALenum param,
+	ALfloat* values)
 {
 	eaxefx::g_al_api_impl.alGetSourcefv(source, param, values);
 }
 
 AL_API void AL_APIENTRY alGetSourcei(
-	::ALuint source,
-	::ALenum param,
-	::ALint* value)
+	ALuint source,
+	ALenum param,
+	ALint* value)
 {
 	eaxefx::g_al_api_impl.alGetSourcei(source, param, value);
 }
 
 AL_API void AL_APIENTRY alGetSource3i(
-	::ALuint source,
-	::ALenum param,
-	::ALint* value1,
-	::ALint* value2,
-	::ALint* value3)
+	ALuint source,
+	ALenum param,
+	ALint* value1,
+	ALint* value2,
+	ALint* value3)
 {
 	eaxefx::g_al_api_impl.alGetSource3i(source, param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alGetSourceiv(
-	::ALuint source,
-	::ALenum param,
-	::ALint* values)
+	ALuint source,
+	ALenum param,
+	ALint* values)
 {
 	eaxefx::g_al_api_impl.alGetSourceiv(source, param, values);
 }
 
 AL_API void AL_APIENTRY alSourcePlayv(
-	::ALsizei n,
-	const ::ALuint* sources)
+	ALsizei n,
+	const ALuint* sources)
 {
 	eaxefx::g_al_api_impl.alSourcePlayv(n, sources);
 }
 
 AL_API void AL_APIENTRY alSourceStopv(
-	::ALsizei n,
-	const ::ALuint* sources)
+	ALsizei n,
+	const ALuint* sources)
 {
 	eaxefx::g_al_api_impl.alSourceStopv(n, sources);
 }
 
 AL_API void AL_APIENTRY alSourceRewindv(
-	::ALsizei n,
-	const ::ALuint* sources)
+	ALsizei n,
+	const ALuint* sources)
 {
 	eaxefx::g_al_api_impl.alSourceRewindv(n, sources);
 }
 
 AL_API void AL_APIENTRY alSourcePausev(
-	::ALsizei n,
-	const ::ALuint* sources)
+	ALsizei n,
+	const ALuint* sources)
 {
 	eaxefx::g_al_api_impl.alSourcePausev(n, sources);
 }
 
 AL_API void AL_APIENTRY alSourcePlay(
-	::ALuint source)
+	ALuint source)
 {
 	eaxefx::g_al_api_impl.alSourcePlay(source);
 }
 
 AL_API void AL_APIENTRY alSourceStop(
-	::ALuint source)
+	ALuint source)
 {
 	eaxefx::g_al_api_impl.alSourceStop(source);
 }
 
 AL_API void AL_APIENTRY alSourceRewind(
-	::ALuint source)
+	ALuint source)
 {
 	eaxefx::g_al_api_impl.alSourceRewind(source);
 }
 
 AL_API void AL_APIENTRY alSourcePause(
-	::ALuint source)
+	ALuint source)
 {
 	eaxefx::g_al_api_impl.alSourcePause(source);
 }
 
 AL_API void AL_APIENTRY alSourceQueueBuffers(
-	::ALuint source,
-	::ALsizei nb,
-	const ::ALuint* buffers)
+	ALuint source,
+	ALsizei nb,
+	const ALuint* buffers)
 {
 	eaxefx::g_al_api_impl.alSourceQueueBuffers(source, nb, buffers);
 }
 
 AL_API void AL_APIENTRY alSourceUnqueueBuffers(
-	::ALuint source,
-	::ALsizei nb,
-	::ALuint* buffers)
+	ALuint source,
+	ALsizei nb,
+	ALuint* buffers)
 {
 	eaxefx::g_al_api_impl.alSourceUnqueueBuffers(source, nb, buffers);
 }
 
 AL_API void AL_APIENTRY alGenBuffers(
-	::ALsizei n,
-	::ALuint* buffers)
+	ALsizei n,
+	ALuint* buffers)
 {
 	eaxefx::g_al_api_impl.alGenBuffers(n, buffers);
 }
 
 AL_API void AL_APIENTRY alDeleteBuffers(
-	::ALsizei n,
-	const ::ALuint* buffers)
+	ALsizei n,
+	const ALuint* buffers)
 {
 	eaxefx::g_al_api_impl.alDeleteBuffers(n, buffers);
 }
 
-AL_API ::ALboolean AL_APIENTRY alIsBuffer(
-	::ALuint buffer)
+AL_API ALboolean AL_APIENTRY alIsBuffer(
+	ALuint buffer)
 {
 	return eaxefx::g_al_api_impl.alIsBuffer(buffer);
 }
 
 AL_API void AL_APIENTRY alBufferData(
-	::ALuint buffer,
-	::ALenum format,
-	const ::ALvoid* data,
-	::ALsizei size,
-	::ALsizei freq)
+	ALuint buffer,
+	ALenum format,
+	const ALvoid* data,
+	ALsizei size,
+	ALsizei freq)
 {
 	eaxefx::g_al_api_impl.alBufferData(buffer, format, data, size, freq);
 }
 
 AL_API void AL_APIENTRY alBufferf(
-	::ALuint buffer,
-	::ALenum param,
-	::ALfloat value)
+	ALuint buffer,
+	ALenum param,
+	ALfloat value)
 {
 	eaxefx::g_al_api_impl.alBufferf(buffer, param, value);
 }
 
 AL_API void AL_APIENTRY alBuffer3f(
-	::ALuint buffer,
-	::ALenum param,
-	::ALfloat value1,
-	::ALfloat value2,
-	::ALfloat value3)
+	ALuint buffer,
+	ALenum param,
+	ALfloat value1,
+	ALfloat value2,
+	ALfloat value3)
 {
 	eaxefx::g_al_api_impl.alBuffer3f(buffer, param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alBufferfv(
-	::ALuint buffer,
-	::ALenum param,
-	const ::ALfloat* values)
+	ALuint buffer,
+	ALenum param,
+	const ALfloat* values)
 {
 	eaxefx::g_al_api_impl.alBufferfv(buffer, param, values);
 }
 
 AL_API void AL_APIENTRY alBufferi(
-	::ALuint buffer,
-	::ALenum param,
-	::ALint value)
+	ALuint buffer,
+	ALenum param,
+	ALint value)
 {
 	eaxefx::g_al_api_impl.alBufferi(buffer, param, value);
 }
 
 AL_API void AL_APIENTRY alBuffer3i(
-	::ALuint buffer,
-	::ALenum param,
-	::ALint value1,
-	::ALint value2,
-	::ALint value3)
+	ALuint buffer,
+	ALenum param,
+	ALint value1,
+	ALint value2,
+	ALint value3)
 {
 	eaxefx::g_al_api_impl.alBuffer3i(buffer, param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alBufferiv(
-	::ALuint buffer,
-	::ALenum param,
-	const ::ALint* values)
+	ALuint buffer,
+	ALenum param,
+	const ALint* values)
 {
 	eaxefx::g_al_api_impl.alBufferiv(buffer, param, values);
 }
 
 AL_API void AL_APIENTRY alGetBufferf(
-	::ALuint buffer,
-	::ALenum param,
-	::ALfloat* value)
+	ALuint buffer,
+	ALenum param,
+	ALfloat* value)
 {
 	eaxefx::g_al_api_impl.alGetBufferf(buffer, param, value);
 }
 
 AL_API void AL_APIENTRY alGetBuffer3f(
-	::ALuint buffer,
-	::ALenum param,
-	::ALfloat* value1,
-	::ALfloat* value2,
-	::ALfloat* value3)
+	ALuint buffer,
+	ALenum param,
+	ALfloat* value1,
+	ALfloat* value2,
+	ALfloat* value3)
 {
 	eaxefx::g_al_api_impl.alGetBuffer3f(buffer, param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alGetBufferfv(
-	::ALuint buffer,
-	::ALenum param,
-	::ALfloat* values)
+	ALuint buffer,
+	ALenum param,
+	ALfloat* values)
 {
 	eaxefx::g_al_api_impl.alGetBufferfv(buffer, param, values);
 }
 
 AL_API void AL_APIENTRY alGetBufferi(
-	::ALuint buffer,
-	::ALenum param,
-	::ALint* value)
+	ALuint buffer,
+	ALenum param,
+	ALint* value)
 {
 	eaxefx::g_al_api_impl.alGetBufferi(buffer, param, value);
 }
 
 AL_API void AL_APIENTRY alGetBuffer3i(
-	::ALuint buffer,
-	::ALenum param,
-	::ALint* value1,
-	::ALint* value2,
-	::ALint* value3)
+	ALuint buffer,
+	ALenum param,
+	ALint* value1,
+	ALint* value2,
+	ALint* value3)
 {
 	eaxefx::g_al_api_impl.alGetBuffer3i(buffer, param, value1, value2, value3);
 }
 
 AL_API void AL_APIENTRY alGetBufferiv(
-	::ALuint buffer,
-	::ALenum param,
-	::ALint* values)
+	ALuint buffer,
+	ALenum param,
+	ALint* values)
 {
 	eaxefx::g_al_api_impl.alGetBufferiv(buffer, param, values);
 }

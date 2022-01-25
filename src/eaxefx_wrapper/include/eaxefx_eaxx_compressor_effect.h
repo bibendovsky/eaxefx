@@ -68,7 +68,7 @@ class EaxxCompressorEffect final :
 {
 public:
 	EaxxCompressorEffect(
-		::ALuint al_effect_slot,
+		ALuint al_effect_slot,
 		const AlEfxSymbols* al_efx_symbols);
 
 
@@ -79,12 +79,12 @@ public:
 
 
 private:
-	const ::ALuint al_effect_slot_;
+	const ALuint al_effect_slot_;
 	const AlEfxSymbols* al_efx_symbols_;
 	EfxEffectObject efx_effect_object_;
 
-	::EAXAGCCOMPRESSORPROPERTIES eax_;
-	::EAXAGCCOMPRESSORPROPERTIES eax_d_;
+	EAXAGCCOMPRESSORPROPERTIES eax_;
+	EAXAGCCOMPRESSORPROPERTIES eax_d_;
 	EaxxCompressorEffectEaxDirtyFlags eax_dirty_flags_{};
 
 
@@ -104,14 +104,14 @@ private:
 		std::uint32_t ulOnOff);
 
 	void validate_all(
-		const ::EAXAGCCOMPRESSORPROPERTIES& eax_all);
+		const EAXAGCCOMPRESSORPROPERTIES& eax_all);
 
 
 	void defer_on_off(
 		std::uint32_t ulOnOff);
 
 	void defer_all(
-		const ::EAXAGCCOMPRESSORPROPERTIES& eax_all);
+		const EAXAGCCOMPRESSORPROPERTIES& eax_all);
 
 
 	void defer_on_off(

@@ -86,7 +86,7 @@ enum class EaxxEffectType
 struct EaxxEffectParam
 {
 	EaxxEffectType effect_type;
-	::ALuint al_effect_slot;
+	ALuint al_effect_slot;
 	const AlEfxSymbols* al_efx_symbols{};
 }; // EaxxEffectParam
 

@@ -88,7 +88,7 @@ public:
 private:
 	bool is_readable_{};
 	bool is_writable_{};
-	::HANDLE handle_{};
+	HANDLE handle_{};
 
 
 	bool is_handle_valid() noexcept;
@@ -116,7 +116,7 @@ Win32File::Win32File(
 	const auto is_writable = (open_mode & file_open_mode_write) != 0;
 	const auto is_truncate = (open_mode & file_open_mode_truncate) != 0;
 
-	auto win32_desired_access = ::DWORD{};
+	auto win32_desired_access = DWORD{};
 
 	if (is_readable)
 	{
@@ -134,9 +134,9 @@ Win32File::Win32File(
 	}
 
 
-	constexpr auto win32_share_mode = ::DWORD{FILE_SHARE_READ};
+	constexpr auto win32_share_mode = DWORD{FILE_SHARE_READ};
 
-	auto win32_creation_disposition = ::DWORD{};
+	auto win32_creation_disposition = DWORD{};
 
 	if (is_truncate)
 	{
@@ -165,8 +165,8 @@ Win32File::Win32File(
 
 	const auto utf16_path = encoding::to_utf16(path);
 
-	handle_ = ::CreateFileW(
-		reinterpret_cast<::LPCWSTR>(utf16_path.c_str()),
+	handle_ = CreateFileW(
+		reinterpret_cast<LPCWSTR>(utf16_path.c_str()),
 		win32_desired_access,
 		win32_share_mode,
 		nullptr,
@@ -188,7 +188,7 @@ Win32File::~Win32File()
 {
 	if (is_handle_valid())
 	{
-		::CloseHandle(handle_);
+		CloseHandle(handle_);
 	}
 }
 
@@ -197,10 +197,10 @@ void Win32File::set_position(
 {
 	ensure_is_open();
 
-	::LARGE_INTEGER win32_position;
+	LARGE_INTEGER win32_position;
 	win32_position.QuadPart = position;
 
-	const auto win32_result = ::SetFilePointerEx(
+	const auto win32_result = SetFilePointerEx(
 		handle_,
 		win32_position,
 		nullptr,
@@ -217,9 +217,9 @@ void Win32File::move_to_the_end()
 {
 	ensure_is_open();
 
-	auto win32_position = ::LARGE_INTEGER{};
+	auto win32_position = LARGE_INTEGER{};
 
-	const auto win32_result = ::SetFilePointerEx(
+	const auto win32_result = SetFilePointerEx(
 		handle_,
 		win32_position,
 		nullptr,
@@ -248,12 +248,12 @@ int Win32File::read(
 		return 0;
 	}
 
-	::DWORD read_size;
+	DWORD read_size;
 
-	const auto win32_result = ::ReadFile(
+	const auto win32_result = ReadFile(
 		handle_,
 		buffer,
-		static_cast<::DWORD>(size),
+		static_cast<DWORD>(size),
 		&read_size,
 		nullptr
 	);
@@ -282,12 +282,12 @@ int Win32File::write(
 		return 0;
 	}
 
-	::DWORD written_size;
+	DWORD written_size;
 
-	const auto win32_result = ::WriteFile(
+	const auto win32_result = WriteFile(
 		handle_,
 		buffer,
-		static_cast<::DWORD>(size),
+		static_cast<DWORD>(size),
 		&written_size,
 		nullptr
 	);
@@ -304,7 +304,7 @@ void Win32File::flush()
 {
 	ensure_is_open();
 
-	const auto win32_result = ::FlushFileBuffers(handle_);
+	const auto win32_result = FlushFileBuffers(handle_);
 
 	if (win32_result == 0)
 	{

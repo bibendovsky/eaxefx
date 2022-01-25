@@ -67,34 +67,34 @@ private:
 	bool need_convert_input_{};
 	bool need_convert_output_{};
 
-	::UINT in_code_page_{};
-	::UINT out_code_page_{};
+	UINT in_code_page_{};
+	UINT out_code_page_{};
 
-	::HANDLE in_handle_{};
-	::HANDLE err_handle_{};
-	::HANDLE out_handle_{};
+	HANDLE in_handle_{};
+	HANDLE err_handle_{};
+	HANDLE out_handle_{};
 
 
 	static bool is_handle_valid(
-		::HANDLE handle) noexcept;
+		HANDLE handle) noexcept;
 
 	static void flush(
-		::HANDLE handle) noexcept;
+		HANDLE handle) noexcept;
 
 
 	static String utf8_to_oem(
 		std::string_view utf8_view,
-		::UINT code_page);
+		UINT code_page);
 
 	static String oem_to_utf8(
 		std::string_view oem_view,
-		::UINT code_page);
+		UINT code_page);
 
 
 	String read_line_internal();
 
 	void write_internal(
-		::HANDLE handle,
+		HANDLE handle,
 		std::string_view view);
 }; // Win32Console
 
@@ -105,15 +105,15 @@ private:
 
 Win32Console::Win32Console() noexcept
 {
-	in_code_page_ = ::GetConsoleCP();
-	out_code_page_ = ::GetConsoleOutputCP();
+	in_code_page_ = GetConsoleCP();
+	out_code_page_ = GetConsoleOutputCP();
 
 	const auto has_in_code_page = in_code_page_ != 0;
 	const auto has_out_code_page = out_code_page_ != 0;
 
-	in_handle_ = ::GetStdHandle(STD_INPUT_HANDLE);
-	err_handle_ = ::GetStdHandle(STD_ERROR_HANDLE);
-	out_handle_ = ::GetStdHandle(STD_OUTPUT_HANDLE);
+	in_handle_ = GetStdHandle(STD_INPUT_HANDLE);
+	err_handle_ = GetStdHandle(STD_ERROR_HANDLE);
+	out_handle_ = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	has_in_handle_ = has_in_code_page && is_handle_valid(in_handle_);
 	has_err_handle_ = has_out_code_page && is_handle_valid(err_handle_);
@@ -186,25 +186,25 @@ void Win32Console::flush()
 }
 
 bool Win32Console::is_handle_valid(
-	::HANDLE handle) noexcept
+	HANDLE handle) noexcept
 {
 	return handle && handle != INVALID_HANDLE_VALUE;
 }
 
 void Win32Console::flush(
-	::HANDLE handle) noexcept
+	HANDLE handle) noexcept
 {
-	::FlushFileBuffers(handle);
+	FlushFileBuffers(handle);
 }
 
 String Win32Console::utf8_to_oem(
 	std::string_view utf8_view,
-	::UINT code_page)
+	UINT code_page)
 {
-	// UTF-8 -> ::WCHAR
+	// UTF-8 -> WCHAR
 	//
 
-	const auto wide_size = ::MultiByteToWideChar(
+	const auto wide_size = MultiByteToWideChar(
 		CP_UTF8,
 		0,
 		utf8_view.data(),
@@ -218,9 +218,9 @@ String Win32Console::utf8_to_oem(
 		return String{};
 	}
 
-	auto wide_buffer = std::make_unique<::WCHAR[]>(wide_size);
+	auto wide_buffer = std::make_unique<WCHAR[]>(wide_size);
 
-	const auto actual_wide_size = ::MultiByteToWideChar(
+	const auto actual_wide_size = MultiByteToWideChar(
 		CP_UTF8,
 		0,
 		utf8_view.data(),
@@ -235,10 +235,10 @@ String Win32Console::utf8_to_oem(
 	}
 
 
-	// ::WCHAR -> OEM
+	// WCHAR -> OEM
 	//
 
-	const auto oem_size = ::WideCharToMultiByte(
+	const auto oem_size = WideCharToMultiByte(
 		code_page,
 		0,
 		wide_buffer.get(),
@@ -257,7 +257,7 @@ String Win32Console::utf8_to_oem(
 	auto oem_string = String{};
 	oem_string.resize(oem_size);
 
-	const auto actual_oem_size = ::WideCharToMultiByte(
+	const auto actual_oem_size = WideCharToMultiByte(
 		code_page,
 		0,
 		wide_buffer.get(),
@@ -278,12 +278,12 @@ String Win32Console::utf8_to_oem(
 
 String Win32Console::oem_to_utf8(
 	std::string_view oem_view,
-	::UINT code_page)
+	UINT code_page)
 {
-	// UTF-8 -> ::WCHAR
+	// UTF-8 -> WCHAR
 	//
 
-	const auto wide_size = ::MultiByteToWideChar(
+	const auto wide_size = MultiByteToWideChar(
 		code_page,
 		0,
 		oem_view.data(),
@@ -297,9 +297,9 @@ String Win32Console::oem_to_utf8(
 		return String{};
 	}
 
-	auto wide_buffer = std::make_unique<::WCHAR[]>(wide_size);
+	auto wide_buffer = std::make_unique<WCHAR[]>(wide_size);
 
-	const auto actual_wide_size = ::MultiByteToWideChar(
+	const auto actual_wide_size = MultiByteToWideChar(
 		code_page,
 		0,
 		oem_view.data(),
@@ -314,10 +314,10 @@ String Win32Console::oem_to_utf8(
 	}
 
 
-	// ::WCHAR -> UTF-8
+	// WCHAR -> UTF-8
 	//
 
-	const auto utf8_size = ::WideCharToMultiByte(
+	const auto utf8_size = WideCharToMultiByte(
 		CP_UTF8,
 		0,
 		wide_buffer.get(),
@@ -336,7 +336,7 @@ String Win32Console::oem_to_utf8(
 	auto utf8_string = String{};
 	utf8_string.resize(utf8_size);
 
-	const auto actual_utf8_size = ::WideCharToMultiByte(
+	const auto actual_utf8_size = WideCharToMultiByte(
 		CP_UTF8,
 		0,
 		wide_buffer.get(),
@@ -362,9 +362,9 @@ String Win32Console::read_line_internal()
 	auto oem_line = String{};
 	oem_line.resize(oem_line_reserve);
 
-	auto oem_read_size = ::DWORD{};
+	auto oem_read_size = DWORD{};
 
-	::ReadFile(
+	ReadFile(
 		in_handle_,
 		oem_line.data(),
 		oem_line_reserve,
@@ -399,7 +399,7 @@ String Win32Console::read_line_internal()
 }
 
 void Win32Console::write_internal(
-	::HANDLE handle,
+	HANDLE handle,
 	std::string_view view)
 {
 	if (need_convert_output_)
@@ -408,10 +408,10 @@ void Win32Console::write_internal(
 
 		if (!oem_string.empty())
 		{
-			::WriteFile(
+			WriteFile(
 				handle,
 				oem_string.data(),
-				static_cast<::DWORD>(oem_string.size()),
+				static_cast<DWORD>(oem_string.size()),
 				nullptr,
 				nullptr
 			);
@@ -419,10 +419,10 @@ void Win32Console::write_internal(
 	}
 	else
 	{
-		::WriteFile(
+		WriteFile(
 			handle,
 			view.data(),
-			static_cast<::DWORD>(view.size()),
+			static_cast<DWORD>(view.size()),
 			nullptr,
 			nullptr
 		);

@@ -48,8 +48,8 @@ namespace eaxefx
 
 struct AlApiContextInitParam
 {
-	::ALCdevice* al_device{};
-	const ::ALCint* al_context_attributes{};
+	ALCdevice* al_device{};
+	const ALCint* al_context_attributes{};
 }; // AlApiContextInitParam
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -79,18 +79,18 @@ public:
 		const char* extension_name) const noexcept = 0;
 
 	virtual const char* al_get_string(
-		::ALenum param) const noexcept = 0;
+		ALenum param) const noexcept = 0;
 
 	virtual void al_gen_sources(
-		::ALsizei n,
-		::ALuint* sources) = 0;
+		ALsizei n,
+		ALuint* sources) = 0;
 
 	virtual void al_delete_sources(
-		::ALsizei n,
-		const ::ALuint* sources) = 0;
+		ALsizei n,
+		const ALuint* sources) = 0;
 
 
-	virtual ::ALCcontext* get_al_context() const noexcept = 0;
+	virtual ALCcontext* get_al_context() const noexcept = 0;
 
 	virtual Eaxx& get_eaxx() = 0;
 }; // AlApiContext

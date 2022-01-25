@@ -94,18 +94,18 @@ public:
 		const char* extension_name) const noexcept override;
 
 	const char* al_get_string(
-		::ALenum param) const noexcept override;
+		ALenum param) const noexcept override;
 
 	void al_gen_sources(
-		::ALsizei n,
-		::ALuint* sources) override;
+		ALsizei n,
+		ALuint* sources) override;
 
 	void al_delete_sources(
-		::ALsizei n,
-		const ::ALuint* sources) override;
+		ALsizei n,
+		const ALuint* sources) override;
 
 
-	::ALCcontext* get_al_context() const noexcept override;
+	ALCcontext* get_al_context() const noexcept override;
 
 	Eaxx& get_eaxx() override;
 
@@ -119,18 +119,18 @@ private:
 
 	using AlEfxSymbolMap = std::unordered_map<std::string_view, void*>;
 	using ExtensionSet = std::unordered_set<std::string_view>;
-	using Attributes = std::vector<::ALCint>;
+	using Attributes = std::vector<ALCint>;
 
 
-	::ALCdevice* al_device_{};
+	ALCdevice* al_device_{};
 
 	Logger* logger_{};
 	const AlAlSymbols* al_al_symbols_{};
 	const AlAlcSymbols* al_alc_symbols_{};
 
-	::ALCint efx_major_version_{};
-	::ALCint efx_minor_version_{};
-	::ALCint efx_max_aux_sends_{};
+	ALCint efx_major_version_{};
+	ALCint efx_minor_version_{};
+	ALCint efx_max_aux_sends_{};
 	AlEfxSymbolsUPtr al_efx_symbols_{};
 	AlEfxSymbolMap al_efx_symbol_map_{};
 
@@ -140,7 +140,7 @@ private:
 	String string_buffer_{};
 
 	bool is_made_current_{};
-	::ALCcontext* al_context_{};
+	ALCcontext* al_context_{};
 
 	EaxxUPtr eaxx_{};
 
@@ -157,8 +157,8 @@ private:
 
 	void initialize_attribute_cache();
 
-	const ::ALCint* make_attributes(
-		const ::ALCint* al_attributes);
+	const ALCint* make_attributes(
+		const ALCint* al_attributes);
 
 	void get_attributes();
 
@@ -402,7 +402,7 @@ void* AlApiContextImpl::al_get_proc_address(
 }
 
 const char* AlApiContextImpl::al_get_string(
-	::ALenum param) const noexcept
+	ALenum param) const noexcept
 {
 	if (param != AL_EXTENSIONS)
 	{
@@ -413,8 +413,8 @@ const char* AlApiContextImpl::al_get_string(
 }
 
 void AlApiContextImpl::al_gen_sources(
-	::ALsizei n,
-	::ALuint* sources)
+	ALsizei n,
+	ALuint* sources)
 {
 	if (!eaxx_)
 	{
@@ -425,8 +425,8 @@ void AlApiContextImpl::al_gen_sources(
 }
 
 void AlApiContextImpl::al_delete_sources(
-	::ALsizei n,
-	const ::ALuint* sources)
+	ALsizei n,
+	const ALuint* sources)
 {
 	if (!eaxx_)
 	{
@@ -436,7 +436,7 @@ void AlApiContextImpl::al_delete_sources(
 	eaxx_->al_delete_sources(n, sources);
 }
 
-::ALCcontext* AlApiContextImpl::get_al_context() const noexcept
+ALCcontext* AlApiContextImpl::get_al_context() const noexcept
 {
 	return al_context_;
 }
@@ -477,12 +477,12 @@ void AlApiContextImpl::initialize_attribute_cache()
 	attributes_.reserve(min_attribute_pair_capacity);
 }
 
-const ::ALCint* AlApiContextImpl::make_attributes(
-	const ::ALCint* al_attributes)
+const ALCint* AlApiContextImpl::make_attributes(
+	const ALCint* al_attributes)
 {
 	attributes_.clear();
 
-	auto max_aux_sends = ::ALCint{};
+	auto max_aux_sends = ALCint{};
 
 	if (al_attributes)
 	{
@@ -509,7 +509,7 @@ const ::ALCint* AlApiContextImpl::make_attributes(
 		}
 	}
 
-	max_aux_sends = std::max(max_aux_sends, ::EAX_MAX_FXSLOTS);
+	max_aux_sends = std::max(max_aux_sends, EAX_MAX_FXSLOTS);
 
 	attributes_.emplace_back(ALC_MAX_AUXILIARY_SENDS);
 	attributes_.emplace_back(max_aux_sends);
@@ -523,7 +523,7 @@ void AlApiContextImpl::get_attributes()
 {
 	attributes_.clear();
 
-	auto al_size = ::ALCint{};
+	auto al_size = ALCint{};
 
 	al_alc_symbols_->alcGetIntegerv(al_device_, ALC_ATTRIBUTES_SIZE, 1, &al_size);
 

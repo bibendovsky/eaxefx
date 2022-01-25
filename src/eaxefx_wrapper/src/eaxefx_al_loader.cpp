@@ -73,8 +73,8 @@ public:
 
 
 private:
-	::LPALCGETPROCADDRESS alc_get_proc_address_{};
-	::LPALGETPROCADDRESS al_get_proc_address_{};
+	LPALCGETPROCADDRESS alc_get_proc_address_{};
+	LPALGETPROCADDRESS al_get_proc_address_{};
 
 
 	[[noreturn]]

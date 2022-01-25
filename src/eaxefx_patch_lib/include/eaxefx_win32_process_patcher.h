@@ -74,8 +74,8 @@ private:
 	{
 	public:
 		Win32VirtualProtector(
-			::LPVOID address,
-			::SIZE_T size,
+			LPVOID address,
+			SIZE_T size,
 			Win32VirtualProtectorFlushType flush_type);
 
 		Win32VirtualProtector(
@@ -88,15 +88,15 @@ private:
 
 
 	private:
-		::LPVOID address_{};
-		::SIZE_T size_{};
-		::DWORD old_protection_mode_{};
+		LPVOID address_{};
+		SIZE_T size_{};
+		DWORD old_protection_mode_{};
 		bool is_flush_{};
 	}; // Win32VirtualProtector
 
 
 	PatchStatus status_{};
-	::BYTE* image_base_{};
+	BYTE* image_base_{};
 	const Patch& patch_{};
 
 

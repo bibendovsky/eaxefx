@@ -75,12 +75,12 @@ namespace
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-::ALenum AL_APIENTRY EAXSet(
-	const ::GUID* property_set_guid,
-	::ALuint property_id,
-	::ALuint property_al_name,
-	::ALvoid* property_buffer,
-	::ALuint property_size)
+ALenum AL_APIENTRY EAXSet(
+	const GUID* property_set_guid,
+	ALuint property_id,
+	ALuint property_al_name,
+	ALvoid* property_buffer,
+	ALuint property_size)
 try
 {
 	const auto mutex_lock = g_al_api.get_lock();
@@ -109,12 +109,12 @@ catch (...)
 	return AL_INVALID_OPERATION;
 }
 
-::ALenum AL_APIENTRY EAXGet(
-	const ::GUID* property_set_guid,
-	::ALuint property_id,
-	::ALuint property_al_name,
-	::ALvoid* property_buffer,
-	::ALuint property_size)
+ALenum AL_APIENTRY EAXGet(
+	const GUID* property_set_guid,
+	ALuint property_id,
+	ALuint property_al_name,
+	ALvoid* property_buffer,
+	ALuint property_size)
 try
 {
 	const auto mutex_lock = g_al_api.get_lock();
@@ -285,27 +285,27 @@ public:
 		std::string_view symbol_name) override;
 
 	void al_gen_sources(
-		::ALsizei n,
-		::ALuint* sources) override;
+		ALsizei n,
+		ALuint* sources) override;
 
 	void al_delete_sources(
-		::ALsizei n,
-		const ::ALuint* sources) override;
+		ALsizei n,
+		const ALuint* sources) override;
 
 
-	::ALenum eax_set(
-		const ::GUID* property_set_guid,
-		::ALuint property_id,
-		::ALuint property_al_name,
-		::ALvoid* property_buffer,
-		::ALuint property_size) override;
+	ALenum eax_set(
+		const GUID* property_set_guid,
+		ALuint property_id,
+		ALuint property_al_name,
+		ALvoid* property_buffer,
+		ALuint property_size) override;
 
-	::ALenum eax_get(
-		const ::GUID* property_set_guid,
-		::ALuint property_id,
-		::ALuint property_al_name,
-		::ALvoid* property_buffer,
-		::ALuint property_size) override;
+	ALenum eax_get(
+		const GUID* property_set_guid,
+		ALuint property_id,
+		ALuint property_al_name,
+		ALvoid* property_buffer,
+		ALuint property_size) override;
 
 
 private:
@@ -315,26 +315,26 @@ private:
 	static constexpr auto al_contexts_reserve = al_devices_reserve;
 
 
-	using AlcAttrCache = std::vector<::ALCint>;
+	using AlcAttrCache = std::vector<ALCint>;
 	using AlExtsBuffer = String;
 	using EaxxContextUPtr = std::unique_ptr<EaxxContext>;
 
 
 	struct Device
 	{
-		::ALCdevice* al_device;
+		ALCdevice* al_device;
 
 
 		explicit Device(
-			::ALCdevice* al_device) noexcept
+			ALCdevice* al_device) noexcept
 			:
 			al_device{al_device}
 		{
 		}
 	}; // Device
 
-	using DeviceMap = std::unordered_map<::ALCdevice*, Device>;
-	using ContextMap = std::unordered_map<::ALCcontext*, EaxxContext>;
+	using DeviceMap = std::unordered_map<ALCdevice*, Device>;
+	using ContextMap = std::unordered_map<ALCcontext*, EaxxContext>;
 
 
 	Logger* logger_{};
@@ -427,25 +427,25 @@ void* EaxxImpl::al_get_proc_address(
 }
 
 void EaxxImpl::al_gen_sources(
-	::ALsizei n,
-	::ALuint* sources)
+	ALsizei n,
+	ALuint* sources)
 {
 	eaxx_context_->initialize_sources(n, sources);
 }
 
 void EaxxImpl::al_delete_sources(
-	::ALsizei n,
-	const ::ALuint* sources)
+	ALsizei n,
+	const ALuint* sources)
 {
 	eaxx_context_->uninitialize_sources(n, sources);
 }
 
-::ALenum EaxxImpl::eax_set(
-	const ::GUID* property_set_guid,
-	::ALuint property_id,
-	::ALuint property_al_name,
-	::ALvoid* property_buffer,
-	::ALuint property_size)
+ALenum EaxxImpl::eax_set(
+	const GUID* property_set_guid,
+	ALuint property_id,
+	ALuint property_al_name,
+	ALvoid* property_buffer,
+	ALuint property_size)
 {
 	activate_dedicated_reverb_effect();
 
@@ -480,12 +480,12 @@ void EaxxImpl::al_delete_sources(
 	return AL_NO_ERROR;
 }
 
-::ALenum EaxxImpl::eax_get(
-	const ::GUID* property_set_guid,
-	::ALuint property_id,
-	::ALuint property_al_name,
-	::ALvoid* property_buffer,
-	::ALuint property_size)
+ALenum EaxxImpl::eax_get(
+	const GUID* property_set_guid,
+	ALuint property_id,
+	ALuint property_al_name,
+	ALvoid* property_buffer,
+	ALuint property_size)
 {
 	activate_dedicated_reverb_effect();
 

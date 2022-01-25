@@ -100,12 +100,12 @@ public:
 
 
 	void initialize_sources(
-		::ALsizei count,
-		::ALuint* al_names);
+		ALsizei count,
+		ALuint* al_names);
 
 	void uninitialize_sources(
-		::ALsizei count,
-		const ::ALuint* al_names);
+		ALsizei count,
+		const ALuint* al_names);
 
 
 	void dispatch(
@@ -113,7 +113,7 @@ public:
 
 
 	EaxxSource* find_source(
-		::ALuint al_source);
+		ALuint al_source);
 
 	void update_filters();
 
@@ -128,17 +128,17 @@ private:
 		const AlAlSymbols* al_symbols{};
 		const AlEfxSymbols* efx_symbols{};
 
-		::ALCdevice* device{};
-		::ALCcontext* context{};
-		::ALuint filter{};
+		ALCdevice* device{};
+		ALCcontext* context{};
+		ALuint filter{};
 	}; // Al
 
 	struct Eax
 	{
-		::EAX50CONTEXTPROPERTIES context{};
+		EAX50CONTEXTPROPERTIES context{};
 	}; // Eax
 
-	using SourceMap = std::unordered_map<::ALuint, EaxxSource>;
+	using SourceMap = std::unordered_map<ALuint, EaxxSource>;
 
 
 	std::int32_t eax_last_error_{};
@@ -148,7 +148,7 @@ private:
 	Al al_{};
 	Eax eax_{};
 	Eax eax_d_{};
-	::EAXSESSIONPROPERTIES eax_session_{};
+	EAXSESSIONPROPERTIES eax_session_{};
 
 	EaxxContextSharedDirtyFlags context_shared_dirty_flags_{};
 	EaxxContextContextDirtyFlags context_dirty_flags_{};
@@ -230,7 +230,7 @@ private:
 
 
 	void validate_primary_fx_slot_id(
-		const ::GUID& primary_fx_slot_id);
+		const GUID& primary_fx_slot_id);
 
 	void validate_distance_factor(
 		float distance_factor);
@@ -251,20 +251,20 @@ private:
 		std::uint32_t max_active_sends);
 
 	void validate_eax_session(
-		const ::EAXSESSIONPROPERTIES& eax_session);
+		const EAXSESSIONPROPERTIES& eax_session);
 
 	void validate_macro_fx_factor(
 		float macro_fx_factor);
 
 	void validate_context_all(
-		const ::EAX40CONTEXTPROPERTIES& context_all);
+		const EAX40CONTEXTPROPERTIES& context_all);
 
 	void validate_context_all(
 		const EAX50CONTEXTPROPERTIES& context_all);
 
 
 	void defer_primary_fx_slot_id(
-		const ::GUID& primary_fx_slot_id);
+		const GUID& primary_fx_slot_id);
 
 	void defer_distance_factor(
 		float distance_factor);
@@ -279,7 +279,7 @@ private:
 		float macro_fx_factor);
 
 	void defer_context_all(
-		const ::EAX40CONTEXTPROPERTIES& context_all);
+		const EAX40CONTEXTPROPERTIES& context_all);
 
 	void defer_context_all(
 		const EAX50CONTEXTPROPERTIES& context_all);

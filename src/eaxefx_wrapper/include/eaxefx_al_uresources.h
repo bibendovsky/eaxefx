@@ -44,10 +44,10 @@ namespace eaxefx
 struct AlcDeviceDeleter
 {
 	void operator()(
-		::ALCdevice* alc_device) const noexcept;
+		ALCdevice* alc_device) const noexcept;
 }; // AlcDeviceDeleter
 
-using AlcDeviceUPtr = std::unique_ptr<::ALCdevice, AlcDeviceDeleter>;
+using AlcDeviceUPtr = std::unique_ptr<ALCdevice, AlcDeviceDeleter>;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -57,10 +57,10 @@ using AlcDeviceUPtr = std::unique_ptr<::ALCdevice, AlcDeviceDeleter>;
 struct AlcContextDeleter
 {
 	void operator()(
-		::ALCcontext* alc_context) const noexcept;
+		ALCcontext* alc_context) const noexcept;
 }; // AlcContextDeleter
 
-using AlcContextUPtr = std::unique_ptr<::ALCcontext, AlcContextDeleter>;
+using AlcContextUPtr = std::unique_ptr<ALCcontext, AlcContextDeleter>;
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 

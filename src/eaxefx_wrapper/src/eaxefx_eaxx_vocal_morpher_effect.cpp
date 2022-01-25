@@ -75,7 +75,7 @@ public:
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 EaxxVocalMorpherEffect::EaxxVocalMorpherEffect(
-	::ALuint al_effect_slot,
+	ALuint al_effect_slot,
 	const AlEfxSymbols* al_efx_symbols)
 	:
 	al_effect_slot_{al_effect_slot},
@@ -91,7 +91,7 @@ void EaxxVocalMorpherEffect::load()
 	al_efx_symbols_->alAuxiliaryEffectSloti(
 		al_effect_slot_,
 		AL_EFFECTSLOT_EFFECT,
-		static_cast<::ALint>(efx_effect_object_.get())
+		static_cast<ALint>(efx_effect_object_.get())
 	);
 }
 
@@ -110,12 +110,12 @@ void EaxxVocalMorpherEffect::dispatch(
 
 void EaxxVocalMorpherEffect::set_eax_defaults()
 {
-	eax_.ulPhonemeA = ::EAXVOCALMORPHER_DEFAULTPHONEMEA;
-	eax_.lPhonemeACoarseTuning = ::EAXVOCALMORPHER_DEFAULTPHONEMEACOARSETUNING;
-	eax_.ulPhonemeB = ::EAXVOCALMORPHER_DEFAULTPHONEMEB;
-	eax_.lPhonemeBCoarseTuning = ::EAXVOCALMORPHER_DEFAULTPHONEMEBCOARSETUNING;
-	eax_.ulWaveform = ::EAXVOCALMORPHER_DEFAULTWAVEFORM;
-	eax_.flRate = ::EAXVOCALMORPHER_DEFAULTRATE;
+	eax_.ulPhonemeA = EAXVOCALMORPHER_DEFAULTPHONEMEA;
+	eax_.lPhonemeACoarseTuning = EAXVOCALMORPHER_DEFAULTPHONEMEACOARSETUNING;
+	eax_.ulPhonemeB = EAXVOCALMORPHER_DEFAULTPHONEMEB;
+	eax_.lPhonemeBCoarseTuning = EAXVOCALMORPHER_DEFAULTPHONEMEBCOARSETUNING;
+	eax_.ulWaveform = EAXVOCALMORPHER_DEFAULTWAVEFORM;
+	eax_.flRate = EAXVOCALMORPHER_DEFAULTRATE;
 
 	eax_d_ = eax_;
 }
@@ -123,7 +123,7 @@ void EaxxVocalMorpherEffect::set_eax_defaults()
 void EaxxVocalMorpherEffect::set_efx_phoneme_a()
 {
 	const auto phoneme_a = std::clamp(
-		static_cast<::ALint>(eax_.ulPhonemeA),
+		static_cast<ALint>(eax_.ulPhonemeA),
 		AL_VOCAL_MORPHER_MIN_PHONEMEA,
 		AL_VOCAL_MORPHER_MAX_PHONEMEA
 	);
@@ -145,7 +145,7 @@ void EaxxVocalMorpherEffect::set_efx_phoneme_a_coarse_tuning()
 void EaxxVocalMorpherEffect::set_efx_phoneme_b()
 {
 	const auto phoneme_b = std::clamp(
-		static_cast<::ALint>(eax_.ulPhonemeB),
+		static_cast<ALint>(eax_.ulPhonemeB),
 		AL_VOCAL_MORPHER_MIN_PHONEMEB,
 		AL_VOCAL_MORPHER_MAX_PHONEMEB
 	);
@@ -167,7 +167,7 @@ void EaxxVocalMorpherEffect::set_efx_phoneme_b_coarse_tuning()
 void EaxxVocalMorpherEffect::set_efx_waveform()
 {
 	const auto waveform = std::clamp(
-		static_cast<::ALint>(eax_.ulWaveform),
+		static_cast<ALint>(eax_.ulWaveform),
 		AL_VOCAL_MORPHER_MIN_WAVEFORM,
 		AL_VOCAL_MORPHER_MAX_WAVEFORM
 	);
@@ -201,34 +201,34 @@ void EaxxVocalMorpherEffect::get(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXVOCALMORPHER_NONE:
+		case EAXVOCALMORPHER_NONE:
 			break;
 
-		case ::EAXVOCALMORPHER_ALLPARAMETERS:
+		case EAXVOCALMORPHER_ALLPARAMETERS:
 			eax_call.set_value<EaxxVocalMorpherEffectException>(eax_);
 			break;
 
-		case ::EAXVOCALMORPHER_PHONEMEA:
+		case EAXVOCALMORPHER_PHONEMEA:
 			eax_call.set_value<EaxxVocalMorpherEffectException>(eax_.ulPhonemeA);
 			break;
 
-		case ::EAXVOCALMORPHER_PHONEMEACOARSETUNING:
+		case EAXVOCALMORPHER_PHONEMEACOARSETUNING:
 			eax_call.set_value<EaxxVocalMorpherEffectException>(eax_.lPhonemeACoarseTuning);
 			break;
 
-		case ::EAXVOCALMORPHER_PHONEMEB:
+		case EAXVOCALMORPHER_PHONEMEB:
 			eax_call.set_value<EaxxVocalMorpherEffectException>(eax_.ulPhonemeB);
 			break;
 
-		case ::EAXVOCALMORPHER_PHONEMEBCOARSETUNING:
+		case EAXVOCALMORPHER_PHONEMEBCOARSETUNING:
 			eax_call.set_value<EaxxVocalMorpherEffectException>(eax_.lPhonemeBCoarseTuning);
 			break;
 
-		case ::EAXVOCALMORPHER_WAVEFORM:
+		case EAXVOCALMORPHER_WAVEFORM:
 			eax_call.set_value<EaxxVocalMorpherEffectException>(eax_.ulWaveform);
 			break;
 
-		case ::EAXVOCALMORPHER_RATE:
+		case EAXVOCALMORPHER_RATE:
 			eax_call.set_value<EaxxVocalMorpherEffectException>(eax_.flRate);
 			break;
 
@@ -243,8 +243,8 @@ void EaxxVocalMorpherEffect::validate_phoneme_a(
 	eaxx_validate_range<EaxxVocalMorpherEffectException>(
 		"Phoneme A",
 		ulPhonemeA,
-		::EAXVOCALMORPHER_MINPHONEMEA,
-		::EAXVOCALMORPHER_MAXPHONEMEA
+		EAXVOCALMORPHER_MINPHONEMEA,
+		EAXVOCALMORPHER_MAXPHONEMEA
 	);
 }
 
@@ -254,8 +254,8 @@ void EaxxVocalMorpherEffect::validate_phoneme_a_coarse_tuning(
 	eaxx_validate_range<EaxxVocalMorpherEffectException>(
 		"Phoneme A Coarse Tuning",
 		lPhonemeACoarseTuning,
-		::EAXVOCALMORPHER_MINPHONEMEACOARSETUNING,
-		::EAXVOCALMORPHER_MAXPHONEMEACOARSETUNING
+		EAXVOCALMORPHER_MINPHONEMEACOARSETUNING,
+		EAXVOCALMORPHER_MAXPHONEMEACOARSETUNING
 	);
 }
 
@@ -265,8 +265,8 @@ void EaxxVocalMorpherEffect::validate_phoneme_b(
 	eaxx_validate_range<EaxxVocalMorpherEffectException>(
 		"Phoneme B",
 		ulPhonemeB,
-		::EAXVOCALMORPHER_MINPHONEMEB,
-		::EAXVOCALMORPHER_MAXPHONEMEB
+		EAXVOCALMORPHER_MINPHONEMEB,
+		EAXVOCALMORPHER_MAXPHONEMEB
 	);
 }
 
@@ -276,8 +276,8 @@ void EaxxVocalMorpherEffect::validate_phoneme_b_coarse_tuning(
 	eaxx_validate_range<EaxxVocalMorpherEffectException>(
 		"Phoneme B Coarse Tuning",
 		lPhonemeBCoarseTuning,
-		::EAXVOCALMORPHER_MINPHONEMEBCOARSETUNING,
-		::EAXVOCALMORPHER_MAXPHONEMEBCOARSETUNING
+		EAXVOCALMORPHER_MINPHONEMEBCOARSETUNING,
+		EAXVOCALMORPHER_MAXPHONEMEBCOARSETUNING
 	);
 }
 
@@ -287,8 +287,8 @@ void EaxxVocalMorpherEffect::validate_waveform(
 	eaxx_validate_range<EaxxVocalMorpherEffectException>(
 		"Waveform",
 		ulWaveform,
-		::EAXVOCALMORPHER_MINWAVEFORM,
-		::EAXVOCALMORPHER_MAXWAVEFORM
+		EAXVOCALMORPHER_MINWAVEFORM,
+		EAXVOCALMORPHER_MAXWAVEFORM
 	);
 }
 
@@ -298,13 +298,13 @@ void EaxxVocalMorpherEffect::validate_rate(
 	eaxx_validate_range<EaxxVocalMorpherEffectException>(
 		"Rate",
 		flRate,
-		::EAXVOCALMORPHER_MINRATE,
-		::EAXVOCALMORPHER_MAXRATE
+		EAXVOCALMORPHER_MINRATE,
+		EAXVOCALMORPHER_MAXRATE
 	);
 }
 
 void EaxxVocalMorpherEffect::validate_all(
-	const ::EAXVOCALMORPHERPROPERTIES& all)
+	const EAXVOCALMORPHERPROPERTIES& all)
 {
 	validate_phoneme_a(all.ulPhonemeA);
 	validate_phoneme_a_coarse_tuning(all.lPhonemeACoarseTuning);
@@ -357,7 +357,7 @@ void EaxxVocalMorpherEffect::defer_rate(
 }
 
 void EaxxVocalMorpherEffect::defer_all(
-	const ::EAXVOCALMORPHERPROPERTIES& all)
+	const EAXVOCALMORPHERPROPERTIES& all)
 {
 	defer_phoneme_a(all.ulPhonemeA);
 	defer_phoneme_a_coarse_tuning(all.lPhonemeACoarseTuning);
@@ -444,7 +444,7 @@ void EaxxVocalMorpherEffect::defer_all(
 {
 	const auto& all = eax_call.get_value<
 		EaxxVocalMorpherEffectException,
-		const ::EAXVOCALMORPHERPROPERTIES
+		const EAXVOCALMORPHERPROPERTIES
 	>();
 
 	validate_all(all);
@@ -500,34 +500,34 @@ void EaxxVocalMorpherEffect::set(
 {
 	switch (eax_call.get_property_id())
 	{
-		case ::EAXVOCALMORPHER_NONE:
+		case EAXVOCALMORPHER_NONE:
 			break;
 
-		case ::EAXVOCALMORPHER_ALLPARAMETERS:
+		case EAXVOCALMORPHER_ALLPARAMETERS:
 			defer_all(eax_call);
 			break;
 
-		case ::EAXVOCALMORPHER_PHONEMEA:
+		case EAXVOCALMORPHER_PHONEMEA:
 			defer_phoneme_a(eax_call);
 			break;
 
-		case ::EAXVOCALMORPHER_PHONEMEACOARSETUNING:
+		case EAXVOCALMORPHER_PHONEMEACOARSETUNING:
 			defer_phoneme_a_coarse_tuning(eax_call);
 			break;
 
-		case ::EAXVOCALMORPHER_PHONEMEB:
+		case EAXVOCALMORPHER_PHONEMEB:
 			defer_phoneme_b(eax_call);
 			break;
 
-		case ::EAXVOCALMORPHER_PHONEMEBCOARSETUNING:
+		case EAXVOCALMORPHER_PHONEMEBCOARSETUNING:
 			defer_phoneme_b_coarse_tuning(eax_call);
 			break;
 
-		case ::EAXVOCALMORPHER_WAVEFORM:
+		case EAXVOCALMORPHER_WAVEFORM:
 			defer_waveform(eax_call);
 			break;
 
-		case ::EAXVOCALMORPHER_RATE:
+		case EAXVOCALMORPHER_RATE:
 			defer_rate(eax_call);
 			break;
 

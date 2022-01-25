@@ -42,7 +42,7 @@ namespace eaxefx
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 void AlcDeviceDeleter::operator()(
-	::ALCdevice* alc_device) const noexcept
+	ALCdevice* alc_device) const noexcept
 {
 	const auto al_alc_symbols = g_al_api.get_al_alc_symbols();
 
@@ -57,7 +57,7 @@ void AlcDeviceDeleter::operator()(
 }
 
 void AlcContextDeleter::operator()(
-	::ALCcontext* alc_context) const noexcept
+	ALCcontext* alc_context) const noexcept
 {
 	const auto al_alc_symbols = g_al_api.get_al_alc_symbols();
 

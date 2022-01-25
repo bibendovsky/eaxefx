@@ -44,13 +44,13 @@ namespace eaxefx::process
 
 bool is_shared_library() noexcept
 {
-	const auto root_module = ::GetModuleHandleW(nullptr);
+	const auto root_module = GetModuleHandleW(nullptr);
 
-	auto current_module = ::HMODULE{};
+	auto current_module = HMODULE{};
 
-	const auto winapi_result = ::GetModuleHandleExW(
+	const auto winapi_result = GetModuleHandleExW(
 		GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-		reinterpret_cast<::LPCWSTR>(is_shared_library),
+		reinterpret_cast<LPCWSTR>(is_shared_library),
 		&current_module
 	);
 
@@ -71,18 +71,18 @@ void* get_module_address(
 	std::string_view module_name) noexcept
 try
 {
-	using EnumProcessModulesFunc = ::BOOL (WINAPI *)(
-		::HANDLE hProcess,
-		::HMODULE* lphModule,
-		::DWORD cb,
-		::LPDWORD lpcbNeeded
+	using EnumProcessModulesFunc = BOOL (WINAPI *)(
+		HANDLE hProcess,
+		HMODULE* lphModule,
+		DWORD cb,
+		LPDWORD lpcbNeeded
 	);
 
-	using GetModuleBaseNameFunc = ::DWORD (WINAPI *)(
-		::HANDLE hProcess,
-		::HMODULE hModule,
-		::LPSTR lpFilename,
-		::DWORD nSize
+	using GetModuleBaseNameFunc = DWORD (WINAPI *)(
+		HANDLE hProcess,
+		HMODULE hModule,
+		LPSTR lpFilename,
+		DWORD nSize
 	);
 
 	auto enum_process_modules_func = EnumProcessModulesFunc{};
@@ -122,9 +122,9 @@ try
 		return nullptr;
 	}
 
-	const auto process_handle = ::GetCurrentProcess();
+	const auto process_handle = GetCurrentProcess();
 
-	auto max_module_count = ::DWORD{};
+	auto max_module_count = DWORD{};
 
 	const auto max_count_result = enum_process_modules_func(
 		process_handle,
@@ -138,11 +138,11 @@ try
 		return nullptr;
 	}
 
-	using Modules = std::vector<::HMODULE>;
+	using Modules = std::vector<HMODULE>;
 	auto modules = Modules{};
 	modules.resize(max_module_count);
 
-	auto module_count = ::DWORD{};
+	auto module_count = DWORD{};
 
 	const auto module_count_result = enum_process_modules_func(
 		process_handle,
@@ -158,7 +158,7 @@ try
 
 	modules.resize(module_count);
 
-	const auto module_name_size = static_cast<::DWORD>(module_name.size());
+	const auto module_name_size = static_cast<DWORD>(module_name.size());
 
 	const auto to_lower = [](
 		char ch)

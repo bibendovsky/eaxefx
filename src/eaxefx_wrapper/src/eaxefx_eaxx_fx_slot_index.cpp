@@ -82,7 +82,7 @@ void EaxxFxSlotIndex::operator=(
 }
 
 void EaxxFxSlotIndex::operator=(
-	const ::GUID& guid)
+	const GUID& guid)
 {
 	set(guid);
 }
@@ -117,7 +117,7 @@ void EaxxFxSlotIndex::reset() noexcept
 void EaxxFxSlotIndex::set(
 	EaxxFxSlotIndexValue index)
 {
-	if (index < 0 || index >= ::EAX_MAX_FXSLOTS)
+	if (index < 0 || index >= EAX_MAX_FXSLOTS)
 	{
 		throw EaxxFxSlotIndexException{"Index out of range."};
 	}
@@ -127,31 +127,31 @@ void EaxxFxSlotIndex::set(
 }
 
 void EaxxFxSlotIndex::set(
-	const ::GUID& guid)
+	const GUID& guid)
 {
 	if (false)
 	{
 	}
-	else if (guid == ::EAX_NULL_GUID)
+	else if (guid == EAX_NULL_GUID)
 	{
 		has_value_ = false;
 	}
-	else if (guid == ::EAXPROPERTYID_EAX40_FXSlot0 || guid == ::EAXPROPERTYID_EAX50_FXSlot0)
+	else if (guid == EAXPROPERTYID_EAX40_FXSlot0 || guid == EAXPROPERTYID_EAX50_FXSlot0)
 	{
 		has_value_ = true;
 		value_ = 0;
 	}
-	else if (guid == ::EAXPROPERTYID_EAX40_FXSlot1 || guid == ::EAXPROPERTYID_EAX50_FXSlot1)
+	else if (guid == EAXPROPERTYID_EAX40_FXSlot1 || guid == EAXPROPERTYID_EAX50_FXSlot1)
 	{
 		has_value_ = true;
 		value_ = 1;
 	}
-	else if (guid == ::EAXPROPERTYID_EAX40_FXSlot2 || guid == ::EAXPROPERTYID_EAX50_FXSlot2)
+	else if (guid == EAXPROPERTYID_EAX40_FXSlot2 || guid == EAXPROPERTYID_EAX50_FXSlot2)
 	{
 		has_value_ = true;
 		value_ = 2;
 	}
-	else if (guid == ::EAXPROPERTYID_EAX40_FXSlot3 || guid == ::EAXPROPERTYID_EAX50_FXSlot3)
+	else if (guid == EAXPROPERTYID_EAX40_FXSlot3 || guid == EAXPROPERTYID_EAX50_FXSlot3)
 	{
 		has_value_ = true;
 		value_ = 3;

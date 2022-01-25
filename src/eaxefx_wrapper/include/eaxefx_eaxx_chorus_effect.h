@@ -73,7 +73,7 @@ class EaxxChorusEffect final :
 {
 public:
 	EaxxChorusEffect(
-		::ALuint al_effect_slot,
+		ALuint al_effect_slot,
 		const AlEfxSymbols* al_efx_symbols);
 
 
@@ -84,12 +84,12 @@ public:
 
 
 private:
-	const ::ALuint al_effect_slot_;
+	const ALuint al_effect_slot_;
 	const AlEfxSymbols* al_efx_symbols_;
 	EfxEffectObject efx_effect_object_;
 
-	::EAXCHORUSPROPERTIES eax_;
-	::EAXCHORUSPROPERTIES eax_d_;
+	EAXCHORUSPROPERTIES eax_;
+	EAXCHORUSPROPERTIES eax_d_;
 	EaxxChorusEffectEaxDirtyFlags eax_dirty_flags_{};
 
 
@@ -134,7 +134,7 @@ private:
 		float flDelay);
 
 	void validate_all(
-		const ::EAXCHORUSPROPERTIES& eax_all);
+		const EAXCHORUSPROPERTIES& eax_all);
 
 
 	void defer_waveform(
@@ -156,7 +156,7 @@ private:
 		float flDelay);
 
 	void defer_all(
-		const ::EAXCHORUSPROPERTIES& eax_all);
+		const EAXCHORUSPROPERTIES& eax_all);
 
 
 	void defer_waveform(

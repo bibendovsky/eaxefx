@@ -72,13 +72,13 @@ fs::Path get_special_folder(
 			throw EnvException{"Unknown special folder type."};
 	}
 
-	::WCHAR u16_buffer[MAX_PATH + 1];
+	WCHAR u16_buffer[MAX_PATH + 1];
 
-	const auto win32_result = ::SHGetFolderPathW(
+	const auto win32_result = SHGetFolderPathW(
 		nullptr,
 		win32_csidl,
 		nullptr,
-		::SHGFP_TYPE_CURRENT,
+		SHGFP_TYPE_CURRENT,
 		u16_buffer
 	);
 

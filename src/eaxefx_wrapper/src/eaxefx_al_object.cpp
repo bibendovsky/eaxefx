@@ -102,7 +102,7 @@ void EfxEffectSlotObjectDeleter::operator=(
 }
 
 void EfxEffectSlotObjectDeleter::operator()(
-	::ALuint al_name) const noexcept
+	ALuint al_name) const noexcept
 {
 	if (al_efx_symbols_)
 	{
@@ -122,7 +122,7 @@ EfxEffectSlotObject make_efx_effect_slot_object(
 		al_object_fail("Null EFX symbols.");
 	}
 
-	auto al_effect_slot_name = ::ALuint{};
+	auto al_effect_slot_name = ALuint{};
 	al_efx_symbols->alGenAuxiliaryEffectSlots(1, &al_effect_slot_name);
 
 	if (al_effect_slot_name == 0)
@@ -163,7 +163,7 @@ void EfxEffectObjectDeleter::operator=(
 }
 
 void EfxEffectObjectDeleter::operator()(
-	::ALuint al_name) const noexcept
+	ALuint al_name) const noexcept
 {
 	if (al_efx_symbols_)
 	{
@@ -176,7 +176,7 @@ void EfxEffectObjectDeleter::operator()(
 }
 
 EfxEffectObject make_efx_effect_object(
-	::ALint al_effect_type,
+	ALint al_effect_type,
 	const AlEfxSymbols* al_efx_symbols)
 {
 	switch (al_effect_type)
@@ -205,7 +205,7 @@ EfxEffectObject make_efx_effect_object(
 		al_object_fail("Null EFX symbols.");
 	}
 
-	auto al_effect = ::ALuint{};
+	auto al_effect = ALuint{};
 	al_efx_symbols->alGenEffects(1, &al_effect);
 
 	if (al_effect == AL_NONE)
@@ -215,7 +215,7 @@ EfxEffectObject make_efx_effect_object(
 
 	auto efx_effect_object = EfxEffectObject{al_effect, EfxEffectObjectDeleter{al_efx_symbols}};
 
-	auto new_al_effect_type = ::ALint{-1};
+	auto new_al_effect_type = ALint{-1};
 
 	al_efx_symbols->alEffecti(al_effect, AL_EFFECT_TYPE, al_effect_type);
 	al_efx_symbols->alGetEffecti(al_effect, AL_EFFECT_TYPE, &new_al_effect_type);
@@ -258,7 +258,7 @@ void EfxFilterObjectDeleter::operator=(
 }
 
 void EfxFilterObjectDeleter::operator()(
-	::ALuint al_name) const noexcept
+	ALuint al_name) const noexcept
 {
 	if (al_efx_symbols_)
 	{
@@ -278,7 +278,7 @@ EfxFilterObject make_efx_filter_object(
 		al_object_fail("Null EFX symbols.");
 	}
 
-	auto al_filter_name = ::ALuint{};
+	auto al_filter_name = ALuint{};
 	al_efx_symbols->alGenFilters(1, &al_filter_name);
 
 	if (al_filter_name == AL_NONE)
