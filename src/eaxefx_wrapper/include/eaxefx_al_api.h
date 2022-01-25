@@ -66,14 +66,14 @@ public:
 
 	virtual AlApiContext& get_current_context() = 0;
 
-	virtual ::ALboolean AL_APIENTRY EAXSetBufferMode(
+	virtual ::ALboolean AL_APIENTRY eax_set_buffer_mode(
 		::ALsizei n,
 		const ::ALuint* buffers,
 		::ALint value) = 0;
 
-	virtual ::ALenum AL_APIENTRY EAXGetBufferMode(
+	virtual ::ALenum AL_APIENTRY eax_get_buffer_mode(
 		::ALuint buffer,
-		::ALint* value) = 0;
+		::ALint* pReserved) = 0;
 }; // AlApi
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

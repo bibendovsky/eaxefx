@@ -27,6 +27,8 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "eaxefx_al_api.h"
 
+#include <cstddef>
+
 #include <algorithm>
 #include <exception>
 #include <functional>
@@ -71,13 +73,13 @@ namespace
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-constexpr auto max_x_ram_size = static_cast<::ALsizei>(64 * 1'024 * 1'024);
+constexpr auto x_ram_max_size = static_cast<::ALsizei>(64 * 1'024 * 1'024);
 
-constexpr auto x_ram_ram_size_enum = static_cast<::ALenum>(0x1);
-constexpr auto x_ram_ram_free_enum = static_cast<::ALenum>(0x2);
-constexpr auto x_ram_al_storage_automatic_enum = static_cast<::ALenum>(0x3);
-constexpr auto x_ram_al_storage_hardware_enum = static_cast<::ALenum>(0x4);
-constexpr auto x_ram_al_storage_accessible_enum = static_cast<::ALenum>(0x5);
+constexpr auto x_ram_ram_size_enum = static_cast<::ALenum>(0x20001);
+constexpr auto x_ram_ram_free_enum = static_cast<::ALenum>(0x20002);
+constexpr auto x_ram_al_storage_automatic_enum = static_cast<::ALenum>(0x20003);
+constexpr auto x_ram_al_storage_hardware_enum = static_cast<::ALenum>(0x20004);
+constexpr auto x_ram_al_storage_accessible_enum = static_cast<::ALenum>(0x20005);
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -92,7 +94,7 @@ try
 {
 	const auto mutex_lock = g_al_api.get_lock();
 
-	return g_al_api.EAXSetBufferMode(n, buffers, value);
+	return g_al_api.eax_set_buffer_mode(n, buffers, value);
 }
 catch (...)
 {
@@ -102,12 +104,12 @@ catch (...)
 
 ::ALenum AL_APIENTRY EAXGetBufferMode(
 	::ALuint buffer,
-	::ALint* value)
+	::ALint* pReserved)
 try
 {
 	const auto mutex_lock = g_al_api.get_lock();
 
-	return g_al_api.EAXGetBufferMode(buffer, value);
+	return g_al_api.eax_get_buffer_mode(buffer, pReserved);
 }
 catch (...)
 {
@@ -165,14 +167,14 @@ public:
 
 	AlApiContext& get_current_context() override;
 
-	::ALboolean AL_APIENTRY EAXSetBufferMode(
+	::ALboolean AL_APIENTRY eax_set_buffer_mode(
 		::ALsizei n,
 		const ::ALuint* buffers,
 		::ALint value);
 
-	::ALenum AL_APIENTRY EAXGetBufferMode(
+	::ALenum AL_APIENTRY eax_get_buffer_mode(
 		::ALuint buffer,
-		::ALint* value);
+		::ALint* pReserved);
 
 	Eaxx* get_eaxx() const noexcept;
 
@@ -597,7 +599,7 @@ private:
 	{
 		::ALsizei size{};
 		::ALenum x_ram_mode{};
-		bool x_ram_is_allocated{};
+		bool x_ram_is_hardware{};
 		bool x_ram_is_dirty{};
 	}; // Buffer
 
@@ -810,12 +812,17 @@ AlApiContext& AlApiImpl::get_current_context()
 	return get_context();
 }
 
-::ALboolean AL_APIENTRY AlApiImpl::EAXSetBufferMode(
+::ALboolean AL_APIENTRY AlApiImpl::eax_set_buffer_mode(
 	::ALsizei n,
 	const ::ALuint* buffers,
 	::ALint value)
 {
-	if (n <= 0)
+	if (n == 0)
+	{
+		return AL_TRUE;
+	}
+
+	if (n < 0)
 	{
 		fail("Buffer count out of range.");
 	}
@@ -833,31 +840,37 @@ AlApiContext& AlApiImpl::get_current_context()
 			break;
 
 		default:
-			fail("Unknown X-RAM mode.");
+			fail("Unsupported X-RAM mode.");
 	}
 
 	auto& device = get_current_device();
 
-	for (auto i = decltype(n){}; i < n; ++i)
+	for (auto i = std::size_t{}; i < static_cast<std::size_t>(n); ++i)
 	{
 		const auto al_buffer_name = buffers[i];
 
 		if (al_buffer_name == AL_NONE)
 		{
-			fail("Null AL buffer name.");
+			continue;
 		}
 
 		const auto& buffer = get_buffer(device, al_buffer_name);
 
 		if (buffer.x_ram_is_dirty)
 		{
-			fail("Non-empty buffer.");
+			fail("Buffer has audio data.");
 		}
 	}
 
-	for (auto i = decltype(n){}; i < n; ++i)
+	for (auto i = std::size_t{}; i < static_cast<std::size_t>(n); ++i)
 	{
 		const auto al_buffer_name = buffers[i];
+
+		if (al_buffer_name == AL_NONE)
+		{
+			continue;
+		}
+
 		auto& buffer = get_buffer(device, al_buffer_name);
 		buffer.x_ram_mode = value;
 	}
@@ -865,29 +878,18 @@ AlApiContext& AlApiImpl::get_current_context()
 	return AL_TRUE;
 }
 
-::ALenum AL_APIENTRY AlApiImpl::EAXGetBufferMode(
-	::ALuint buffer,
-	::ALint* value)
+::ALenum AL_APIENTRY AlApiImpl::eax_get_buffer_mode(
+	ALuint buffer,
+    ALint* pReserved)
 {
 	if (buffer == AL_NONE)
 	{
 		fail("Null AL buffer name.");
 	}
 
-	if (!value)
+	if (pReserved)
 	{
-		fail("Null X-RAM mode.");
-	}
-
-	switch (*value)
-	{
-		case x_ram_al_storage_automatic_enum:
-		case x_ram_al_storage_hardware_enum:
-		case x_ram_al_storage_accessible_enum:
-			break;
-
-		default:
-			fail("Unknown X-RAM mode.");
+		fail("Non-null reserved value.");
 	}
 
 	const auto& our_buffer = get_current_buffer(buffer);
@@ -1152,7 +1154,7 @@ try
 
 	device.special_name = special_device_name;
 	device.al_device = al_device;
-	device.x_ram_free_size = max_x_ram_size;
+	device.x_ram_free_size = x_ram_max_size;
 
 	return al_device;
 }
@@ -1586,7 +1588,7 @@ try
 	switch (param)
 	{
 		case x_ram_ram_size_enum:
-			return max_x_ram_size;
+			return x_ram_max_size;
 
 		case x_ram_ram_free_enum:
 			{
@@ -2436,10 +2438,10 @@ try
 
 		const auto& our_buffer = buffer_it->second;
 
-		if (our_buffer.x_ram_is_allocated)
+		if (our_buffer.x_ram_is_hardware)
 		{
 			device.x_ram_free_size += our_buffer.size;
-			assert(device.x_ram_free_size >= 0 && device.x_ram_free_size <= max_x_ram_size);
+			assert(device.x_ram_free_size >= 0 && device.x_ram_free_size <= x_ram_max_size);
 		}
 
 		our_buffers.erase(buffer_it);
@@ -2480,7 +2482,7 @@ try
 
 	// At-first, prepare information.
 	//
-	auto x_ram_is_allocated = our_buffer.x_ram_is_allocated;
+	auto x_ram_is_hardware = our_buffer.x_ram_is_hardware;
 	auto x_ram_size_delta = decltype(size){};
 
 	switch (our_buffer.x_ram_mode)
@@ -2494,7 +2496,7 @@ try
 				{
 					// Have enough X-RAM memory.
 
-					x_ram_is_allocated = true;
+					x_ram_is_hardware = true;
 					x_ram_size_delta = -size;
 				}
 			}
@@ -2503,9 +2505,9 @@ try
 				// Used at least once.
 				// From now on, use only system memory.
 
-				x_ram_is_allocated = false;
+				x_ram_is_hardware = false;
 
-				if (our_buffer.x_ram_is_allocated)
+				if (our_buffer.x_ram_is_hardware)
 				{
 					// First allocated was in X-RAM.
 					// Free that block.
@@ -2521,7 +2523,7 @@ try
 			{
 				// Have enough X-RAM memory.
 
-				x_ram_is_allocated = true;
+				x_ram_is_hardware = true;
 				x_ram_size_delta = our_buffer.size - size;
 			}
 			else
@@ -2535,7 +2537,7 @@ try
 
 		case x_ram_al_storage_accessible_enum:
 			// Always use system memory.
-			x_ram_is_allocated = false;
+			x_ram_is_hardware = false;
 			break;
 
 		default:
@@ -2560,12 +2562,12 @@ try
 	// At-third, commit the changes.
 	//
 	our_buffer.size = size;
-	our_buffer.x_ram_is_allocated = x_ram_is_allocated;
+	our_buffer.x_ram_is_hardware = x_ram_is_hardware;
 	our_buffer.x_ram_is_dirty = true;
 
 	device.x_ram_free_size += x_ram_size_delta;
 
-	assert(device.x_ram_free_size >= 0 && device.x_ram_free_size <= max_x_ram_size);
+	assert(device.x_ram_free_size >= 0 && device.x_ram_free_size <= x_ram_max_size);
 }
 catch (...)
 {
@@ -2887,10 +2889,10 @@ void AlApiImpl::initialize_al_symbols()
 	al_loader_ = make_al_loader(al_library_.get());
 
 	logger_.info("Load ALC v1.1 symbols.");
-	al_alc_symbols_ = al_loader_->load_alc_symbols();
+	al_alc_symbols_ = al_loader_->resolve_alc_symbols();
 
 	logger_.info("Load AL v1.1 symbols.");
-	al_al_symbols_ = al_loader_->load_al_symbols();
+	al_al_symbols_ = al_loader_->resolve_al_symbols();
 }
 
 void AlApiImpl::initialize_al_alc_symbol_map() noexcept

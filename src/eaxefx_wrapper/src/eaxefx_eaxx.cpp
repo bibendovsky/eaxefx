@@ -89,7 +89,7 @@ try
 
 	try
 	{
-		return eaxx.EAXSet(
+		return eaxx.eax_set(
 			property_set_guid,
 			property_id,
 			property_al_name,
@@ -123,7 +123,7 @@ try
 
 	try
 	{
-		return eaxx.EAXGet(
+		return eaxx.eax_get(
 			property_set_guid,
 			property_id,
 			property_al_name,
@@ -281,26 +281,26 @@ public:
 	void set_last_error() noexcept override;
 
 
-	void* alGetProcAddress(
+	void* al_get_proc_address(
 		std::string_view symbol_name) override;
 
-	void alGenSources(
+	void al_gen_sources(
 		::ALsizei n,
 		::ALuint* sources) override;
 
-	void alDeleteSources(
+	void al_delete_sources(
 		::ALsizei n,
 		const ::ALuint* sources) override;
 
 
-	::ALenum EAXSet(
+	::ALenum eax_set(
 		const ::GUID* property_set_guid,
 		::ALuint property_id,
 		::ALuint property_al_name,
 		::ALvoid* property_buffer,
 		::ALuint property_size) override;
 
-	::ALenum EAXGet(
+	::ALenum eax_get(
 		const ::GUID* property_set_guid,
 		::ALuint property_id,
 		::ALuint property_al_name,
@@ -403,7 +403,7 @@ void EaxxImpl::set_last_error() noexcept
 	}
 }
 
-void* EaxxImpl::alGetProcAddress(
+void* EaxxImpl::al_get_proc_address(
 	std::string_view symbol_name)
 {
 	constexpr auto eax_get_view = std::string_view{AlEaxSymbolsNames::EAXGet};
@@ -426,21 +426,21 @@ void* EaxxImpl::alGetProcAddress(
 	}
 }
 
-void EaxxImpl::alGenSources(
+void EaxxImpl::al_gen_sources(
 	::ALsizei n,
 	::ALuint* sources)
 {
 	eaxx_context_->initialize_sources(n, sources);
 }
 
-void EaxxImpl::alDeleteSources(
+void EaxxImpl::al_delete_sources(
 	::ALsizei n,
 	const ::ALuint* sources)
 {
 	eaxx_context_->uninitialize_sources(n, sources);
 }
 
-::ALenum EaxxImpl::EAXSet(
+::ALenum EaxxImpl::eax_set(
 	const ::GUID* property_set_guid,
 	::ALuint property_id,
 	::ALuint property_al_name,
@@ -480,7 +480,7 @@ void EaxxImpl::alDeleteSources(
 	return AL_NO_ERROR;
 }
 
-::ALenum EaxxImpl::EAXGet(
+::ALenum EaxxImpl::eax_get(
 	const ::GUID* property_set_guid,
 	::ALuint property_id,
 	::ALuint property_al_name,

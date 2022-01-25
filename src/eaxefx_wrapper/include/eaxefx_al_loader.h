@@ -49,11 +49,11 @@ public:
 	virtual ~AlLoader() = default;
 
 
-	virtual AlAlcSymbolsUPtr load_alc_symbols() = 0;
+	virtual AlAlcSymbolsUPtr resolve_alc_symbols() = 0;
 
-	virtual AlAlSymbolsUPtr load_al_symbols() = 0;
+	virtual AlAlSymbolsUPtr resolve_al_symbols() = 0;
 
-	virtual AlEfxSymbolsUPtr load_efx() = 0;
+	virtual AlEfxSymbolsUPtr resolve_efx_symbols() = 0;
 }; // AlLoader
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

@@ -383,7 +383,7 @@ void* AlApiContextImpl::al_get_proc_address(
 {
 	if (eaxx_)
 	{
-		const auto symbol = eaxx_->alGetProcAddress(symbol_name);
+		const auto symbol = eaxx_->al_get_proc_address(symbol_name);
 
 		if (symbol)
 		{
@@ -421,7 +421,7 @@ void AlApiContextImpl::al_gen_sources(
 		return;
 	}
 
-	eaxx_->alGenSources(n, sources);
+	eaxx_->al_gen_sources(n, sources);
 }
 
 void AlApiContextImpl::al_delete_sources(
@@ -433,7 +433,7 @@ void AlApiContextImpl::al_delete_sources(
 		return;
 	}
 
-	eaxx_->alDeleteSources(n, sources);
+	eaxx_->al_delete_sources(n, sources);
 }
 
 ::ALCcontext* AlApiContextImpl::get_al_context() const noexcept
@@ -724,7 +724,7 @@ void AlApiContextImpl::make_efx_symbols()
 		fail("Null AL loader.");
 	}
 
-	al_efx_symbols_ = al_loader->load_efx();
+	al_efx_symbols_ = al_loader->resolve_efx_symbols();
 }
 
 void AlApiContextImpl::make_efx_symbol_map()

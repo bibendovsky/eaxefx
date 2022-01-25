@@ -58,26 +58,26 @@ public:
 	virtual void set_last_error() noexcept = 0;
 
 
-	virtual void* alGetProcAddress(
+	virtual void* al_get_proc_address(
 		std::string_view symbol_name) = 0;
 
-	virtual void alGenSources(
+	virtual void al_gen_sources(
 		::ALsizei n,
 		::ALuint* sources) = 0;
 
-	virtual void alDeleteSources(
+	virtual void al_delete_sources(
 		::ALsizei n,
 		const ::ALuint* sources) = 0;
 
 
-	virtual ::ALenum EAXSet(
+	virtual ::ALenum eax_set(
 		const ::GUID* property_set_guid,
 		::ALuint property_id,
 		::ALuint property_al_name,
 		::ALvoid* property_buffer,
 		::ALuint property_size) = 0;
 
-	virtual ::ALenum EAXGet(
+	virtual ::ALenum eax_get(
 		const ::GUID* property_set_guid,
 		::ALuint property_id,
 		::ALuint property_al_name,

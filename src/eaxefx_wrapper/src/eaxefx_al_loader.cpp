@@ -65,11 +65,11 @@ public:
 		SharedLibrary* shared_library);
 
 
-	AlAlcSymbolsUPtr load_alc_symbols() override;
+	AlAlcSymbolsUPtr resolve_alc_symbols() override;
 
-	AlAlSymbolsUPtr load_al_symbols() override;
+	AlAlSymbolsUPtr resolve_al_symbols() override;
 
-	AlEfxSymbolsUPtr load_efx() override;
+	AlEfxSymbolsUPtr resolve_efx_symbols() override;
 
 
 private:
@@ -182,7 +182,7 @@ void AlLoaderImpl::initialize_al_get_proc_address(
 	}
 }
 
-AlAlcSymbolsUPtr AlLoaderImpl::load_alc_symbols()
+AlAlcSymbolsUPtr AlLoaderImpl::resolve_alc_symbols()
 {
 	auto al_alc_symbols = std::make_unique<AlAlcSymbols>();
 
@@ -210,7 +210,7 @@ AlAlcSymbolsUPtr AlLoaderImpl::load_alc_symbols()
 	return al_alc_symbols;
 }
 
-AlAlSymbolsUPtr AlLoaderImpl::load_al_symbols()
+AlAlSymbolsUPtr AlLoaderImpl::resolve_al_symbols()
 {
 	auto al_al_symbols = std::make_unique<AlAlSymbols>();
 
@@ -291,7 +291,7 @@ AlAlSymbolsUPtr AlLoaderImpl::load_al_symbols()
 	return al_al_symbols;
 }
 
-AlEfxSymbolsUPtr AlLoaderImpl::load_efx()
+AlEfxSymbolsUPtr AlLoaderImpl::resolve_efx_symbols()
 {
 	auto al_efx_symbols = std::make_unique<AlEfxSymbols>();
 
