@@ -183,74 +183,74 @@ public:
 	// =========================================================================
 	// ALC v1.1
 
-	ALCcontext* ALC_APIENTRY alcCreateContext(
+	ALCcontext* ALC_APIENTRY alc_create_context(
 		ALCdevice* device,
 		const ALCint* attrlist) noexcept;
 
-	ALCboolean ALC_APIENTRY alcMakeContextCurrent(
+	ALCboolean ALC_APIENTRY alc_make_context_current(
 		ALCcontext* context) noexcept;
 
-	void ALC_APIENTRY alcProcessContext(
+	void ALC_APIENTRY alc_process_context(
 		ALCcontext* context) noexcept;
 
-	void ALC_APIENTRY alcSuspendContext(
+	void ALC_APIENTRY alc_suspend_context(
 		ALCcontext* context) noexcept;
 
-	void ALC_APIENTRY alcDestroyContext(
+	void ALC_APIENTRY alc_destroy_context(
 		ALCcontext* context) noexcept;
 
-	ALCcontext* ALC_APIENTRY alcGetCurrentContext() noexcept;
+	ALCcontext* ALC_APIENTRY alc_get_current_context() noexcept;
 
-	ALCdevice* ALC_APIENTRY alcGetContextsDevice(
+	ALCdevice* ALC_APIENTRY alc_get_contexts_device(
 		ALCcontext* context) noexcept;
 
-	ALCdevice* ALC_APIENTRY alcOpenDevice(
+	ALCdevice* ALC_APIENTRY alc_open_device(
 		const ALCchar* devicename) noexcept;
 
-	ALCboolean ALC_APIENTRY alcCloseDevice(
+	ALCboolean ALC_APIENTRY alc_close_device(
 		ALCdevice* device) noexcept;
 
-	ALCenum ALC_APIENTRY alcGetError(
+	ALCenum ALC_APIENTRY alc_get_error(
 		ALCdevice* device) noexcept;
 
-	ALCboolean ALC_APIENTRY alcIsExtensionPresent(
+	ALCboolean ALC_APIENTRY alc_is_extension_present(
 		ALCdevice* device,
 		const ALCchar* extname) noexcept;
 
-	void* ALC_APIENTRY alcGetProcAddress(
+	void* ALC_APIENTRY alc_get_proc_address(
 		ALCdevice* device,
 		const ALCchar* funcname) noexcept;
 
-	ALCenum ALC_APIENTRY alcGetEnumValue(
+	ALCenum ALC_APIENTRY alc_get_enum_value(
 		ALCdevice* device,
 		const ALCchar* enumname) noexcept;
 
-	const ALCchar* ALC_APIENTRY alcGetString(
+	const ALCchar* ALC_APIENTRY alc_get_string(
 		ALCdevice* device,
 		ALCenum param) noexcept;
 
-	void ALC_APIENTRY alcGetIntegerv(
+	void ALC_APIENTRY alc_get_integer_v(
 		ALCdevice* device,
 		ALCenum param,
 		ALCsizei size,
 		ALCint* values) noexcept;
 
-	ALCdevice* ALC_APIENTRY alcCaptureOpenDevice(
+	ALCdevice* ALC_APIENTRY alc_capture_open_device(
 		const ALCchar* devicename,
 		ALCuint frequency,
 		ALCenum format,
 		ALCsizei buffersize) noexcept;
 
-	ALCboolean ALC_APIENTRY alcCaptureCloseDevice(
+	ALCboolean ALC_APIENTRY alc_capture_close_device(
 		ALCdevice* device) noexcept;
 
-	void ALC_APIENTRY alcCaptureStart(
+	void ALC_APIENTRY alc_capture_start(
 		ALCdevice* device) noexcept;
 
-	void ALC_APIENTRY alcCaptureStop(
+	void ALC_APIENTRY alc_capture_stop(
 		ALCdevice* device) noexcept;
 
-	void ALC_APIENTRY alcCaptureSamples(
+	void ALC_APIENTRY alc_capture_samples(
 		ALCdevice* device,
 		ALCvoid* buffer,
 		ALCsizei samples) noexcept;
@@ -904,7 +904,7 @@ Eaxx* AlApiImpl::get_eaxx() const noexcept
 // ==========================================================================
 // ALC v1.1
 
-ALCcontext* ALC_APIENTRY AlApiImpl::alcCreateContext(
+ALCcontext* ALC_APIENTRY AlApiImpl::alc_create_context(
 	ALCdevice* device,
 	const ALCint* attrlist) noexcept
 try
@@ -944,7 +944,7 @@ catch (...)
 	return nullptr;
 }
 
-ALCboolean ALC_APIENTRY AlApiImpl::alcMakeContextCurrent(
+ALCboolean ALC_APIENTRY AlApiImpl::alc_make_context_current(
 	ALCcontext* context) noexcept
 try
 {
@@ -984,7 +984,7 @@ catch (...)
 	return ALC_FALSE;
 }
 
-void ALC_APIENTRY AlApiImpl::alcProcessContext(
+void ALC_APIENTRY AlApiImpl::alc_process_context(
 	ALCcontext* context) noexcept
 try
 {
@@ -997,7 +997,7 @@ catch (...)
 	utils::log_exception(&logger_, AlAlcSymbolsNames::alcProcessContext);
 }
 
-void ALC_APIENTRY AlApiImpl::alcSuspendContext(
+void ALC_APIENTRY AlApiImpl::alc_suspend_context(
 	ALCcontext* context) noexcept
 try
 {
@@ -1010,7 +1010,7 @@ catch (...)
 	utils::log_exception(&logger_, AlAlcSymbolsNames::alcSuspendContext);
 }
 
-void ALC_APIENTRY AlApiImpl::alcDestroyContext(
+void ALC_APIENTRY AlApiImpl::alc_destroy_context(
 	ALCcontext* context) noexcept
 try
 {
@@ -1043,7 +1043,7 @@ catch (...)
 	utils::log_exception(&logger_, AlAlcSymbolsNames::alcDestroyContext);
 }
 
-ALCcontext* ALC_APIENTRY AlApiImpl::alcGetCurrentContext() noexcept
+ALCcontext* ALC_APIENTRY AlApiImpl::alc_get_current_context() noexcept
 try
 {
 	const auto mt_lock = initialize();
@@ -1061,7 +1061,7 @@ catch (...)
 	return nullptr;
 }
 
-ALCdevice* ALC_APIENTRY AlApiImpl::alcGetContextsDevice(
+ALCdevice* ALC_APIENTRY AlApiImpl::alc_get_contexts_device(
 	ALCcontext* context) noexcept
 try
 {
@@ -1075,7 +1075,7 @@ catch (...)
 	return nullptr;
 }
 
-ALCdevice* ALC_APIENTRY AlApiImpl::alcOpenDevice(
+ALCdevice* ALC_APIENTRY AlApiImpl::alc_open_device(
 	const ALCchar* devicename) noexcept
 try
 {
@@ -1163,7 +1163,7 @@ catch (...)
 	return nullptr;
 }
 
-ALCboolean ALC_APIENTRY AlApiImpl::alcCloseDevice(
+ALCboolean ALC_APIENTRY AlApiImpl::alc_close_device(
 	ALCdevice* device) noexcept
 try
 {
@@ -1201,7 +1201,7 @@ catch (...)
 	return ALC_FALSE;
 }
 
-ALCenum ALC_APIENTRY AlApiImpl::alcGetError(
+ALCenum ALC_APIENTRY AlApiImpl::alc_get_error(
 	ALCdevice* device) noexcept
 try
 {
@@ -1217,7 +1217,7 @@ catch (...)
 	return ALC_INVALID_DEVICE;
 }
 
-ALCboolean ALC_APIENTRY AlApiImpl::alcIsExtensionPresent(
+ALCboolean ALC_APIENTRY AlApiImpl::alc_is_extension_present(
 	ALCdevice* device,
 	const ALCchar* extname) noexcept
 try
@@ -1232,7 +1232,7 @@ catch (...)
 	return AL_FALSE;
 }
 
-void* ALC_APIENTRY AlApiImpl::alcGetProcAddress(
+void* ALC_APIENTRY AlApiImpl::alc_get_proc_address(
 	ALCdevice* device,
 	const ALCchar* funcname) noexcept
 try
@@ -1258,7 +1258,7 @@ catch (...)
 	return nullptr;
 }
 
-ALCenum ALC_APIENTRY AlApiImpl::alcGetEnumValue(
+ALCenum ALC_APIENTRY AlApiImpl::alc_get_enum_value(
 	ALCdevice* device,
 	const ALCchar* enumname) noexcept
 try
@@ -1273,7 +1273,7 @@ catch (...)
 	return AL_NONE;
 }
 
-const ALCchar* ALC_APIENTRY AlApiImpl::alcGetString(
+const ALCchar* ALC_APIENTRY AlApiImpl::alc_get_string(
 	ALCdevice* device,
 	ALCenum param) noexcept
 try
@@ -1298,7 +1298,7 @@ catch (...)
 	return nullptr;
 }
 
-void ALC_APIENTRY AlApiImpl::alcGetIntegerv(
+void ALC_APIENTRY AlApiImpl::alc_get_integer_v(
 	ALCdevice* device,
 	ALCenum param,
 	ALCsizei size,
@@ -1314,7 +1314,7 @@ catch (...)
 	utils::log_exception(&logger_, AlAlcSymbolsNames::alcGetIntegerv);
 }
 
-ALCdevice* ALC_APIENTRY AlApiImpl::alcCaptureOpenDevice(
+ALCdevice* ALC_APIENTRY AlApiImpl::alc_capture_open_device(
 	const ALCchar* devicename,
 	ALCuint frequency,
 	ALCenum format,
@@ -1331,7 +1331,7 @@ catch (...)
 	return nullptr;
 }
 
-ALCboolean ALC_APIENTRY AlApiImpl::alcCaptureCloseDevice(
+ALCboolean ALC_APIENTRY AlApiImpl::alc_capture_close_device(
 	ALCdevice* device) noexcept
 try
 {
@@ -1345,7 +1345,7 @@ catch (...)
 	return ALC_FALSE;
 }
 
-void ALC_APIENTRY AlApiImpl::alcCaptureStart(
+void ALC_APIENTRY AlApiImpl::alc_capture_start(
 	ALCdevice* device) noexcept
 try
 {
@@ -1358,7 +1358,7 @@ catch (...)
 	utils::log_exception(&logger_, AlAlcSymbolsNames::alcCaptureStart);
 }
 
-void ALC_APIENTRY AlApiImpl::alcCaptureStop(
+void ALC_APIENTRY AlApiImpl::alc_capture_stop(
 	ALCdevice* device) noexcept
 try
 {
@@ -1371,7 +1371,7 @@ catch (...)
 	utils::log_exception(&logger_, AlAlcSymbolsNames::alcCaptureStop);
 }
 
-void ALC_APIENTRY AlApiImpl::alcCaptureSamples(
+void ALC_APIENTRY AlApiImpl::alc_capture_samples(
 	ALCdevice* device,
 	ALCvoid* buffer,
 	ALCsizei samples) noexcept
@@ -3322,88 +3322,88 @@ ALC_API ALCcontext* ALC_APIENTRY alcCreateContext(
 	ALCdevice* device,
 	const ALCint* attrlist)
 {
-	return eaxefx::g_al_api_impl.alcCreateContext(device, attrlist);
+	return eaxefx::g_al_api_impl.alc_create_context(device, attrlist);
 }
 
 ALC_API ALCboolean ALC_APIENTRY alcMakeContextCurrent(
 	ALCcontext* context)
 {
-	return eaxefx::g_al_api_impl.alcMakeContextCurrent(context);
+	return eaxefx::g_al_api_impl.alc_make_context_current(context);
 }
 
 ALC_API void ALC_APIENTRY alcProcessContext(
 	ALCcontext* context)
 {
-	eaxefx::g_al_api_impl.alcProcessContext(context);
+	eaxefx::g_al_api_impl.alc_process_context(context);
 }
 
 ALC_API void ALC_APIENTRY alcSuspendContext(
 	ALCcontext* context)
 {
-	eaxefx::g_al_api_impl.alcSuspendContext(context);
+	eaxefx::g_al_api_impl.alc_suspend_context(context);
 }
 
 ALC_API void ALC_APIENTRY alcDestroyContext(
 	ALCcontext* context)
 {
-	eaxefx::g_al_api_impl.alcDestroyContext(context);
+	eaxefx::g_al_api_impl.alc_destroy_context(context);
 }
 
 ALC_API ALCcontext* ALC_APIENTRY alcGetCurrentContext()
 {
-	return eaxefx::g_al_api_impl.alcGetCurrentContext();
+	return eaxefx::g_al_api_impl.alc_get_current_context();
 }
 
 ALC_API ALCdevice* ALC_APIENTRY alcGetContextsDevice(
 	ALCcontext* context)
 {
-	return eaxefx::g_al_api_impl.alcGetContextsDevice(context);
+	return eaxefx::g_al_api_impl.alc_get_contexts_device(context);
 }
 
 ALC_API ALCdevice* ALC_APIENTRY alcOpenDevice(
 	const ALCchar* devicename)
 {
-	return eaxefx::g_al_api_impl.alcOpenDevice(devicename);
+	return eaxefx::g_al_api_impl.alc_open_device(devicename);
 }
 
 ALC_API ALCboolean ALC_APIENTRY alcCloseDevice(
 	ALCdevice* device)
 {
-	return eaxefx::g_al_api_impl.alcCloseDevice(device);
+	return eaxefx::g_al_api_impl.alc_close_device(device);
 }
 
 ALC_API ALCenum ALC_APIENTRY alcGetError(
 	ALCdevice* device)
 {
-	return eaxefx::g_al_api_impl.alcGetError(device);
+	return eaxefx::g_al_api_impl.alc_get_error(device);
 }
 
 ALC_API ALCboolean ALC_APIENTRY alcIsExtensionPresent(
 	ALCdevice* device,
 	const ALCchar* extname)
 {
-	return eaxefx::g_al_api_impl.alcIsExtensionPresent(device, extname);
+	return eaxefx::g_al_api_impl.alc_is_extension_present(device, extname);
 }
 
 ALC_API void* ALC_APIENTRY alcGetProcAddress(
 	ALCdevice* device,
 	const ALCchar* funcname)
 {
-	return eaxefx::g_al_api_impl.alcGetProcAddress(device, funcname);
+	return eaxefx::g_al_api_impl.alc_get_proc_address(device, funcname);
 }
 
 ALC_API ALCenum ALC_APIENTRY alcGetEnumValue(
 	ALCdevice* device,
 	const ALCchar* enumname)
 {
-	return eaxefx::g_al_api_impl.alcGetEnumValue(device, enumname);
+	return eaxefx::g_al_api_impl.alc_get_enum_value(device, enumname);
 }
 
 ALC_API const ALCchar* ALC_APIENTRY alcGetString(
 	ALCdevice* device,
 	ALCenum param)
 {
-	return eaxefx::g_al_api_impl.alcGetString(device, param);
+	return eaxefx::g_al_api_impl.alc_get_string(device, param);
 }
 
 ALC_API void ALC_APIENTRY alcGetIntegerv(
@@ -3412,7 +3412,7 @@ ALC_API void ALC_APIENTRY alcGetIntegerv(
 	ALCsizei size,
 	ALCint* values)
 {
-	eaxefx::g_al_api_impl.alcGetIntegerv(device, param, size, values);
+	eaxefx::g_al_api_impl.alc_get_integer_v(device, param, size, values);
 }
 
 ALC_API ALCdevice* ALC_APIENTRY alcCaptureOpenDevice(
@@ -3421,24 +3421,24 @@ ALC_API ALCdevice* ALC_APIENTRY alcCaptureOpenDevice(
 	ALCenum format,
 	ALCsizei buffersize)
 {
-	return eaxefx::g_al_api_impl.alcCaptureOpenDevice(devicename, frequency, format, buffersize);
+	return eaxefx::g_al_api_impl.alc_capture_open_device(devicename, frequency, format, buffersize);
 }
 
 ALC_API ALCboolean ALC_APIENTRY alcCaptureCloseDevice(
 	ALCdevice* device)
 {
-	return eaxefx::g_al_api_impl.alcCaptureCloseDevice(device);
+	return eaxefx::g_al_api_impl.alc_capture_close_device(device);
 }
 
 ALC_API void ALC_APIENTRY alcCaptureStart(
 	ALCdevice* device)
 {
-	eaxefx::g_al_api_impl.alcCaptureStart(device);
+	eaxefx::g_al_api_impl.alc_capture_start(device);
 }
 
 ALC_API void ALC_APIENTRY alcCaptureStop(ALCdevice* device)
 {
-	eaxefx::g_al_api_impl.alcCaptureStop(device);
+	eaxefx::g_al_api_impl.alc_capture_stop(device);
 }
 
 ALC_API void ALC_APIENTRY alcCaptureSamples(
@@ -3446,7 +3446,7 @@ ALC_API void ALC_APIENTRY alcCaptureSamples(
 	ALCvoid* buffer,
 	ALCsizei samples)
 {
-	eaxefx::g_al_api_impl.alcCaptureSamples(device, buffer, samples);
+	eaxefx::g_al_api_impl.alc_capture_samples(device, buffer, samples);
 }
 
 // ALC v1.1
