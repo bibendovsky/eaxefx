@@ -186,7 +186,7 @@ private:
 
 
 	using ActiveFxSlots = std::array<bool, EAX_MAX_FXSLOTS>;
-	using SpeakerLevels = std::array<std::int32_t, max_speakers>;
+	using SpeakerLevels = std::array<long, max_speakers>;
 
 
 	struct Al
@@ -312,13 +312,13 @@ private:
 		const GUID& guidReceivingFXSlotID);
 
 	static void validate_send_send(
-		std::int32_t lSend);
+		long lSend);
 
 	static void validate_send_send_hf(
-		std::int32_t lSendHF);
+		long lSendHF);
 
 	static void validate_send_occlusion(
-		std::int32_t lOcclusion);
+		long lOcclusion);
 
 	static void validate_send_occlusion_lf_ratio(
 		float flOcclusionLFRatio);
@@ -330,7 +330,7 @@ private:
 		float flOcclusionDirectRatio);
 
 	static void validate_send_exclusion(
-		std::int32_t lExclusion);
+		long lExclusion);
 
 	static void validate_send_exclusion_lf_ratio(
 		float flExclusionLFRatio);
@@ -353,15 +353,15 @@ private:
 
 
 	void defer_send_send(
-		std::int32_t lSend,
+		long lSend,
 		int index);
 
 	void defer_send_send_hf(
-		std::int32_t lSendHF,
+		long lSendHF,
 		int index);
 
 	void defer_send_occlusion(
-		std::int32_t lOcclusion,
+		long lOcclusion,
 		int index);
 
 	void defer_send_occlusion_lf_ratio(
@@ -377,7 +377,7 @@ private:
 		int index);
 
 	void defer_send_exclusion(
-		std::int32_t lExclusion,
+		long lExclusion,
 		int index);
 
 	void defer_send_exclusion_lf_ratio(
@@ -421,25 +421,25 @@ private:
 	// Source
 
 	static void validate_source_direct(
-		std::int32_t direct);
+		long direct);
 
 	static void validate_source_direct_hf(
-		std::int32_t direct_hf);
+		long direct_hf);
 
 	static void validate_source_room(
-		std::int32_t room);
+		long room);
 
 	static void validate_source_room_hf(
-		std::int32_t room_hf);
+		long room_hf);
 
 	static void validate_source_obstruction(
-		std::int32_t obstruction);
+		long obstruction);
 
 	static void validate_source_obstruction_lf_ratio(
 		float obstruction_lf_ratio);
 
 	static void validate_source_occlusion(
-		std::int32_t occlusion);
+		long occlusion);
 
 	static void validate_source_occlusion_lf_ratio(
 		float occlusion_lf_ratio);
@@ -451,13 +451,13 @@ private:
 		float occlusion_direct_ratio);
 
 	static void validate_source_exclusion(
-		std::int32_t exclusion);
+		long exclusion);
 
 	static void validate_source_exclusion_lf_ratio(
 		float exclusion_lf_ratio);
 
 	static void validate_source_outside_volume_hf(
-		std::int32_t outside_volume_hf);
+		long outside_volume_hf);
 
 	static void validate_source_doppler_factor(
 		float doppler_factor);
@@ -472,7 +472,7 @@ private:
 		float air_absorption_factor);
 
 	static void validate_source_flags(
-		std::uint32_t flags,
+		unsigned long flags,
 		int eax_version);
 
 	static void validate_source_macro_fx_factor(
@@ -504,35 +504,35 @@ private:
 		int eax_version);
 
 	static void validate_source_speaker_id(
-		const std::int32_t speaker_id);
+		const long speaker_id);
 
 	static void validate_source_speaker_level(
-		const std::int32_t speaker_level);
+		const long speaker_level);
 
 	static void validate_source_speaker_level_all(
 		const EAXSPEAKERLEVELPROPERTIES& all);
 
 
 	void defer_source_direct(
-		std::int32_t lDirect);
+		long lDirect);
 
 	void defer_source_direct_hf(
-		std::int32_t lDirectHF);
+		long lDirectHF);
 
 	void defer_source_room(
-		std::int32_t lRoom);
+		long lRoom);
 
 	void defer_source_room_hf(
-		std::int32_t lRoomHF);
+		long lRoomHF);
 
 	void defer_source_obstruction(
-		std::int32_t lObstruction);
+		long lObstruction);
 
 	void defer_source_obstruction_lf_ratio(
 		float flObstructionLFRatio);
 
 	void defer_source_occlusion(
-		std::int32_t lOcclusion);
+		long lOcclusion);
 
 	void defer_source_occlusion_lf_ratio(
 		float flOcclusionLFRatio);
@@ -544,13 +544,13 @@ private:
 		float flOcclusionDirectRatio);
 
 	void defer_source_exclusion(
-		std::int32_t lExclusion);
+		long lExclusion);
 
 	void defer_source_exclusion_lf_ratio(
 		float flExclusionLFRatio);
 
 	void defer_source_outside_volume_hf(
-		std::int32_t lOutsideVolumeHF);
+		long lOutsideVolumeHF);
 
 	void defer_source_doppler_factor(
 		float flDopplerFactor);
@@ -565,7 +565,7 @@ private:
 		float flAirAbsorptionFactor);
 
 	void defer_source_flags(
-		std::uint32_t ulFlags);
+		unsigned long ulFlags);
 
 	void defer_source_macro_fx_factor(
 		float flMacroFXFactor);

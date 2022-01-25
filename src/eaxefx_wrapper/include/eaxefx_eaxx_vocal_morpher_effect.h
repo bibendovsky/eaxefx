@@ -116,19 +116,19 @@ private:
 
 
 	void validate_phoneme_a(
-		std::uint32_t ulPhonemeA);
+		unsigned long ulPhonemeA);
 
 	void validate_phoneme_a_coarse_tuning(
-		std::int32_t lPhonemeACoarseTuning);
+		long lPhonemeACoarseTuning);
 
 	void validate_phoneme_b(
-		std::uint32_t ulPhonemeB);
+		unsigned long ulPhonemeB);
 
 	void validate_phoneme_b_coarse_tuning(
-		std::int32_t lPhonemeBCoarseTuning);
+		long lPhonemeBCoarseTuning);
 
 	void validate_waveform(
-		std::uint32_t ulWaveform);
+		unsigned long ulWaveform);
 
 	void validate_rate(
 		float flRate);
@@ -138,19 +138,19 @@ private:
 
 
 	void defer_phoneme_a(
-		std::uint32_t ulPhonemeA);
+		unsigned long ulPhonemeA);
 
 	void defer_phoneme_a_coarse_tuning(
-		std::int32_t lPhonemeACoarseTuning);
+		long lPhonemeACoarseTuning);
 
 	void defer_phoneme_b(
-		std::uint32_t ulPhonemeB);
+		unsigned long ulPhonemeB);
 
 	void defer_phoneme_b_coarse_tuning(
-		std::int32_t lPhonemeBCoarseTuning);
+		long lPhonemeBCoarseTuning);
 
 	void defer_waveform(
-		std::uint32_t ulWaveform);
+		unsigned long ulWaveform);
 
 	void defer_rate(
 		float flRate);

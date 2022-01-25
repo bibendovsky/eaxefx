@@ -682,6 +682,12 @@ String to_string(
 	unsigned int value);
 
 String to_string(
+	long value);
+
+String to_string(
+	unsigned long value);
+
+String to_string(
 	float value);
 
 String to_string_hex(

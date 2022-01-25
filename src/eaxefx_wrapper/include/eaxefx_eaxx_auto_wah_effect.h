@@ -116,10 +116,10 @@ private:
 		float flReleaseTime);
 
 	void validate_resonance(
-		std::int32_t lResonance);
+		long lResonance);
 
 	void validate_peak_level(
-		std::int32_t lPeakLevel);
+		long lPeakLevel);
 
 	void validate_all(
 		const EAXAUTOWAHPROPERTIES& eax_all);
@@ -132,10 +132,10 @@ private:
 		float flReleaseTime);
 
 	void defer_resonance(
-		std::int32_t lResonance);
+		long lResonance);
 
 	void defer_peak_level(
-		std::int32_t lPeakLevel);
+		long lPeakLevel);
 
 	void defer_all(
 		const EAXAUTOWAHPROPERTIES& eax_all);

@@ -116,7 +116,7 @@ private:
 		float flEdge);
 
 	void validate_gain(
-		std::int32_t lGain);
+		long lGain);
 
 	void validate_low_pass_cutoff(
 		float flLowPassCutOff);
@@ -135,7 +135,7 @@ private:
 		float flEdge);
 
 	void defer_gain(
-		std::int32_t lGain);
+		long lGain);
 
 	void defer_low_pass_cutoff(
 		float flLowPassCutOff);

@@ -233,7 +233,7 @@ void EaxxDistortionEffect::validate_edge(
 }
 
 void EaxxDistortionEffect::validate_gain(
-	std::int32_t lGain)
+	long lGain)
 {
 	eaxx_validate_range<EaxxDistortionEffectException>(
 		"Gain",
@@ -294,7 +294,7 @@ void EaxxDistortionEffect::defer_edge(
 }
 
 void EaxxDistortionEffect::defer_gain(
-	std::int32_t lGain)
+	long lGain)
 {
 	eax_d_.lGain = lGain;
 	eax_dirty_flags_.lGain = (eax_.lGain != eax_d_.lGain);

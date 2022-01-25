@@ -171,21 +171,21 @@ private:
 		const GUID& eax_effect_id);
 
 	void validate_fx_slot_volume(
-		std::int32_t eax_volume);
+		long eax_volume);
 
 	void validate_fx_slot_lock(
-		std::int32_t eax_lock);
+		long eax_lock);
 
 	void validate_fx_slot_lock_state(
-		std::int32_t eax_lock,
+		long eax_lock,
 		const GUID& eax_effect_id);
 
 	void validate_fx_slot_flags(
-		std::uint32_t eax_flags,
+		unsigned long eax_flags,
 		int eax_version);
 
 	void validate_fx_slot_occlusion(
-		std::int32_t eax_occlusion);
+		long eax_occlusion);
 
 	void validate_fx_slot_occlusion_lf_ratio(
 		float eax_occlusion_lf_ratio);
@@ -203,16 +203,16 @@ private:
 		const GUID& eax_effect_id);
 
 	void set_fx_slot_volume(
-		std::int32_t eax_volume);
+		long eax_volume);
 
 	void set_fx_slot_lock(
-		std::int32_t eax_lock);
+		long eax_lock);
 
 	void set_fx_slot_flags(
-		std::uint32_t eax_flags);
+		unsigned long eax_flags);
 
 	[[nodiscard]] bool set_fx_slot_occlusion(
-		std::int32_t eax_occlusion);
+		long eax_occlusion);
 
 	[[nodiscard]] bool set_fx_slot_occlusion_lf_ratio(
 		float eax_occlusion_lf_ratio);

@@ -209,7 +209,7 @@ void EaxxRingModulatorEffect::validate_high_pass_cutoff(
 }
 
 void EaxxRingModulatorEffect::validate_waveform(
-	std::uint32_t ulWaveform)
+	unsigned long ulWaveform)
 {
 	eaxx_validate_range<EaxxRingModulatorEffectException>(
 		"Waveform",
@@ -242,7 +242,7 @@ void EaxxRingModulatorEffect::defer_high_pass_cutoff(
 }
 
 void EaxxRingModulatorEffect::defer_waveform(
-	std::uint32_t ulWaveform)
+	unsigned long ulWaveform)
 {
 	eax_d_.ulWaveform = ulWaveform;
 	eax_dirty_flags_.ulWaveform = (eax_.ulWaveform != eax_d_.ulWaveform);

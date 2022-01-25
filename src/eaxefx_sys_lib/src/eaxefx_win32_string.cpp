@@ -162,7 +162,7 @@ void to_string(
 String to_string(
 	int value)
 {
-	static_assert(sizeof(int) == 4);
+	static_assert(sizeof(decltype(value)) == 4);
 
 	auto string = String{};
 	to_string_generic(value, "%d", string);
@@ -172,11 +172,27 @@ String to_string(
 String to_string(
 	unsigned int value)
 {
-	static_assert(sizeof(unsigned int) == 4);
+	static_assert(sizeof(decltype(value)) == 4);
 
 	auto string = String{};
 	to_string_generic(value, "%u", string);
 	return string;
+}
+
+String to_string(
+	long value)
+{
+	static_assert(sizeof(decltype(value)) == 4);
+
+	return to_string(static_cast<int>(value));
+}
+
+String to_string(
+	unsigned long value)
+{
+	static_assert(sizeof(decltype(value)) == 4);
+
+	return to_string(static_cast<unsigned int>(value));
 }
 
 String to_string(

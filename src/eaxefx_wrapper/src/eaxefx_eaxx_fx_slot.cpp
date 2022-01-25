@@ -112,7 +112,7 @@ void EaxxFxSlot::validate_fx_slot_effect(
 }
 
 void EaxxFxSlot::validate_fx_slot_volume(
-	std::int32_t eax_volume)
+	long eax_volume)
 {
 	eaxx_validate_range<EaxxFxSlotException>(
 		"Volume",
@@ -123,7 +123,7 @@ void EaxxFxSlot::validate_fx_slot_volume(
 }
 
 void EaxxFxSlot::validate_fx_slot_lock(
-	std::int32_t eax_lock)
+	long eax_lock)
 {
 	eaxx_validate_range<EaxxFxSlotException>(
 		"Lock",
@@ -134,7 +134,7 @@ void EaxxFxSlot::validate_fx_slot_lock(
 }
 
 void EaxxFxSlot::validate_fx_slot_lock_state(
-	std::int32_t eax_lock,
+	long eax_lock,
 	const GUID& eax_effect_id)
 {
 	if (eax_lock == EAXFXSLOT_LOCKED && eax_effect_id != eax_.fx_slot.guidLoadEffect)
@@ -144,19 +144,19 @@ void EaxxFxSlot::validate_fx_slot_lock_state(
 }
 
 void EaxxFxSlot::validate_fx_slot_flags(
-	std::uint32_t eax_flags,
+	unsigned long eax_flags,
 	int eax_version)
 {
 	eaxx_validate_range<EaxxFxSlotException>(
 		"Flags",
 		eax_flags,
-		0U,
+		0UL,
 		~(eax_version == 4 ? EAX40FXSLOTFLAGS_RESERVED : EAX50FXSLOTFLAGS_RESERVED)
 	);
 }
 
 void EaxxFxSlot::validate_fx_slot_occlusion(
-	std::int32_t eax_occlusion)
+	long eax_occlusion)
 {
 	eaxx_validate_range<EaxxFxSlotException>(
 		"Occlusion",
@@ -211,7 +211,7 @@ void EaxxFxSlot::set_fx_slot_effect(
 }
 
 void EaxxFxSlot::set_fx_slot_volume(
-	std::int32_t eax_volume)
+	long eax_volume)
 {
 	if (eax_.fx_slot.lVolume == eax_volume)
 	{
@@ -224,7 +224,7 @@ void EaxxFxSlot::set_fx_slot_volume(
 }
 
 void EaxxFxSlot::set_fx_slot_lock(
-	std::int32_t eax_lock)
+	long eax_lock)
 {
 	if (eax_.fx_slot.lLock == eax_lock)
 	{
@@ -235,7 +235,7 @@ void EaxxFxSlot::set_fx_slot_lock(
 }
 
 void EaxxFxSlot::set_fx_slot_flags(
-	std::uint32_t eax_flags)
+	unsigned long eax_flags)
 {
 	if (eax_.fx_slot.ulFlags == eax_flags)
 	{
@@ -248,7 +248,7 @@ void EaxxFxSlot::set_fx_slot_flags(
 }
 
 [[nodiscard]] bool EaxxFxSlot::set_fx_slot_occlusion(
-	std::int32_t eax_occlusion)
+	long eax_occlusion)
 {
 	if (eax_.fx_slot.lOcclusion == eax_occlusion)
 	{

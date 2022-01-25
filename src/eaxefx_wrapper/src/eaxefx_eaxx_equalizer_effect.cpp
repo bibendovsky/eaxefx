@@ -307,7 +307,7 @@ void EaxxEqualizerEffect::get(
 }
 
 void EaxxEqualizerEffect::validate_low_gain(
-	std::int32_t lLowGain)
+	long lLowGain)
 {
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"Low Gain",
@@ -329,7 +329,7 @@ void EaxxEqualizerEffect::validate_low_cutoff(
 }
 
 void EaxxEqualizerEffect::validate_mid1_gain(
-	std::int32_t lMid1Gain)
+	long lMid1Gain)
 {
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"Mid1 Gain",
@@ -362,7 +362,7 @@ void EaxxEqualizerEffect::validate_mid1_width(
 }
 
 void EaxxEqualizerEffect::validate_mid2_gain(
-	std::int32_t lMid2Gain)
+	long lMid2Gain)
 {
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"Mid2 Gain",
@@ -395,7 +395,7 @@ void EaxxEqualizerEffect::validate_mid2_width(
 }
 
 void EaxxEqualizerEffect::validate_high_gain(
-	std::int32_t lHighGain)
+	long lHighGain)
 {
 	eaxx_validate_range<EaxxEqualizerEffectException>(
 		"High Gain",
@@ -432,7 +432,7 @@ void EaxxEqualizerEffect::validate_all(
 }
 
 void EaxxEqualizerEffect::defer_low_gain(
-	std::int32_t lLowGain)
+	long lLowGain)
 {
 	eax_d_.lLowGain = lLowGain;
 	eax_dirty_flags_.lLowGain = (eax_.lLowGain != eax_d_.lLowGain);
@@ -446,7 +446,7 @@ void EaxxEqualizerEffect::defer_low_cutoff(
 }
 
 void EaxxEqualizerEffect::defer_mid1_gain(
-	std::int32_t lMid1Gain)
+	long lMid1Gain)
 {
 	eax_d_.lMid1Gain = lMid1Gain;
 	eax_dirty_flags_.lMid1Gain = (eax_.lMid1Gain != eax_d_.lMid1Gain);
@@ -467,7 +467,7 @@ void EaxxEqualizerEffect::defer_mid1_width(
 }
 
 void EaxxEqualizerEffect::defer_mid2_gain(
-	std::int32_t lMid2Gain)
+	long lMid2Gain)
 {
 	eax_d_.lMid2Gain = lMid2Gain;
 	eax_dirty_flags_.lMid2Gain = (eax_.lMid2Gain != eax_d_.lMid2Gain);
@@ -488,7 +488,7 @@ void EaxxEqualizerEffect::defer_mid2_width(
 }
 
 void EaxxEqualizerEffect::defer_high_gain(
-	std::int32_t lHighGain)
+	long lHighGain)
 {
 	eax_d_.lHighGain = lHighGain;
 	eax_dirty_flags_.lHighGain = (eax_.lHighGain != eax_d_.lHighGain);

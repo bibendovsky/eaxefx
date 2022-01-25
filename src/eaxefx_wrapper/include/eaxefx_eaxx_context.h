@@ -139,8 +139,8 @@ private:
 	using SourceMap = std::unordered_map<ALuint, EaxxSource>;
 
 
-	std::int32_t eax_last_error_{};
-	std::uint32_t eax_speaker_config_{};
+	long eax_last_error_{};
+	unsigned long eax_speaker_config_{};
 	EaxxContextShared shared_{};
 	SourceMap source_map_{};
 	Al al_{};
@@ -240,13 +240,13 @@ private:
 		float hf_reference);
 
 	void validate_speaker_config(
-		std::uint32_t speaker_config);
+		unsigned long speaker_config);
 
 	void validate_eax_session_eax_version(
-		std::uint32_t eax_version);
+		unsigned long eax_version);
 
 	void validate_eax_session_max_active_sends(
-		std::uint32_t max_active_sends);
+		unsigned long max_active_sends);
 
 	void validate_eax_session(
 		const EAXSESSIONPROPERTIES& eax_session);

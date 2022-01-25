@@ -238,7 +238,7 @@ void EaxxFlangerEffect::get(
 }
 
 void EaxxFlangerEffect::validate_waveform(
-	std::uint32_t ulWaveform)
+	unsigned long ulWaveform)
 {
 	eaxx_validate_range<EaxxFlangerEffectException>(
 		"Waveform",
@@ -249,7 +249,7 @@ void EaxxFlangerEffect::validate_waveform(
 }
 
 void EaxxFlangerEffect::validate_phase(
-	std::int32_t lPhase)
+	long lPhase)
 {
 	eaxx_validate_range<EaxxFlangerEffectException>(
 		"Phase",
@@ -315,14 +315,14 @@ void EaxxFlangerEffect::validate_all(
 }
 
 void EaxxFlangerEffect::defer_waveform(
-	std::uint32_t ulWaveform)
+	unsigned long ulWaveform)
 {
 	eax_d_.ulWaveform = ulWaveform;
 	eax_dirty_flags_.ulWaveform = (eax_.ulWaveform != eax_d_.ulWaveform);
 }
 
 void EaxxFlangerEffect::defer_phase(
-	std::int32_t lPhase)
+	long lPhase)
 {
 	eax_d_.lPhase = lPhase;
 	eax_dirty_flags_.lPhase = (eax_.lPhase != eax_d_.lPhase);

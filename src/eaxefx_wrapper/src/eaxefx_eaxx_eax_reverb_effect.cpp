@@ -548,7 +548,7 @@ void EaxxEaxReverbEffect::get(
 }
 
 void EaxxEaxReverbEffect::validate_environment(
-	std::uint32_t ulEnvironment,
+	unsigned long ulEnvironment,
 	int version,
 	bool is_standalone)
 {
@@ -583,7 +583,7 @@ void EaxxEaxReverbEffect::validate_environment_diffusion(
 }
 
 void EaxxEaxReverbEffect::validate_room(
-	std::int32_t lRoom)
+	long lRoom)
 {
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Room",
@@ -594,7 +594,7 @@ void EaxxEaxReverbEffect::validate_room(
 }
 
 void EaxxEaxReverbEffect::validate_room_hf(
-	std::int32_t lRoomHF)
+	long lRoomHF)
 {
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Room HF",
@@ -605,7 +605,7 @@ void EaxxEaxReverbEffect::validate_room_hf(
 }
 
 void EaxxEaxReverbEffect::validate_room_lf(
-	std::int32_t lRoomLF)
+	long lRoomLF)
 {
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Room LF",
@@ -649,7 +649,7 @@ void EaxxEaxReverbEffect::validate_decay_lf_ratio(
 }
 
 void EaxxEaxReverbEffect::validate_reflections(
-	std::int32_t lReflections)
+	long lReflections)
 {
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Reflections",
@@ -677,7 +677,7 @@ void EaxxEaxReverbEffect::validate_reflections_pan(
 }
 
 void EaxxEaxReverbEffect::validate_reverb(
-	std::int32_t lReverb)
+	long lReverb)
 {
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Reverb",
@@ -793,12 +793,12 @@ void EaxxEaxReverbEffect::validate_room_rolloff_factor(
 }
 
 void EaxxEaxReverbEffect::validate_flags(
-	std::uint32_t ulFlags)
+	unsigned long ulFlags)
 {
 	eaxx_validate_range<EaxxEaxReverbEffectException>(
 		"Flags",
 		ulFlags,
-		0U,
+		0UL,
 		~::EAXREVERBFLAGS_RESERVED
 	);
 }
@@ -852,7 +852,7 @@ void EaxxEaxReverbEffect::validate_all(
 }
 
 void EaxxEaxReverbEffect::defer_environment(
-	std::uint32_t ulEnvironment)
+	unsigned long ulEnvironment)
 {
 	eax_d_.ulEnvironment = ulEnvironment;
 	eax_dirty_flags_.ulEnvironment = (eax_.ulEnvironment != eax_d_.ulEnvironment);
@@ -873,21 +873,21 @@ void EaxxEaxReverbEffect::defer_environment_diffusion(
 }
 
 void EaxxEaxReverbEffect::defer_room(
-	std::int32_t lRoom)
+	long lRoom)
 {
 	eax_d_.lRoom = lRoom;
 	eax_dirty_flags_.lRoom = (eax_.lRoom != eax_d_.lRoom);
 }
 
 void EaxxEaxReverbEffect::defer_room_hf(
-	std::int32_t lRoomHF)
+	long lRoomHF)
 {
 	eax_d_.lRoomHF = lRoomHF;
 	eax_dirty_flags_.lRoomHF = (eax_.lRoomHF != eax_d_.lRoomHF);
 }
 
 void EaxxEaxReverbEffect::defer_room_lf(
-	std::int32_t lRoomLF)
+	long lRoomLF)
 {
 	eax_d_.lRoomLF = lRoomLF;
 	eax_dirty_flags_.lRoomLF = (eax_.lRoomLF != eax_d_.lRoomLF);
@@ -915,7 +915,7 @@ void EaxxEaxReverbEffect::defer_decay_lf_ratio(
 }
 
 void EaxxEaxReverbEffect::defer_reflections(
-	std::int32_t lReflections)
+	long lReflections)
 {
 	eax_d_.lReflections = lReflections;
 	eax_dirty_flags_.lReflections = (eax_.lReflections != eax_d_.lReflections);
@@ -936,7 +936,7 @@ void EaxxEaxReverbEffect::defer_reflections_pan(
 }
 
 void EaxxEaxReverbEffect::defer_reverb(
-	std::int32_t lReverb)
+	long lReverb)
 {
 	eax_d_.lReverb = lReverb;
 	eax_dirty_flags_.lReverb = (eax_.lReverb != eax_d_.lReverb);
@@ -1013,7 +1013,7 @@ void EaxxEaxReverbEffect::defer_room_rolloff_factor(
 }
 
 void EaxxEaxReverbEffect::defer_flags(
-	std::uint32_t ulFlags)
+	unsigned long ulFlags)
 {
 	eax_d_.ulFlags = ulFlags;
 	eax_dirty_flags_.ulFlags = (eax_.ulFlags != eax_d_.ulFlags);
@@ -1118,7 +1118,7 @@ void EaxxEaxReverbEffect::defer_environment_size(
 		if ((eax_d_.ulFlags & EAXREVERBFLAGS_REFLECTIONSDELAYSCALE) != 0)
 		{
 			const auto lReflections = std::clamp(
-				eax_d_.lReflections - static_cast<std::int32_t>(gain_to_level_mb(scale)),
+				eax_d_.lReflections - static_cast<long>(gain_to_level_mb(scale)),
 				EAXREVERB_MINREFLECTIONS,
 				EAXREVERB_MAXREFLECTIONS
 			);
@@ -1143,7 +1143,7 @@ void EaxxEaxReverbEffect::defer_environment_size(
 		const auto log_scalar = ((eax_d_.ulFlags & EAXREVERBFLAGS_DECAYTIMESCALE) != 0) ? 2'000.0F : 3'000.0F;
 
 		const auto lReverb = std::clamp(
-			eax_d_.lReverb - static_cast<std::int32_t>(std::log10(scale) * log_scalar),
+			eax_d_.lReverb - static_cast<long>(std::log10(scale) * log_scalar),
 			EAXREVERB_MINREVERB,
 			EAXREVERB_MAXREVERB
 		);

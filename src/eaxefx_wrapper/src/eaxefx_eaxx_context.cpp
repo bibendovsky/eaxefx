@@ -552,7 +552,7 @@ void EaxxContext::validate_hf_reference(
 }
 
 void EaxxContext::validate_speaker_config(
-	std::uint32_t speaker_config)
+	unsigned long speaker_config)
 {
 	switch (speaker_config)
 	{
@@ -570,7 +570,7 @@ void EaxxContext::validate_speaker_config(
 }
 
 void EaxxContext::validate_eax_session_eax_version(
-	std::uint32_t eax_version)
+	unsigned long eax_version)
 {
 	switch (eax_version)
 	{
@@ -584,7 +584,7 @@ void EaxxContext::validate_eax_session_eax_version(
 }
 
 void EaxxContext::validate_eax_session_max_active_sends(
-	std::uint32_t max_active_sends)
+	unsigned long max_active_sends)
 {
 	eaxx_validate_range<EaxxContextException>(
 		"Max Active Sends",

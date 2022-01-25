@@ -153,7 +153,7 @@ void EaxxCompressorEffect::get(
 }
 
 void EaxxCompressorEffect::validate_on_off(
-	std::uint32_t ulOnOff)
+	unsigned long ulOnOff)
 {
 	eaxx_validate_range<EaxxCompressorEffectException>(
 		"On-Off",
@@ -170,7 +170,7 @@ void EaxxCompressorEffect::validate_all(
 }
 
 void EaxxCompressorEffect::defer_on_off(
-	std::uint32_t ulOnOff)
+	unsigned long ulOnOff)
 {
 	eax_d_.ulOnOff = ulOnOff;
 	eax_dirty_flags_.ulOnOff = (eax_.ulOnOff != eax_d_.ulOnOff);

@@ -690,7 +690,7 @@ void EaxxSource::validate_send_receiving_fx_slot_guid(
 }
 
 void EaxxSource::validate_send_send(
-	std::int32_t lSend)
+	long lSend)
 {
 	eaxx_validate_range<EaxxSourceSendException>(
 		"Send",
@@ -701,7 +701,7 @@ void EaxxSource::validate_send_send(
 }
 
 void EaxxSource::validate_send_send_hf(
-	std::int32_t lSendHF)
+	long lSendHF)
 {
 	eaxx_validate_range<EaxxSourceSendException>(
 		"Send HF",
@@ -712,7 +712,7 @@ void EaxxSource::validate_send_send_hf(
 }
 
 void EaxxSource::validate_send_occlusion(
-	std::int32_t lOcclusion)
+	long lOcclusion)
 {
 	eaxx_validate_range<EaxxSourceSendException>(
 		get_occlusion_name(),
@@ -756,7 +756,7 @@ void EaxxSource::validate_send_occlusion_direct_ratio(
 }
 
 void EaxxSource::validate_send_exclusion(
-	std::int32_t lExclusion)
+	long lExclusion)
 {
 	eaxx_validate_range<EaxxSourceSendException>(
 		get_exclusion_name(),
@@ -846,7 +846,7 @@ int EaxxSource::get_send_index(
 }
 
 void EaxxSource::defer_send_send(
-	std::int32_t lSend,
+	long lSend,
 	int index)
 {
 	eax_d_.sends[index].lSend = lSend;
@@ -856,7 +856,7 @@ void EaxxSource::defer_send_send(
 }
 
 void EaxxSource::defer_send_send_hf(
-	std::int32_t lSendHF,
+	long lSendHF,
 	int index)
 {
 	eax_d_.sends[index].lSendHF = lSendHF;
@@ -866,7 +866,7 @@ void EaxxSource::defer_send_send_hf(
 }
 
 void EaxxSource::defer_send_occlusion(
-	std::int32_t lOcclusion,
+	long lOcclusion,
 	int index)
 {
 	eax_d_.sends[index].lOcclusion = lOcclusion;
@@ -906,7 +906,7 @@ void EaxxSource::defer_send_occlusion_direct_ratio(
 }
 
 void EaxxSource::defer_send_exclusion(
-	std::int32_t lExclusion,
+	long lExclusion,
 	int index)
 {
 	eax_d_.sends[index].lExclusion = lExclusion;
@@ -1077,7 +1077,7 @@ void EaxxSource::defer_send_all(
 // ----------------------------------------------------------------------
 
 void EaxxSource::validate_source_direct(
-	std::int32_t direct)
+	long direct)
 {
 	eaxx_validate_range<EaxxSourceException>(
 		"Direct",
@@ -1088,7 +1088,7 @@ void EaxxSource::validate_source_direct(
 }
 
 void EaxxSource::validate_source_direct_hf(
-	std::int32_t direct_hf)
+	long direct_hf)
 {
 	eaxx_validate_range<EaxxSourceException>(
 		"Direct HF",
@@ -1099,7 +1099,7 @@ void EaxxSource::validate_source_direct_hf(
 }
 
 void EaxxSource::validate_source_room(
-	std::int32_t room)
+	long room)
 {
 	eaxx_validate_range<EaxxSourceException>(
 		"Room",
@@ -1110,7 +1110,7 @@ void EaxxSource::validate_source_room(
 }
 
 void EaxxSource::validate_source_room_hf(
-	std::int32_t room_hf)
+	long room_hf)
 {
 	eaxx_validate_range<EaxxSourceException>(
 		"Room HF",
@@ -1121,7 +1121,7 @@ void EaxxSource::validate_source_room_hf(
 }
 
 void EaxxSource::validate_source_obstruction(
-	std::int32_t obstruction)
+	long obstruction)
 {
 	eaxx_validate_range<EaxxSourceException>(
 		"Obstruction",
@@ -1143,7 +1143,7 @@ void EaxxSource::validate_source_obstruction_lf_ratio(
 }
 
 void EaxxSource::validate_source_occlusion(
-	std::int32_t occlusion)
+	long occlusion)
 {
 	eaxx_validate_range<EaxxSourceException>(
 		get_occlusion_name(),
@@ -1187,7 +1187,7 @@ void EaxxSource::validate_source_occlusion_direct_ratio(
 }
 
 void EaxxSource::validate_source_exclusion(
-	std::int32_t exclusion)
+	long exclusion)
 {
 	eaxx_validate_range<EaxxSourceException>(
 		get_exclusion_name(),
@@ -1209,7 +1209,7 @@ void EaxxSource::validate_source_exclusion_lf_ratio(
 }
 
 void EaxxSource::validate_source_outside_volume_hf(
-	std::int32_t outside_volume_hf)
+	long outside_volume_hf)
 {
 	eaxx_validate_range<EaxxSourceException>(
 		"Outside Volume HF",
@@ -1264,13 +1264,13 @@ void EaxxSource::validate_source_air_absorption_factor(
 }
 
 void EaxxSource::validate_source_flags(
-	std::uint32_t flags,
+	unsigned long flags,
 	int eax_version)
 {
 	eaxx_validate_range<EaxxSourceException>(
 		"Flags",
 		flags,
-		0U,
+		0UL,
 		~((eax_version == 5) ? EAX50SOURCEFLAGS_RESERVED : EAX20SOURCEFLAGS_RESERVED)
 	);
 }
@@ -1372,18 +1372,18 @@ void EaxxSource::validate_source_all(
 }
 
 void EaxxSource::validate_source_speaker_id(
-	const std::int32_t speaker_id)
+	const long speaker_id)
 {
 	eaxx_validate_range<EaxxSourceException>(
 		"Speaker Id",
 		speaker_id,
-		static_cast<std::int32_t>(::EAXSPEAKER_FRONT_LEFT),
-		static_cast<std::int32_t>(::EAXSPEAKER_LOW_FREQUENCY)
+		static_cast<long>(::EAXSPEAKER_FRONT_LEFT),
+		static_cast<long>(::EAXSPEAKER_LOW_FREQUENCY)
 	);
 }
 
 void EaxxSource::validate_source_speaker_level(
-	const std::int32_t speaker_level)
+	const long speaker_level)
 {
 	eaxx_validate_range<EaxxSourceException>(
 		"Speaker Level",
@@ -1401,35 +1401,35 @@ void EaxxSource::validate_source_speaker_level_all(
 }
 
 void EaxxSource::defer_source_direct(
-	std::int32_t lDirect)
+	long lDirect)
 {
 	eax_d_.source.lDirect = lDirect;
 	source_dirty_filter_flags_.lDirect = (eax_.source.lDirect != eax_d_.source.lDirect);
 }
 
 void EaxxSource::defer_source_direct_hf(
-	std::int32_t lDirectHF)
+	long lDirectHF)
 {
 	eax_d_.source.lDirectHF = lDirectHF;
 	source_dirty_filter_flags_.lDirectHF = (eax_.source.lDirectHF != eax_d_.source.lDirectHF);
 }
 
 void EaxxSource::defer_source_room(
-	std::int32_t lRoom)
+	long lRoom)
 {
 	eax_d_.source.lRoom = lRoom;
 	source_dirty_filter_flags_.lRoom = (eax_.source.lRoom != eax_d_.source.lRoom);
 }
 
 void EaxxSource::defer_source_room_hf(
-	std::int32_t lRoomHF)
+	long lRoomHF)
 {
 	eax_d_.source.lRoomHF = lRoomHF;
 	source_dirty_filter_flags_.lRoomHF = (eax_.source.lRoomHF != eax_d_.source.lRoomHF);
 }
 
 void EaxxSource::defer_source_obstruction(
-	std::int32_t lObstruction)
+	long lObstruction)
 {
 	eax_d_.source.lObstruction = lObstruction;
 	source_dirty_filter_flags_.lObstruction = (eax_.source.lObstruction != eax_d_.source.lObstruction);
@@ -1443,7 +1443,7 @@ void EaxxSource::defer_source_obstruction_lf_ratio(
 }
 
 void EaxxSource::defer_source_occlusion(
-	std::int32_t lOcclusion)
+	long lOcclusion)
 {
 	eax_d_.source.lOcclusion = lOcclusion;
 	source_dirty_filter_flags_.lOcclusion = (eax_.source.lOcclusion != eax_d_.source.lOcclusion);
@@ -1471,7 +1471,7 @@ void EaxxSource::defer_source_occlusion_direct_ratio(
 }
 
 void EaxxSource::defer_source_exclusion(
-	std::int32_t lExclusion)
+	long lExclusion)
 {
 	eax_d_.source.lExclusion = lExclusion;
 	source_dirty_filter_flags_.lExclusion = (eax_.source.lExclusion != eax_d_.source.lExclusion);
@@ -1485,7 +1485,7 @@ void EaxxSource::defer_source_exclusion_lf_ratio(
 }
 
 void EaxxSource::defer_source_outside_volume_hf(
-	std::int32_t lOutsideVolumeHF)
+	long lOutsideVolumeHF)
 {
 	eax_d_.source.lOutsideVolumeHF = lOutsideVolumeHF;
 	source_dirty_misc_flags_.lOutsideVolumeHF = (eax_.source.lOutsideVolumeHF != eax_d_.source.lOutsideVolumeHF);
@@ -1520,7 +1520,7 @@ void EaxxSource::defer_source_air_absorption_factor(
 }
 
 void EaxxSource::defer_source_flags(
-	std::uint32_t ulFlags)
+	unsigned long ulFlags)
 {
 	eax_d_.source.ulFlags = ulFlags;
 	source_dirty_misc_flags_.ulFlags = (eax_.source.ulFlags != eax_d_.source.ulFlags);

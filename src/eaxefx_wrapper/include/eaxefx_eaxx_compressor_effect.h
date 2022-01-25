@@ -101,14 +101,14 @@ private:
 
 
 	void validate_on_off(
-		std::uint32_t ulOnOff);
+		unsigned long ulOnOff);
 
 	void validate_all(
 		const EAXAGCCOMPRESSORPROPERTIES& eax_all);
 
 
 	void defer_on_off(
-		std::uint32_t ulOnOff);
+		unsigned long ulOnOff);
 
 	void defer_all(
 		const EAXAGCCOMPRESSORPROPERTIES& eax_all);

@@ -104,20 +104,20 @@ private:
 
 
 	void validate_coarse_tune(
-		std::int32_t lCoarseTune);
+		long lCoarseTune);
 
 	void validate_fine_tune(
-		std::int32_t lFineTune);
+		long lFineTune);
 
 	void validate_all(
 		const EAXPITCHSHIFTERPROPERTIES& all);
 
 
 	void defer_coarse_tune(
-		std::int32_t lCoarseTune);
+		long lCoarseTune);
 
 	void defer_fine_tune(
-		std::int32_t lFineTune);
+		long lFineTune);
 
 	void defer_all(
 		const EAXPITCHSHIFTERPROPERTIES& all);

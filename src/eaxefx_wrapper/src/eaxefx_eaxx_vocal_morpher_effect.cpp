@@ -134,7 +134,7 @@ void EaxxVocalMorpherEffect::set_efx_phoneme_a()
 void EaxxVocalMorpherEffect::set_efx_phoneme_a_coarse_tuning()
 {
 	const auto phoneme_a_coarse_tuning = std::clamp(
-		eax_.lPhonemeACoarseTuning,
+		static_cast<ALint>(eax_.lPhonemeACoarseTuning),
 		AL_VOCAL_MORPHER_MIN_PHONEMEA_COARSE_TUNING,
 		AL_VOCAL_MORPHER_MAX_PHONEMEA_COARSE_TUNING
 	);
@@ -156,7 +156,7 @@ void EaxxVocalMorpherEffect::set_efx_phoneme_b()
 void EaxxVocalMorpherEffect::set_efx_phoneme_b_coarse_tuning()
 {
 	const auto phoneme_b_coarse_tuning = std::clamp(
-		eax_.lPhonemeBCoarseTuning,
+		static_cast<ALint>(eax_.lPhonemeBCoarseTuning),
 		AL_VOCAL_MORPHER_MIN_PHONEMEB_COARSE_TUNING,
 		AL_VOCAL_MORPHER_MAX_PHONEMEB_COARSE_TUNING
 	);
@@ -238,7 +238,7 @@ void EaxxVocalMorpherEffect::get(
 }
 
 void EaxxVocalMorpherEffect::validate_phoneme_a(
-	std::uint32_t ulPhonemeA)
+	unsigned long ulPhonemeA)
 {
 	eaxx_validate_range<EaxxVocalMorpherEffectException>(
 		"Phoneme A",
@@ -249,7 +249,7 @@ void EaxxVocalMorpherEffect::validate_phoneme_a(
 }
 
 void EaxxVocalMorpherEffect::validate_phoneme_a_coarse_tuning(
-	std::int32_t lPhonemeACoarseTuning)
+	long lPhonemeACoarseTuning)
 {
 	eaxx_validate_range<EaxxVocalMorpherEffectException>(
 		"Phoneme A Coarse Tuning",
@@ -260,7 +260,7 @@ void EaxxVocalMorpherEffect::validate_phoneme_a_coarse_tuning(
 }
 
 void EaxxVocalMorpherEffect::validate_phoneme_b(
-	std::uint32_t ulPhonemeB)
+	unsigned long ulPhonemeB)
 {
 	eaxx_validate_range<EaxxVocalMorpherEffectException>(
 		"Phoneme B",
@@ -271,7 +271,7 @@ void EaxxVocalMorpherEffect::validate_phoneme_b(
 }
 
 void EaxxVocalMorpherEffect::validate_phoneme_b_coarse_tuning(
-	std::int32_t lPhonemeBCoarseTuning)
+	long lPhonemeBCoarseTuning)
 {
 	eaxx_validate_range<EaxxVocalMorpherEffectException>(
 		"Phoneme B Coarse Tuning",
@@ -282,7 +282,7 @@ void EaxxVocalMorpherEffect::validate_phoneme_b_coarse_tuning(
 }
 
 void EaxxVocalMorpherEffect::validate_waveform(
-	std::uint32_t ulWaveform)
+	unsigned long ulWaveform)
 {
 	eaxx_validate_range<EaxxVocalMorpherEffectException>(
 		"Waveform",
@@ -315,35 +315,35 @@ void EaxxVocalMorpherEffect::validate_all(
 }
 
 void EaxxVocalMorpherEffect::defer_phoneme_a(
-	std::uint32_t ulPhonemeA)
+	unsigned long ulPhonemeA)
 {
 	eax_d_.ulPhonemeA = ulPhonemeA;
 	eax_dirty_flags_.ulPhonemeA = (eax_.ulPhonemeA != eax_d_.ulPhonemeA);
 }
 
 void EaxxVocalMorpherEffect::defer_phoneme_a_coarse_tuning(
-	std::int32_t lPhonemeACoarseTuning)
+	long lPhonemeACoarseTuning)
 {
 	eax_d_.lPhonemeACoarseTuning = lPhonemeACoarseTuning;
 	eax_dirty_flags_.lPhonemeACoarseTuning = (eax_.lPhonemeACoarseTuning != eax_d_.lPhonemeACoarseTuning);
 }
 
 void EaxxVocalMorpherEffect::defer_phoneme_b(
-	std::uint32_t ulPhonemeB)
+	unsigned long ulPhonemeB)
 {
 	eax_d_.ulPhonemeB = ulPhonemeB;
 	eax_dirty_flags_.ulPhonemeB = (eax_.ulPhonemeB != eax_d_.ulPhonemeB);
 }
 
 void EaxxVocalMorpherEffect::defer_phoneme_b_coarse_tuning(
-	std::int32_t lPhonemeBCoarseTuning)
+	long lPhonemeBCoarseTuning)
 {
 	eax_d_.lPhonemeBCoarseTuning = lPhonemeBCoarseTuning;
 	eax_dirty_flags_.lPhonemeBCoarseTuning = (eax_.lPhonemeBCoarseTuning != eax_d_.lPhonemeBCoarseTuning);
 }
 
 void EaxxVocalMorpherEffect::defer_waveform(
-	std::uint32_t ulWaveform)
+	unsigned long ulWaveform)
 {
 	eax_d_.ulWaveform = ulWaveform;
 	eax_dirty_flags_.ulWaveform = (eax_.ulWaveform != eax_d_.ulWaveform);

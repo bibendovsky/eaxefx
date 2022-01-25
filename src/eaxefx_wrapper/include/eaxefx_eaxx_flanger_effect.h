@@ -116,10 +116,10 @@ private:
 
 
 	void validate_waveform(
-		std::uint32_t ulWaveform);
+		unsigned long ulWaveform);
 
 	void validate_phase(
-		std::int32_t lPhase);
+		long lPhase);
 
 	void validate_rate(
 		float flRate);
@@ -138,10 +138,10 @@ private:
 
 
 	void defer_waveform(
-		std::uint32_t ulWaveform);
+		unsigned long ulWaveform);
 
 	void defer_phase(
-		std::int32_t lPhase);
+		long lPhase);
 
 	void defer_rate(
 		float flRate);

@@ -113,7 +113,7 @@ private:
 		float flHighPassCutOff);
 
 	void validate_waveform(
-		std::uint32_t ulWaveform);
+		unsigned long ulWaveform);
 
 	void validate_all(
 		const EAXRINGMODULATORPROPERTIES& all);
@@ -126,7 +126,7 @@ private:
 		float flHighPassCutOff);
 
 	void defer_waveform(
-		std::uint32_t ulWaveform);
+		unsigned long ulWaveform);
 
 	void defer_all(
 		const EAXRINGMODULATORPROPERTIES& all);

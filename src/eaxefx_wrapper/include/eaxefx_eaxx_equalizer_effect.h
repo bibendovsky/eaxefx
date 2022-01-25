@@ -128,13 +128,13 @@ private:
 
 
 	void validate_low_gain(
-		std::int32_t lLowGain);
+		long lLowGain);
 
 	void validate_low_cutoff(
 		float flLowCutOff);
 
 	void validate_mid1_gain(
-		std::int32_t lMid1Gain);
+		long lMid1Gain);
 
 	void validate_mid1_center(
 		float flMid1Center);
@@ -143,7 +143,7 @@ private:
 		float flMid1Width);
 
 	void validate_mid2_gain(
-		std::int32_t lMid2Gain);
+		long lMid2Gain);
 
 	void validate_mid2_center(
 		float flMid2Center);
@@ -152,7 +152,7 @@ private:
 		float flMid2Width);
 
 	void validate_high_gain(
-		std::int32_t lHighGain);
+		long lHighGain);
 
 	void validate_high_cutoff(
 		float flHighCutOff);
@@ -162,13 +162,13 @@ private:
 
 
 	void defer_low_gain(
-		std::int32_t lLowGain);
+		long lLowGain);
 
 	void defer_low_cutoff(
 		float flLowCutOff);
 
 	void defer_mid1_gain(
-		std::int32_t lMid1Gain);
+		long lMid1Gain);
 
 	void defer_mid1_center(
 		float flMid1Center);
@@ -177,7 +177,7 @@ private:
 		float flMid1Width);
 
 	void defer_mid2_gain(
-		std::int32_t lMid2Gain);
+		long lMid2Gain);
 
 	void defer_mid2_center(
 		float flMid2Center);
@@ -186,7 +186,7 @@ private:
 		float flMid2Width);
 
 	void defer_high_gain(
-		std::int32_t lHighGain);
+		long lHighGain);
 
 	void defer_high_cutoff(
 		float flHighCutOff);

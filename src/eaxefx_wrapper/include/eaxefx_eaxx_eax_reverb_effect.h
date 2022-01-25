@@ -180,7 +180,7 @@ private:
 
 
 	void validate_environment(
-		std::uint32_t ulEnvironment,
+		unsigned long ulEnvironment,
 		int version,
 		bool is_standalone);
 
@@ -191,13 +191,13 @@ private:
 		 float flEnvironmentDiffusion);
 
 	void validate_room(
-		std::int32_t lRoom);
+		long lRoom);
 
 	void validate_room_hf(
-		std::int32_t lRoomHF);
+		long lRoomHF);
 
 	void validate_room_lf(
-		std::int32_t lRoomLF);
+		long lRoomLF);
 
 	void validate_decay_time(
 		float flDecayTime);
@@ -209,7 +209,7 @@ private:
 		float flDecayLFRatio);
 
 	void validate_reflections(
-		std::int32_t lReflections);
+		long lReflections);
 
 	void validate_reflections_delay(
 		float flReflectionsDelay);
@@ -218,7 +218,7 @@ private:
 		const EAXVECTOR& vReflectionsPan);
 
 	void validate_reverb(
-		std::int32_t lReverb);
+		long lReverb);
 
 	void validate_reverb_delay(
 		float flReverbDelay);
@@ -251,7 +251,7 @@ private:
 		float flRoomRolloffFactor);
 
 	void validate_flags(
-		std::uint32_t ulFlags);
+		unsigned long ulFlags);
 
 	void validate_all(
 		const EAX20LISTENERPROPERTIES& all,
@@ -263,7 +263,7 @@ private:
 
 
 	void defer_environment(
-		std::uint32_t ulEnvironment);
+		unsigned long ulEnvironment);
 
 	void defer_environment_size(
 		float flEnvironmentSize);
@@ -272,13 +272,13 @@ private:
 		 float flEnvironmentDiffusion);
 
 	void defer_room(
-		std::int32_t lRoom);
+		long lRoom);
 
 	void defer_room_hf(
-		std::int32_t lRoomHF);
+		long lRoomHF);
 
 	void defer_room_lf(
-		std::int32_t lRoomLF);
+		long lRoomLF);
 
 	void defer_decay_time(
 		float flDecayTime);
@@ -290,7 +290,7 @@ private:
 		float flDecayLFRatio);
 
 	void defer_reflections(
-		std::int32_t lReflections);
+		long lReflections);
 
 	void defer_reflections_delay(
 		float flReflectionsDelay);
@@ -299,7 +299,7 @@ private:
 		const EAXVECTOR& vReflectionsPan);
 
 	void defer_reverb(
-		std::int32_t lReverb);
+		long lReverb);
 
 	void defer_reverb_delay(
 		float flReverbDelay);
@@ -332,7 +332,7 @@ private:
 		float flRoomRolloffFactor);
 
 	void defer_flags(
-		std::uint32_t ulFlags);
+		unsigned long ulFlags);
 
 	void defer_all(
 		const EAX20LISTENERPROPERTIES& all);

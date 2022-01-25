@@ -170,7 +170,7 @@ void EaxxPitchShifterEffect::get(
 }
 
 void EaxxPitchShifterEffect::validate_coarse_tune(
-	std::int32_t lCoarseTune)
+	long lCoarseTune)
 {
 	eaxx_validate_range<EaxxPitchShifterEffectException>(
 		"Coarse Tune",
@@ -181,7 +181,7 @@ void EaxxPitchShifterEffect::validate_coarse_tune(
 }
 
 void EaxxPitchShifterEffect::validate_fine_tune(
-	std::int32_t lFineTune)
+	long lFineTune)
 {
 	eaxx_validate_range<EaxxPitchShifterEffectException>(
 		"Fine Tune",
@@ -199,14 +199,14 @@ void EaxxPitchShifterEffect::validate_all(
 }
 
 void EaxxPitchShifterEffect::defer_coarse_tune(
-	std::int32_t lCoarseTune)
+	long lCoarseTune)
 {
 	eax_d_.lCoarseTune = lCoarseTune;
 	eax_dirty_flags_.lCoarseTune = (eax_.lCoarseTune != eax_d_.lCoarseTune);
 }
 
 void EaxxPitchShifterEffect::defer_fine_tune(
-	std::int32_t lFineTune)
+	long lFineTune)
 {
 	eax_d_.lFineTune = lFineTune;
 	eax_dirty_flags_.lFineTune = (eax_.lFineTune != eax_d_.lFineTune);

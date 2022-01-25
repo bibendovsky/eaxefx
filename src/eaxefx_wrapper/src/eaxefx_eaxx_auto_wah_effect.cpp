@@ -227,7 +227,7 @@ void EaxxAutoWahEffect::validate_release_time(
 }
 
 void EaxxAutoWahEffect::validate_resonance(
-	std::int32_t lResonance)
+	long lResonance)
 {
 	eaxx_validate_range<EaxxAutoWahEffectException>(
 		"Resonance",
@@ -238,7 +238,7 @@ void EaxxAutoWahEffect::validate_resonance(
 }
 
 void EaxxAutoWahEffect::validate_peak_level(
-	std::int32_t lPeakLevel)
+	long lPeakLevel)
 {
 	eaxx_validate_range<EaxxAutoWahEffectException>(
 		"Peak Level",
@@ -272,14 +272,14 @@ void EaxxAutoWahEffect::defer_release_time(
 }
 
 void EaxxAutoWahEffect::defer_resonance(
-	std::int32_t lResonance)
+	long lResonance)
 {
 	eax_d_.lResonance = lResonance;
 	eax_dirty_flags_.lResonance = (eax_.lResonance != eax_d_.lResonance);
 }
 
 void EaxxAutoWahEffect::defer_peak_level(
-	std::int32_t lPeakLevel)
+	long lPeakLevel)
 {
 	eax_d_.lPeakLevel = lPeakLevel;
 	eax_dirty_flags_.lPeakLevel = (eax_.lPeakLevel != eax_d_.lPeakLevel);

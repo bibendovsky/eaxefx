@@ -110,10 +110,10 @@ private:
 		float flFrequency);
 
 	void validate_left_direction(
-		std::uint32_t ulLeftDirection);
+		unsigned long ulLeftDirection);
 
 	void validate_right_direction(
-		std::uint32_t ulRightDirection);
+		unsigned long ulRightDirection);
 
 	void validate_all(
 		const EAXFREQUENCYSHIFTERPROPERTIES& all);
@@ -123,10 +123,10 @@ private:
 		float flFrequency);
 
 	void defer_left_direction(
-		std::uint32_t ulLeftDirection);
+		unsigned long ulLeftDirection);
 
 	void defer_right_direction(
-		std::uint32_t ulRightDirection);
+		unsigned long ulRightDirection);
 
 	void defer_all(
 		const EAXFREQUENCYSHIFTERPROPERTIES& all);

@@ -198,7 +198,7 @@ void EaxxFrequencyShifterEffect::validate_frequency(
 }
 
 void EaxxFrequencyShifterEffect::validate_left_direction(
-	std::uint32_t ulLeftDirection)
+	unsigned long ulLeftDirection)
 {
 	eaxx_validate_range<EaxxFrequencyShifterEffectException>(
 		"Left Direction",
@@ -209,7 +209,7 @@ void EaxxFrequencyShifterEffect::validate_left_direction(
 }
 
 void EaxxFrequencyShifterEffect::validate_right_direction(
-	std::uint32_t ulRightDirection)
+	unsigned long ulRightDirection)
 {
 	eaxx_validate_range<EaxxFrequencyShifterEffectException>(
 		"Right Direction",
@@ -235,14 +235,14 @@ void EaxxFrequencyShifterEffect::defer_frequency(
 }
 
 void EaxxFrequencyShifterEffect::defer_left_direction(
-	std::uint32_t ulLeftDirection)
+	unsigned long ulLeftDirection)
 {
 	eax_d_.ulLeftDirection = ulLeftDirection;
 	eax_dirty_flags_.ulLeftDirection = (eax_.ulLeftDirection != eax_d_.ulLeftDirection);
 }
 
 void EaxxFrequencyShifterEffect::defer_right_direction(
-	std::uint32_t ulRightDirection)
+	unsigned long ulRightDirection)
 {
 	eax_d_.ulRightDirection = ulRightDirection;
 	eax_dirty_flags_.ulRightDirection = (eax_.ulRightDirection != eax_d_.ulRightDirection);
