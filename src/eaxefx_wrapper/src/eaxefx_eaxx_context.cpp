@@ -137,11 +137,10 @@ EaxxFxSlot& EaxxContext::get_slot(
 	return shared_.fx_slots.get(fx_slot_index);
 }
 
-void EaxxContext::initialize_sources(
-	ALsizei count,
-	ALuint* al_names)
+void EaxxContext::al_gen_sources(
+	Span<ALuint> al_source_ids)
 {
-	if (count <= 0 || !al_names || al_names[0] == AL_NONE)
+	if (al_source_ids.empty())
 	{
 		return;
 	}
@@ -151,27 +150,28 @@ void EaxxContext::initialize_sources(
 	param.context_shared = &shared_;
 	param.al_efx_symbols = al_.efx_symbols;
 
-	for (auto i = decltype(count){}; i < count; ++i)
+	for (const auto al_source_id : al_source_ids)
 	{
-		param.al_source = al_names[i];
-		source_map_.emplace(param.al_source, EaxxSource{param});
+		if (al_source_id == AL_NONE)
+		{
+			continue;
+		}
+
+		source_map_.emplace(al_source_id, EaxxSource{param});
 	}
 }
 
-void EaxxContext::uninitialize_sources(
-	ALsizei count,
-	const ALuint* al_names)
+void EaxxContext::al_delete_sources(
+	Span<const ALuint> al_source_ids)
 {
-	if (count <= 0 || !al_names || al_names[0] == AL_NONE)
+	if (al_source_ids.empty())
 	{
 		return;
 	}
 
-	for (auto i = decltype(count){}; i < count; ++i)
+	for (const auto al_source_id : al_source_ids)
 	{
-		const auto al_name = al_names[i];
-
-		source_map_.erase(al_name);
+		source_map_.erase(al_source_id);
 	}
 }
 

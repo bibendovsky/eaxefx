@@ -207,6 +207,7 @@ target_sources (
 		include/eaxefx_process.h
 		include/eaxefx_scope_exit.h
 		include/eaxefx_shared_library.h
+		include/eaxefx_span.h
 		include/eaxefx_string.h
 		include/eaxefx_system_time.h
 		include/eaxefx_thread.h
@@ -232,6 +233,7 @@ target_sources (
 		src/eaxefx_fs_path.cpp
 		src/eaxefx_logger.cpp
 		src/eaxefx_moveable_mutex_lock.cpp
+		src/eaxefx_span.cpp
 		src/eaxefx_string.cpp
 		src/eaxefx_system_time.cpp
 

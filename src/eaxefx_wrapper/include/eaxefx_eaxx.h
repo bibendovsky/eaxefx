@@ -39,6 +39,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_al_symbols.h"
 #include "eaxefx_eax_api.h"
 #include "eaxefx_logger.h"
+#include "eaxefx_span.h"
 
 
 namespace eaxefx
@@ -62,12 +63,10 @@ public:
 		std::string_view symbol_name) = 0;
 
 	virtual void al_gen_sources(
-		ALsizei n,
-		ALuint* sources) = 0;
+		Span<ALuint> al_source_ids) = 0;
 
 	virtual void al_delete_sources(
-		ALsizei n,
-		const ALuint* sources) = 0;
+		Span<const ALuint> al_source_ids) = 0;
 
 
 	virtual ALenum eax_set(

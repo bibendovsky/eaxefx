@@ -97,12 +97,10 @@ public:
 		ALenum param) const noexcept override;
 
 	void al_gen_sources(
-		ALsizei n,
-		ALuint* sources) override;
+		Span<ALuint> al_source_ids) override;
 
 	void al_delete_sources(
-		ALsizei n,
-		const ALuint* sources) override;
+		Span<const ALuint> al_source_ids) override;
 
 
 	ALCcontext* get_al_context() const noexcept override;
@@ -413,27 +411,25 @@ const char* AlApiContextImpl::al_get_string(
 }
 
 void AlApiContextImpl::al_gen_sources(
-	ALsizei n,
-	ALuint* sources)
+	Span<ALuint> al_source_ids)
 {
 	if (!eaxx_)
 	{
 		return;
 	}
 
-	eaxx_->al_gen_sources(n, sources);
+	eaxx_->al_gen_sources(al_source_ids);
 }
 
 void AlApiContextImpl::al_delete_sources(
-	ALsizei n,
-	const ALuint* sources)
+	Span<const ALuint> al_source_ids)
 {
 	if (!eaxx_)
 	{
 		return;
 	}
 
-	eaxx_->al_delete_sources(n, sources);
+	eaxx_->al_delete_sources(al_source_ids);
 }
 
 ALCcontext* AlApiContextImpl::get_al_context() const noexcept

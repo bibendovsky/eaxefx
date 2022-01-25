@@ -24,21 +24,15 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
-#ifndef EAXEFX_AL_API_CONTEXT_INCLUDED
-#define EAXEFX_AL_API_CONTEXT_INCLUDED
+
+#ifndef EAXEFX_SPAN_INCLUDED
+#define EAXEFX_SPAN_INCLUDED
 
 
-#include "AL/alc.h"
+#include <cassert>
+#include <cstddef>
 
-#include <memory>
-#include <string_view>
-
-#include "eaxefx_al_loader.h"
-#include "eaxefx_al_symbols.h"
-#include "eaxefx_eaxx.h"
-#include "eaxefx_logger.h"
-#include "eaxefx_mutex.h"
-#include "eaxefx_span.h"
+#include <limits>
 
 
 namespace eaxefx
@@ -47,61 +41,90 @@ namespace eaxefx
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-struct AlApiContextInitParam
-{
-	ALCdevice* al_device{};
-	const ALCint* al_context_attributes{};
-}; // AlApiContextInitParam
+inline constexpr std::size_t dynamic_extent = std::numeric_limits<std::size_t>::max();
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-class AlApiContext
+template<
+    typename T,
+    std::size_t TExtent = dynamic_extent
+>
+class Span
 {
 public:
-	AlApiContext() noexcept = default;
-
-	virtual ~AlApiContext() = default;
+    using size_type = std::size_t;
 
 
-	virtual void alc_create_context(
-		const AlApiContextInitParam& param) = 0;
+    constexpr Span() noexcept = default;
 
-	virtual void alc_make_current() = 0;
-
-	virtual void alc_destroy() = 0;
-
-	virtual void* al_get_proc_address(
-		std::string_view symbol_name) const noexcept = 0;
-
-	virtual bool al_is_extension_present(
-		const char* extension_name) const noexcept = 0;
-
-	virtual const char* al_get_string(
-		ALenum param) const noexcept = 0;
-
-	virtual void al_gen_sources(
-		Span<ALuint> al_source_ids) = 0;
-
-	virtual void al_delete_sources(
-		Span<const ALuint> al_source_ids) = 0;
+    constexpr Span(
+        T* items,
+        size_type size) noexcept
+        :
+        items_{items},
+        size_{size}
+    {
+    }
 
 
-	virtual ALCcontext* get_al_context() const noexcept = 0;
+    constexpr T* data() const noexcept
+    {
+        return items_;
+    }
 
-	virtual Eaxx& get_eaxx() = 0;
-}; // AlApiContext
+    constexpr size_type size() const noexcept
+    {
+        return size_;
+    }
+
+    constexpr bool empty() const noexcept
+    {
+        return size() == 0;
+    }
+
+
+    constexpr T* begin() const noexcept
+    {
+        assert(data());
+        return data();
+    }
+
+    constexpr T* end() const noexcept
+    {
+        return begin() + size();
+    }
+
+
+    constexpr T& operator[](
+        size_type index) const noexcept
+    {
+        assert(index < size());
+        return data()[index];
+    }
+
+
+private:
+    T* items_{};
+    size_type size_{};
+}; // Span
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-using AlApiContextUPtr = std::unique_ptr<AlApiContext>;
-
-AlApiContextUPtr make_al_api_context();
+template<
+    typename T
+>
+Span<T> make_span(
+    T* items,
+    typename Span<T>::size_type size)
+{
+    return Span<T>{items, size};
+}
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -109,5 +132,4 @@ AlApiContextUPtr make_al_api_context();
 } // eaxefx
 
 
-#endif // !EAXEFX_AL_API_CONTEXT_INCLUDED
-
+#endif // !EAXEFX_SPAN_INCLUDED

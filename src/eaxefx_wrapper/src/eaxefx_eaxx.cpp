@@ -285,12 +285,10 @@ public:
 		std::string_view symbol_name) override;
 
 	void al_gen_sources(
-		ALsizei n,
-		ALuint* sources) override;
+		Span<ALuint> al_source_ids) override;
 
 	void al_delete_sources(
-		ALsizei n,
-		const ALuint* sources) override;
+		Span<const ALuint> al_source_ids) override;
 
 
 	ALenum eax_set(
@@ -427,17 +425,15 @@ void* EaxxImpl::al_get_proc_address(
 }
 
 void EaxxImpl::al_gen_sources(
-	ALsizei n,
-	ALuint* sources)
+	Span<ALuint> al_source_ids)
 {
-	eaxx_context_->initialize_sources(n, sources);
+	eaxx_context_->al_gen_sources(al_source_ids);
 }
 
 void EaxxImpl::al_delete_sources(
-	ALsizei n,
-	const ALuint* sources)
+	Span<const ALuint> al_source_ids)
 {
-	eaxx_context_->uninitialize_sources(n, sources);
+	eaxx_context_->al_delete_sources(al_source_ids);
 }
 
 ALenum EaxxImpl::eax_set(

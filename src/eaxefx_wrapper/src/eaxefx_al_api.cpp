@@ -56,6 +56,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 #include "eaxefx_moveable_mutex_lock.h"
 #include "eaxefx_mutex.h"
 #include "eaxefx_shared_library.h"
+#include "eaxefx_span.h"
 #include "eaxefx_string.h"
 #include "eaxefx_utils.h"
 
@@ -817,17 +818,19 @@ ALboolean AL_APIENTRY AlApiImpl::eax_set_buffer_mode(
 	const ALuint* buffers,
 	ALint value)
 {
-	if (n == 0)
-	{
-		return AL_TRUE;
-	}
-
 	if (n < 0)
 	{
 		fail("Buffer count out of range.");
 	}
 
-	if (!buffers)
+	const auto al_buffer_ids = make_span(buffers, n);
+
+	if (al_buffer_ids.empty())
+	{
+		return AL_TRUE;
+	}
+
+	if (!al_buffer_ids.data())
 	{
 		fail("Null buffers.");
 	}
@@ -845,16 +848,14 @@ ALboolean AL_APIENTRY AlApiImpl::eax_set_buffer_mode(
 
 	auto& device = get_current_device();
 
-	for (auto i = std::size_t{}; i < static_cast<std::size_t>(n); ++i)
+	for (const auto al_buffer_id : al_buffer_ids)
 	{
-		const auto al_buffer_name = buffers[i];
-
-		if (al_buffer_name == AL_NONE)
+		if (al_buffer_id == AL_NONE)
 		{
 			continue;
 		}
 
-		const auto& buffer = get_buffer(device, al_buffer_name);
+		const auto& buffer = get_buffer(device, al_buffer_id);
 
 		if (buffer.x_ram_is_dirty)
 		{
@@ -862,16 +863,14 @@ ALboolean AL_APIENTRY AlApiImpl::eax_set_buffer_mode(
 		}
 	}
 
-	for (auto i = std::size_t{}; i < static_cast<std::size_t>(n); ++i)
+	for (const auto al_buffer_id : al_buffer_ids)
 	{
-		const auto al_buffer_name = buffers[i];
-
-		if (al_buffer_name == AL_NONE)
+		if (al_buffer_id == AL_NONE)
 		{
 			continue;
 		}
 
-		auto& buffer = get_buffer(device, al_buffer_name);
+		auto& buffer = get_buffer(device, al_buffer_id);
 		buffer.x_ram_mode = value;
 	}
 
@@ -1971,7 +1970,9 @@ void AL_APIENTRY AlApiImpl::alGenSources(
 	ALuint* sources) noexcept
 try
 {
-	if (n == 0)
+	const auto al_source_ids = make_span(sources, n);
+
+	if (al_source_ids.empty())
 	{
 		return;
 	}
@@ -1989,7 +1990,7 @@ try
 	}
 
 	auto& context = get_current_context();
-	context.al_gen_sources(n, sources);
+	context.al_gen_sources(al_source_ids);
 }
 catch (...)
 {
@@ -2001,7 +2002,9 @@ void AL_APIENTRY AlApiImpl::alDeleteSources(
 	const ALuint* sources) noexcept
 try
 {
-	if (n == 0)
+	const auto al_source_ids = make_span(sources, n);
+
+	if (al_source_ids.empty())
 	{
 		return;
 	}
@@ -2019,7 +2022,7 @@ try
 	}
 
 	auto& context = get_current_context();
-	context.al_delete_sources(n, sources);
+	context.al_delete_sources(al_source_ids);
 }
 catch (...)
 {
@@ -2371,6 +2374,13 @@ void AL_APIENTRY AlApiImpl::alGenBuffers(
 	ALuint* buffers) noexcept
 try
 {
+	const auto al_buffer_ids = make_span(buffers, n);
+
+	if (al_buffer_ids.empty())
+	{
+		return;
+	}
+
 	const auto mt_lock = initialize();
 
 	static_cast<void>(al_al_symbols_->alGetError());
@@ -2389,10 +2399,9 @@ try
 	auto our_buffer = Buffer{};
 	our_buffer.x_ram_mode = x_ram_al_storage_automatic_enum;
 
-	for (auto i = decltype(n){}; i < n; ++i)
+	for (const auto al_buffer_id : al_buffer_ids)
 	{
-		const auto buffer = buffers[i];
-		our_buffers.emplace(buffer, our_buffer);
+		our_buffers.emplace(al_buffer_id, our_buffer);
 	}
 }
 catch (...)
@@ -2405,6 +2414,13 @@ void AL_APIENTRY AlApiImpl::alDeleteBuffers(
 	const ALuint* buffers) noexcept
 try
 {
+	const auto al_buffer_ids = make_span(buffers, n);
+
+	if (al_buffer_ids.empty())
+	{
+		return;
+	}
+
 	const auto mt_lock = initialize();
 
 	static_cast<void>(al_al_symbols_->alGetError());
@@ -2420,16 +2436,14 @@ try
 	auto& device = get_current_device();
 	auto& our_buffers = device.buffers;
 
-	for (auto i = decltype(n){}; i < n; ++i)
+	for (const auto al_buffer_id : al_buffer_ids)
 	{
-		const auto buffer = buffers[i];
-
-		if (buffer == AL_NONE)
+		if (al_buffer_id == AL_NONE)
 		{
 			continue;
 		}
 
-		const auto buffer_it = our_buffers.find(buffers[i]);
+		const auto buffer_it = our_buffers.find(al_buffer_id);
 
 		if (buffer_it == our_buffers.cend())
 		{

@@ -99,13 +99,11 @@ public:
 		EaxxFxSlotIndex fx_slot_index);
 
 
-	void initialize_sources(
-		ALsizei count,
-		ALuint* al_names);
+	void al_gen_sources(
+		Span<ALuint> al_source_ids);
 
-	void uninitialize_sources(
-		ALsizei count,
-		const ALuint* al_names);
+	void al_delete_sources(
+		Span<const ALuint> al_source_ids);
 
 
 	void dispatch(
