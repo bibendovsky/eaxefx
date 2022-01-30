@@ -88,7 +88,7 @@ void EaxxFxSlot::initialize(
 
 void EaxxFxSlot::activate_dedicated_reverb_effect()
 {
-	set_fx_slot_effect(EaxxEffectType::eax_reverb, eax_reverb_effect_);
+	set_fx_slot_effect(EaxxEffectType::eax_reverb);
 }
 
 ALuint EaxxFxSlot::get_efx_effect_slot() const noexcept
@@ -406,7 +406,7 @@ void EaxxFxSlot::set_dedicated_defaults()
 
 void EaxxFxSlot::deactivate_dedicated_reverb_effect()
 {
-	set_fx_slot_effect(EaxxEffectType::null, null_effect_);
+	set_fx_slot_effect(EaxxEffectType::null);
 }
 
 void EaxxFxSlot::get_fx_slot_all(
@@ -488,27 +488,17 @@ void EaxxFxSlot::get(
 }
 
 void EaxxFxSlot::set_fx_slot_effect(
-	EaxxEffectUPtr& effect)
+	EaxxEffectType effect_type)
 {
-	effect_ = effect.get();
+	effect_ = nullptr;
+
+	auto effect_param = EaxxEffectParam{};
+	effect_param.al_effect_slot = efx_.effect_slot;
+	effect_param.effect_type = effect_type;
+	effect_param.al_efx_symbols = al_efx_symbols_;
+
+	effect_ = make_eaxx_effect(effect_param);
 	effect_->load();
-}
-
-void EaxxFxSlot::set_fx_slot_effect(
-	EaxxEffectType effect_type,
-	EaxxEffectUPtr& effect)
-{
-	if (!effect)
-	{
-		auto effect_param = EaxxEffectParam{};
-		effect_param.al_effect_slot = efx_.effect_slot;
-		effect_param.effect_type = effect_type;
-		effect_param.al_efx_symbols = al_efx_symbols_;
-
-		effect = make_eaxx_effect(effect_param);
-	}
-
-	set_fx_slot_effect(effect);
 }
 
 void EaxxFxSlot::set_fx_slot_effect()
@@ -518,55 +508,55 @@ void EaxxFxSlot::set_fx_slot_effect()
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_NULL_GUID)
 	{
-		set_fx_slot_effect(EaxxEffectType::null, null_effect_);
+		set_fx_slot_effect(EaxxEffectType::null);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_AUTOWAH_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::auto_wah, auto_wah_effect_);
+		set_fx_slot_effect(EaxxEffectType::auto_wah);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_CHORUS_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::chorus, chorus_effect_);
+		set_fx_slot_effect(EaxxEffectType::chorus);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_AGCCOMPRESSOR_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::compressor, compressor_effect_);
+		set_fx_slot_effect(EaxxEffectType::compressor);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_DISTORTION_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::distortion, distortion_effect_);
+		set_fx_slot_effect(EaxxEffectType::distortion);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_REVERB_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::eax_reverb, eax_reverb_effect_);
+		set_fx_slot_effect(EaxxEffectType::eax_reverb);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_ECHO_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::echo, echo_effect_);
+		set_fx_slot_effect(EaxxEffectType::echo);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_EQUALIZER_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::equalizer, equalizer_effect_);
+		set_fx_slot_effect(EaxxEffectType::equalizer);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_FLANGER_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::flanger, flanger_effect_);
+		set_fx_slot_effect(EaxxEffectType::flanger);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_FREQUENCYSHIFTER_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::frequency_shifter, frequency_shifter_effect_);
+		set_fx_slot_effect(EaxxEffectType::frequency_shifter);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_PITCHSHIFTER_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::pitch_shifter, pitch_shifter_effect_);
+		set_fx_slot_effect(EaxxEffectType::pitch_shifter);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_RINGMODULATOR_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::ring_modulator, ring_modulator_effect_);
+		set_fx_slot_effect(EaxxEffectType::ring_modulator);
 	}
 	else if (eax_.fx_slot.guidLoadEffect == EAX_VOCALMORPHER_EFFECT)
 	{
-		set_fx_slot_effect(EaxxEffectType::vocal_morpher, vocal_morpher_effect_);
+		set_fx_slot_effect(EaxxEffectType::vocal_morpher);
 	}
 	else
 	{

@@ -84,21 +84,7 @@ private:
 	Eax eax_{};
 	Efx efx_{};
 
-	EaxxEffect* effect_{};
-
-	EaxxEffectUPtr null_effect_;
-	EaxxEffectUPtr auto_wah_effect_;
-	EaxxEffectUPtr chorus_effect_;
-	EaxxEffectUPtr compressor_effect_;
-	EaxxEffectUPtr distortion_effect_;
-	EaxxEffectUPtr eax_reverb_effect_;
-	EaxxEffectUPtr echo_effect_;
-	EaxxEffectUPtr equalizer_effect_;
-	EaxxEffectUPtr flanger_effect_;
-	EaxxEffectUPtr frequency_shifter_effect_;
-	EaxxEffectUPtr pitch_shifter_effect_;
-	EaxxEffectUPtr ring_modulator_effect_;
-	EaxxEffectUPtr vocal_morpher_effect_;
+	EaxxEffectUPtr effect_{};
 
 
 	[[noreturn]]
@@ -148,11 +134,7 @@ private:
 
 
 	void set_fx_slot_effect(
-		EaxxEffectUPtr& effect);
-
-	void set_fx_slot_effect(
-		EaxxEffectType effect_type,
-		EaxxEffectUPtr& effect);
+		EaxxEffectType effect_type);
 
 	void set_fx_slot_effect();
 
