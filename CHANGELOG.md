@@ -1,10 +1,17 @@
 # EAXEFX changelog
 
 
-## [1.0.7] - ????-??-??
+## [1.0.7] - 2022-07-19
+### Added
+- Patch for Doom 3 (2004) to scale down volume of all sounds (see https://github.com/dhewm/dhewm3/commit/3c01757d27a22a3858737f6b51e85895d2fac887 for details).
+
 ### Fixed
 - Setting flags on FX slot.
 - Applying settings on equalizer effect.
+
+## Changed
+- The wrapper now integrated into [OpenAL Soft](https://openal-soft.org/).  
+  Don't expect any maintenance or support of the wrapper from now.
 
 
 ## [1.0.6] - 2021-12-20
