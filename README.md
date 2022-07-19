@@ -1,6 +1,9 @@
 EAX OpenAL Extension
 ====================
 
+!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!! Since the wrapper is now integrated into OpenAL Soft it won't be maintaned. !!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 Contents
 ========
@@ -45,6 +48,7 @@ Separate application `eaxefx_app_patcher.exe` is available for offline patching.
 
 Resolved issues:
 - Doom 3 (2004) [visual twitch bug](https://www.pcgamingwiki.com/wiki/Doom_3#Visual_twitch_bug_with_OpenAL.2FEAX).
+- Doom 3 (2004) [channel contribution issue](https://github.com/dhewm/dhewm3/commit/3c01757d27a22a3858737f6b51e85895d2fac887).
 - Quake 4 (2005) source occlusion out of range.
 - Prey (2006) source occlusion out of range.  
   Only runtime patching is supported for Steam version.

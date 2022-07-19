@@ -81,11 +81,6 @@ FilePatcherImpl::FilePatcherImpl(
 	}
 
 	file_ = nullptr;
-
-	if (status_ != PatchStatus{})
-	{
-		file_ = make_file(patch_.file_name, FileOpenMode::file_open_mode_read_write);
-	}
 }
 
 PatchStatus FilePatcherImpl::get_status() const noexcept
@@ -101,7 +96,18 @@ void FilePatcherImpl::apply()
 			throw FilePatcherException{"Already patched."};
 
 		case PatchStatus::unpatched:
-			apply_patch_blocks(patch_.patch_blocks, &PatchBlock::patched_bytes);
+			file_ = make_file(patch_.file_name, FileOpenMode::file_open_mode_read_write);
+
+			try
+			{
+				apply_patch_blocks(patch_.patch_blocks, &PatchBlock::patched_bytes);
+			}
+			catch (...)
+			{
+				file_ = nullptr;
+				throw;
+			}
+
 			break;
 
 		default:
@@ -114,7 +120,18 @@ void FilePatcherImpl::revert()
 	switch (status_)
 	{
 		case PatchStatus::patched:
-			apply_patch_blocks(patch_.patch_blocks, &PatchBlock::unpatched_bytes);
+			file_ = make_file(patch_.file_name, FileOpenMode::file_open_mode_read_write);
+
+			try
+			{
+				apply_patch_blocks(patch_.patch_blocks, &PatchBlock::unpatched_bytes);
+			}
+			catch (...)
+			{
+				file_ = nullptr;
+				throw;
+			}
+
 			break;
 
 		case PatchStatus::unpatched:
