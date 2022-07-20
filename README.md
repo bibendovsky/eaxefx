@@ -1,9 +1,11 @@
 EAX OpenAL Extension
 ====================
 
-!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!! Since the wrapper is now integrated into OpenAL Soft it won't be maintaned. !!!
+```
+!!! WARNING !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  
+!!! Since the wrapper is now integrated into OpenAL Soft it won't be maintaned. !!!  
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+```
 
 Contents
 ========
