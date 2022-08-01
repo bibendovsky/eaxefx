@@ -1,9 +1,10 @@
 # EAXEFX changelog
 
 
-## [1.0.7] - 2022-07-19
+## [1.0.7] - ????-??-??
 ### Added
 - Patch for Doom 3 (2004) to scale down volume of all sounds (see https://github.com/dhewm/dhewm3/commit/3c01757d27a22a3858737f6b51e85895d2fac887 for details).
+- Patch for Doom 3 (2004) to initialize reverb properties with default values (https://www.pcgamingwiki.com/wiki/Doom_3#Incorrect_EAX_effect_in_Doom3:_Ressurection_of_evil_with_OpenAL.2FEAX).
 
 ### Fixed
 - Setting flags on FX slot.
