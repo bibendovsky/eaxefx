@@ -1,9 +1,9 @@
 # EAXEFX changelog
 
 
-## [1.0.8] - 2022-??-??
+## [1.0.8] - 2022-08-09
 ### Added
-- Patch for Doom 3 (2004) to stop AL source before deleting the buffer.
+- Patch for Doom 3 (2004) to fix error "idSoundCache: error unloading data from OpenAL hardware buffer".
 
 
 ## [1.0.7] - 2022-08-04
