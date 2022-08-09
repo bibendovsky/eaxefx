@@ -26,7 +26,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 cmake_minimum_required (VERSION 3.8.2 FATAL_ERROR)
-project (eaxefx_patch_lib VERSION 1.0.1 LANGUAGES CXX)
+project (eaxefx_patch_lib VERSION 1.0.2 LANGUAGES CXX)
 
 
 #
