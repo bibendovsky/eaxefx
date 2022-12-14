@@ -49,13 +49,14 @@ Several runtime patches are embeded into the wrapper to fix EAX issues.
 Separate application `eaxefx_app_patcher.exe` is available for offline patching.
 
 Resolved issues:
-- Doom 3 (2004) [visual twitch bug](https://www.pcgamingwiki.com/wiki/Doom_3#Visual_twitch_bug_with_OpenAL.2FEAX).
-- Doom 3 (2004) [channel contribution issue](https://github.com/dhewm/dhewm3/commit/3c01757d27a22a3858737f6b51e85895d2fac887).
-- Doom 3 (2004) [uninitialized reverb properties](https://www.pcgamingwiki.com/wiki/Doom_3#Incorrect_EAX_effect_in_Doom3:_Ressurection_of_evil_with_OpenAL.2FEAX).
-- Doom 3 (2004) error "idSoundCache: error unloading data from OpenAL hardware buffer".
-- Quake 4 (2005) source occlusion out of range.
-- Prey (2006) source occlusion out of range.  
-  Only runtime patching is supported for Steam version.
+- Doom 3 (2004) v1.3.1 [visual twitch bug](https://www.pcgamingwiki.com/wiki/Doom_3#Visual_twitch_bug_with_OpenAL.2FEAX).
+- Doom 3 (2004) v1.3.1 [channel contribution issue](https://github.com/dhewm/dhewm3/commit/3c01757d27a22a3858737f6b51e85895d2fac887).
+- Doom 3 (2004) v1.3.1 [uninitialized reverb properties](https://www.pcgamingwiki.com/wiki/Doom_3#Incorrect_EAX_effect_in_Doom3:_Ressurection_of_evil_with_OpenAL.2FEAX).
+- Doom 3 (2004) v1.3.1 error "idSoundCache: error unloading data from OpenAL hardware buffer".
+- Quake 4 (2005) v1.4.2 / v1.4.3 (Steam) source occlusion out of range.
+- Prey (2006) v1.4 source occlusion out of range.  
+  Only runtime patching is supported for Steam version.  
+  Use retail version of executable from [official patch v1.4](https://community.pcgamingwiki.com/files/file/1063-prey-patches/) for offline patching.
 
 
 4 - Supported drivers
