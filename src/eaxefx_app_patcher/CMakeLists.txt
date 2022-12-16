@@ -36,27 +36,29 @@ message(STATUS "[${PROJECT_NAME}] Static linking: ${EAXEFX_STATIC_LINKING}")
 option(EAXEFX_ALL_WARNINGS "Report all warnings." OFF)
 message(STATUS "[${PROJECT_NAME}] Report all warnings: ${EAXEFX_ALL_WARNINGS}")
 
-message(STATUS "[${PROJECT_NAME}] Size of a void pointer: ${CMAKE_SIZEOF_VOID_P}")
+option(EAXEFX_APP_PATCHER_PREFER_LCC_WIN "Prefer 32-bit LCC-WIN compiler." OFF)
+message(STATUS "[${PROJECT_NAME}] Prefer 32-bit LCC-WIN compiler: ${EAXEFX_APP_PATCHER_PREFER_LCC_WIN}")
 
-option(EAXEFX_PREFER_LCC_WIN "Prefer lcc-win environment." ON)
-set(EAXEFX_LCC_WIN_DIR "" CACHE PATH "Directory with lcc-win.")
+unset(EAXEFX_APP_PATCHER_LCC_WIN_DETECTED)
 
-unset(EAXEFX_LCC_WIN_DETECTED)
-
-if (EAXEFX_PREFER_LCC_WIN)
-	if (WIN32 AND EAXEFX_LCC_WIN_DIR)
-		set(EAXEFX_LCC_WIN_LC "${EAXEFX_LCC_WIN_DIR}/bin/lc.exe")
-		set(EAXEFX_LCC_WIN_LCC "${EAXEFX_LCC_WIN_DIR}/bin/lcc.exe")
-		set(EAXEFX_LCC_WIN_LCCLNK "${EAXEFX_LCC_WIN_DIR}/bin/lcclnk.exe")
+if (EAXEFX_APP_PATCHER_PREFER_LCC_WIN)
+	if (WIN32 AND EAXEFX_APP_PATCHER_LCC_WIN_DIR)
+		set(EAXEFX_LCC_WIN_LC "${EAXEFX_APP_PATCHER_LCC_WIN_DIR}/bin/lc.exe")
+		set(EAXEFX_LCC_WIN_LCC "${EAXEFX_APP_PATCHER_LCC_WIN_DIR}/bin/lcc.exe")
+		set(EAXEFX_LCC_WIN_LCCLNK "${EAXEFX_APP_PATCHER_LCC_WIN_DIR}/bin/lcclnk.exe")
 
 		if (EXISTS "${EAXEFX_LCC_WIN_LC}" AND EXISTS "${EAXEFX_LCC_WIN_LCC}" AND EXISTS "${EAXEFX_LCC_WIN_LCCLNK}")
-			set(EAXEFX_LCC_WIN_DETECTED "1")
-			message(STATUS "[${PROJECT_NAME}] Found lcc-win: ${EAXEFX_LCC_WIN_DIR}")
+			set(EAXEFX_APP_PATCHER_LCC_WIN_DETECTED "1")
+			message(STATUS "[${PROJECT_NAME}] Found 32-bit LCC-WIN compiler: ${EAXEFX_APP_PATCHER_LCC_WIN_DIR}")
 		endif ()
 	endif ()
 endif ()
 
-if (EAXEFX_LCC_WIN_DETECTED)
+if (NOT EAXEFX_APP_PATCHER_LCC_WIN_DETECTED)
+	message(STATUS "[${PROJECT_NAME}] 32-bit LCC-WIN compiler not found.")
+endif ()
+
+if (EAXEFX_APP_PATCHER_LCC_WIN_DETECTED)
 	configure_file(
 		"${PROJECT_SOURCE_DIR}/src/eaxefx_app_patcher.rc.in"
 		"${PROJECT_BINARY_DIR}/src/eaxefx_app_patcher.rc"
@@ -91,7 +93,8 @@ if (EAXEFX_LCC_WIN_DETECTED)
 			${EAXEFX_APP_PATCHER_C_W}
 			${EAXEFX_APP_PATCHER_RC_W}
 			-subsystem console
-			-nolibc -s
+			-nolibc
+			-s
 			-o ${EAXEFX_APP_PATCHER_EXE_W}
 		VERBATIM
 	)
