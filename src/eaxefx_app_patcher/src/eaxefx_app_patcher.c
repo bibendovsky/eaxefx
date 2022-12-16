@@ -663,37 +663,37 @@ const PatchBlock patch_6_block_array[] =
 const Patch patch_array[] =
 {
 	{
-		"Doom 3 (2004)",
+		"Doom 3 (2004) v1.3.1",
 		"Fixes visual twitch bug (http://www.pcgamingwiki.com/wiki/Doom_3#Visual_twitch_bug_with_OpenAL.2FEAX).",
 		{patch_1_block_array, ARRAY_SIZE(patch_1_block_array)}
 	},
 
 	{
-		"Doom 3 (2004)",
+		"Doom 3 (2004) v1.3.1",
 		"Scales down volume of all sounds (https://github.com/dhewm/dhewm3/commit/3c01757d27a22a3858737f6b51e85895d2fac887).",
 		{patch_2_block_array, ARRAY_SIZE(patch_2_block_array)}
 	},
 
 	{
-		"Doom 3 (2004)",
+		"Doom 3 (2004) v1.3.1",
 		"Initializes reverb properties with default values.",
 		{patch_3_block_array, ARRAY_SIZE(patch_3_block_array)}
 	},
 
 	{
-		"Doom 3 (2004)",
+		"Doom 3 (2004) v1.3.1",
 		"Fixes error \"idSoundCache: error unloading data from OpenAL hardware buffer\".",
 		{patch_4_block_array, ARRAY_SIZE(patch_4_block_array)}
 	},
 
 	{
-		"Quake 4 (2005)",
+		"Quake 4 (2005) v1.4.2",
 		"Fixes source's occlusion out of range.",
 		{patch_5_block_array, ARRAY_SIZE(patch_5_block_array)}
 	},
 
 	{
-		"Prey (2006)",
+		"Prey (2006) v1.4 retail",
 		"Fixes source's occlusion out of range.",
 		{patch_6_block_array, ARRAY_SIZE(patch_6_block_array)}
 	},
