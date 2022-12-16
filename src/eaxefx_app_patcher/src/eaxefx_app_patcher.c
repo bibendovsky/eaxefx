@@ -896,7 +896,7 @@ const char* read_answer(void)
 int main(void)
 {
 	size_t i;
-	size_t patch_indices[ARRAY_SIZE(patch_array)];
+	const Patch* patches[ARRAY_SIZE(patch_array)];
 	PatchStatus patch_statuses[ARRAY_SIZE(patch_array)];
 	size_t patch_count = 0;
 	const char* answer;
@@ -923,7 +923,7 @@ int main(void)
 			continue;
 		}
 
-		patch_indices[patch_count] = i;
+		patches[patch_count] = patch;
 		patch_statuses[patch_count] = status;
 		patch_count += 1;
 	}
@@ -931,14 +931,13 @@ int main(void)
 	if (patch_count > 0)
 	{
 		size_t patch_number = 0;
-		size_t patch_index;
 		const Patch* patch;
 		PatchStatus new_status = ps_unsupported;
 
 		for (i = 0; i < patch_count; ++i)
 		{
-			patch = &patch_span.items[patch_indices[i]];
-			PatchStatus status = patch_statuses[patch_indices[i]];
+			patch = patches[i];
+			PatchStatus status = patch_statuses[i];
 			assert(patch->name != NULL);
 			assert(patch->description != NULL);
 			status_string = get_patch_status_string(status);
@@ -987,10 +986,10 @@ int main(void)
 
 		if (!is_cancelled)
 		{
-			patch_index = patch_indices[patch_number - 1];
-			patch = &patch_span.items[patch_index];
+			size_t patch_index = patch_number - 1;
+			patch = patches[patch_index];
 
-			switch (patch_statuses[patch_number - 1])
+			switch (patch_statuses[patch_index])
 			{
 				case ps_patched: new_status = ps_unpatched; break;
 				case ps_unpatched: new_status = ps_patched; break;
