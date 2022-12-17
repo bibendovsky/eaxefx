@@ -936,8 +936,8 @@ int main(void)
 
 		for (i = 0; i < patch_count; ++i)
 		{
+			const PatchStatus status = patch_statuses[i];
 			patch = patches[i];
-			PatchStatus status = patch_statuses[i];
 			assert(patch->name != NULL);
 			assert(patch->description != NULL);
 			status_string = get_patch_status_string(status);
