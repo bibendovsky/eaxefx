@@ -6,7 +6,7 @@
 - Doom 3 (2004) "idSoundCache: error unloading data from OpenAL hardware buffer" patch.
 
 ### Changed
-- Rewritten patcher in C to achieve a tiny size of executable.
+- Rewritten patcher to achieve a small size of executable.
 
 ## [1.0.8] - 2022-08-09
 ### Added
