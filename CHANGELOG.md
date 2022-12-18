@@ -1,7 +1,7 @@
 # EAXEFX changelog
 
 
-## [1.0.9] - ????-??-??
+## [1.0.9] - 2022-12-18
 ### Fixed
 - Doom 3 (2004) "idSoundCache: error unloading data from OpenAL hardware buffer" patch.
 
