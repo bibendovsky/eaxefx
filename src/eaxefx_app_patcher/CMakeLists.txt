@@ -24,136 +24,86 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 ]]
 
+cmake_minimum_required(VERSION 3.8.2 FATAL_ERROR)
+project(eaxefx_app_patcher VERSION 1.0.3 LANGUAGES C)
 
-cmake_minimum_required (VERSION 3.8.2 FATAL_ERROR)
-project (eaxefx_app_patcher VERSION 1.0.4 LANGUAGES CXX)
+set(EAXEFX_APP_PATCHER_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
+message(STATUS "[${PROJECT_NAME}] v${EAXEFX_APP_PATCHER_VERSION}")
 
+option(EAXEFX_STATIC_LINKING "Use static linking." ON)
+message(STATUS "[${PROJECT_NAME}] Static linking: ${EAXEFX_STATIC_LINKING}")
 
-#
-# Validate target system.
-#
-if (NOT WIN32)
-	message (FATAL_ERROR "Unsupported platform.")
+option(EAXEFX_ALL_WARNINGS "Report all warnings." OFF)
+message(STATUS "[${PROJECT_NAME}] Report all warnings: ${EAXEFX_ALL_WARNINGS}")
+
+option(EAXEFX_APP_PATCHER_CUSTOM_CRT "Use custom CRT." ON)
+message(STATUS "[${PROJECT_NAME}] Use custom CRT: ${EAXEFX_APP_PATCHER_CUSTOM_CRT}")
+
+unset(EAXEFX_APP_PATCHER_CUSTOM_CRT_ENABLED)
+
+if (EAXEFX_APP_PATCHER_CUSTOM_CRT)
+	if (MSVC)
+		set(EAXEFX_APP_PATCHER_CUSTOM_CRT_ENABLED "1")
+	endif ()
 endif ()
 
+add_executable(${PROJECT_NAME} "")
 
-#
-# Module path.
-#
-set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-
-
-#
-# Includes.
-#
-include (make_version_string)
-
-
-#
-# Version.
-#
-make_version_string (EAXEFX_APP_PATCHER_VERSION)
-message (STATUS "[${PROJECT_NAME}] v${EAXEFX_APP_PATCHER_VERSION}")
-
-
-#
-# Options.
-#
-
-# Static linking.
-#
-option (EAXEFX_STATIC_LINKING "Use static linking." ON)
-message (STATUS "[${PROJECT_NAME}] Static linking: ${EAXEFX_STATIC_LINKING}")
-
-# All warnings.
-#
-option (EAXEFX_ALL_WARNINGS "Report all warnings." OFF)
-message (STATUS "[${PROJECT_NAME}] Report all warnings: ${EAXEFX_ALL_WARNINGS}")
-
-
-#
-# Size of a void pointer.
-#
-message (STATUS "[${PROJECT_NAME}] Size of a void pointer: ${CMAKE_SIZEOF_VOID_P}")
-
-
-#
-# Target.
-#
-add_executable (${PROJECT_NAME} "")
-
-
-#
-# Configure files.
-#
-configure_file (
+configure_file(
 	"${PROJECT_SOURCE_DIR}/src/eaxefx_app_patcher.rc.in"
 	"${PROJECT_BINARY_DIR}/src/eaxefx_app_patcher.rc"
 )
 
-
-#
-# Properties.
-#
-set_target_properties (
+target_include_directories(
 	${PROJECT_NAME}
-	PROPERTIES
-		CXX_STANDARD 17
-		CXX_STANDARD_REQUIRED ON
-		CXX_EXTENSIONS OFF
+	PRIVATE
+		src
 )
 
+if (EAXEFX_APP_PATCHER_CUSTOM_CRT_ENABLED)
+	target_compile_definitions(
+		${PROJECT_NAME}
+		PRIVATE
+			EAXEFX_APP_PATCHER_CUSTOM_CRT
+	)
 
-#
-# Compile definitions.
-#
-target_compile_definitions (
+	if (MSVC)
+		string(APPEND CMAKE_EXE_LINKER_FLAGS " /NODEFAULTLIB /ENTRY:main__")
+		string(REGEX REPLACE "/RTC[0-9a-zA-Z]+" "" CMAKE_C_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
+	endif ()
+endif ()
+
+target_compile_definitions(
 	${PROJECT_NAME}
 	PRIVATE
 		"EAXEFX_APP_PATCHER_VERSION=\"${EAXEFX_APP_PATCHER_VERSION}\""
-		_UNICODE
-		UNICODE
-		NOMINMAX
-		WIN32_LEAN_AND_MEAN
-		$<$<CXX_COMPILER_ID:MSVC>:_CRT_SECURE_NO_WARNINGS>
-		$<$<CXX_COMPILER_ID:MSVC>:_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS>
+		$<$<C_COMPILER_ID:MSVC>:_CRT_SECURE_NO_WARNINGS>
 )
 
-
-#
-# Compile options.
-#
-target_compile_options (
+target_compile_options(
 	${PROJECT_NAME}
 	PRIVATE
-		$<$<CXX_COMPILER_ID:MSVC>:$<$<EQUAL:${CMAKE_SIZEOF_VOID_P},4>:-arch:IA32>>
-		$<$<CXX_COMPILER_ID:MSVC>:$<IF:$<BOOL:${EAXEFX_ALL_WARNINGS}>,-Wall,-W4>>
-		$<$<CXX_COMPILER_ID:MSVC>:-MP -GR->
-		$<$<CXX_COMPILER_ID:MSVC>:$<$<NOT:$<CONFIG:DEBUG>>:-Oy -GS->>
+		$<$<C_COMPILER_ID:MSVC>:$<$<EQUAL:${CMAKE_SIZEOF_VOID_P},4>:-arch:IA32>>
+		$<$<C_COMPILER_ID:MSVC>:$<IF:$<BOOL:${EAXEFX_ALL_WARNINGS}>,-Wall,-W4>>
+		$<$<C_COMPILER_ID:MSVC>:/GR->
+		$<$<C_COMPILER_ID:MSVC>:$<$<NOT:$<CONFIG:DEBUG>>:/Oy>>
+		$<$<C_COMPILER_ID:MSVC>:$<$<OR:$<NOT:$<CONFIG:DEBUG>>,$<BOOL:${EAXEFX_APP_PATCHER_CUSTOM_CRT}>>:/GS->>
 	PRIVATE
-		$<$<CXX_COMPILER_ID:GNU>:$<$<EQUAL:${CMAKE_SIZEOF_VOID_P},4>:-march=i686>>
-		$<$<CXX_COMPILER_ID:GNU>:-Wpedantic>
-		$<$<CXX_COMPILER_ID:GNU>:$<$<BOOL:${EAXEFX_ALL_WARNINGS}>:-Wall -Wextra>>
+		$<$<C_COMPILER_ID:GNU>:$<$<EQUAL:${CMAKE_SIZEOF_VOID_P},4>:-march=i686>>
+		$<$<C_COMPILER_ID:GNU>:-Wpedantic>
+		$<$<C_COMPILER_ID:GNU>:$<$<BOOL:${EAXEFX_ALL_WARNINGS}>:-Wall -Wextra>>
 )
 
 if (EAXEFX_STATIC_LINKING)
 	if (MSVC)
-		target_compile_options (
+		target_compile_options(
 			${PROJECT_NAME}
 			PRIVATE
 				$<$<CONFIG:DEBUG>:-MTd>
 				$<$<NOT:$<CONFIG:DEBUG>>:-MT>
 		)
-	endif ()
-endif ()
-
-
-#
-# Dependencies.
-#
-if (EAXEFX_STATIC_LINKING)
-	if (NOT MSVC)
-		target_link_libraries (
+	else ()
+		target_link_libraries(
 			${PROJECT_NAME}
 			PRIVATE
 				-static
@@ -161,18 +111,8 @@ if (EAXEFX_STATIC_LINKING)
 	endif ()
 endif ()
 
-target_link_libraries (
-	${PROJECT_NAME}
-	PRIVATE
-		eaxefx::patch_lib
-)
-
-
-#
-# Custom commands.
-#
 if (CMAKE_STRIP AND CMAKE_BUILD_TYPE STREQUAL Release)
-	add_custom_command (
+	add_custom_command(
 		TARGET
 			${PROJECT_NAME}
 		POST_BUILD
@@ -180,24 +120,20 @@ if (CMAKE_STRIP AND CMAKE_BUILD_TYPE STREQUAL Release)
 	)
 endif ()
 
-
-#
-# Source files.
-#
-target_sources (
+target_sources(
 	${PROJECT_NAME}
 	PRIVATE
-		src/eaxefx_app_patcher.cpp
+		src/eaxefx_app_patcher.c
 		"${PROJECT_BINARY_DIR}/src/eaxefx_app_patcher.rc"
 )
 
+install(
+	TARGETS ${PROJECT_NAME}
+	RUNTIME DESTINATION "."
+)
 
-#
-# Install.
-#
-install (
-	TARGETS
-		${PROJECT_NAME}
-	RUNTIME DESTINATION
-		"."
+install(
+	FILES README.md
+	DESTINATION "."
+	RENAME "${PROJECT_NAME}.txt"
 )

@@ -24,37 +24,46 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 */
 
+#ifndef VS_VERSION_INFO
+#define VS_VERSION_INFO 1
+#endif
 
-#include "eaxefx_rc.h"
+#ifndef VOS_NT
+#define VOS_NT 0x00040000L
+#endif
 
+#ifndef VFT_APP
+#define VFT_APP 0x00000001L
+#endif
+
+#ifndef VFT2_UNKNOWN
+#define VFT2_UNKNOWN 0
+#endif
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION ${PROJECT_VERSION_MAJOR}, ${PROJECT_VERSION_MINOR}, ${PROJECT_VERSION_PATCH}
-PRODUCTVERSION ${PROJECT_VERSION_MAJOR}, ${PROJECT_VERSION_MINOR}, ${PROJECT_VERSION_PATCH}
-FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
-FILEFLAGS VER_DBG
+FILEVERSION ${PROJECT_VERSION_MAJOR},${PROJECT_VERSION_MINOR},${PROJECT_VERSION_PATCH},0
+PRODUCTVERSION ${PROJECT_VERSION_MAJOR},${PROJECT_VERSION_MINOR},${PROJECT_VERSION_PATCH},0
 FILEOS VOS_NT
-FILETYPE VFT_DRV
-FILESUBTYPE VFT2_DRV_SYSTEM
-BEGIN
+FILETYPE VFT_APP
+FILESUBTYPE VFT2_UNKNOWN
+{
 	BLOCK "StringFileInfo"
-	BEGIN
+	{
 		BLOCK "040904B0"
-		BEGIN
-			VALUE "Comments", L"EAXEFX Application Patcher"
-			VALUE "CompanyName", L"Boris I. Bendovsky"
-			VALUE "FileDescription", L"EAXEFX Application Patcher"
-			VALUE "FileVersion", L"${EAXEFX_PATCH_LIB_VERSION}"
-			VALUE "InternalName", L"${PROJECT_NAME}"
-			VALUE "LegalCopyright", L"Copyright (c) Boris I. Bendovsky 2020-2021"
-			VALUE "OriginalFilename", L"${PROJECT_NAME}.exe"
-			VALUE "ProductName", L"EAXEFX"
-			VALUE "ProductVersion", L"${EAXEFX_PATCH_LIB_VERSION}"
-		END
-	END
+		{
+			VALUE "FileDescription", "EAXEFX Application Patcher"
+			VALUE "InternalName", "${PROJECT_NAME}"
+			VALUE "OriginalFilename", "${PROJECT_NAME}.exe"
+			VALUE "CompanyName", "Boris I. Bendovsky"
+			VALUE "LegalCopyright", "Copyright (c) Boris I. Bendovsky 2020-2021"
+			VALUE "ProductName", "EAXEFX"
+			VALUE "FileVersion", "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.0"
+			VALUE "ProductVersion", "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.0"
+		}
+	}
 
 	BLOCK "VarFileInfo"
-	BEGIN
-		VALUE "Translation", 0x0409, 1200
-	END
-END
+	{
+		VALUE "Translation", 0x0409 0x04B0
+	}
+}
