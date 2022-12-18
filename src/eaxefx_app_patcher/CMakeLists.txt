@@ -128,8 +128,12 @@ target_sources(
 )
 
 install(
-	TARGETS
-		${PROJECT_NAME}
-	RUNTIME DESTINATION
-		"."
+	TARGETS ${PROJECT_NAME}
+	RUNTIME DESTINATION "."
+)
+
+install(
+	FILES README.md
+	DESTINATION "."
+	RENAME "${PROJECT_NAME}.txt"
 )
