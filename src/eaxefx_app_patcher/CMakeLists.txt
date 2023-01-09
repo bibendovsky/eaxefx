@@ -5,7 +5,7 @@ SPDX-License-Identifier: MIT
 ]]
 
 cmake_minimum_required(VERSION 3.8.2 FATAL_ERROR)
-project(eaxefx_app_patcher VERSION 1.0.3 LANGUAGES C)
+project(eaxefx_app_patcher VERSION 1.0.4 LANGUAGES C)
 
 set(EAXEFX_APP_PATCHER_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 message(STATUS "[${PROJECT_NAME}] v${EAXEFX_APP_PATCHER_VERSION}")

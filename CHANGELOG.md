@@ -1,6 +1,10 @@
 # EAXEFX changelog
 
 
+## [1.0.10] - ????-??-??
+### Changed
+- Patch for Doom 3 (2004) to scale down volume of all sounds (see https://github.com/dhewm/dhewm3/commit/4567f265392b5ab95a335f8896ff003a743990e4 for details).
+
 ## [1.0.9] - 2022-12-18
 ### Fixed
 - Doom 3 (2004) "idSoundCache: error unloading data from OpenAL hardware buffer" patch.
