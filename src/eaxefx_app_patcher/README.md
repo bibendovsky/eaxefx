@@ -66,7 +66,7 @@ With custom CRT:
 6 - Disclaimer
 ==============
 
-Copyright (c) 2020-2022 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2023 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

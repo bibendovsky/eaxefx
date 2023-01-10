@@ -1,6 +1,6 @@
 /*
 EAX App Patcher
-Copyright (c) 2020-2022 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2023 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 SPDX-License-Identifier: MIT
 */
 
@@ -35,7 +35,7 @@ FILESUBTYPE VFT2_UNKNOWN
 			VALUE "InternalName", "${PROJECT_NAME}"
 			VALUE "OriginalFilename", "${PROJECT_NAME}.exe"
 			VALUE "CompanyName", "Boris I. Bendovsky"
-			VALUE "LegalCopyright", "Copyright (c) Boris I. Bendovsky 2020-2022"
+			VALUE "LegalCopyright", "Copyright (c) Boris I. Bendovsky 2020-2023"
 			VALUE "ProductName", "EAXEFX"
 			VALUE "FileVersion", "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.0"
 			VALUE "ProductVersion", "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.0"

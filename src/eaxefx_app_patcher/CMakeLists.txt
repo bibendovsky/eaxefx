@@ -1,11 +1,11 @@
 #[[
 EAX App Patcher
-Copyright (c) 2020-2022 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2023 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 SPDX-License-Identifier: MIT
 ]]
 
 cmake_minimum_required(VERSION 3.8.2 FATAL_ERROR)
-project(eaxefx_app_patcher VERSION 1.0.3 LANGUAGES C)
+project(eaxefx_app_patcher VERSION 1.0.4 LANGUAGES C)
 
 set(EAXEFX_APP_PATCHER_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 message(STATUS "[${PROJECT_NAME}] v${EAXEFX_APP_PATCHER_VERSION}")
@@ -116,4 +116,10 @@ install(
 	FILES README.md
 	DESTINATION "."
 	RENAME "${PROJECT_NAME}.txt"
+)
+
+install(
+	FILES CHANGELOG.md
+	DESTINATION "."
+	RENAME "${PROJECT_NAME}_changelog.txt"
 )

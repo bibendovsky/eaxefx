@@ -16,9 +16,9 @@ Original blocks:
 004ecf83 52                          PUSH       EDX
 ...
 
-0074a7ae 00
+0074a840 00
 ...      00
-0074a7cb 00
+0074a85d 00
 ...
 007ce558 00
 ...      00
@@ -30,28 +30,28 @@ Modified blocks:
 ```
 ...
 ____to_patch_1:
-004ecf7f e9 2a d8 25 00              JMP        ____patch_1
+004ecf7f e9 bc d8 25 00              JMP        ____patch_1
 ...
 ____patch_1:
 ; Preserve registers
-0074a7ae 56                          PUSH       ESI
-0074a7af 57                          PUSH       EDI
-0074a7b0 51                          PUSH       ECX
+0074a840 56                          PUSH       ESI
+0074a841 57                          PUSH       EDI
+0074a842 51                          PUSH       ECX
 ; Copy default reverb properties.
-0074a7b1 be 58 e5 7c 00              MOV        ESI, 0x7ce558
-0074a7b6 89 ef                       MOV        EDI, EBP
+0074a843 be 58 e5 7c 00              MOV        ESI, 0x7ce558
+0074a848 89 ef                       MOV        EDI, EBP
 ; 28 (0x1c) properties.
-0074a7b8 b9 1c 00 00 00              MOV        ECX, 0x1c
-0074a7bd f3 a5                       MOVSD.REP  ES:EDI, ESI
+0074a84a b9 1c 00 00 00              MOV        ECX, 0x1c
+0074a84f f3 a5                       MOVSD.REP  ES:EDI, ESI
 ; Restore registers.
-0074a7bf 59                          POP        ECX
-0074a7c0 5f                          POP        EDI
-0074a7c1 5e                          POP        ESI
+0074a851 59                          POP        ECX
+0074a852 5f                          POP        EDI
+0074a853 5e                          POP        ESI
 ; Execute preserved code fragment.
-0074a7c2 8d 54 24 10                 LEA        EDX, [ESP + 0x10]
-0074a7c6 52                          PUSH       EDX
+0074a854 8d 54 24 10                 LEA        EDX, [ESP + 0x10]
+0074a858 52                          PUSH       EDX
 ; Go back.
-0074a7c7 e9 b8 27 da ff              JMP        idEFXFile::ReadEffect::____from_patch_1
+0074a859 e9 26 27 da ff              JMP        ____from_patch_1
 ...
 ____dat_default_reverb:
 007ce558 00 00 00 00                 ulong      0       ; ulEnvironment
