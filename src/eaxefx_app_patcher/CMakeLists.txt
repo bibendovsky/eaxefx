@@ -117,3 +117,9 @@ install(
 	DESTINATION "."
 	RENAME "${PROJECT_NAME}.txt"
 )
+
+install(
+	FILES CHANGELOG.md
+	DESTINATION "."
+	RENAME "${PROJECT_NAME}_changelog.txt"
+)
