@@ -1,6 +1,6 @@
 /*
 EAX App Patcher
-Copyright (c) 2020-2022 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
+Copyright (c) 2020-2023 Boris I. Bendovsky (bibendovsky@hotmail.com) and Contributors.
 SPDX-License-Identifier: MIT
 */
 
