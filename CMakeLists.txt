@@ -26,7 +26,7 @@ OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 cmake_minimum_required (VERSION 3.8.2 FATAL_ERROR)
-project (eaxefx_solution VERSION 1.0.10 LANGUAGES NONE)
+project (eaxefx_solution VERSION 1.0.11 LANGUAGES NONE)
 
 
 add_subdirectory (src/eaxefx_sys_lib)
