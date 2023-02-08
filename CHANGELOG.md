@@ -1,6 +1,10 @@
 # EAXEFX changelog
 
 
+## [1.0.11] - 2023-02-08
+### Fixed
+- Error "Null AL source." in the wrapper.
+
 ## [1.0.10] - 2023-10-01
 ### Changed
 - Patch for Doom 3 (2004) to scale down volume of all sounds (see https://github.com/dhewm/dhewm3/commit/4567f265392b5ab95a335f8896ff003a743990e4 for details).

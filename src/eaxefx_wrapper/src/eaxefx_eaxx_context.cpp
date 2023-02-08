@@ -157,6 +157,7 @@ void EaxxContext::al_gen_sources(
 			continue;
 		}
 
+		param.al_source = al_source_id;
 		source_map_.emplace(al_source_id, EaxxSource{param});
 	}
 }
