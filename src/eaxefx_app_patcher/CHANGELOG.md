@@ -3,7 +3,7 @@
 
 ## [1.0.5] - 2023-04-01
 ### Added
-- Patch for Beyond Good & Evil (2003 GOG / Ubisoft Connect) to fix invalid reverb parameters.
+- Patch for Beyond Good & Evil (2003 GOG / Ubisoft Connect / retail) to fix invalid reverb parameters.
 
 ## [1.0.4] - 2023-01-10
 ### Changed

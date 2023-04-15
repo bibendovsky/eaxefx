@@ -35,7 +35,7 @@ Operating system:
 - Quake 4 (2005) v1.4.2 / v1.4.3 (Steam) source occlusion out of range.
 - Prey (2006) v1.4 source occlusion out of range.  
   Use retail version of executable from [official patch v1.4](https://community.pcgamingwiki.com/files/file/1063-prey-patches/) for offline patching.
-- Beyond Good & Evil (2003) v1.1 (GOG / Ubisoft Connect) invalid reverb parameters for Environment Diffusion and Decay LF Ratio.
+- Beyond Good & Evil (2003) v1.1 (GOG / Ubisoft Connect / retail) invalid reverb parameters for Environment Diffusion and Decay LF Ratio.
 
 
 4 - Usage
