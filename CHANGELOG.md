@@ -1,6 +1,10 @@
 # EAXEFX changelog
 
 
+## [1.0.12] - 2023-04-01
+### Added
+- Patch for Beyond Good & Evil (2003) to fix invalid reverb parameters.
+
 ## [1.0.11] - 2023-02-08
 ### Fixed
 - Error "Null AL source." in the wrapper.

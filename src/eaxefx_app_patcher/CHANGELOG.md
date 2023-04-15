@@ -1,7 +1,11 @@
 # EAXEFX App Patcher changelog
 
 
-## [1.0.4] - 2023-10-01
+## [1.0.5] - 2023-04-01
+### Added
+- Patch for Beyond Good & Evil (2003 GOG / Ubisoft Connect / retail) to fix invalid reverb parameters.
+
+## [1.0.4] - 2023-01-10
 ### Changed
 - Patch for Doom 3 (2004) to scale down volume of all sounds (see https://github.com/dhewm/dhewm3/commit/4567f265392b5ab95a335f8896ff003a743990e4 for details).
 
